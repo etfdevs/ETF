@@ -1,0 +1,56 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Server Info Screen
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 12
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "menu_serverinfo"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+
+		onOpen { conditionalScript isconnected 2 ( "uiScript ServerStatus ; uiScript MoveMenuToY menu_serverinfo 12" ) ( "uiScript InGameServerStatus ; uiScript MoveMenuToY menu_serverinfo 60" ) }
+		onEsc { }
+		onClose {  }
+
+		MENUMAINRECT("Server Info")
+
+		itemDef {
+			name "serverinfo_back"
+			visible MENU_TRUE
+			rect 76 40 470 300
+			decoration
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+		}
+
+		itemDef {
+			name "serverinfo"
+			visible MENU_TRUE
+			rect 76 42 470 300
+			textscale .27
+			type ITEM_TYPE_LISTBOX
+			style WINDOW_STYLE_FILLED
+			elementwidth 120
+			elementheight 20
+			elementtype LISTBOX_TEXT
+			feeder FEEDER_SERVERSTATUS
+			notselectable
+			columns 4 	2 40 20
+					40 40 10
+					90 40 10
+					175 155 40
+			forecolor 1 1 1 1
+	 	}
+
+		FORT_BUTTONTT(serverinfoBack, Close, 20, 266, 360, 100, 32, .25, "", conditionalScript isconnected 2 ( "uiScript setFORTBackModelOpenMenu menu_findgame" ) ( "uiScript closeFORTBackModels" ), "Close this screen")
+	}
+}

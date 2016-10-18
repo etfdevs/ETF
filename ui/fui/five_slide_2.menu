@@ -1,0 +1,56 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Getting started page 2
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 12
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "menu_5slide_2"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+
+		onOpen { conditionalScript isconnected 2 ( "uiScript MoveMenuToY menu_5_slide_2 12" ) ( "uiScript MoveMenuToY menu_5slide_2 60" ) }		
+		onClose { conditionalScript isconnected 2 ( "setmenufocus menubar" ) ( "setmenufocus ingame" ) }
+		onESC { uiScript closeFORTBackModels }
+
+		MENUMAINRECT("Getting Started (2/ 5)")
+
+		itemDef {
+			text "Maps and Game-Types"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 13
+			textscale .5
+			rect 0 40 640 20
+			decoration
+			visible MENU_TRUE
+			forecolor 0.7 0.7 0.7 1
+		}
+
+		itemDef {
+			text "ETF includes a wide selection of maps with varied themes and settings.\nSome are set in urban fortresses, others in terrain-based landscapes.\n \nEach map may contain multiple game-types or objectives. Your goal may be\nto carry out an assault on the enemy base, take control of an area\nor perhaps assassinate another player.\n \nIt's worth learning the layout of each map and its particular objectives.\n \nFor more detailed information on the map you're playing, check out the Map\nHelp screen by hitting the ESCAPE key while in game."
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .27
+			rect 0 80 640 10
+			decoration
+			visible MENU_TRUE
+			type ITEM_TYPE_MLTEXT
+			special 13
+
+			useAssetFont
+		}
+
+		FORT_BUTTONTT(fiveslide_2_back, Back, 20, 40, 356, 102, 32, .25, "", uiScript setFORTBackModelOpenMenu menu_5slide_1, "Show previous page" )
+		FORT_BUTTONTT(fiveslide_2_next, Next, 20, 472, 356, 102, 32, .25, "", uiScript setFORTBackModelOpenMenu menu_5slide_3, "Show next page" )
+	}		
+}

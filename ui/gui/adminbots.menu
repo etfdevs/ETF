@@ -1,0 +1,279 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Admin Bots
+	//
+
+	#define MENU_X 149
+	#define MENU_Y 72
+	#define MENU_WIDTH 350
+	#define MENU_HEIGHT 366
+
+	#define MENU_NAME "men_bots"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+
+		onEsc { uiScript closeFORTBackModels }
+		onClose {  setmenufocus ingame ) }
+
+		MENUMAINRECT("Admin: Bots")
+
+		SIMPLEGROUPBOX("Number of Bots", 20, 30, 310, 52)
+
+		itemDef {
+			rect 22 52 44 20
+			textalignx 44
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "Min:"
+			visible 1
+			decoration
+		}
+
+		itemDef {
+			name "botmin"
+			rect 74 50 50 20
+			textalignx 3
+			textaligny 15
+			textscale .26
+			type ITEM_TYPE_EDITFIELD
+			maxchars 3
+			cvar "hud_botmin"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+			visible 1
+
+			mouseEnter { setitemcolor botmin backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor botmin backcolor .5 .5 .5 .25 }
+		}		
+
+		itemDef {
+			rect 132 52 44 20
+			textalignx 44
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "Max:"
+			visible 1
+			decoration
+		}
+
+		itemDef {
+			name "botmax"
+			rect 184 50 50 20
+			textalignx 3
+			textaligny 15
+			textscale .26
+			type ITEM_TYPE_EDITFIELD
+			maxchars 3
+			cvar "hud_botmax"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+			visible 1
+
+			mouseEnter { setitemcolor botmax backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor botmax backcolor .5 .5 .5 .25 }
+		}		
+
+		FORT_BUTTONTT(bot_set, "Set", 18, 255, 48, 70, 28, .26, "", uiScript BotMinMax, "Set the number for minimum and maximum number of bots on the server")
+
+		SIMPLEGROUPBOX("Add a Bot", 20, 92, 310, 82)
+		itemDef {
+			rect 22 114 44 20
+			textalignx 44
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "Name:"
+			visible 1
+			decoration
+		}
+
+		itemDef {
+			name "addbotname"
+			rect 74 114 160 20
+			textalignx 3
+			textaligny 15
+			textscale .26
+			type ITEM_TYPE_EDITFIELD
+			maxchars 25
+			maxPaintChars 12
+			cvar "hud_addbotname"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+			visible 1
+
+			mouseEnter { setitemcolor addbotname backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor addbotname backcolor .5 .5 .5 .25 }
+		}	
+
+		itemDef {
+			type		ITEM_TYPE_MULTI
+			rect		22 148 44 13
+			textalign	ITEM_ALIGN_AUTO
+			text		"Team:"
+			textalignx	60
+			textaligny	10
+			textscale	.26
+			cvar		hud_botteam
+			cvarFloatList  { "Team 1" 0 "Team 2" 1 "Team 3" 2 "Team 4" 3 }
+			tooltip		"The team for this bot"
+			visible		1
+		}
+
+		itemDef {
+			type		ITEM_TYPE_MULTI
+			rect		132 148 44 13
+			textalign	ITEM_ALIGN_AUTO
+			text		"Class:"
+			textalignx	80
+			textaligny	10
+			textscale	.26
+			cvar		hud_botclass
+			cvarFloatList  { "Recon" 0 "Sniper" 1 "Soldier" 2 "Grenadier" 3
+					 "Paramedic" 4 "Minigunner" 5 "Flametrooper" 6
+					 "Agent" 7 "Engineer" 8 "Civilian" 9 }
+			tooltip		"The class for this bot"
+			visible		1
+		}
+	
+		FORT_BUTTONTT(bot_add, "Add", 18, 255, 112, 70, 28, .26, "", uiScript BotAdd, "Add this bot to the server")
+
+		SIMPLEGROUPBOX("Kick a Bot", 20, 184, 310, 52)
+		itemDef {
+			rect 22 206 44 20
+			textalignx 44
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "Name:"
+			visible 1
+			decoration
+		}
+
+		itemDef {
+			name "botname"
+			rect 74 206 160 20
+			textalignx 3
+			textaligny 15
+			textscale .26
+			type ITEM_TYPE_EDITFIELD
+			maxchars 25
+			maxPaintChars 12
+			cvar "hud_botname"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+			visible 1
+
+			mouseEnter { setitemcolor botname backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor botname backcolor .5 .5 .5 .25 }
+		}		
+
+		FORT_BUTTONTT(bot_kick, "Kick", 18, 255, 204, 70, 28, .26, "", uiScript BotKick, "Remove this bot from the server")
+
+		SIMPLEGROUPBOX("Remote Console", 20, 246, 310, 113)
+		
+		itemDef {
+			group tab_admin_items
+			rect 22 270 64 20
+			textalignx 64
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "RCON:"
+			visible 1
+			decoration
+		}
+
+		itemDef {
+			group tab_admin_items
+			name "rconEntry"
+			rect 98 268 154 20
+			textalignx 3
+			textaligny 15
+			textscale .26
+			type ITEM_TYPE_EDITFIELD
+			maxchars 15
+			cvar "hud_rconpassword"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+			visible 1
+
+			mouseEnter { setitemcolor rconEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor rconEntry backcolor .5 .5 .5 .25 }
+		}		
+		
+		itemDef {
+			group tab_admin_items
+			rect 258 272 16 16
+			decoration
+			type ITEM_TYPE_LED
+			cvar hud_rcon_auth
+			visible 1
+		}
+
+		itemDef {
+			group tab_admin_items
+			rect 22 292 64 20
+			textalignx 64
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "ADMIN:"
+			decoration
+			visible 1
+		}
+
+		itemDef {
+			group tab_admin_items
+			name "adminEntry"
+			rect 98 292 154 20
+			textalignx 3
+			textaligny 15
+			textscale .26
+			type ITEM_TYPE_EDITFIELD
+			maxchars 15
+			cvar "hud_adminpassword"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+			visible 1
+
+			mouseEnter { setitemcolor adminEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor adminEntry backcolor .5 .5 .5 .25 }
+		}		
+		
+		itemDef {
+			rect 258 294 16 16
+			decoration
+			type ITEM_TYPE_LED
+			cvar hud_admin_auth
+			visible 1
+		}
+
+		FORT_BUTTONTT(admin_Auth, "Send Password", 18, 101, 326, 152, 28, .26, "", uiScript AuthorizeClient, "Send these passwords to the server")
+
+	}
+}

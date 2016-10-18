@@ -1,0 +1,49 @@
+#include "ui/menudef.h"
+
+{
+\\ END OF GAME \\
+
+//	MEDIUM SIZE
+	#define MENU_X 108
+	#define MENU_Y 158
+	#define MENU_WIDTH 423
+	#define MENU_HEIGHT 204
+
+	#define MENU_NAME "men_ready"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+ 		MENUSCREENSTYLE
+		onClose { setmenufocus ingame }
+		onESC { close men_ready }
+
+		itemDef {
+			rect 0 0 $evalint(MENU_WIDTH) $evalint(MENU_HEIGHT)
+			style 1
+			backcolor .5 .5 .5 .2
+			visible 1
+			border 1
+			bordersize 1
+			bordercolor .4 .4 .4 0
+			decoration
+		}
+
+		MENUMAINRECT("Set Ready Status")
+
+		itemDef {
+			rect 50 80 200 170
+			textscale .3
+			textalignx 3
+			textaligny 10
+			ownerDraw HUD_MATCH_STRING
+			visible MENU_TRUE
+			decoration
+		}		
+
+		FORT_BUTTONTT(DoReady, Ready, 18, 67, 165, 128, 28, .26, "", uiScript ExecText "ready"; uiScript closeFORTBackModels, "Set my status to Ready")
+		FORT_BUTTONTT(DoUnready, "Not Ready", 18, 228, 165, 128, 28, .26, "", uiScript ExecText "unready"; uiScript closeFORTBackModels, "Set my status to Not Ready")
+	}
+}
+
+

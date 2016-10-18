@@ -1,0 +1,55 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Admin Bots
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 60
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "menu_pb"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+
+		onEsc { uiScript closeFORTBackModels }
+		onClose {  setmenufocus ingame ) }
+
+		MENUMAINRECT("Admin: Punkbuster")
+
+		SIMPLEGROUPBOX( "Enabling and Disabling PunkBuster", 20, 26, 574, 75 )
+		
+		FORT_BUTTONTT(startPB, "Enable Punkbuster", 18, 150, 50, 140, 28, .25, "", exec PB_SV_ENABLE, "Vote to start the selected map" )		
+
+		FORT_BUTTONTT(endPB, "Disable Punkbuster", 18, 350, 50, 140, 28, .25, "", exec PB_SV_DISABLE, "Vote to start the selected map" )
+
+		itemDef {
+			rect 30 86 428 20
+			textalignx 1
+			textaligny 10
+			textalign ITEM_ALIGN_LEFT
+			textscale .24
+			text "Note: disabling PB on a server which has it already enabled will not take effect until server restart."
+			decoration
+			visible 1
+		}
+
+		SIMPLEGROUPBOX( "Enabling and Disabling PunkBuster", 20, 110, 574, 75 )
+
+		itemDef {
+			rect 292 372 64 20
+			textalignx 64
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .27
+			text "To be completed"
+			decoration
+			visible 1
+		}
+	}
+}

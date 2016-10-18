@@ -1,0 +1,29 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Ingame Menu - Play
+	//
+
+	#define MENU_X 50
+	#define MENU_Y 48
+	#define MENU_WIDTH 122
+	#define MENU_HEIGHT 65
+
+	#define MENU_NAME "menu_ingame_play"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		POPUPMENUSTYLE
+		outOfBoundsClick
+//		onOOBClick { close menu_ingame_play; setmenufocus ingame }
+
+		POPUPMENUBGINGAME
+		POPUPMENUBORDERSINGAME
+
+		POPUPMENUITEMACTION(10, 0, "Select Team", "selteam", uiScript closeFORTBackModels; close menu_ingame_play; uiScript openFORTBackModels tab_chooseteam)
+		POPUPMENUITEMACTION(10, 15, "Select Class", "selclass", uiScript closeFORTBackModels; close menu_ingame_play; uiScript openFORTBackModels tab_chooseclass )
+		POPUPMENUITEM(10, 30, "Set Ready", "redy", men_ready)
+		POPUPMENUITEMACTION(10, 45, "Return to Game", "retgame", uiScript closeFORTBackModels; close menu_ingame_play; close ingame )
+}

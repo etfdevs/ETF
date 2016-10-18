@@ -1,0 +1,29 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Main Menu - Extras
+	//
+
+	#define MENU_X 218
+	#define MENU_Y 360
+	#define MENU_WIDTH 124
+	#define MENU_HEIGHT 60
+
+	#define MENU_NAME "menu_extras"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		POPUPMENUSTYLE
+		outOfBoundsClick
+
+		POPUPMENUBG
+		POPUPMENUBORDERS
+
+		POPUPMENUITEM(10, 10, "Movies & Demos", "playmovies", menu_movies)
+		POPUPMENUITEM(10, 25, "Credits", "credits", menu_credits)
+		POPUPMENUITEM(10, 40, "Community", "comm", menu_community)
+
+	}
+}

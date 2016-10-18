@@ -1,0 +1,79 @@
+Import qw( CC CFLAGS LDFLAGS LIBS BASEDIR );
+
+$env = new cons (
+  CC => $CC,
+  CFLAGS => $CFLAGS,
+  LDFLAGS => $LDFLAGS,
+  LIBS => $LIBS
+);
+
+Link 'build_game' => $BASEDIR;
+
+@FILES = qw (
+  build_game/code/game/g_main.c
+  build_game/code/game/bg_misc.c
+  build_game/code/game/bg_pmove.c
+  build_game/code/game/bg_q3f_controllable.c
+  build_game/code/game/bg_q3f_flyby.c
+  build_game/code/game/bg_q3f_grenades.c
+  build_game/code/game/bg_q3f_mapsentry.c
+  build_game/code/game/bg_q3f_permon.c
+  build_game/code/game/bg_q3f_playerclass.c
+  build_game/code/game/bg_q3f_splines.c
+  build_game/code/game/bg_q3f_tea.c
+  build_game/code/game/bg_q3f_util.c
+  build_game/code/game/bg_q3f_weapon.c
+  build_game/code/game/bg_slidemove.c
+  build_game/code/game/bg_tracemap.c
+  build_game/code/game/g_active.c
+  build_game/code/game/g_arenas.c
+  build_game/code/game/g_bot_interface.c
+  build_game/code/game/g_client.c
+  build_game/code/game/g_cmds.c
+  build_game/code/game/g_combat.c
+  build_game/code/game/g_items.c
+  build_game/code/game/g_mem.c
+  build_game/code/game/g_misc.c
+  build_game/code/game/g_missile.c
+  build_game/code/game/g_mover.c
+  build_game/code/game/g_q3f_admin.c
+  build_game/code/game/g_q3f_charge.c
+  build_game/code/game/g_q3f_controllable.c
+  build_game/code/game/g_q3f_crc.c
+  build_game/code/game/g_q3f_engineer.c
+  build_game/code/game/g_q3f_flag.c
+  build_game/code/game/g_q3f_grenades.c
+  build_game/code/game/g_q3f_mapdata.c
+  build_game/code/game/g_q3f_mapents.c
+  build_game/code/game/g_q3f_mapinfo.c
+  build_game/code/game/g_q3f_mapselect.c
+  build_game/code/game/g_q3f_mapsentry.c
+  build_game/code/game/g_q3f_panel.c
+  build_game/code/game/g_q3f_playerclass.c
+  build_game/code/game/g_q3f_ready.c
+  build_game/code/game/g_q3f_scanner.c
+  build_game/code/game/g_q3f_serverconfig.c
+  build_game/code/game/g_q3f_soundscript.c
+  build_game/code/game/g_q3f_specents.c
+  build_game/code/game/g_q3f_string.c
+  build_game/code/game/g_q3f_team.c
+  build_game/code/game/g_q3f_waypoint.c
+  build_game/code/game/g_q3f_weapon.c
+  build_game/code/game/g_session.c
+  build_game/code/game/g_spawn.c
+  build_game/code/game/g_svcmds.c
+  build_game/code/game/g_target.c
+  build_game/code/game/g_team.c
+  build_game/code/game/g_trigger.c
+  build_game/code/game/g_unlagged.c
+  build_game/code/game/g_utils.c
+  build_game/code/game/g_weapon.c
+  build_game/code/game/q_math.c
+  build_game/code/api/et/q_shared.c
+  build_game/code/api/et/g_syscalls.c
+  );
+
+$FILESREF = \@FILES;
+
+Program $env 'qagame.mp.i386.so', @$FILESREF;
+

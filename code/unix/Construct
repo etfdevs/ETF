@@ -1,0 +1,23 @@
+$BASEDIR = "../..";
+$DEFINES = "-DID_INLINE=inline -DAPI_ET -DNDEBUG";
+$BASICCFLAGS = "-pipe -fPIC -I$BASEDIR/code/api/et -I$BASEDIR/code/bot $DEFINES";
+$OPTCFLAGS = "-O3 -ffast-math -fstrength-reduce -mcpu=pentiumpro -march=pentium";
+$DEBCFLAGS = "-O2 -g";
+$CFLAGS = "$BASICCFLAGS $OPTCFLAGS";
+$LDFLAGS = "-shared -ldl -lm";
+$CC = 'gcc';
+$LIBS = '';
+
+Export qw ( CC CFLAGS LDFLAGS LIBS BASEDIR );
+
+Build qw (
+    Conscript-ui
+    Conscript-game
+    Conscript-cgame
+);
+
+Default qw (
+  ui.mp.i386.so
+  qagame.mp.i386.so
+  cgame.mp.i386.so
+)

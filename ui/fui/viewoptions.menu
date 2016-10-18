@@ -1,0 +1,472 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// options - view options
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 12
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "menu_viewoptions"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+		onOpen { conditionalScript isconnected 2 ( "uiScript MoveMenuToY menu_viewoptions 12" ) ( "uiScript MoveMenuToY menu_viewoptions 60" ) }
+		onEsc { uiScript closeFORTBackModels }
+		onClose { uiscript saveBindings; conditionalScript isconnected 2 ( "setmenufocus menubar" ) ( "setmenufocus ingame" ) }
+
+		MENUMAINRECT("Setup View")
+
+
+	SIMPLEGROUPBOX("Crosshair", 15, 28, 585, 90)
+
+	itemDef {
+		name		"xhairsize"
+		type		ITEM_TYPE_MULTI
+		rect		225 53 150 13
+		textalign 	ITEM_ALIGN_AUTO
+		textalignx	60
+		textaligny	10
+		text		"Crosshair Size:"
+		textscale	.25
+		cvar		cg_crosshairSize
+		cvarFloatList   { "Tiny" 24 "Small" 32 "Medium" 48 "Large" 64 "Huge" 96 }
+		tooltip		"Set the size of the in-game crosshair" 
+		visible		1
+	}
+
+	itemDef {
+		name		"xhairsample"
+		rect		520 48 64 64
+		style		WINDOW_STYLE_FILLED
+		ownerdraw	UI_CROSSHAIR
+		backcolor	.5 .5 .5 .8
+		border		WINDOW_BORDER_FULL
+		bordercolor	.7 .7 .7 1
+		visible		1
+		tooltip		"Click here to change crosshair design"		
+		
+		mouseEnter { setitemcolor "xhairsample" bordercolor .9 .9 .9 1}
+
+		mouseExit { setitemcolor "xhairsample" bordercolor .7 .7 .7 1}
+	}
+
+	itemDef {
+		name		"xhairprimcolor"
+		type		ITEM_TYPE_MULTI
+		rect		15 71 140 15
+		textalign	ITEM_ALIGN_AUTO
+		textalignx	60
+		textaligny	10
+		text		"Primary Color:"
+		textscale	.25
+		cvar		cg_crosshairColor
+		cvarStrList   { "White"; "white"; "Yellow"; "yellow"; "Red"; "red"; "Green"; "green"; "Blue"; "blue"; "Magenta"; "magenta"; "Cyan"; "cyan"; "Orange"; "orange"; "Light Blue"; "0xa0c0ff"; "Medium Blue"; "mdblue"; "Light Red"; "0xffc0a0"; "Medium Red"; "mdred"; "Light Green"; "0xa0ffc0"; "Medium Green"; "mdgreen"; "Dark Green"; "dkgreen"; "Medium Cyan"; "mdcyan"; "Medium Yellow"; "mdyellow"; "Medium Orange"; "mdorange"; "Light Grey"; "ltgrey"; "Medium Grey"; "mdgrey"; "Dark Grey"; "dkgrey"; "Black"; "black" }
+		tooltip		"Select the colour of the primary chrosshair"
+		visible		1
+	}
+
+	itemDef {
+		name		"xhairaltcolor"
+		type		ITEM_TYPE_MULTI
+		rect		15 90 140 15
+		textalign	ITEM_ALIGN_AUTO
+		textalignx	60
+		textaligny	10
+		text		"Alternate Color:"
+		textscale	.25
+		cvar		cg_crosshairColorAlt
+		cvarStrList   { "White"; "white"; "Yellow"; "yellow"; "Red"; "red"; "Green"; "green"; "Blue"; "blue"; "Magenta"; "magenta"; "Cyan"; "cyan"; "Orange"; "orange"; "Light Blue"; "0xa0c0ff"; "Medium Blue"; "mdblue"; "Light Red"; "0xffc0a0"; "Medium Red"; "mdred"; "Light Green"; "0xa0ffc0"; "Medium Green"; "mdgreen"; "Dark Green"; "dkgreen"; "Medium Cyan"; "mdcyan"; "Medium Yellow"; "mdyellow"; "Medium Orange"; "mdorange"; "Light Grey"; "ltgrey"; "Medium Grey"; "mdgrey"; "Dark Grey"; "dkgrey"; "Black"; "black" }
+		tooltip		"Select the colour of the alternate chrosshair"
+		visible		1
+	}
+
+	itemDef {
+		name 		"xhairprimalpha"
+		rect 		375 71 150 15
+		type 		ITEM_TYPE_SLIDER
+		text 		"Primary Transparancy:"
+		textalign	ITEM_ALIGN_RIGHT
+		textalignx 	0
+		textaligny 	12
+		textscale 	.25
+		visible 	MENU_TRUE
+		cvarfloat 	"cg_crosshairAlpha" 1 0 1
+		tooltip 	"Transparancy level of primary crosshair"
+	}
+
+	itemDef {
+		name 		"xhairaltalpha"
+		rect 		375 90 150 15
+		type 		ITEM_TYPE_SLIDER
+		text 		"Alternate Transparancy:"
+		textalign	ITEM_ALIGN_RIGHT
+		textalignx 	0
+		textaligny 	12
+		textscale 	.25
+		visible 	MENU_TRUE
+		cvarfloat 	"cg_crosshairAlphaAlt" 1 0 1
+		tooltip 	"Transparancy level of alternate crosshair"
+	}
+
+// end crosshair
+
+	SIMPLEGROUPBOX("View Options", 15, 123, 585, 264)
+
+    	itemDef {
+	      	rect		30 144 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Friendly Crosshair"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_friendlyCrosshair
+		visible		1
+		tooltip		"Change crosshair colour to indicate teammates"
+	}
+
+	itemDef {
+		rect		30 161 110 15
+		type		ITEM_TYPE_CHECKBOX
+		textalignx	1
+		textaligny	14
+		text		"Show health in crosshair"
+		textscale	.25
+		cvar		cg_crosshairHealth
+		tooltip		"Crosshair colour will represent health" 
+		visible		1
+	}
+
+    	itemDef {
+	      	rect		30 178 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Low Effects"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_lowEffects
+		visible		1
+		tooltip		"Increase your framerate by using fewer effects"
+	}
+
+    	itemDef {
+	      	rect		30 195 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Draw Visual Aids"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_visualAids
+		visible		1
+		tooltip		"Draw icons corresponding to sounds or events"
+	}
+
+    	itemDef {
+	      	rect		30 212 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Draw Panels"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_drawPanel
+		visible		1
+		tooltip		"Draw in-game panels (eg scoreboards)"
+	}
+
+    	itemDef {
+	      	rect		30 229 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Impact Vibrations"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_impactVibration
+		visible		1
+		tooltip		"Shake the screen when big impacts occur"
+	}
+
+    	itemDef {
+	      	rect		30 246 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"No 3D Explosions"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_no3DExplosions
+		visible		1
+		tooltip		"Don't use 3D effects for explosions"
+	}
+
+    	itemDef {
+	      	rect		30 263 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Visual Grenade Timer 1"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_showGrenadeTimer1
+		visible		1
+		tooltip		"Show visual timer for grenade 1"
+	}
+
+    	itemDef {
+	      	rect		30 280 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Visual Grenade Timer 2"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_showGrenadeTimer2
+		visible		1
+		tooltip		"Show visual timer for grenade 2"
+	}
+
+    	itemDef {
+	      	rect		30 297 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Sniper Dot Colors"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_sniperDotColors
+		visible		1
+		tooltip		"Color sniper dots with teamcolours"
+	}
+
+    	itemDef {
+	      	rect		30 314 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Draw Speed"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_drawSpeedometer
+		visible		1
+		tooltip		"Displays your current speed on the HUD"
+	}
+
+    	itemDef {
+	      	rect		30 331 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Show FPS"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_drawfps
+		visible		1
+		tooltip		"Displays your current FPS on the HUD"
+	}
+
+    	itemDef {
+	      	rect		30 348 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Show Timer"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_drawTimer
+		visible		1
+		tooltip		"Displays the current game timer on the HUD"
+	}
+
+    	itemDef {
+	      	rect		30 365 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Identify Attacker"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_drawAttacker
+		visible		1
+		tooltip		"Displays your most recent attacker on the HUD"
+	}
+
+   	itemDef {
+	      	rect		420 144 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Draw Flares"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_flares
+		visible		1
+		tooltip		"Pretty sunflares, switch off to increase FPS"
+	}
+
+    	itemDef {
+	      	rect		420 161 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Low Quality Sky"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		r_fastsky
+		visible		1
+		tooltip		"Reduces sky quality to gain FPS"
+	}
+
+   	itemDef {
+	      	rect		420 178 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Draw Simple Items"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_simpleItems
+		visible		1
+		tooltip		"Replace some models with 2D sprites to save FPS"
+	}
+
+   	itemDef {
+	      	rect		420 194 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Draw Team Markers"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_drawFriend
+		visible		1
+		tooltip		"Places a marker over teammates"
+	}
+
+   	itemDef {
+	      	rect		420 212 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Identify Targets"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_drawCrosshairNames
+		visible		1
+		tooltip		"Show name of person in your crosshairs"
+	}
+
+   	itemDef {
+	      	rect		420 229 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Dynamic Lights"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		"r_dynamiclight"
+		visible		1
+		tooltip		"Enable dynamic lighting"
+	}
+
+    	itemDef {
+	      	rect		420 246 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Use single chatbox"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_mergemm2
+		visible		1
+		tooltip		"Put all chatmessages in one location"
+	}
+
+    	itemDef {
+	      	rect		420 263 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Show Sentry Cam"
+		textscale	.25
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		cg_showSentryCam
+		visible		1
+		tooltip		"Shows an engineer what his sentry sees"
+	}
+
+
+
+// --- non-checkbox options
+
+		itemDef {
+			visible 	MENU_TRUE
+			type		ITEM_TYPE_SLIDER
+			rect		420 314 140 15
+			textalign	ITEM_ALIGN_RIGHT
+			textalignx	0
+			textaligny	15
+			text		"Ejecting Brass:"
+			textscale	.25
+			cvarfloat	"cg_brassTime" 2500 0 2500
+			scale 1
+			backcolor 	.5 .5 .5 .25
+			tooltip		"How long to show the shells ejected from your weapon" 
+			visible		1
+		}
+
+	    	itemDef {
+		      	rect		420 331 140 15
+			type		ITEM_TYPE_SLIDER
+			text		"Atmospheric Effects:"
+			textscale	.25
+			textalign	ITEM_ALIGN_RIGHT
+			textalignx	0
+			textaligny	15
+			visible 	MENU_TRUE
+			cvarfloat	"cg_atmosphericEffects" 10 0 10
+			scale		10
+			backcolor 	.5 .5 .5 .25
+			tooltip		"The strength of effects like snow, rain"
+		}
+ 
+		itemDef {
+			rect 		420 348 140 15
+			type 		ITEM_TYPE_SLIDER
+			text 		"Wallmark time:"
+			textalign	ITEM_ALIGN_RIGHT
+			textalignx 	0
+			textaligny 	15
+			textscale 	.25
+			visible 	MENU_TRUE
+			cvarfloat 	"cg_markTime" 20000 0 50000
+			scale 		1
+			backcolor 	.5 .5 .5 .25
+			tooltip 	"How long wallmarks are shown for"
+		}
+
+		itemDef {
+			rect 		420 365 140 15
+			type 		ITEM_TYPE_SLIDER
+			text 		"Sniper Dot Scale:"
+			textalign	ITEM_ALIGN_RIGHT
+			textalignx 	0
+			textaligny 	15
+			textscale 	.25
+			visible 	MENU_TRUE
+			cvarfloat 	"cg_sniperDotScale" 2 1 3
+			scale 		10
+			backcolor 	.5 .5 .5 .25
+			tooltip 	"Size of the sniper dot"
+		}
+
+	}
+}

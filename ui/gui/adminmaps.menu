@@ -1,0 +1,255 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Admin Maps
+	//
+
+	#define MENU_X 67
+	#define MENU_Y 93
+	#define MENU_WIDTH 504
+	#define MENU_HEIGHT 330 
+
+	#define MENU_NAME "men_map"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+
+		onOpen { uiScript loadArenas men_map }
+		onEsc { uiScript closeFORTBackModels }
+		onClose { setmenufocus ingame }
+
+		MENUMAINRECT("Admin: Maps")
+
+		SIMPLEGROUPBOX( "Select Map", 20, 36, 194, 180 )
+
+		itemDef {
+			name maplist
+    			rect 22 50 192 166
+			type ITEM_TYPE_LISTBOX
+			style WINDOW_STYLE_FILLED
+			elementwidth 170
+			elementheight 17
+			textscale .27
+			elementtype LISTBOX_TEXT
+			feeder FEEDER_ALLMAPS
+			textstyle 6
+			textalign 3
+			textaligny -2
+			forecolor .8 .8 .8 1
+			backcolor 0 0 0 1
+			outlinecolor 1 1 1 .4
+			visible 1
+			columns 1 2 170 23
+  		}
+
+
+		itemDef {
+			name "gameindexmapname"
+			visible MENU_TRUE
+			rect 20 220 192 18
+			ownerdraw UI_GAMEINDEX_MAPNAME
+			textalign ITEM_ALIGN_LEFT
+			align ITEM_ALIGN_CENTER
+			textalignx 1
+			textaligny 8
+			textscale .26
+
+			action { play "ui/sound/menu4.wav" ; 
+				 uiScript changeGameIndex }
+		}
+
+		itemDef {
+			rect 242 42 64 20
+			textalignx 64
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "Map:"
+			decoration
+			visible 1
+		}
+
+		itemDef {
+			name "adminMapEntry"
+			rect 314 40 150 20
+			textalignx 3
+			textaligny 15
+			textscale .26
+			type ITEM_TYPE_EDITFIELD
+			maxchars 15
+			cvar "hud_adminmap"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+
+			mouseEnter { setitemcolor adminMapEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor adminMapEntry backcolor .5 .5 .5 .25 }
+			visible 1
+		}				
+
+		FORT_BUTTONTT(admin_RunMap, "Change Map", 18, 230, 154, 120, 28, .26, "", uiScript AdminMapChange, "Change to this map")
+
+		itemDef {
+			rect 242 76 64 20
+			textalignx 64
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "Game index:"
+			decoration
+			visible 1
+		}
+
+		itemDef {
+			name "adminGameIndexEntry"
+			rect 314 74 150 20
+			textalignx 3
+			textaligny 15
+			textscale .27
+			type ITEM_TYPE_EDITFIELD
+			maxchars 15
+			cvar "hud_admingameindex"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+
+			mouseEnter { setitemcolor adminGameIndexEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor adminGameIndexEntry backcolor .5 .5 .5 .25 }
+			visible 1
+		}				
+
+		FORT_BUTTONTT(admin_MapVote, "Map Vote", 18, 363, 154, 120, 28, .26, "", uiScript AdminMapVote, "Start a map vote")
+
+		itemDef {
+			rect 242 110 64 20
+			textalignx 64
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "Time Limit:"
+			decoration
+			visible 1
+		}
+
+		itemDef {
+			name "adminTimelimitEntry"
+			rect 314 108 50 20
+			textalignx 3
+			textaligny 15
+			textscale .27
+			type ITEM_TYPE_EDITFIELD
+			maxchars 5
+			cvar "hud_admintimelimit"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+
+			mouseEnter { setitemcolor adminTimelimitEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor adminTimelimitEntry backcolor .5 .5 .5 .25 }
+			visible 1
+		}				
+
+		FORT_BUTTONTT(admin_TimelimitSet, "Set", 18, 383, 106, 100, 28, .26, "", uiScript AdminSetTimelimit, "Set this timelimit")
+
+
+		FORT_BUTTONTT(vote_ceasefireOn,	"Ceasefire On",	18, 230, 190, 120, 28, .26, "", uiScript AdminCeaseFire On, "Turn Ceasefire on")
+		FORT_BUTTONTT(vote_ceasefireOff, "Ceasefire Off", 18, 363, 190, 120, 28, .26, "", uiScript AdminCeaseFire Off, "Turn Ceasefire off")
+
+		SIMPLEGROUPBOX("Remote Console", 20, 244, 463, 70)
+		
+		itemDef {
+			group tab_admin_items
+			rect 22 264 64 20
+			textalignx 64
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "RCON:"
+			visible 1
+			decoration
+		}
+
+		itemDef {
+			group tab_admin_items
+			name "rconEntry"
+			rect 88 262 154 20
+			textalignx 3
+			textaligny 15
+			textscale .26
+			type ITEM_TYPE_EDITFIELD
+			maxchars 15
+			cvar "hud_rconpassword"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+			visible 1
+
+			mouseEnter { setitemcolor rconEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor rconEntry backcolor .5 .5 .5 .25 }
+		}		
+		
+		itemDef {
+			group tab_admin_items
+			rect 248 264 16 16
+			decoration
+			type ITEM_TYPE_LED
+			cvar hud_rcon_auth
+			visible 1
+		}
+
+		itemDef {
+			group tab_admin_items
+			rect 22 286 64 20
+			textalignx 64
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "ADMIN:"
+			decoration
+			visible 1
+		}
+
+		itemDef {
+			group tab_admin_items
+			name "adminEntry"
+			rect 88 286 154 20
+			textalignx 3
+			textaligny 15
+			textscale .26
+			type ITEM_TYPE_EDITFIELD
+			maxchars 15
+			cvar "hud_adminpassword"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+			visible 1
+
+			mouseEnter { setitemcolor adminEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor adminEntry backcolor .5 .5 .5 .25 }
+		}		
+		
+		itemDef {
+			rect 248 288 16 16
+			decoration
+			type ITEM_TYPE_LED
+			cvar hud_admin_auth
+			visible 1
+		}
+
+		FORT_BUTTONTT(admin_Auth, "Send Password", 18, 280, 270, 152, 28, .26, "", uiScript AuthorizeClient, "Send these passwords to the server")
+
+	}
+}

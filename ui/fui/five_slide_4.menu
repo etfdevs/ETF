@@ -1,0 +1,57 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Getting started page 4
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 12
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "menu_5slide_4"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+
+		onOpen { conditionalScript isconnected 2 ( "uiScript MoveMenuToY menu_5_slide_4 12" ) ( "uiScript MoveMenuToY menu_5slide_4 60" ) }		
+		onClose { conditionalScript isconnected 2 ( "setmenufocus menubar" ) ( "setmenufocus ingame" ) }
+		onESC { uiScript closeFORTBackModels }
+
+		MENUMAINRECT("Getting Started (4/ 5)")
+
+		itemDef {
+			text "Getting Going..."
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 13
+			textscale .5
+			rect 0 40 640 20
+			decoration
+			visible MENU_TRUE
+			forecolor 0.7 0.7 0.7 1
+		}
+
+		itemDef {
+			text "You can start playing right away by selecting the Play ETF option from the\nmain menu.  This will take you into the ETF Server Browser.\n \nJust pick a server, wait for connection and play!\n \nYou will probably want to rebind your keys to ones which are more comfortable\nor familiar.  To do this hit the ESCAPE key while playing and select the\nBindings menu.\n \nIf you'd like to run an Internet, LAN or non-dedicated server for your friends\nto play on, just hit the CREATE button in the Server Browser.\n \nETF is fully customizable. All HUD, Graphics and Administration features can\nbe configured to suit your needs.  You can also write your own macros, menus\nand scripts - see the ETF Field Training Manual for more information."
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .27
+			rect 0 80 640 10
+			decoration
+			visible MENU_TRUE
+			type ITEM_TYPE_MLTEXT
+			special 13
+
+			useAssetFont
+		}
+
+		FORT_BUTTONTT(fiveslide_4_back, Back, 20, 40, 356, 102, 32, .25, "", uiScript setFORTBackModelOpenMenu menu_5slide_3, "Show previous page" )
+		FORT_BUTTONTT(fiveslide_4_next, Next, 20, 472, 356, 102, 32, .25, "", uiScript setFORTBackModelOpenMenu menu_5slide_5, "Show next page" )
+
+	}		
+}

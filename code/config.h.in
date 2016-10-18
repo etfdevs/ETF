@@ -1,0 +1,7 @@
+#ifndef __ETF_CONFIG_H__
+#define __ETF_CONFIG_H__
+
+#define BUILD_OS				"@os@"
+#define BUILD_CPU				"@cpu@"
+
+#endif

@@ -1,0 +1,471 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Findgame - Serverbrowser
+	//
+
+	#define MENU_X 10
+	#define MENU_Y 12
+	#define MENU_WIDTH 624
+	#define MENU_HEIGHT 400
+
+	#define MENU_NAME "menu_findgame"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+
+		onOpen { uiScript UpdateFilter ; setmenufocus menu_findgame }
+		onClose { uiScript StopRefresh ; setmenufocus menubar }
+		onESC { uiScript closeFORTBackModels }
+
+		MENUMAINRECT("Play Online")
+
+		// Levelshot
+		FORT_ITEM_BORDER(274, 28, 256, 64)
+
+		itemDef {
+			name "mappreview"
+			visible MENU_TRUE
+			rect 282 36 256 64
+			ownerdraw UI_NETMAPCINEMATIC
+
+			backcolor	0 0 0 0
+			style		WINDOW_STYLE_FILLED
+		}
+
+		// Server list options
+		itemDef {
+			name "netsource"
+			visible MENU_TRUE
+			rect 12 28 115 20
+			textalignx 1
+			textaligny 7
+			textscale .25
+			forecolor 1 1 1 1
+			ownerdraw UI_NETSOURCE
+
+			action { uiScript UpdateFilter }
+		}
+
+		itemDef {
+			rect 15 48 30 15
+			text	"Show:"
+			textscale	.25
+			textaligny	13
+			forecolor	1 1 1 1
+			visible		1
+			decoration
+			}
+
+	    	itemDef {
+			name	"viewEmpty"
+		      	rect	55 48 150 15
+			type	ITEM_TYPE_CHECKBOX
+			text	"Empty Servers"
+			textscale	.25
+			textalign	ITEM_ALIGN_LEFT
+			textalignx	1
+			textaligny	13
+			forecolor	1 1 1 1
+			cvar		"ui_browserShowEmpty"
+			visible		1
+			tooltip		"Show or hide empty servers"
+
+			action { uiScript RefreshFilter }
+		}
+
+	    	itemDef {
+			name	"viewFull"
+		      	rect	55 63 130 15
+			type	ITEM_TYPE_CHECKBOX
+			text	"Full Servers"
+			textscale	.25
+			textalign	ITEM_ALIGN_LEFT
+			textalignx	1
+			textaligny	13
+			forecolor	1 1 1 1
+			cvar		"ui_browserShowFull"
+			visible		1
+			tooltip		"Allows you to hide full servers"
+
+			action { uiScript RefreshFilter }
+		}
+
+	    	itemDef {
+			name	"viewPassword"
+		      	rect	55 78 130 15
+			type	ITEM_TYPE_CHECKBOX
+			text	"Password Protected"
+			textscale	.25
+			textalign	ITEM_ALIGN_LEFT
+			textalignx	1
+			textaligny	13
+			forecolor	1 1 1 1
+			cvar		"ui_browserShowPasswordProtected"
+			visible		1
+			tooltip		"Allows you to hide password protected servers"
+
+			action { uiScript RefreshFilter }
+		}
+
+	    	itemDef {
+			name	"allowRedir"
+		      	rect	15 96 150 15
+			type	ITEM_TYPE_CHECKBOX
+			text	"Allow redirect when server full"
+			textscale	.25
+			textalign	ITEM_ALIGN_LEFT
+			textalignx	1
+			textaligny	13
+			forecolor	1 1 1 1
+			cvar		"allowRedirect"
+			visible		1
+			tooltip		"Allows the server to redirect you to another server when full"
+		}
+
+
+		// Server list
+		itemDef {
+			name "serverlist_background"
+			group "svlistBck"
+			visible MENU_TRUE
+			rect 12 136 499 18
+			decoration
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "serverlist_background"
+			group "svlistBck"
+			visible MENU_TRUE
+			rect 12 172 499 18
+			decoration
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "serverlist_background"
+			group "svlistBck"
+			visible MENU_TRUE
+			rect 12 208 499 18
+			decoration
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "serverlist_background"
+			group "svlistBck"
+			visible MENU_TRUE
+			rect 12 244 499 18
+			decoration
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "serverlist_background"
+			group "svlistBck"
+			visible MENU_TRUE
+			rect 12 280 499 18
+			decoration
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "serverlist"
+			visible MENU_TRUE
+			rect 9 133 518 166
+			textaligny -3
+			textscale .27
+			type ITEM_TYPE_LISTBOX
+			elementwidth 120
+			elementheight 18
+			elementtype LISTBOX_TEXT
+			feeder FEEDER_SERVERS
+			columns 10	  16 238 40		// host
+					  254 110 14		// map
+					  364 50 10		// clients
+					  414 35 3		// ping
+					  449 0 0		// filters
+					  449 0 0		// favourites
+					  456 18 3		// pure
+					  3 16 3		// password
+					  484 0 0
+					  484 20 2		// punkbuster
+			//border WINDOW_BORDER_FULL
+			//bordercolor .5 .5 .5 1
+			forecolor 1 1 1 1
+			outlinecolor .35 .17 .15 1
+
+			doubleClick { uiScript JoinServer }
+		}
+
+		// Server list sorting tabs
+		itemDef {
+			name "serverlist_serverColumn"
+			group "grpTabs"
+			visible MENU_TRUE
+			rect 10 133 254 164
+			decoration
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+		}
+
+		itemDef {
+			name "serverlist_tab_server"
+			group "grpTabs"
+			visible MENU_TRUE
+			rect 10 114 254 20
+			text "Server Name"
+			textalignx 3
+			textaligny 15
+			textscale .27
+			type ITEM_TYPE_BUTTON
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+
+			action { uiScript ServerSort 0 ;
+				 setitemcolor grpTabs bordercolor .5 .5 .5 .5 ;
+				 setitemcolor serverlist_serverColumn bordercolor .35 .17 .15 1 ;
+				 setitemcolor serverlist_tab_server bordercolor .35 .17 .15 1 }
+		}
+
+		itemDef {
+			name "serverlist_mapColumn"
+			group "grpTabs"
+			visible MENU_TRUE
+			rect 263 133 110 164
+			decoration
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+		}
+
+		itemDef {
+			name "serverlist_tab_map"
+			group "grpTabs"
+			visible MENU_TRUE
+			rect 263 114 110 20
+			text "Map Name"
+			textalignx 3
+			textaligny 15
+			textscale .27
+			type ITEM_TYPE_BUTTON
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+
+			action { uiScript ServerSort 1 ;
+				 setitemcolor grpTabs bordercolor .5 .5 .5 .5 ;
+				 setitemcolor serverlist_mapColumn bordercolor .35 .17 .15 1 ;
+				 setitemcolor serverlist_tab_map bordercolor .35 .17 .15 1 }
+		}
+
+		itemDef {
+			name "serverlist_playersColumn"
+			group "grpTabs"
+			visible MENU_TRUE
+			rect 372 133 50 164
+			decoration
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+		}
+
+		itemDef {
+			name "serverlist_tab_players"
+			group "grpTabs"
+			visible MENU_TRUE
+			rect 372 114 50 20
+			text "#Plyrs"
+			textalignx 3
+			textaligny 15
+			textscale .27
+			type ITEM_TYPE_BUTTON
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+
+			action { uiScript ServerSort 2 ;
+				 setitemcolor grpTabs bordercolor .5 .5 .5 .5 ;
+				 setitemcolor serverlist_playersColumn bordercolor .35 .17 .15 1 ;
+				 setitemcolor serverlist_tab_players bordercolor .35 .17 .15 1 }
+		}
+
+		itemDef {
+			name "serverlist_pingColumn"
+			group "grpTabs"
+			visible MENU_TRUE
+			rect 421 133 35 164
+			decoration
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+		}
+
+		itemDef {
+			name "serverlist_tab_ping"
+			group "grpTabs"
+			visible MENU_TRUE
+			rect 421 114 35 20
+			text "Ping"
+			textalignx 2
+			textaligny 14
+			textscale .26
+			type ITEM_TYPE_BUTTON
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+
+			action { uiScript ServerSort 3 ;
+				 setitemcolor grpTabs bordercolor .5 .5 .5 .5 ;
+				 setitemcolor serverlist_pingColumn bordercolor .35 .17 .15 1 ;
+				 setitemcolor serverlist_tab_ping bordercolor .35 .17 .15 1 }
+		}
+
+		itemDef {				// purity
+			visible MENU_TRUE
+			rect 455 133 35 164
+			decoration
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+		}
+
+		itemDef {
+			visible MENU_TRUE
+			rect 455 114 35 20
+			text "Pure"
+			textalignx 2
+			textaligny 14
+			textscale .26
+			decoration
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+		}
+
+		itemDef {				// punkbuster
+			visible MENU_TRUE
+			rect 489 133 22 164
+			decoration
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+		}
+
+		itemDef {	
+			visible MENU_TRUE
+			rect 489 114 22 20
+			text "PB"
+			textalignx 1
+			textaligny 14
+			textscale .26
+			decoration
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			tooltip	"Indicates whether punkbuster is enabled on this server"
+		}
+
+
+		itemDef {
+			name "progress_background"
+			visible MENU_TRUE
+			rect 526 280 94 18
+			decoration
+			backcolor .4 0 0 .5
+			style WINDOW_STYLE_FILLED
+		}
+
+
+		itemDef {
+			name "progress bar"
+			rect 		528 282 90 14
+			decoration
+			ownerdraw 	UI_SERVERREFRESHPROGRESS
+			visible		1
+			forecolor	0 .6 0 1
+		}
+
+		itemDef {
+			text		"Searching..."
+			decoration
+			visible 	1
+			rect		532 282 70 15
+			textalignx 1
+			textaligny 12
+			textscale .25
+			forecolor 1 1 1 0.5
+		}
+
+		// Buttons
+		FORT_BUTTONTT(refreshFilter, "Refresh",      18, 529, 135, 90, 28, .23, "", uiScript RefreshFilter, "Refresh server list")
+		FORT_BUTTONTT(refreshSource, "Get New List", 18, 529, 171, 90, 28, .22, "", uiScript RefreshServers, "Update server list from master server")
+		
+		FORT_BUTTON_SPECIALTT(addfavorite, "Add Favorite", 18, 529, 207, 90, 28, .21, "", uiScript addFavorite, ownerdrawFlag UI_SHOW_NOTFAVORITESERVERS, "Manipulate the favourites list")
+		FORT_BUTTON_SPECIALTT(delfavorite, "Del Favorite", 18, 529, 207, 90, 28, .21, "", uiScript DeleteFavorite ; uiScript UpdateFilter, ownerdrawFlag UI_SHOW_FAVORITESERVERS, "Manipulate the favourites list")
+		FORT_BUTTONTT(serverinfo, "Server Info",	   18, 529, 243, 90, 28, .22, "", uiScript setFORTBackModelOpenMenu menu_serverinfo, "Show information on selected server")
+
+
+
+		FORT_BUTTONTT(btnpbenable, "Enable PB", 16, 529, 307, 90, 24, .22, "", exec pb_cl_enable, "This enables Punkbuster anti-cheat protection")
+		FORT_BUTTONTT(btnpbdisable, "Disable PB", 16, 529, 332, 90, 24, .22, "", exec pb_cl_disable, "This disables Punkbuster anti-cheat protection (requires a restart)")
+
+
+		itemDef {
+			name 		"password"
+			visible 	MENU_TRUE
+			rect 		517 360 80 15
+			textalignx 	5
+			textaligny 	10
+			textscale 	.24
+			text 		"Server password:"
+			decoration
+		}
+
+		itemDef {
+			name 		"passwordEntry"
+			visible 	MENU_TRUE
+			rect 		520 374 95 20
+			textalignx 	5
+			textaligny 	14
+			textscale 	.22
+			type 		ITEM_TYPE_EDITFIELD
+			maxchars 	15
+			cvar 		"password"
+			backcolor 	.5 .5 .5 .25
+			style 		WINDOW_STYLE_FILLED
+			border 		WINDOW_BORDER_FULL
+			bordercolor 	.5 .5 .5 .5
+			text		""
+
+			mouseEnter { setitemcolor passwordEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor passwordEntry backcolor .5 .5 .5 .25 }
+		}
+
+		SIMPLEGROUPBOX("Player List ( Name, Score, Ping )", 10, 306, 480, 86)
+
+		itemDef {
+			name "playerlist"
+			visible MENU_TRUE
+			rect 14 322 476 68
+			textaligny -2
+			textscale .25
+			type ITEM_TYPE_LISTBOX
+			elementwidth 120
+			elementheight 16
+			elementtype LISTBOX_TEXT
+			feeder FEEDER_SERVER_PLAYERS
+			columns 3	  0 370 50		// player name
+					372  35  3		// score
+					410  35  3		// ping
+			//border WINDOW_BORDER_FULL
+			//bordercolor .5 .5 .5 1
+			forecolor 1 1 1 1
+			outlinecolor .35 .17 .15 1
+			backcolor .5 .5 .5 .2
+			style WINDOW_STYLE_FILLED
+
+		}
+
+
+	}
+}

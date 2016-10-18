@@ -1,0 +1,202 @@
+[Edit QAChangeLog|http://www.splashdamage.com/golliwog/wiki/index.php?edit=QAChangeLog]
+
+Beta 2 Build 25
+---------------
+* Fixed recon being able to use scanner in ceasefire and while dead.
+
+< GAP IN DONE LIST, FIND OUT WHAT CHANGED :) >
+
+Beta 2 Build 24
+---------------
+* Removed 'cg_vieworgheight' cvar.
+* Moved teamcolouring to skin.colours files in the classes directories.
+* Added 'ui_ingameMenuFiles' which sets the path to the ingame menu root file.
+* Fixed font loading on macs.
+* Fixed 'misc_particlesystem' not working under certain circumstances.
+* Fixed several bugs related to server uptimes of over 11 days (this relates to an instance of the agent bug, the sticky flag bug and certain auth problems). Servers likely will still have problems when they are running for more than 24 days, but this is an engine bug.
+* Fixed teamcolouring to work in vertexlight.
+* Changed visual effect of stun grenade on a player's view.
+* Added obituary filter to mm1 box (cg_filterObituaries).
+* Added sentrycam toggle (cg_drawSentrycam).
+* Fixed colour not wrapping on autoalign components on the hud (mm1, mm2 etc) still may be borked for >2 lines fsr.
+* Added ui-side player model loading.
+* Added classinfo requesting to the client, to allow new class menu to update properly.
+* Added text alert to new class menu, stating reason class is unavailable.
+* Changed stat bars on new class menu to remember old value and scale from there.
+* Added current class number / max class numbers to new class menu.
+* Started implementation of hudScript code [HIDE|SHOW] currently only commands.
+* Fixed console control being lost at various points in the game.
+* Fixed crosshair names not being colour coded.
+* Fixed old class menu numbers being offset and missing engineer.
+* Increased size limit on address/name in favourites menu.
+* Added some more visual alerts.
+* Added echo_q3f command.
+* Reinstated old class config cvar, when set to 0, other individual values will be used.
+* Reworked messagemodeX_q3f to work thru the ui, making shift etc all work correctly once more.
+* Decreased stun grenade radius by 10%.
+* Fixed sticky ground bunnyhopping bug.
+* Fixed give 'fire' in map entities.
+* Added 'clientstats' criteria to map entities.
+* Added 'watch', 'watchrange' and spawnflags CANSEEVICTIM, CANSEEATTACKER and WATCHRANGEFROMVICTIM to 'misc_onkill'.
+* Fixed viewing client in thirdperson while being gassed causing a wrongly build up player.
+
+Beta 2 Build 23
+---------------
+(this build didn't contain any new code)
+
+Beta 2 Build 22
+---------------
+* Fixed disconnect issue where a player would get given a bad torso animation on spawn.
+* Fixed a crash where the client was processing events before everything was initialized.
+
+Beta 2 Build 21
+---------------
+* Fixed bug allowing overflows of the chatbuffer.
+* Fixed exploit in relation to 'cg_bobup'.
+* Fixed -1 wait time for no return on movers.
+* Added two visual grenade timers, 'cg_showGrenadeTimer1' and 'cg_showGrenadeTimer2'.
+* Made hud components sticky in edithud mode (hold shift to disable).
+* Added visual aids for the hard of hearing, use 'cg_visualAids' to enable.
+* Added new scoreboard.
+* Added error dialog to FUI.
+* Implemented misc ui/hud tweaks/fixes.
+* Changed ingame menus to match the rest of the HUD.
+* Fixed health- and ammobar being able to display negative values.
+* Implemented new playermodel, skin and audio loading.
+* Implemented new animation system based on F2R.
+* Fixed the give keyword on entities in relation to flames.
+* Implemented new scoreboard.
+* Added 'misc_matchtimer' entity.
+* Added 'target_blackhole' entity.
+* Setting a 'func_commandpoint' to invisible now resets it.
+* Added animation based particle effects.
+* Added cvar limitting, several cheatable cvars are now limitted to an upper and lower value.
+* Fixed 'players_<colour>' cvar values.
+* Added base of esc menu, class selection mostly functional.
+* Chat now uses messagemode_q3f, messagemode2_q3f, messagemode3_q3f and messagemode4_q3f.
+* 'r_maxpolys' and 'r_maxpolyverts' now default to 1800 and 9000 resp.
+* Added soundlinks (.slnk files) to redirect audio load paths.
+* Fixed bug where panel entities didn't work with VM's.
+* Cleaned up VM compiles.
+
+Beta 2 Build 20
+---------------
+* Fixed bug with collision detection prediction on supplystations causing big FPS hits.
+* Fixed bug in 'r_shownormals' and 'r_showtris' detection.
+* Fixed bug with twosided panels not showing properly under certain angles.
+* Fixed supplystation model hovering above floor.
+* Implemented configuration menus in FUI.
+* Implemented Favourites menu in FUI.
+* Fixed stun grenade causing removal of aircontrol after jump (yes - really fixed this time).
+
+Beta 2 Build 19
+---------------
+* Fixed flamethrower not firing properly while moving.
+* Fixed match time counter to indicate time properly.
+* Fixed 'cg_loweffects' not disabling missile smoketrails.
+* Changed 'com_blood' cvar to disable painflash while set to 0.
+* Fixed stun grenade causing removal of aircontrol after jump.
+* Removed grenade throw acknowledgment code causing delays before throwing grenades.
+* Adjusted sentry behaviour.
+* Tweaked supplystation display.
+
+Beta 2 Build 18
+---------------
+* Fixed bug where flamethrower didn't fire when players feet were under water.
+* Added possibility to strafe on ladders.
+* Added water splashes to grenades and dropped items.
+* Added 'acceldir', 'animshaders' and 'worldlight' commands to Spirit.
+* Added animation support to F2R.
+* Fixed bug that caused'func_damage' entity to malfunction.
+* Added 'dumpspeaker' command and soundscripts.
+* Fixed stun effect.
+* Fixed dispenser not working.
+* Fixed sentry splashdamage bug on rocket hits.
+* Fixed sentry tracking range bug.
+* Increased travelling speed of railgun projectiles by 30%.
+* Increased damage of periodical flame-hits (when being on fire) from 2 to 3.
+* Added startup and shutdown animation to sentrycam.
+* Added static to sentrycam when it's health drops.
+* Added damage indicator flash.
+* Fixed bug with crosshair shaders causing 'cg_crosshairHealth' to malfunction.
+* Added 'cg_friendlyCrosshair', if enabled it turns the crosshair green when placed over a friendly player (or disguised agent). Defaults to 1.
+* Changed gasp sound that plays when player has been underwater to only play if the player has been underwater for longer than 3 seconds.
+* Fixed timer in new hud displaying wrong time.
+* Changed supplystation to allow multiple people to use it at the same time.
+* Changed sentrygun to precache during media loading time.
+* Implemented new supplystation model, including popup and retract animations.
+* Added interactive panels to supplystation.
+* Added 'create server' menu.
+* Implemented new explosion effects.
+
+Beta 2 Build 17
+---------------
+* Fixed bug causing no more than 8 players to be on server.
+
+Beta 2 Build 16
+---------------
+* Fixed bug causing failing teamswitches to still count for team switching delay.
+* Changed position of nailspawn slightly, so it doesn't look anymore like it's coming from the players head.
+* Added 'scaleabsmax' command to Spirit.
+* Added 'tagspawn' command to F2R.
+
+Beta 2 Build 15
+---------------
+* Ported Q3F to 1.29h sourcebase, including a number of new baseq3 features.
+* Fixed a crashbug in maploading.
+
+Beta 2 Build 11
+---------------
+* Fixed bug with calculation of the dimensions and location of the sentrycam.
+* Fixed bug where nails fired close to solids had a wrong knockback angle.
+* Fixed bug causing players not to gib in any case by damage done by entities.
+* Fixed bug causing the 'func_explosion' entity not to emit light on explosion.
+* Fixed bug causing the damage parameter for the give entity command to malfunction.
+* Tweaked flamethrower and added new flame effect.
+* Added knockback to napalm cannon.
+* Added 'simpleshader' key to goalitems/goalinfos for alternative rendering under cg_simpleitems 1.
+* Added 'disguisecriteria' flag to allow disguised agents to trigger ents based on disguise.
+* Changed flashgrenade so that if you are longer fully blinded, this to work around hardware dependant alpha blending.
+* Fixed a bug with models in Spirit not aligning to the viewaxis when no angles properties were set.
+* Added jittering star effect that shows up around players head when stunned.
+* Added better support for color/colour/_color/_colour in entities.
+* Fixed scoreboard to read 'tied at' when all teams have the same score.
+* Ported Q3F to 1.28c sourcebase, including a number of new baseq3 features.
+* Added visibility status to agent $G token.
+* Added info_player_targetspawn for mobile spawnpoints.
+* Stopped goalitems sticking in walls.
+* Fixed out-of-sync teamed doors bug.
+* Stopped crushing movers from jamming against goalitems.
+* Added clientsided in_pvs checking for clientsided entities.
+* Added 'misc_sunflare' entity
+* Added new flamethrower effect
+* Added new minigun effects
+* Added complete new hud
+* Added zoom/sniper scope
+* Added 'misc_particlesystem' entity
+* Gameplay changes, see ftp://q3f:now4real@134.169.139.125/Beta2-Quick-Tweaks.txt
+
+Beta 2 Build 10
+---------------
+* Added sentrycam.
+* Ported Q3F to 1.27y sourcebase, including a number of new baseq3 features.
+* Added light- and lensflare rendering.
+* Added 'misc_flare' entity.
+* Fixed crash bug when nail grenade nails timed out.
+* Added countdown mode to cg_drawTimer (1 for time remaining, 2 for elapsed).
+* Added new map information format.
+* Added new server configuration format.
+* Added forcefields.
+* Added panel entities.
+* Added flat panels.
+* Fixed railgun bug where bolt was too big and clipped nearby walls.
+
+Beta 2 Build 9
+--------------
+* Fixed bug causing sentries and dispenser building to malfunction.
+* Fixed all cases of bad player models and skins showing that occured in build 8.
+* Fixed bug causing a gameindex key on powerups make those malfunction.
+* Fixed bug causing high speed movers to push players through walls.
+* Fixed bug causing the console to be not accesable and menus to malfunction after being thrown out of the game with an error.
+* Implemented anti-cheat against the q3f_flarecomp flash grenade cheat.
+* Fixed flamethrower effect not showing.

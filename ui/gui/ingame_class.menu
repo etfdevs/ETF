@@ -1,0 +1,146 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// 
+	//
+
+	#define MENU_X 107
+	#define MENU_Y 76
+	#define MENU_WIDTH 424
+	#define MENU_HEIGHT 366
+
+	#define MENU_NAME "tab_chooseclass"
+
+#define HUD_CLS_BTN( HCB_NUMBER, HCB_X_ALIGN)			\
+	itemDef {						\
+		rect 30 $evalint(42 + (30 * HCB_NUMBER )) 132 26	\
+		ownerDraw HUD_CLASS_CHOOSE_BUTTON		\
+		backcolor 1 1 1 0.5				\
+		special HCB_NUMBER				\
+		visible MENU_TRUE				\
+		decoration					\
+	}							\
+	itemDef {						\
+		rect 30 $evalint(42 + (30 * HCB_NUMBER )) 132 26	\
+		visible MENU_TRUE				\
+		ownerDraw HUD_CLASS_CHOOSE_BTNTEXT		\
+		textscale .30					\
+		textaligny 9					\
+		forecolor 1 1 1 1				\
+		textalignx HCB_X_ALIGN				\
+		useAssetFont					\
+		special HCB_NUMBER				\
+		decoration					\
+	}							\
+	itemDef {						\
+		rect 30 $evalint(42 + (30 * HCB_NUMBER )) 132 26	\
+		visible MENU_TRUE				\
+		textscale .30					\
+		textaligny 14					\
+		type ITEM_TYPE_BUTTON				\
+		action {					\
+			setCvar hud_chosenClass HCB_NUMBER ;	\
+		}						\
+	}							\
+	itemDef {						\
+		rect 180 $evalint(42 + (30 * HCB_NUMBER )) 32 26	\
+		ownerDraw HUD_CLASS_CHOOSE_BTNFLAT		\
+		backcolor 1 1 1 0.5				\
+		special HCB_NUMBER				\
+		visible MENU_TRUE				\
+		group tab_chooseclass_items			\
+		decoration					\
+	}							\
+	itemDef {						\
+		rect 180 $evalint(42 + (30 * HCB_NUMBER )) 32 26	\
+		visible MENU_TRUE				\
+		group tab_chooseclass_items			\
+		textscale .27					\
+		textaligny 9					\
+		textalignx 8					\
+		useAssetFont					\
+		textalign ITEM_ALIGN_CENTER			\
+		ownerdraw HUD_CLASS_INFO			\
+		special HCB_NUMBER				\
+	}
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+		
+		onKey 49 {						// 1
+			setCvar hud_chosenClass "0";
+		}
+		onKey 50 {
+			setCvar hud_chosenClass "1";
+		}
+		onKey 51 {
+			setCvar hud_chosenClass "2";
+		}
+		onKey 52 {
+			setCvar hud_chosenClass "3";
+		}
+		onKey 53 {
+			setCvar hud_chosenClass "4";
+		}
+		onKey 54 {
+			setCvar hud_chosenClass "5";
+		}
+		onKey 55 {
+			setCvar hud_chosenClass "6";
+		}
+		onKey 56 {
+			setCvar hud_chosenClass "7";
+		}
+		onKey 57 {						// 9
+			setCvar hud_chosenClass "8";
+		}
+		onKey 48 {						// 0
+			setCvar hud_chosenClass "9";
+		}
+		onKey 32 {						// 0
+			uiScript acceptClass;
+		}
+
+		onClose { setmenufocus ingame }
+		onESC { uiScript closeFORTBackModels }
+		onOpen { setfocus cs_accept }
+
+		MENUMAINRECT("Choose a Class")
+
+		itemDef {			
+			textscale .4
+			rect 250 37 137 274
+			ownerDraw UI_CLASS_MODEL
+			visible MENU_TRUE
+			decoration
+		}
+
+		HUD_CLS_BTN( 0, 6)
+		HUD_CLS_BTN( 1, 6)
+		HUD_CLS_BTN( 2, 6)
+		HUD_CLS_BTN( 3, 6)
+		HUD_CLS_BTN( 4, 6)
+		HUD_CLS_BTN( 5, 6)
+		HUD_CLS_BTN( 6, 6)
+		HUD_CLS_BTN( 7, 6)
+		HUD_CLS_BTN( 8, 6)
+		HUD_CLS_BTN( 9, 6)
+
+		FORT_BUTTONTT(cs_accept, Accept, 18, 250, 312, 128, 26, .30, "", uiScript acceptClass, "Play with this class")
+
+		itemDef {			
+			textscale .25
+			rect 0 350 424 16
+			forecolor 1 1 1 1
+			visible MENU_TRUE
+			decoration
+			textaligny 10
+			textalignx 212
+			textalign ITEM_ALIGN_CENTER
+			text "Hint: you can press spacebar to spawn as selected class"
+		}
+	}
+}

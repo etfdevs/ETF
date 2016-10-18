@@ -1,0 +1,164 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// 
+	//
+
+	#define MENU_X 60
+	#define MENU_Y 116
+	#define MENU_WIDTH 530
+	#define MENU_HEIGHT 276
+
+	#define MENU_NAME "tab_chooseteam"
+
+#define HUD_TEAM_BTN( HTB_NUMBER, HTB_ACTION, HTB_OWNERDRAW )			\
+	itemDef {						\
+		rect 40 $evalint(70 + (36 * HTB_NUMBER )) 158 28	\
+		ownerDraw HUD_TEAM_CHOOSE_BUTTON		\
+		backcolor 1 1 1 0.5				\
+		special HTB_NUMBER				\
+		visible MENU_TRUE				\
+		decoration					\
+	}							\
+	itemDef {						\
+		rect 40 $evalint(70 + (36 * HTB_NUMBER )) 158 28	\
+		visible MENU_TRUE				\
+		ownerDraw HUD_TEAM_CHOOSE_TEXT			\
+		textscale .26					\
+		textaligny 9					\
+		textalignx 6					\
+		forecolor 1 1 1 1				\
+		useAssetFont					\
+		special HTB_NUMBER				\
+		decoration					\
+	}							\
+	itemDef {						\
+		rect 40 $evalint(70 + (36 * HTB_NUMBER )) 158 28	\
+		visible MENU_TRUE				\
+		type ITEM_TYPE_BUTTON				\
+		special HTB_NUMBER				\
+		action { HTB_ACTION }				\
+	}							\
+	itemDef {						\
+		rect 200 $evalint(70 + (36 * HTB_NUMBER )) 50 28	\
+		visible MENU_TRUE				\
+		textalign ITEM_ALIGN_CENTER			\
+		textscale .26					\
+		textaligny 9					\
+		textalignx 8					\
+		decoration					\
+		forecolor 1 1 1 1				\
+		useAssetFont					\
+		ownerDraw HTB_OWNERDRAW				\ 
+	}
+
+
+#define HUD_FOLLOW_BTN( HFB_NUMBER, HFB_ACTION )			\
+	itemDef {						\
+		rect 260 $evalint(70 + (36 * HFB_NUMBER )) 108 28	\
+		ownerDraw HUD_TEAM_CHOOSE_BUTTON		\
+		backcolor 1 1 1 0.5				\
+		special HFB_NUMBER				\
+		visible MENU_TRUE				\
+		decoration					\
+	}							\
+	itemDef {						\
+		rect 260 $evalint(70 + (36 * HFB_NUMBER )) 108 28	\
+		visible MENU_TRUE				\
+		ownerDraw HUD_FOLLOW_TEXT			\
+		textscale .26					\
+		textaligny 9					\
+		textalignx 10					\
+		forecolor 1 1 1 1				\
+		useAssetFont					\
+		special HFB_NUMBER				\
+		decoration					\
+	}							\
+	itemDef {						\
+		rect 260 $evalint(70 + (36 * HFB_NUMBER )) 108 28	\
+		visible MENU_TRUE				\
+		type ITEM_TYPE_BUTTON				\
+		special HFB_NUMBER				\
+		action { HFB_ACTION }				\
+		tooltip "Spectate this team from a players point of view"	\
+	}
+
+#define HUD_CHASE_BTN( HFB_NUMBER, HFB_ACTION )			\
+	itemDef {						\
+		rect 380 $evalint(70 + (36 * HFB_NUMBER )) 108 28	\
+		ownerDraw HUD_TEAM_CHOOSE_BUTTON		\
+		backcolor 1 1 1 0.5				\
+		special HFB_NUMBER				\
+		visible MENU_TRUE				\
+		decoration					\
+	}							\
+	itemDef {						\
+		rect 380 $evalint(70 + (36 * HFB_NUMBER )) 108 28	\
+		visible MENU_TRUE				\
+		ownerDraw HUD_CHASE_TEXT			\
+		textscale .26					\
+		textaligny 9					\
+		textalignx 10					\
+		forecolor 1 1 1 1				\
+		useAssetFont					\
+		special HFB_NUMBER				\
+		decoration					\
+	}							\
+	itemDef {						\
+		rect 380 $evalint(70 + (36 * HFB_NUMBER )) 108 28	\
+		visible MENU_TRUE				\
+		type ITEM_TYPE_BUTTON				\
+		special HFB_NUMBER				\
+		action { HFB_ACTION }				\
+		tooltip "Spectate this team from an external view"	\
+	}
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+		
+		onKey 65  { uiscript ExecText "team auto"; uiScript closeFORTBackModels; close ingame }		// A
+		onKey 97  { uiscript ExecText "team auto"; uiScript closeFORTBackModels; close ingame }		// a
+		onKey 49 { uiscript ExecText "team red"; uiScript closeFORTBackModels; close ingame }		// 1
+		onKey 50  { uiscript ExecText "team blue"; uiScript closeFORTBackModels; close ingame }		// 2
+		onKey 51  { uiscript ExecText "team yellow"; uiScript closeFORTBackModels; close ingame }	// 3
+		onKey 52  { uiscript ExecText "team green"; uiScript closeFORTBackModels; close ingame }	// 4
+		onKey 53  { uiscript ExecText "team auto"; uiScript closeFORTBackModels; close ingame }		// 5
+		onKey 54  { uiscript ExecText "startspectate" ; uiScript closeFORTBackModels ; close ingame }	// 6
+		onKey 102  { uiscript ExecText "startspectate" ; uiScript closeFORTBackModels ; close ingame }	// f
+		onKey 70  { uiscript ExecText "startspectate" ; uiScript closeFORTBackModels ; close ingame }	// F
+
+
+		onClose { setmenufocus ingame }
+		onESC { uiScript closeFORTBackModels }
+
+		MENUMAINRECT("Select a team to join, or simply spectate this game")
+
+		SIMPLEGROUPBOX("Join a team", 30, 30, 208, 225 )
+
+		FORT_BUTTONTT(team_autoTeam, "A. Auto Join", 18, 40, 60, 188, 28, .26, "", uiScript ExecText "team auto" ; uiScript closeFORTBackModels ; close ingame, "Automatically join a team")
+
+		HUD_TEAM_BTN(1, uiScript ExecText "team red"; uiScript closeFORTBackModels; close ingame, CG_RED_TEAMCOUNT )
+		HUD_TEAM_BTN(2, uiScript ExecText "team blue"; uiScript closeFORTBackModels; close ingame, CG_BLUE_TEAMCOUNT)
+		HUD_TEAM_BTN(3, uiScript ExecText "team yellow"; uiScript closeFORTBackModels; close ingame, CG_YELLOW_TEAMCOUNT)
+		HUD_TEAM_BTN(4, uiScript ExecText "team green"; uiScript closeFORTBackModels; close ingame, CG_GREEN_TEAMCOUNT)
+
+
+		SIMPLEGROUPBOX("Spectate (1st or 3rd person)", 250, 30, 248, 225 )
+
+		FORT_BUTTONTT(team_specfree, "F. Freeflight", 18, 260, 60, 228, 28, .26, "", uiScript ExecText "startspectate" ; uiScript closeFORTBackModels ; close ingame, "Spectate whilst moving around freely")
+
+		HUD_FOLLOW_BTN(1, uiScript ExecText "follow red"; uiScript closeFORTBackModels; close ingame)
+		HUD_FOLLOW_BTN(2, uiScript ExecText "follow blue"; uiScript closeFORTBackModels; close ingame)
+		HUD_FOLLOW_BTN(3, uiScript ExecText "follow yellow"; uiScript closeFORTBackModels; close ingame)
+		HUD_FOLLOW_BTN(4, uiScript ExecText "follow green"; uiScript closeFORTBackModels; close ingame)
+
+		HUD_CHASE_BTN(1, uiScript ExecText "chase red"; uiScript closeFORTBackModels; close ingame)
+		HUD_CHASE_BTN(2, uiScript ExecText "chase blue"; uiScript closeFORTBackModels; close ingame)
+		HUD_CHASE_BTN(3, uiScript ExecText "chase yellow"; uiScript closeFORTBackModels; close ingame)
+		HUD_CHASE_BTN(4, uiScript ExecText "chase green"; uiScript closeFORTBackModels; close ingame)
+		
+	}
+}

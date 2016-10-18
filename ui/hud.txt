@@ -1,0 +1,9 @@
+// hud menu defs
+
+{
+
+	loadMenu { "ui/hud/default/medium/hud.menu" }
+	loadMenu { "ui/hud/standard/scoreboard.menu" }
+	loadMenu { "ui/hud/standard/menus.menu" }
+	loadMenu { "ui/hud/standard/infoscreen.menu" }
+}

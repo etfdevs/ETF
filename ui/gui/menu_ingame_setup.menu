@@ -1,0 +1,30 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Ingame Menu - Setup
+	//
+
+	#define MENU_X 154
+	#define MENU_Y 48
+	#define MENU_WIDTH 98
+	#define MENU_HEIGHT 80
+
+	#define MENU_NAME "menu_ingame_setup"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		POPUPMENUSTYLE
+		outOfBoundsClick
+
+		POPUPMENUBGINGAME
+		POPUPMENUBORDERSINGAME
+
+		POPUPMENUITEM(10, 0, "Options", "setupgen", menu_options)
+		POPUPMENUITEM(10, 15, "View", "setupview", menu_viewoptions)
+		POPUPMENUITEM(10, 30, "Controls", "contrls", menu_controls)
+		POPUPMENUITEM(10, 45, "System", "system", menu_system)
+		POPUPMENUITEM(10, 60, "Select HUD", "selhud", menu_selecthud)
+
+}

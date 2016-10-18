@@ -1,0 +1,31 @@
+Import qw ( CC CFLAGS LDFLAGS LIBS BASEDIR );
+
+$env = new cons (
+    CC => $CC,
+    LDFLAGS => $LDFLAGS,
+    CFLAGS => "$CFLAGS -DGAMEDLL -DUI_EXPORTS",
+    LIBS => $LIBS
+);
+
+Link 'build_ui' => $BASEDIR;
+
+@FILES = qw (
+  build_ui/code/game/bg_misc.c
+  build_ui/code/game/bg_q3f_info.c
+  build_ui/code/game/bg_q3f_playerclass.c
+  build_ui/code/game/q_math.c
+  build_ui/code/ui_new/ui_atoms.c
+  build_ui/code/ui_new/ui_gameinfo.c
+  build_ui/code/ui_new/ui_main.c
+  build_ui/code/ui_new/ui_players.c
+  build_ui/code/ui_new/ui_q3f_f2r.c
+  build_ui/code/ui_new/ui_shared.c
+  build_ui/code/ui_new/ui_util.c
+  build_ui/code/api/et/q_shared.c
+  build_ui/code/api/et/ui_syscalls.c
+  );
+
+$FILESREF = \@FILES;
+
+Program $env 'ui.mp.i386.so', @$FILESREF;
+

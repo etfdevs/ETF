@@ -1,0 +1,222 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Know your role
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 12
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define HB_Y	328
+	#define HEALTH_BLOCK(NUM) \
+		itemDef {						\
+			rect $evalint(64 + ( NUM * 13 )) HB_Y 12 12	\
+			ownerDraw HUD_CLASS_STAT_HEALTH			\
+			visible MENU_TRUE				\
+			decoration					\
+			special NUM					\
+			forecolor 0 0.8 0 0.8				\
+			backcolor 0.5 0.5 0.5 0.8			\					
+		}
+
+	#define AB_Y	341
+	#define ARMOUR_BLOCK(NUM) \
+		itemDef {						\
+			rect $evalint(64 + ( NUM * 13 )) AB_Y 12 12	\
+			ownerDraw HUD_CLASS_STAT_ARMOUR			\
+			visible MENU_TRUE				\
+			decoration					\
+			special NUM					\
+			forecolor 0 0.8 0 0.8				\
+			backcolor 0.5 0.5 0.5 0.8			\					
+		}
+
+	#define SB_Y	354
+	#define SPEED_BLOCK(NUM) \
+		itemDef {						\
+			rect $evalint(64 + ( NUM * 13 )) SB_Y 12 12	\
+			ownerDraw HUD_CLASS_STAT_SPEED			\
+			visible MENU_TRUE				\
+			decoration					\
+			special NUM					\
+			forecolor 0 0.8 0 0.8				\
+			backcolor 0.5 0.5 0.5 0.8			\					
+		}
+
+	#define HUD_CLS_BTN( HCB_NUMBER, HCB_TEXT, HCB_X_ALIGN)	\
+		itemDef {						\
+			rect 465 $evalint(76 + (28 * HCB_NUMBER )) 128 24	\
+			ownerDraw HUD_CLASS_CHOOSE_BTN			\
+			backcolor 1 1 1 0.5				\
+			special HCB_NUMBER				\
+			visible MENU_TRUE				\
+			decoration					\
+		}							\
+		itemDef {						\
+			rect 465 $evalint(76 + (28 * HCB_NUMBER )) 128 24	\
+			visible MENU_TRUE				\
+			text HCB_TEXT					\
+			textscale .30					\
+			textaligny 18					\
+			textalignx HCB_X_ALIGN				\
+			useAssetFont					\
+			type ITEM_TYPE_BUTTON				\
+			action {					\
+				setCvar hud_chosenClass HCB_NUMBER ;	\
+				resetFeederScroll classInfoFeeder;	\
+			}						\
+		}
+
+	#define MENU_NAME "menu_yourrole"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+		
+		onOpen { conditionalScript isconnected 2 ( "uiScript MoveMenuToY menu_yourrole 12" ) ( "uiScript MoveMenuToY menu_yourrole 60" ) }
+		onEsc { uiScript closeFORTBackModels }
+		onClose {  conditionalScript isconnected 2 ( "setmenufocus menubar" ) ( "setmenufocus ingame" ) }
+
+
+		itemDef {			
+			rect 2 20 $evalint(MENU_WIDTH - 2) $evalint(MENU_HEIGHT - 20)
+			visible MENU_TRUE
+			backcolor	.4 .4 .4 .1
+			style WINDOW_STYLE_FILLED
+			decoration
+		}
+
+		MENUMAINRECT("Know Your Role")
+
+		itemDef {			
+			textscale .4
+			rect 30 45 137 274
+			ownerDraw UI_CLASS_MODEL
+			visible MENU_TRUE
+			decoration
+		}
+
+		itemDef {			
+			textscale .4
+			rect 196 56 196 96
+			ownerDraw UI_CLASS_TITLE
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+		}
+
+		itemDef {
+			name classInfoFeeder
+			visible MENU_TRUE
+			rect 196 80 260 196
+			textaligny -2
+			textscale .24
+			type ITEM_TYPE_LISTBOX
+			elementheight 14
+			elementtype LISTBOX_TEXT
+			feeder FEEDER_CLASSINFO
+			columns 1 0 240 99
+			forecolor 1 1 1 1
+
+			useAssetFont
+		}
+
+		itemDef {
+			visible MENU_TRUE
+			rect 196 276 256 100
+			ownerDraw HUD_CLASS_INV
+
+			textscale 0.27
+			textalignx 3
+			textaligny 10
+
+			decoration
+			useAssetFont
+		}
+
+		itemDef {			
+			rect 0 HB_Y 64 10
+			visible MENU_TRUE
+			text "HEALTH"
+			textscale .21
+			textalignx 64
+			textaligny 10
+			textalign ITEM_ALIGN_RIGHT
+			decoration
+			useAssetFont
+		}
+
+		HEALTH_BLOCK(0)
+		HEALTH_BLOCK(1)
+		HEALTH_BLOCK(2)
+		HEALTH_BLOCK(3)
+		HEALTH_BLOCK(4)
+		HEALTH_BLOCK(5)
+		HEALTH_BLOCK(6)
+		HEALTH_BLOCK(7)
+		HEALTH_BLOCK(8)
+		HEALTH_BLOCK(9)
+
+		itemDef {			
+			rect 0 AB_Y 64 10
+			visible MENU_TRUE
+			text "ARMOUR"
+			textscale .22
+			textalignx 64
+			textaligny 10
+			textalign ITEM_ALIGN_RIGHT
+			decoration
+			useAssetFont
+		}
+
+		ARMOUR_BLOCK(0)
+		ARMOUR_BLOCK(1)
+		ARMOUR_BLOCK(2)
+		ARMOUR_BLOCK(3)
+		ARMOUR_BLOCK(4)
+		ARMOUR_BLOCK(5)
+		ARMOUR_BLOCK(6)
+		ARMOUR_BLOCK(7)
+		ARMOUR_BLOCK(8)
+		ARMOUR_BLOCK(9)
+
+		itemDef {			
+			rect 0 SB_Y 64 10
+			visible MENU_TRUE
+			text "SPEED"
+			textscale .22
+			textalignx 64
+			textaligny 10
+			textalign ITEM_ALIGN_RIGHT
+			decoration
+			useAssetFont
+		}
+
+		SPEED_BLOCK(0)
+		SPEED_BLOCK(1)
+		SPEED_BLOCK(2)
+		SPEED_BLOCK(3)
+		SPEED_BLOCK(4)
+		SPEED_BLOCK(5)
+		SPEED_BLOCK(6)
+		SPEED_BLOCK(7)
+		SPEED_BLOCK(8)
+		SPEED_BLOCK(9)
+
+		HUD_CLS_BTN( 0, "Recon",		11)
+		HUD_CLS_BTN( 1, "Sniper",		11)
+		HUD_CLS_BTN( 2, "Soldier",		11)
+		HUD_CLS_BTN( 3, "Grenadier",		11)
+		HUD_CLS_BTN( 4, "Paramedic",		11)
+		HUD_CLS_BTN( 5, "Minigunner",	11)
+		HUD_CLS_BTN( 6, "Flametrooper",	11)
+		HUD_CLS_BTN( 7, "Agent",		11)
+		HUD_CLS_BTN( 8, "Engineer",		11)
+		HUD_CLS_BTN( 9, "Civilian",		11)
+
+	}
+}

@@ -1,0 +1,87 @@
+#include "ui/menudef.h"
+
+{
+\\ END OF GAME \\
+
+//	MEDIUM SIZE
+	#define MENU_X 108
+	#define MENU_Y 158
+	#define MENU_WIDTH 424
+	#define MENU_HEIGHT 204
+
+	#define MENU_NAME "menu_dovote"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+ 		MENUSCREENSTYLE
+		onClose { setmenufocus ingame }
+		onESC { close menu_dovote }
+
+		itemDef {
+			rect 0 0 $evalint(MENU_WIDTH) $evalint(MENU_HEIGHT)
+			style 1
+			backcolor .5 .5 .5 .2
+			visible 1
+			border 1
+			bordersize 1
+			bordercolor .4 .4 .4 0
+			decoration
+		}
+
+		MENUMAINRECT("Vote!")
+
+		itemDef {
+			rect 0 350 360 20	
+			text "Vote:"
+			textalign ITEM_ALIGN_CENTER
+			textstyle 6
+			textscale .333
+			textalignx 180
+			textaligny 23
+			forecolor 1 1 1 1
+			visible 1
+			decoration
+		}
+	
+		itemDef {
+			rect 60 80 200 170
+			textscale .3
+			textalignx 3
+			textaligny 10
+			ownerDraw HUD_VOTE_STRING
+			group tab_vote_items
+			visible MENU_TRUE
+			decoration
+		}		
+
+		itemDef {
+			visible MENU_TRUE
+			rect 110 140 180 20
+			text "Yes:"
+			decoration
+			textscale .3
+			textalignx 3
+			ownerDraw HUD_VOTE_TALLY_YES
+			group tab_vote_items
+			useAssetFont
+		}		
+		
+		itemDef {
+			visible MENU_TRUE
+			rect 282 140 180 20
+			text "No:"
+			decoration
+			textscale .3
+			textalignx 3
+			ownerDraw HUD_VOTE_TALLY_NO
+			group tab_vote_items
+			useAssetFont
+		}
+
+		FORT_BUTTONTT(VoteYes, Yes, 16, 85, 175, 92, 24, .22, "", uiScript ExecText "vote yes", "Vote Yes")
+		FORT_BUTTONTT(VoteNo, No, 16, 257, 175, 92, 24, .22, "", uiScript ExecText "vote no", "Vote No")
+	}
+}
+
+

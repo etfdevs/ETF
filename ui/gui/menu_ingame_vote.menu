@@ -1,0 +1,28 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Ingame Menu - Play
+	//
+
+	#define MENU_X 230
+	#define MENU_Y 48
+	#define MENU_WIDTH 100
+	#define MENU_HEIGHT 35
+
+	#define MENU_NAME "menu_ingame_vote"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		POPUPMENUSTYLE
+		outOfBoundsClick
+
+		POPUPMENUBGINGAME
+		POPUPMENUBORDERSINGAME
+
+		POPUPMENUITEM(10, 15, "Start Vote", "startvote", men_svote)
+		POPUPMENUITEM(10, 0, "Vote!", "vote", menu_dovote)
+	}
+}
+

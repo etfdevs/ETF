@@ -1,0 +1,656 @@
+[Edit ChangeLog|http://www.splashdamage.com/golliwog/wiki/index.php?edit=ChangeLog]
+
+2.3
+---
+* Fixed func_damage breaking over target_reset.
+
+2.2
+---
+* Readded g_gametype range checking to prevent servers running with bad gametype values.
+* Increased nail speed.
+* Increased rail projectile speed.
+* Fixed bug with explosion knockback.
+* Overhauled stun effect.
+* Increased Minigunner stun resistance.
+* Raised autosentry shock resistance slightly.
+
+2.1
+---
+* Fixed servers starting with cheats enabled by default. Servers running the advanced scripting won't be able to use devmap now.
+* Fixed minigun firing sound not playing when cg_brassTime is <= 0.
+* Added com_hunkmegs 96 to default.cfg, this should set hunkmegs properly on first run.
+* Added a more detailed error message for the hunk_alloc error.
+* Removed increased stun grenade resistance from minigunner.
+* Tweaked sniperrifle bullet-size.
+* Changed burning screams to only play when a player is on less than 25 health.
+* Fixed teamscore still increasing after timelimit has hit.
+* Fixed 'Vote Kick' on ingame menu.
+* Fixed gfx overlap on endgame menu.
+* Fixed server side configurable team names not being sent to clients.
+* Removed various redundant cvars.
+* Enforced cvar archiving in the UI.
+* Added +gren1 and +gren2 to controls menu and set in default.cfg.
+* Added a hold down scoreboard bind to the controls menu.
+* Fixed "you fragged X" messages not showing reliably.
+* Added various cvars to default.cfg and generally cleaned it up.
+* Changed record_q3f to toggle g_synchronousClients.
+* Lengthened size of various UI edit boxes.
+* Fixed invalid gameindices for map being playable.
+* Tweaked sentry spin-up time.
+* Removed cg_drawTeamOverlay as it wasn't used anymore.
+* Removed r_fastsky 1 disabling portal skies.
+* Added cg_drawSkyPortal, setting it to 0 remaps the portal skies with an alternative sky.
+* Stopped flamethrower bolts being sent over the network.
+* Removed r_gamma locking during flash.
+* Changed hitscan prediction to use antilag code.
+* Fixed endgame scoreboard (hopefully).
+* Fixed engineers being able to remotely execute build commands.
+* Fixed small bug in sentry tracking code.
+* Added time display to powerup popup.
+* Fixed various com menus typos, etc.
+* Added forcing portal skies off on PowerVR kyro, can be re-enabled by setting cg_drawSkyPortal to 2.
+* Changed userhud#.cfg to be saved in the same folder as the custom hud that is in use.
+* Added ready up match starts, set g_doWarmup 1 and g_warmup 0 for this to be used.
+* Fixed map_restart to properly use team and class settings from previous game.
+* Removed fraglimit from callvote.
+* Added ceasefire to callvote.
+* Changed melee weapons to use historical trace.
+* Added map_default.cfg support, gets executed before the normal mapconfig if cg_execMapConfigs is set to 2.
+* Changed special armour to affect knockback as well.
+* Added magic wrench. Hitting a sentry or supplystation with it now tries to upgrade, repair and resupply it.
+* Changed usage of the 'special' command for engineers. If you hit it when aiming and standing near a sentry or supplystation it now shows the menu that allows you to rotate and dismantle them.
+* Changed minigun fire rate.
+* Changed minigun base spread.
+* Tweaked sg/ssg pellet dmg/count.
+* Added extra burn to napalm cannon hits.
+* Reduced burn rate from napalm grenade.
+* Added 'Smooth Mouse' to controls menu.
+* Fixed cg_drawPanel not working properly.
+* Changed a missing sound in communications to not play at all.
+* Fixed players_green not working.
+* Fixed several discard_*_cells and discard_*_shells commands not working.
+* Fixed a few flame particles being cast when an agent fired if disguised as flametrooper with flamethrower as visible weapon.
+* Completely removed fraglimit and capturelimit from the code.
+* Changed weapon model rendering to have team coloured quad shells.
+* Fixed grenade exploding over water causing an invisible grenade to fall down and causing a watersplash.
+* Fixed cg_crosshairHealth and cg_friendlyCrosshair not working.
+* Added cg_crosshairColor, works like OSP, namely cg_crosshairColor 0xRRGGBB|<color>, where color is one out of white, black, red, green, blue, yellow, magenta, cyan, and grey. cg_crosshairHealth overrides this setting.
+* Added team member indicators, settable by using cg_drawFriend (defaults to 0). Setting it to 'team' shows the markers as the color of your team, setting it to a value following the 0xRRGGBB|<color> format allows you to set any custom color.
+* Added cg_drawFriendSize, defaults to 6. Use this to set the radius of the team member indicators (settable in a range 6-24).
+* Fixed a number of messages to colour-terminate player and team names properly.
+* Changed developer to be cheat protected.
+* Fixed admin gameindex.
+* Fixed rcon on the admin menu not working.
+* Reenabled award icons and sounds.
+* Removed icons above player showing when invisible as agent.
+* Fixed kick vote in vote menu not working.
+
+2.0
+---
+* Fixed crash when a not fully connected player gets banned.
+* Fixed bug causing bad animations to show up for disguised agents.
+* Fixed bug causing class configs to execute when in follow or chase mode.
+* Fixed bug causing 'randompc' to malfunction.
+* Added 'cg_playClassSound' cvar, when 1 a soundsample pronouncing the current classname of a player is played on classchange.
+* Now you can set 'cg_ScoreSnapshot' also to 2, in this case it will take a JPEG screenshot instead of a tga.
+* Fixed bug causing legwounds to happen to allies when friendlyfire is off.
+* Fixed player_<colour> cvar that reports to server browsers do display the correct clientnumbers.
+* Fixed bug where teamscore could be increased after timelimit had been reached.
+* Fixed bug where the speedscale of a player wasn't reset when the goalitem he was carrying is forced to inactive.
+* Fixed bug where the wrong demos were showing in the demos menu in the ui.
+* Changed weaponswitch time to 20ms from 200ms.
+* Fixed bug causing nailgrenades to be solid after they exploded visually (but weren't removed from world yet to allow nailgrens to keep flying).
+* In case a bad ID for disguised agents is detected, now no ID is displayed (kludge).
+* Fixed bug causing agents not being able to disguise anymore.
+* Fixed bug causing engineers unable to build sentries or supplystations anymore.
+* Subsequent name changes now have two second delay before being replicated to clients, most recent name change will take effect after two seconds.
+* Fixed bug causing misc_onkill and misc_onprotect entities to malfunction.
+* Fixed bug causing team balance warning to show up in invalid situations.
+* Fixed bug causing sniperrifle laserdot to remain turned on after disconnect and reconnection.
+* Fixed bug causing tranquility effect not to wear off completely at times.
+* Fixed bug causing disguising agents to show incorrect animation frames.
+* Implemented new loading system that allows to abort a maploading sequence and allows access to the console during loading.
+* Fixed bug causing bad models to show up during demo playback.
+* Fixed bug causing bad sounds to play during demo playback.
+* Fixed bug causing a gameindex key on powerups make those malfunction.
+* Fixed bug causing high speed movers to push players through walls.
+* Implemented anti-cheat against the q3f_flarecomp flash grenade cheat.
+* Added 'cg_weaponBob' cvar, disables bobbing of weapon during walking.
+* Added 'wavescale' key to the 'misc_beam' entity to be able to set the speed of the waving of a beam.
+* Added sentrycam.
+* Ported Q3F to 1.29h sourcebase, including a number of new baseq3 features.
+* Added light- and lensflare rendering.
+* Added 'misc_flare' entity.
+* Fixed crash bug when nail grenade nails timed out.
+* Added countdown mode to cg_drawTimer (1 for time remaining, 2 for elapsed).
+* Added new map information format.
+* Added new server configuration format.
+* Added forcefields.
+* Added panel entities.
+* Added flat panels.
+* Fixed railgun bug where bolt was too big and clipped nearby walls.
+* Fixed bug where nails fired close to solids had a wrong knockback angle.
+* Fixed bug causing players not to gib in any case by damage done by entities.
+* Fixed bug causing the 'func_explosion' entity not to emit light on explosion.
+* Fixed bug causing the damage parameter for the give entity command to malfunction.
+* Tweaked flamethrower and added new flame effect.
+* Added knockback to napalm cannon.
+* Added 'simpleshader' key to goalitems/goalinfos for alternative rendering under cg_simpleitems 1.
+* Added 'disguisecriteria' flag to allow disguised agents to trigger ents based on disguise.
+* Changed flashgrenade so that if you are longer fully blinded, this to work around hardware dependant alpha blending.
+* Added jittering star effect that shows up around players head when stunned.
+* Added better support for color/colour/_color/_colour in entities.
+* Fixed scoreboard to read 'tied at' when all teams have the same score.
+* Added visibility status to agent $G token.
+* Added info_player_targetspawn for mobile spawnpoints.
+* Stopped goalitems sticking in walls.
+* Fixed out-of-sync teamed doors bug.
+* Stopped crushing movers from jamming against goalitems.
+* Implemented particle system called Spirit.
+* Implemented model/media/code linking system called F2R.
+* Added clientsided in_pvs checking for clientsided entities.
+* Added 'misc_sunflare' entity.
+* Added new flamethrower effect.
+* Added new minigun effects.
+* Added complete new hud.
+* Added zoom/sniper scope.
+* Added 'misc_particlesystem' entity.
+* Fixed bug causing failing teamswitches to still count for team switching delay.
+* Added strafing capability to ladders.
+* Added water splashes to grenades and dropped items.
+* Fixed bug that caused 'func_damage' entity to malfunction.
+* Added 'dumpspeaker' command and soundscripts.
+* Fixed sentry splashdamage bug on rocket hits.
+* Added damage indicator flash, can be disabled by setting 'com_blood' to 0.
+* Fixed bug with crosshair shaders causing 'cg_crosshairHealth' to malfunction.
+* Added 'cg_friendlyCrosshair', if enabled it turns the crosshair green when placed over a friendly player (or disguised agent). Defaults to 1.
+* Changed gasp sound that plays when player has been underwater to only play if the player has been underwater for longer than 15 seconds.
+* Changed supplystation to allow multiple people to use it at the same time.
+* Changed sentrygun to precache during media loading time.
+* Implemented new supplystation model, including popup and retract animations.
+* Added interactive panels to supplystation.
+* Implemented new explosion effects.
+* Fixed bug with collision detection prediction on supplystations causing big FPS hits.
+* Fixed bug in 'r_shownormals' and 'r_showtris' detection.
+* Fixed bug allowing overflows of the chatbuffer.
+* Fixed exploit in relation to 'cg_bobup'.
+* Fixed -1 wait time for no return on movers.
+* Added two visual grenade timers, 'cg_showGrenadeTimer1' and 'cg_showGrenadeTimer2'.
+* Fixed health- and ammobar being able to display negative values.
+* Implemented new playermodel, skin and audio loading.
+* Implemented new animation system based on F2R.
+* Added 'misc_matchtimer' entity.
+* Added 'target_blackhole' entity.
+* Setting a 'func_commandpoint' to invisible now resets it.
+* Added animation based particle effects.
+* Added cvar limitting, several cheatable cvars are now limitted to an upper and lower value.
+* Fixed 'players_<colour>' cvar values.
+* Chat now uses messagemode_q3f, messagemode2_q3f, messagemode3_q3f and messagemode4_q3f.
+* Added soundlinks (.slnk files) to redirect audio load paths.
+* Fixed a crash where the client was processing events before everything was initialized.
+* Removed 'cg_vieworgheight' cvar.
+* Fixed several bugs related to server uptimes of over 11 days (this relates to an instance of the agent bug, the sticky flag bug and certain auth problems). Servers likely will still have problems when they are running for more than 24 days, but this is an engine bug.
+* Added obituary filter to mm1 box (cg_filterObituaries).
+* Added sentrycam toggle (cg_drawSentrycam).
+* Added echo_q3f command.
+* Fixed sticky ground bunnyhopping bug.
+* Fixed give 'fire' in map entities.
+* Added 'clientstats' criteria to map entities.
+* Added 'watch', 'watchrange' and spawnflags CANSEEVICTIM, CANSEEATTACKER and WATCHRANGEFROMVICTIM to 'misc_onkill'.
+* Fixed viewing client in thirdperson while being gassed causing a wrongly build up player.
+
+Beta 1h UI Fix
+--------------
+* Fixed bug with the server-browser listing non-Q3F servers in the Multiplayer Menu
+* Fixed bug that stopped the selection of demos from the explorer in the Demos Menu
+* Removes the need for a separate q3fconfig.cfg for storing configuration settings when using Q3F's menus in general.
+
+Beta 1h update
+--------------
+* Fixed bug that stopped func_train entities to proper interpolate between angles of path_corner entities.
+* Fixed bug where entities where the flag chargable also triggered ents that were disabled or invisible.
+* Added support for the criteria of the extended entity system to the misc_beam entity.
+* Fixed working of 'cg_ScoreSnapshot' so it now takes the screenshot at the right time at all times.
+* Added support for SPline Data (.spd) file reading.
+* Added FlyBy camera.
+* Ported Q3F to 1.27 sourcebase, including a number of new baseq3 features.
+* Decreased time that scoreboard is showing before map voting shows up.
+* Fixed bug in player sound precaching causing only up to 32 sounds to be precached and played.
+* Fixed bug that caused a non-initialized clientinfo for clients executing a vid_restart.
+* Fixed bug of ghostflags being visible at 0,0,0 when the flag entered the PVS but the player carrying it did not.
+* Replaced 'cg_noFallingBob' by cg_FallingBob, setting to 0 stops the bobbing on falling / jumping impact.
+* Added 'vtell_teamtarget' command.
+* Code now latches 'r_gamma' when client is flashed, to stop 'r_gamma' exploit.
+* Fixed bug in Supply Station placement code.
+* Fixed crash in PM_UpdateViewAngles.
+* Fixed several bugs concerning 'holding' and 'notholding' entity keys.
+* Fixed bug causing a frag being given instead of removed when an ally you infected dies to the disease.
+* Fixed bug allowing for people to bypass classlimits.
+* Fixed bug causing a func_train reaching a path_corner with a 'wait' key to get stuck on this point.
+* Added a new surfaceparm, 'footprints'. If set on a surface, footprints are left by a client on walking over it. Enable / disable by using 'cg_footprints'.
+* Added 'g_<colour>team' cvars containing the names of the teams. Settable by match admins for clans, and report to server browsers.
+* Nailgun and Super Nailgun now hit close-range clients.
+* Added railgun impact sound and graphical effect.
+* Fixed railgun shots not leaving a proper burnmark at certain walls.
+* Fixed negative cl_timenudge causing grenades not to throw.
+* Fixed bug causing agents to be disguised or invisible while having a goalitem with 'revealagent' set.
+* Goalitems now are not crushable and solid for moving entities as elevators and doors.
+* Fixed fading on ring of the pulse grenade.
+* Added 'cg_adjustAgentSpeed', setting to 0 makes you walk and run at default agent speed, even if disguised. (Defaults to 1)
+* Enemy buildings can now be dismantled by one engineer.
+* Added 'spectator.cfg' executing to cg_execClassConfigs usage.
+* Minigunner is now more resistant to stun grenades.
+* Decreased bounding box size of handgrenades.
+* Fixed shotgun pattern to sync client and serversided.
+* Fixed a bug in snapshot transitions.
+* Fixed directional vector used by the impact of nails spawned by a nailgrenade being wrong.
+* Tranquilizer now slows you down to factor 0.5 instead of the previous 2/3.
+* Decreased length of tranquilizer effect to 12 seconds.
+* Decreased knockback on sentry and minigun.
+* Sniper now only gets 2 flash grenades at spawn.
+* Sniper limited to 2 gren1's and 2 gren2's maximum at a time.
+* Tweaked sniperrifle damage algorithm.
+* Increased napalm rocket flying speed.
+* Hitting a gas cloud with the flamethrower, a napalm cannon explosion or the fire of a napalm grenade fumigates it.
+* Flametrooper now has full resistance against gas grenades.
+* Flametrooper has extra armour against the sniperrifle and assault armour.
+* Increased napalm rocket damage.
+* Made legwound slowdown more effective.
+* Fixed damage on every first quadded grenade thrown not being quadded.
+* Fixed bug in radiusdamage concering quadded damage.
+* Added knockback to burning damage caused by the napalm grenade.
+* Tweaked the authentication code to deal better with connection interruptions.
+* Fixed several exploits regarding sentry building.
+* Changed bounding box of nails and railgun projectiles to properly fly along walls.
+* Fixed a bug in the 'give' debug command.
+* Cleaned up the atmospheric effects code.
+* Added atmospheric snow.
+* Made g_banRules report to server browsers.
+* Fixed possible bug with flags on a fast reconnecting client that dropped due to an error.
+* Fixed a bug in regards to structure building failing.
+* Added a kickban for people using the r_showTris or r_showNormals exploits.
+* Fixed bug causing your sentry and supplystation status not being updated when a build was canceled.
+* Added 'cg_drawHudSlots' to toggle the drawing of the hud status icons. Defaults to 1.
+* Tweaked delays between grenade throwing and priming and between the throwing and priming of the next grenade.
+* Sentry now crushes people getting stuck under it.
+* Fixed bug causing sentry to end up stuck in ceilings.
+* Agent now sounds like he looks.
+* Fixed bug in credits calculations.
+* Disabled code that forced black to not be used in client names.
+* Reduced flashgrenade flashradius.
+* Added knockback to emp explosions.
+* Backpacks dropped by dying paramedics only heal you now if that player still is a medic.
+* Fixed flamethrower effects not being in sync with server, causing 'fire effect drawn but no ammo being removed' situations.
+* Paramedic now only gets 1 stungrenade at spawn.
+* Paramedic limited to 3 gren1's and 3 gren2's maximum at a time.
+* Team players now show in server browsers as players_red, players_blue, players_yellow and players_green.
+* Added 'g_agentHitBeep', setting to 1 enables the 1g type disguised agent hit-beep. Defaults to 0.
+* Autosentry can now be damaged by slime and lava.
+
+Beta 1g update
+--------------
+* Fixed bug in crc code causing a different crc value to be returned on macs.
+* Stopped spectators being able to access the special command or any other commands not meant for spectator use.
+* Fixed bug in authentication code causing auth reply from certain clients never to arrive back at server.
+* Fixed bug causing two player sounds for medium classes not being played.
+* Added 'g_banRules' to control the level of banning that's active defaults to 3.
+* Fixed bug causing a client to join an invalid team when he was on a team the previous map that doesn't exist in the next map.
+* Fixed bug where you got hurt when shooting a corpse when mirrordamage was enabled.
+* Fixed bug where you couldn't gib a corpse when mirrordamage was enabled.
+* Grayed 'Add Bot' option in ingame esc menu.
+* Stopped grenades bouncing up when a client dropped them when killed and had a primed grenade.
+* Fixed bug causing mass disconnects when a client changed his userinfo while following or chasing a client.
+* Fixed bug where DeathCleanup wasn't called on a respawn by a target_respawn.
+* Fixed bug where 'cg_ScoreSnapshot' took the screenshot before the scoreboard was drawn at times.
+
+Beta 1f update
+--------------
+* Fixed bug where you weren't able to get the megahealth or +5 health when you were already at maxhealth.
+* Fixed bug causing the 'usegauntlet' flag to be malfunctioning.
+* Added 'sv_minSnaps' (in game, not server), to prevent snaps cheating. Default 10.
+* Changed timing of executing server sided map configs, now happens before initializing of all other stuff.
+* Made sv_minrate and sv_minsnaps report to server browsers.
+* Decreased the size of the hand grenades a bit.
+* Increased shotgun and supershotgun damage a bit.
+* Syringe deals now 1 damage prior to healing a teammate. Enables "operation failed" scenarios.
+* When an infected player suicides, the paramedic who infected him now gets a frag (Unless it's an ally, then he loses 1).
+* You now also can infect enemies by walking past them if you're infected yourself.
+* Increased sniperrifle charging speed, head damage no longer armourpiercing.
+* When charging, sniper now can move less fast.
+* Increased pipe detonation delay a bit.
+* Lowered stun effect duration time and horizontal blast strength of stun explosion.
+* Lowered hallucination time, maxtime and intensity.
+* Lowered flash time duration, increased flash grenade damage a bit.
+* Added volumetric explosions, with use of a particle emitter for some more nice fx.
+* Fixed a client sided crash that would occure if you issued the 'special' command in the last seconds of the loading of a level.
+* Changed falling damage algorithm.
+* Added a new graphical flamethrower effect.
+* Implemented path_corner entities in the extended entity system.
+* Fixed a bug with the func_train where it would jump from path_corner to path_corner.
+* Fixed the 'give all' command.
+* A negative 'give' of health through a map entity now ignores armour.
+* Added a 'damage' stats to the 'give' key for map entities. Forcing this ignores armour.
+* Primed grenades now drop a little earlier and faster to allow extended velocity for handheld grenade blasts.
+* Removed the warning about g_gravity getting two different initial values.
+* Added a sound even played when a backpack or ammobox is discarded.
+* Backpacks and ammoboxes now thrown with a higher velocity, also invoking playervelocity.
+* Fixed dropflag flagthrowing.
+* Added a kickban for people using the r_lodCurveError exploit.
+* Paramedic is now longer influinced by stun and flash grenades.
+* Minigunner now recovers faster from stun grenades.
+* Increased climbing speed on ladders.
+* Lowered HE Charge set time.
+* Changed it so you allways see your own messages, prior to this you didn't hear messages you chatted to channels you weren't on.
+* Implemented core of gameindices system.
+* Tweaked hand grenade trajectory.
+* Increased generic splash damage radius.
+* Map vote screen doesn't come up now untill all players have readied themselves. Or after a specific time.
+* Made the flamethrower a bit more powerfull.
+* Speeded up healingtime for paramedic and minigunner.
+* Implemented core of gameindices system.
+* Added 'cg_no3DExplosions', setting to 1 disables all weapon 3d explosions, setting to 2 also disables the HE Charge explosion
+* Increased size of Pipes and Grenade Launcher's grenades.
+* Lowered maximum Supplystation damage.
+* When dying and having a primed grenade, the grenade now just falls to the ground instead of being tossed.
+* Added client authentication for client validation.
+* Increased default minigunner spread.
+* Fixed possibility of discarding or dropping ammoboxes during ceasefire or building of sentry or supplystation.
+* Fixed radius of pipe explosion impact mark.
+* Fixed bug where a grenade checked at explosion time if it's owner had quad, instead on trow time.
+* When an engineer issues dropammo, and he hasn't got enough ammo of the issued type, cells get converted to the needed ammotype.
+* Added Quad shell effect to quad explosions and quad bigger projectiles.
+* Fixed bug with emp grenade and weapon clips causing infinite ammo, invulnerability for sentries and sentries firing not damaging bullets.
+* Fixed a double reload when issuing the reload multiple times.
+* Added 'cg_noFallingBob', setting to 1 stops the bobbing on falling / jumping impact.
+* Fixed bug causing the 'usetarget' and 'usegive' flags to be malfunctioning.
+* Added 'useflag' command for usable func_goalitem entities.
+* Added new Pulse Grenade explosion effects.
+* Added the 'misc_beam' entity, capable of rendering beams between two other entities.
+* Added the 'func_wall' entity, capable of hiding and showing architecture.
+* Added 'cg_ScoreSnapshot', setting to 1 lets Q3F take a screenshot of the scoreboard at the end of the match.
+* Implemented three different types of player sounds, for Light, Medium and Heavy classes.
+* Implemented disguise sound so agent sounds like it's disguised class.
+* Fixed bug where railgun rails didn't go through players.
+* Fixed bug where agents could disguise during ceasefire.
+* Fixed bug where func_train entities didn't push other entities.
+* Team scores now show in server browsers as score_red, score_blue, score_yellow and score_green.
+* Removed location part of tell_teamtarget messages.
+* Fixed bug where the scoreboard didn't work properly for the yellow and green team.
+* Implemented proper blocking for func_train entities. This also adds a 'dmg' key to the entity.
+* Stopped drifting under water (the bottom of a water pool is still slippery though ;).
+* Railgun is no longer armour piercing, but it's projectile does fly through players.
+* Implemented sound effects on reload.
+* Added vertical knockback to direct rocket impact events.
+* Added 'ui_backColor' to configure fui background colour. Choose from green, red, blue or black.
+* Extended 'g_teamChatSounds' with options 3: global comms wavs and 4: global comms and speech.
+* Added whiteline support in menus. Adding '\n' to a menuline adds a whiteline in front of that line.
+* Now latches 's_musicvolume' to 0.5 when starting beta1f for the first time.
+* Added option in server browser to directly save favourite servers without joining them.
+* Added chase and follow cam spectator modes.
+
+Beta 1e update
+--------------
+* Fixed bug where spectators could open doors
+* Fixed bug where jumping on a not moving moving entity resulted in a very high speed
+* Added 'g_execMapConfigs'
+* Limited use of 'dropammo' command to only allow three ammoboxes per player (if more are dropped, the oldest is discarded)
+* Nailgun is now also called nailgun internally, and bullets renamed to nails for ammo
+* Added 'cg_atmosphericEffects', setting to 0 disables all atmospheric effects (such as rain)
+* Completely rewritten bezier spline functions
+* Fixed bug where you couldn't directly select the Napalmcannon if you were out of nails
+* Fixed bug where a sniperrifle could be fired when the sniper was not standing on the ground
+* Fixed wrong mapping of labels and fields in the q3f controls setup menu
+* Added 'tell_teamtarget' command
+* Autosentry now loses lock faster.
+* Agent takes now less time to go to invisible
+* Fixed bug where a HE Charge created a hit beep if hit by splashdamage
+* Increased direct impact damage of napalm rocket
+* Fixed bug where a sniperrifle could cause a bad obituary message in the server logs
+* Fixed bug where mod_grenade and mod_charge were swapped in the server logs
+* Added 'g_mapVoteIncludeList' and 'g_mapVoteExcludeList', with the exclude list having priority
+* Added 'g_teamKillRules', setting to 0 disables tk banning, to 1 results in faster bans, 2 has the default settings
+* Added a new q3f team credits menu
+* Increased pipe range and detonation delay a bit
+* Lowered hallucination time and maxtime
+* Fixed wrong handmodels being used for first person view when agent is in disguised state
+* Fixed bug where the first person model of an undisguising agent could be the wrong one
+* Stopped dropammo discarding clip contents
+* Fixed sniperdot 'stuck on' out-of-ammo-change events
+* Capped clipsizes to remaining ammo on being pulsed
+* Increased emp damage caused by shells and rocket ammo a bit
+* Fixed angle field not being passed through with ctf compatibility entities
+* Reduced stun blast effectivity a bit
+* Adjusted Super Nailgun damage
+
+Beta 1d update
+--------------
+* Autosentries and supplystations will be telefragged if a player spawns on top of them.
+* Minigunner now has single barrelled shotgun.
+* Specialised armour now has 50% protection instead of 15%.
+* Engineer no longer loses a frag on destroying his own autosentry.
+* Added 'target_semitrigger' for random triggering of entities.
+* Added 'misc_onkill' and 'misc_onprotect' ents for custom scoring (or whatever).
+* Fixed (finally) endless agent gas. Just a mental block after all.
+* Fixed gravity to work properly on all entities (Ziggurat Vertigo, anyone?).
+* Automatically executed map configs were broken.
+* Flametrooper rocket damage reduced by 80% (now mostly just burns people).
+* 'usegive' / 'usetarget' / 'use_<team>_<broadcast>' strings to allow use of carried goalitems.
+* Bug where players would drop keepondeath flags and keep nodrop flags (instead of the other way around).
+* Added visual warnings for team count / avg ping imbalances.
+* Centerprinted messages are copied to the console.
+* Precache all used sounds (may help users running from CD, won't help sound problems).
+* Players remain at intermission point while choosing a class.
+* Added func_explosion entity.
+* func_hud had a problem with entity 'packing' breaking player display lists.
+* func_hud now understands <state>_shader fields (overridden by <state>_model).
+* Removed "You cannot shoot without both feed on the ground" sniper rifle message.
+* Added 'lastweapon' command, to switch back to last used weapon.
+* Sniper sight now visible to player if it lies on their face
+* Jumps are now relative to ground entity velocity.
+* Minigunner now has no 'no cells' warning.
+* HE charges 'fizzle' if changing teams/classes/disconnecting.
+* Added mirror<type> damage to g_friendlyFire, e.g. "half mirrorfull".
+* Added func_door_rotating entity.
+* When the clip is emptied, no longer automatically goes into reload if cg_autoReload is set to 0.
+* Fixed in-game server browser problem, courtesy of BgHurt at http://www.planetquake.com/fury
+* checkstate criteria was broken on map entities.
+* Clip-based weapons could be fired beyond the ammo left in the clip if it wasn't a multiple of the ammo-per-shot.
+* Added dropammo command, simply uses placeholder ammo boxes for now.
+* Kludged 2night3 to have rain (at default settings).
+* Changed voting slightly, if a timeout occurs, checks at least a third of the players have voted and then tallies.
+* Integrated func_train ents into the extended entity system.
+* Added cg_drawMem for debugging purposes (shows free memory left).
+* Debug info no longer produced in .qvm builds.
+* Improved automatic team selection based on player counts/score/team frags.
+* Fixed bug where dropping a goalitem with a speed scale value didn't fix the player's speed properly.
+* Added map vote page, enabled by g_mapVote 1 (after players click ready at intermission), rcon mapvote, or admin map vote.
+* Removed 'you have nothing to discard' message.
+* Fixed crash after player is TK-banned (CG_Obituary: target out of range), and altered criteria slightly.
+* Added 'ceasefire' powerup (powerdown?), prevents players shooting/throwing grenades/building/laying charges.
+* Stopped player angles 'jumping' when agent invisibility stops.
+* Player class 2d icons added (contributed by somebody, name unknown).
+* Disguised agents now give 'enemy' pain sound instead of ally pain sound.
+* Fixed bug where minigun had wide focus on the first shot that quickly dwindled.
+* Increase syringe attack range.
+* Player 'lives' implemented.
+* Fixed bug in entcode where team scores would not be altered unless there was an activator.
+* Fixed possible 'vote-rigging' bug. (thanks to UA-Static and others for pointing out that one).
+* All active projectiles/grenades for a player are destroyed if changing team.
+* Sniper can now head-shot a crouching player properly.
+* Altered grenadier pipe allocation.
+* Added sv_minRate (in game, not server), to prevent rate cheating. Default 1500.
+* Added failsafe to reload same map if the nextmap variable fails to load a map properly.
+* Removed 'team_' prefix from worldspawn keys, plus removed the 'player' bit from the '_playerlimit' keys.
+* Fixed bug where an autosentry (and grenades) could be pushed to jump to (0,0,0)
+* Fixed bug where spectators didn't teleport through doors, they now also teleport through doors with a targetname
+* Fixed bug where a sniper could kill teammates even when friendlyfire was off
+* Added spectate option in team menu
+* Increased crouch and swim speeds a bit
+* Fixed a crash with the classmenu
+* Added 'changeteam' command
+* Added powerup and beeping sound to end of charge countdown
+*Stop certain explosions from going through thin brushes (e.g. q3f_forts sniper deck)
+*Fixed 'nonteamset' on func_commandpoint not working properly
+*Added 'overrideteams' field to func_commandpoint
+*Added g_showTeamBalanceWarning to enable / disable the showing of unbalanced teams warnings
+
+Beta 1c update
+--------------
+* Fixed sniper bullet 'size' not to hit off walls en-route.
+* Pipebomb damage reduced to 100.
+* Reduce rail damage to 15.
+* Pulse grenade damaged to 175 on buildings / 75% of ammo on players (1x shells/cells, 1.5x rockets)
+* Dart gun effect set to 15 seconds.
+* Recons now have 'disarm' ability, used by crouching on a charge.
+* Stopped autosentries burning while underwater.
+* Refilling autosentry/supplystation no longer removes ammo in clip.
+* Created "target_cycle" entity.
+* Add 'keepondeath' flag for goalitems.
+* Wait time of less than 0.01 seconds on goalitems results in 'instant return'.
+* Autosentries weren't shooting people with their only ankles in water.
+* Autosentries now maintain a lock through water.
+* Autosentry firing rate doubled, strength per shot reduced to 9 (slightly more than half).
+* Toned the flashbang effect down a little more
+* 'spectator' changed to 'spec' in \admin status command.
+* Add cg_grenadePrimeSound cvar.
+* Flashbanged player no longer display IDs on crosshair.
+* Hand grenades travelled further for players with higher pings.
+* Super-nailgun firing rate doubled.
+* Broadcast messages are all printed to console, to allow better stats processing.
+* Stripped extra space from infection obituary.
+* Normal handgrenade damage increased by 5.
+* Autosentry now has 20% armour against non-shock damage, or 40% for direct hits to legs.
+* Supply station damage cap on explosion increased to 300.
+* Minigunner was immune to stun while firing minigun.
+* g_knockback default set to 1300.
+* Autosentry view point raised a little.
+* Autosentry FOV increased to 120.
+* Bug in same-client reconnection that allowed multiple sentries fixed (again. maybe. this time...)
+* Added target_respawn entity.
+* Atted target_multiport (multiple teleport) entity.
+* Added affectholding/affectnotholding to ents for 'give' command.
+* Flags not bouncing when dropped.
+* Autosentry / supplystation health on HUD highlighted when damaged.
+* Grenades now do 15% extra knockback (enough to get one up the forts liftshaft without having to jump)
+* Atmospheric rain added (which I'm told is a dead ringer for the Daikatana rain effect, but too bad).
+* Added synonyms for entity targets (e.g. carrytarget _or_ carriedtarget).
+* Engineer HUD not updated if someone else repaired/refilled their buildings.
+* More checks on where an engineer can build.
+* Launched grenade damage reduced to 100, or 80 in midair.
+* Self-damage reduced to 60%.
+* Napalm grenade now only lasts for 10 seconds.
+* Grenades/pipes were bouncing off gibbed dead bodies.
+* Added cg_teamChatBigFont cvar to allow double-height messages.
+* cg_execclassconfig 2 will execute every respawn instead of just class/team change.
+* Autosentries now have shadows like players'.
+* Cut maximum pipes per team to eight.
+* Players unable to spawn forced to spectate until they can pick another class or a spawnpoint opens.
+* Added func_damage entity.
+* Altered scoreboard to scroll back and forth.
+* Added 'admin ceasefire' and 'admin map' option.
+* Add small display on HUD to show players on each team, and the average ping for the team.
+* g_friendlyFire now understands types: none (0), full (1, and the default), half (2), armor (3).
+* Charges layed _on_ a player no longer stick.
+* Added 'usegauntlet' flag so ents can only be triggered by using the gauntlet (or wrench/syringe etc.).
+* Add invuln(erability) & aqualung powerups.
+
+Beta 1b update
+--------------
+* Config file being trounced when auto-selecting mod on connection to a server. Workaround in place.
+* Recon speed & minigunner speed lowered slightly.
+* Autosentry has muzzle flash to make it easier to spot.
+* Autosentry now has 0.75 second 'spin-up' time.
+* Set sniper rifle 'damage increase' to ~60 per second.
+* Sniper now has muzzle flash to make him more noticeable - not very effective *ATM given the light system.
+* Admins can set class limits at class start, e.g. g_classSniperLimit 2 (allows 2 snipers per team)
+* A frag is granted on killing an autosentry.
+* "playsound" added for grenade timers (hopefully, more reliable than "play")
+* Stop minigunner from getting knockback while minigun is firing.
+* Set cg_execClassConfig default to 1.
+* Added cg_execMapConfig, default 1.
+* Added cg_menuSlideTime, default 250 - time in milliseconds for menu to appear.
+* Sniper head shots now ignore armour and do 1.5x damage.
+* g_teamAutoJoin set to 1 by default.
+* Paramedic double-speed healing on conc/flash fixed.
+* g_teamChatSound now understands 0 for none, 1 for samples (default), 2 for speech.
+* Added cg_teamChatSound, acts for individual clients in the same way as g_teamChatSound.
+* Two engineers are now required to dismantle a third engineer's sentry.
+* Set default grenade binds on menu to +gren1, +gren2 instead of primeone/primetwo/throwgren.
+* Fix rockets exploding on noimpact surfaces.
+* Flash grenade strength reduced slightly.
+* Altered napalm grenade radius damage.
+* Stop grenades being 'restarted' by EMPs if they were already running (e.g. gas/napalm/nail)
+* A better alias system, courtesy of Tim Hughes (tjh30@cam.ac.uk).
+* Handgrenade radius was (wrongly) expanding with quad.
+* g_teamFrags option to show 'team frags' rather than individual frags.
+* Autosentries can now be set on fire.
+* Increased railgun damage.
+* Fixed bug where 'noshrink' flag affected 'speedscale' internal flag.
+* Added 'func_nobuild' entity, understands 'allowteams' (teams to block for) and 'type' ('autosentry,suppplystation,charge')
+* Sniper/minigunner speed while aiming reduced to 35%.
+* Removed dynamic allocation from broadcast function.
+* Hand grenades/pipes now 'sit' on objects properly, and drop again if their support vanishes.
+* Visible spectators/timing out 'bad-skin' clients possibly fixed.
+* ps.persistant[PERS_HITS] not being updated according to ally status properly.
+* Obituaries distinguish between kills and ally kills (e.g. X was killed by ally Y)
+* Autosentries no longer attack players in a different environment (e.g. water -> air, or air -> water)
+* 'dropflag' command implemented, affects any carried goalitems not marked 'nodrop'.
+* Autosentries no longer fire at intermission.
+* cg_thirdperson now 'cheat protected'.
+* Green team was losing a point when blue lost a frag.
+* When a client connects, kick clients timing out on the same IP to try to prevent 'ghosts'.
+* Minigun reworked.
+* Detpipe delay reduced to 0.2 seconds.
+* Show 'reloading' in HUD instead of flashing numbers.
+* Reload when all ammo already in clip fixed.
+* RL now only takes 1 second per rocket to load into clip.
+* Agent can no longer disguise as teams/classes not used in the map.
+* Halved cell consumption for recon scanner.
+* 'special' now cancels engineer build.
+* kill_<team>_message/sound/dict keys on entities for custom obituaries
+* Autosentry range reduced to 1200/400.
+* The backpack of the medic who infected a player will now also cure them.
+* Infection now harder to spread.
+* Sniper dot now 'instant' instead of 'historical' (that's what you get for complaining, you lot :)
+* cg_sniperHistoricalSight added for the complainers ;)
+* Agent morph now affects weapon properly.
+* Agent Invisibility set to 4 seconds (from 5).
+* Agent disguise set to 4 seconds (from 6).
+* "Red/blue team has taken the lead" sounds not played unless map is running red/blue teams only.
+* Have 'no message' team-chats display "<no message>".
+* Autosentries and supply stations where exploding if destroyed while still being built.
+* Triple knockback on sentry/minigun shells.
+* Sentry ID vanishes while upgrading sentry, to stop the menu being obscured.
+* Upgrade menu rearranged to make 'dismantle' harder to hit by mistake.
+* Nailgun nail damage reduced from 18 to 12.
+* Sniper bullet given a 'size' to make shots a little easier.
+* Delay between build cancel and next build, to stop the Amazing Engineer Shield Trick.
+* Stopped scaling sniper dot 'jumping' when fov changed.
+* Implemented temp-ban and admin system (g_adminPassword cvar, adminpassword & admin commands).
+* Comms limited to samples in the sound/voice/comms path (and automatically prefixed to save typing).
+* Railgun now hits close-range clients.
+* Now support for unique animations for each melee weapon.
+* Support for unique animations for each melee weapon.
+* Enabled attack animations for melee weapons in first person view.
+* Fixed entcode bug where setting a flag to invisible wouldn't cause it to be dropped.
+* Stopped nail grenades going through solid objects as they rise.
+* Flashing icons when a grenade is primed.
+* Ammo count and type for Wrench and Syringe now show up on the hud.
+* Team-chat HUD restored.
+* Can now pick up megahealth when already at full health (limit is now 2*maxhealth, as intended)
+* All class-speeds reduced by 5%
+
+Beta 1a server patch 1
+----------------------
+* Discard while dead.
+* Limit channels/channelname-size to 16/64, to prevent malicious clients crashing the server with too much channel data.
+* Missing NULL pointer check on supplystation use, causes crash when using just as it's destroyed.
+* Under some circumstances, trap_Trace() can hang the server.
+* Give agent max yellow armour instead of green.
+* Crash when no spawnpoints are available (probably) fixed. Not tested.
+* Sniper assault mode power/range, toned down with extreme prejudice.
+* Grenades were being launched at a lower angle from pipes (and consequently, not as far).
+
+Beta 1
+------
+* Initial release

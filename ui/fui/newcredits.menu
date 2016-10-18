@@ -1,0 +1,259 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// 
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 8
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 406
+
+	#define MENU_NAME "menu_credits"
+
+	#include "ui/etfmenu.h"
+
+	#define CREDIT1(NUMBER, FUNCTION, NAME)	\
+		itemDef {						\
+			rect 0 $evalint(100 + (14 * NUMBER )) 180 16\
+			text FUNCTION					\
+			textalign ITEM_ALIGN_RIGHT			\
+			textalignx 180					\
+			textaligny 10					\
+			textscale .28					\
+			visible MENU_TRUE				\
+			forecolor 0.8 0.8 0.8 1				\
+			decoration					\
+		}							\
+		itemDef {						\
+			rect 200 $evalint(100 + (14 * NUMBER )) 300 16	\
+			visible MENU_TRUE				\
+			text NAME					\
+			textalignx 1					\
+			textaligny 10					\
+			textscale .26					\
+			special 13					\
+			decoration					\
+			useAssetFont					\
+		}
+
+	#define CREDIT2(NUMBER, FUNCTION, NAME)	\
+		itemDef {						\
+			rect 360 $evalint(100 + (14 * NUMBER )) 180 16	\
+			text FUNCTION					\
+			textalign ITEM_ALIGN_RIGHT			\
+			textalignx 80					\
+			textaligny 10					\
+			textscale .28					\
+			visible MENU_TRUE				\
+			forecolor 0.8 0.8 0.8 1				\
+			decoration					\
+		}							\
+		itemDef {						\
+			rect 460 $evalint(100 + (14 * NUMBER )) 300 16	\
+			visible MENU_TRUE				\
+			text NAME					\
+			textalignx 1					\
+			textaligny 10					\
+			textscale .26					\
+			special 13					\
+			decoration					\
+			useAssetFont					\
+		}
+
+	menuDef {
+		MENUSCREENSTYLE
+		
+		MENUMAINRECT("ETF Credits")
+
+//	   	font "fonts/sf_quartzite" 15
+//	  	smallFont "fonts/sf_quartzite" 10
+//	  	bigFont "fonts/sf_quartzite" 28
+
+		onClose { conditionalScript isconnected 2 ( "setmenufocus menubar" ) ( "setmenufocus ingame" ) }
+		onESC { uiScript closeFORTBackModels }
+
+		itemDef {
+			text "Team :"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 1
+			textaligny 10
+			textscale .36
+			rect 190 28 100 16
+			visible MENU_TRUE
+			forecolor 1 0.2 0.2 1
+			decoration
+		}
+
+		itemDef {
+			text "Project Lead"
+			textalign ITEM_ALIGN_RIGHT
+			textalignx 180
+			textaligny 10
+			textscale .28
+			rect 0 48 180 18
+			visible MENU_TRUE
+			decoration
+			forecolor 0.8 0.8 0.8 1
+		}
+
+		itemDef {
+			text "LaVaGoD"
+			textalign ITEM_ALIGN_LEFT
+			textalignx 1
+			textaligny 10
+			textscale .26
+			rect 200 48 200 16
+			visible MENU_TRUE
+			special 13
+			decoration
+			useAssetFont
+		}
+
+		itemDef {
+			text "Project Supervisor &"
+			textalign ITEM_ALIGN_RIGHT
+			textalignx 180
+			textaligny 10
+			textscale .28
+			rect 0 64 180 18
+			visible MENU_TRUE
+			decoration
+			forecolor 0.8 0.8 0.8 1
+		}
+		itemDef {
+			text "Level Designer"
+			textalign ITEM_ALIGN_RIGHT
+			textalignx 180
+			textaligny 10
+			textscale .28
+			rect 0 76 180 18
+			visible MENU_TRUE
+			decoration
+			forecolor 0.8 0.8 0.8 1
+		}
+
+		itemDef {
+			text "5anny"
+			textalign ITEM_ALIGN_LEFT
+			textalignx 1
+			textaligny 10
+			textscale .26
+			rect 200 70 210 16
+			visible MENU_TRUE
+			special 13
+			decoration
+			useAssetFont
+		}
+
+		CREDIT1(0, "Coder", "CaNaBiS")
+		CREDIT1(1, "Coder", "Slothy")
+		CREDIT1(2, "Bots", "DrEvil")
+		CREDIT1(3, "Lead Artist", "SystemKrash")
+		CREDIT1(4, "Artist", "Steady")
+		CREDIT1(5, "Artist", "Tabun")
+		CREDIT1(6, "Lead Level Design", "Ildon")
+		CREDIT1(7, "Level Design", "Zombie")
+		CREDIT1(8, "Level Design", "Wils")
+		CREDIT1(9, "Level Design", "b5k")
+		CREDIT1(10, "Level Design", "Jedis")
+		CREDIT1(11, "Level Design/Artist", "VilePickle")
+		CREDIT1(12, "Lead QA/Gameplay", "Ghetto")
+		CREDIT1(13, "QA", "Hitman")
+		CREDIT1(14, "Hud Tech/QA", "Shuriken")
+		CREDIT1(15, "Public Relations", "n2y")
+		CREDIT1(16, "Public Relations", "Axee")
+		CREDIT1(17, "Resources/Distribution", "Noth")
+		CREDIT1(18, "Web Master", "Python")
+		CREDIT1(19, "Documentation", "Domipheus")
+
+		itemDef {
+			text "Contributions :"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 1
+			textaligny 10
+			textscale .36
+			rect 450 70 100 16
+			visible MENU_TRUE
+			forecolor 1 0.2 0.2 1
+			decoration
+		}
+
+		CREDIT2(0, "Code", "Keeger")
+		CREDIT2(1, "Code", "RR2DO2")
+		CREDIT2(2, "Art", "Fussel")
+		CREDIT2(3, "Art", "Ryan Vandermark")
+		CREDIT2(4, "Art", "sanna")
+		CREDIT2(5, "Art", "Shdw")
+		CREDIT2(6, "Art", "Sock")
+		CREDIT2(7, "Art", "ZBR")
+		CREDIT2(8, "Level Design", "Leon")
+		CREDIT2(9, "Sound", "Dallas Audio Group")
+		CREDIT2(10, "Sound", "Scott Cairns")
+		CREDIT2(11, "Super Idler", "Hannibal")
+		CREDIT2(12, "Q3map2 Support", "Ydnar")
+
+
+		itemDef {
+			text "A special thanks goes out to:"
+			textalign ITEM_ALIGN_LEFT
+			textalignx 10
+			textaligny 10
+			textscale .30
+			rect 350 324 260 16
+			visible MENU_TRUE
+			decoration
+			forecolor 0.8 0.8 0.8 1
+		}
+
+		itemDef {
+			text "~ Q3F Development Team"
+			textalign ITEM_ALIGN_LEFT
+			textalignx 10
+			textaligny 10
+			textscale .30
+			rect 395 342 260 16
+			visible MENU_TRUE
+			decoration
+			forecolor 0.8 0.8 0.8 1
+		}
+
+		itemDef {
+			text "~ Splashdamage Ltd"
+			textalign ITEM_ALIGN_LEFT
+			textalignx 10
+			textaligny 10
+			textscale .30
+			rect 395 356 260 16
+			visible MENU_TRUE
+			decoration
+			forecolor 0.8 0.8 0.8 1
+		}
+
+		itemDef {
+			text "~ ETF Test Team"
+			textalign ITEM_ALIGN_LEFT
+			textalignx 10
+			textaligny 10
+			textscale .30
+			rect 395 370 260 16
+			visible MENU_TRUE
+			decoration
+			forecolor 0.8 0.8 0.8 1
+		}
+
+		itemDef {
+			text "All works not already copyrighted by third parties are the legal property of their respective authors"
+			textalign ITEM_ALIGN_LEFT
+			textalignx 10
+			textaligny 10
+			textscale .24
+			rect 14 393 560 16
+			visible MENU_TRUE
+			decoration
+			forecolor 0.8 0.8 0.8 1
+		}
+
+	}
+}

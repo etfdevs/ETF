@@ -1,0 +1,56 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Getting started page 5
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 12
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "menu_5slide_5"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+
+		onOpen { conditionalScript isconnected 2 ( "uiScript MoveMenuToY menu_5_slide_5 12" ) ( "uiScript MoveMenuToY menu_5slide_5 60" ) }		
+		onClose { conditionalScript isconnected 2 ( "setmenufocus menubar" ) ( "setmenufocus ingame" ) }
+		onESC { uiScript closeFORTBackModels }
+
+		MENUMAINRECT("Getting Started (5/ 5)")
+
+		itemDef {
+			text "Where to go next?"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 13
+			textscale .5
+			rect 0 40 640 20
+			decoration
+			visible MENU_TRUE
+			forecolor 0.7 0.7 0.7 1
+		}
+
+		itemDef {
+			text "For the latest patches, add-ons, developer news and screenshots, visit the\nofficial ETF Development Team website.\n \nTo keep up to date on ETF community affairs or to search for 3rd party help,\nvisit one of the many ETF fan-sites.\n \nYou can get more information on leagues, tournaments and clans from many of\nthe sites listed on the ETF links page.\n \nIf you'd like to chat to other ETF players, visit our web forums or stop by\nour IRC channel."
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .27
+			rect 0 80 640 10
+			decoration
+			visible MENU_TRUE
+			type ITEM_TYPE_MLTEXT
+			special 13
+
+			useAssetFont
+		}
+
+		FORT_BUTTONTT(fiveslide_5_back, Back, 20, 40, 356, 102, 32, .25, "", uiScript setFORTBackModelOpenMenu menu_5slide_4, "Show previous page" )
+
+	}		
+}

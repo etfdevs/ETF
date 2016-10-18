@@ -1,0 +1,29 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Main Menu - Setup
+	//
+
+	#define MENU_X 154
+	#define MENU_Y 330
+	#define MENU_WIDTH 98
+	#define MENU_HEIGHT 90
+
+	#define MENU_NAME "menu_setup"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		POPUPMENUSTYLE
+		outOfBoundsClick
+
+		POPUPMENUBG
+		POPUPMENUBORDERS
+
+		POPUPMENUITEM(10, 10, "Options", "setupgen", menu_options)
+		POPUPMENUITEM(10, 25, "View", "setupview", menu_viewoptions)
+		POPUPMENUITEM(10, 40, "Controls", "contrls", menu_controls)
+		POPUPMENUITEM(10, 55, "System", "system", menu_system)
+		POPUPMENUITEM(10, 70, "Select HUD", "selhud", menu_selecthud)
+}

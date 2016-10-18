@@ -1,0 +1,33 @@
+Redo animation system to fix the missing animation errors seemingly with gas grenades / disguising.
+Make disguise system more server-side so that client # is chosen and can be rendered who you are mimicing.
+Add options to disguise team and class at same time.
+Change disguise menu to be pick team then class before starting disguise.
+Possibly add menu support for knowing which teams are enemy and which are friendly.
+Last disguise remembering
+/disguise enemy <class> ; /disguise friend <class> -> for 2 teams only gameplay
+Flaginfo randomly broken bug
+"Client doesn't have version ETF 1.6" randomly happening.
+Infinite ammobox/discard bag dropping exploit; still works sometimes -> online but not localhost ?
+Flags stick to south facing walls instead of bouncing off.
+Mapinfo from spectator on hud stays visible sometimes after spawning.
+Projectiles sometimes still hit forcefields that should still be allowed to pass through.
+Ignore & UnIgnore may still crash server, need to test with multiple people.
+New demo stuff from ET still needs fine tuning and visuals on HUD :/
+Speak with DrEvil about merging 0.8+ bots again, but existing 0.4 waypoints won't work anymore afaik.
+misc_flamethrower needs to be finished up and polished so it can have criteria based damaging.
+Decide on whether to keep func_noannoyances around or if it can be improved so it isn't as expensive with projectiles and grenades.
+Progress Bar for new cg_showGrenadeTimer3 doesn't have ownerdraws yet and HUDs will need updating.
+Timer on HUD for planted charge -> rework the server side to always send timer via event or something.
+Supply station ammo/armor overflowing isn't totally fixed I guess.
+Spectator map info should be hidden when scoreboard is visible else you cant see list of spectators. (HUD)
+Add ability to set customwidth and customheight in the system menu if mode is at -1 (custom).
+Blue nozzle flame doesn't (or almost never) renders when playing on localhost in first person and not firing the flamethrower.
+The pause menu tabbar at top does not show up in 1.7 (no team/class) for some reason yet it does in 1.6 WTF :|
+LOS flag seems broken with func_explosion possibly in other ents too?
+The Hold Scores Alias is not always working on default install.
+Napalm Grenades do not damage func_damage entities
+Pulse Grenades do not damage func_damage entities (on purpose iirc) should they have some default value ?
+Charges can partially be disarmed while being created (need 2 ppl to confirm/test)
+Nailbomb nails stop emitting in areas where a solid entity is blocking, even if that entity goes non-solid/disappears
+Nailbomb nails don't render their model most of the time with quad for some reason, is it because of shared refEnt reusing?
+Pressing arrow keys over a listbox while mouse is over a different entry causes the current selection to move to where mouse is and then in direction of arrow key pressed.

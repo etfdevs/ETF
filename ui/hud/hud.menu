@@ -1,0 +1,2123 @@
+#include "ui/menudef.h"
+
+{
+	assetGlobalDef {
+ 	   	font "fonts/q3f" 16				// font
+  	  	smallFont "fonts/q3f" 12			// font
+  	  	bigFont "fonts/q3f" 20			// font
+		cursor "ui/gfx/3_cursor2"					// cursor	
+//		itemFocusSound "ui/sound/menu2.wav"			// sound for item getting focus (via keyboard or mouse )
+
+	    fadeClamp 1.0								// sets the fadeup alpha
+		fadeCycle 1									// how often fade happens in milliseconds
+		fadeAmount 0.01								// amount to adjust alpha per cycle
+
+		shadowColor 0.1 0.1 0.1 0.25				// shadow color
+  	}
+
+	menuDef {
+		name "playerstatus"
+		fullScreen MENU_FALSE				
+		rect -8 432 160 48
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_ON_TEAM
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		// Border
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 144, 32)
+
+		// Status bars
+		itemDef {
+			name "playerhealth"
+			rect 9 9 36 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textscale .28
+			textalignx 36
+			textalign ITEM_ALIGN_RIGHT
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			ownerDraw CG_PLAYER_HEALTH
+		}
+
+		itemDef {
+			name "back_healthbar"
+			rect 48 6 104 16
+			visible MENU_TRUE
+			decoration
+			backcolor 0 0 0 .4
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "healthbar"
+			rect 48 6 104 16
+			visible MENU_TRUE
+			decoration
+			ownerDraw CG_PLAYER_HEALTH_BAR
+		}
+
+		itemDef {
+			name "playerarmor"
+			rect 9 29 36 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textscale .28
+			textalignx 36
+			textalign ITEM_ALIGN_RIGHT
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			ownerDraw CG_PLAYER_ARMOR_VALUE
+		}
+
+		itemDef {
+			name "back_armourbar"
+			rect 48 26 104 16
+			visible MENU_TRUE
+			decoration
+			backcolor 0 0 0 .4
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "armourbar"
+			rect 48 26 104 16
+			visible MENU_TRUE
+			decoration
+			ownerDraw CG_PLAYER_ARMOR_BAR
+		}	
+	}
+
+	// Yellow Score
+	menuDef {
+		name "yellow_score"
+		fullScreen MENU_FALSE				
+		rect 192 456 64 32
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_NOT_ON_YELLOW_TEAM
+		ownerDrawFlag CG_SHOW_YELLOW_TEAM_EXISTS
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		itemDef {
+			name "yellow_left"
+			visible MENU_TRUE
+			rect 0 0 16 32
+			decoration
+			background "ui/gfx/hud/score_yellow"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_top"
+			visible MENU_TRUE
+			rect 16 0 40 8
+			decoration
+			background "ui/gfx/hud/fill_top"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_topright"
+			visible MENU_TRUE
+			rect 56 0 8 8
+			decoration
+			background "ui/gfx/hud/top_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_right"
+			visible MENU_TRUE
+			rect 56 8 8 16
+			decoration
+			background "ui/gfx/hud/fill_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_bottomright"
+			visible MENU_TRUE
+			rect 56 24 8 8
+			decoration
+			background "ui/gfx/hud/bot_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_bottom"
+			visible MENU_TRUE
+			rect 16 24 40 8
+			decoration
+			background "ui/gfx/hud/fill_bot"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_fill"
+			visible MENU_TRUE
+			rect 16 8 40 16
+			decoration
+			background "ui/gfx/hud/fill_center_grey"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_alert"
+			visible MENU_TRUE
+			rect 28 8 16 16
+			decoration
+			background "ui/gfx/hud/alert_std"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_score"
+			rect 18 5 40 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textscale .28
+			textalignx 40
+			textalign ITEM_ALIGN_RIGHT
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			ownerDraw CG_YELLOW_SCORE
+		}
+
+ 		itemDef {
+			name "yellow_teamcount"
+			rect 15 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			textalignx 12
+			textalign ITEM_ALIGN_RIGHT
+			ownerDraw CG_YELLOW_TEAMCOUNT
+		}
+
+		itemDef {
+			name "yellow_teamping"
+			rect 42 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			ownerDraw CG_YELLOW_TEAMPING
+		}
+	}
+
+	// Yellow Score
+	menuDef {
+		name "yellow_score2"
+		fullScreen MENU_FALSE				
+		rect 192 456 64 32
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_ON_YELLOW_TEAM
+		ownerDrawFlag CG_SHOW_YELLOW_TEAM_EXISTS
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		itemDef {
+			name "yellow_left"
+			visible MENU_TRUE
+			rect 0 0 16 32
+			decoration
+			background "ui/gfx/hud/yscore_yellow"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_top"
+			visible MENU_TRUE
+			rect 16 0 40 8
+			decoration
+			background "ui/gfx/hud/yfill_top"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_topright"
+			visible MENU_TRUE
+			rect 56 0 8 8
+			decoration
+			background "ui/gfx/hud/ytop_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_right"
+			visible MENU_TRUE
+			rect 56 8 8 16
+			decoration
+			background "ui/gfx/hud/yfill_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_bottomright"
+			visible MENU_TRUE
+			rect 56 24 8 8
+			decoration
+			background "ui/gfx/hud/ybot_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_bottom"
+			visible MENU_TRUE
+			rect 16 24 40 8
+			decoration
+			background "ui/gfx/hud/yfill_bot"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_fill"
+			visible MENU_TRUE
+			rect 16 8 40 16
+			decoration
+			background "ui/gfx/hud/fill_center_grey"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_alert"
+			visible MENU_TRUE
+			rect 28 8 16 16
+			decoration
+			background "ui/gfx/hud/alert_std"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "yellow_score"
+			rect 18 5 40 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textscale .28
+			textalignx 40
+			textalign ITEM_ALIGN_RIGHT
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			ownerDraw CG_YELLOW_SCORE
+		}
+
+ 		itemDef {
+			name "yellow_teamcount"
+			rect 15 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			textalignx 12
+			textalign ITEM_ALIGN_RIGHT
+			ownerDraw CG_YELLOW_TEAMCOUNT
+		}
+
+		itemDef {
+			name "yellow_teamping"
+			rect 42 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			ownerDraw CG_YELLOW_TEAMPING
+		}
+	}
+
+	// Green Score
+	menuDef {
+		name "green_score"
+		fullScreen MENU_FALSE				
+		rect 256 456 64 32
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_NOT_ON_GREEN_TEAM
+		ownerDrawFlag CG_SHOW_GREEN_TEAM_EXISTS
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+		
+		itemDef {
+			name "green_left"
+			visible MENU_TRUE
+			rect 0 0 16 32
+			decoration
+			background "ui/gfx/hud/score_green"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_top"
+			visible MENU_TRUE
+			rect 16 0 40 8
+			decoration
+			background "ui/gfx/hud/fill_top"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_topright"
+			visible MENU_TRUE
+			rect 56 0 8 8
+			decoration
+			background "ui/gfx/hud/top_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_right"
+			visible MENU_TRUE
+			rect 56 8 8 16
+			decoration
+			background "ui/gfx/hud/fill_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_bottomright"
+			visible MENU_TRUE
+			rect 56 24 8 8
+			decoration
+			background "ui/gfx/hud/bot_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_bottom"
+			visible MENU_TRUE
+			rect 16 24 40 8
+			decoration
+			background "ui/gfx/hud/fill_bot"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_fill"
+			visible MENU_TRUE
+			rect 16 8 40 16
+			decoration
+			background "ui/gfx/hud/fill_center_grey"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_alert"
+			visible MENU_TRUE
+			rect 28 8 16 16
+			decoration
+			background "ui/gfx/hud/alert_std"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_score"
+			rect 18 5 40 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textscale .28
+			textalignx 36
+			textalign ITEM_ALIGN_RIGHT
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			ownerDraw CG_GREEN_SCORE
+		}
+
+ 		itemDef {
+			name "green_teamcount"
+			rect 15 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			textalignx 12
+			textalign ITEM_ALIGN_RIGHT
+			ownerDraw CG_GREEN_TEAMCOUNT
+		}
+
+		itemDef {
+			name "green_teamping"
+			rect 42 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			ownerDraw CG_GREEN_TEAMPING
+		}
+	}
+
+	// Green Score
+	menuDef {
+		name "green_score2"
+		fullScreen MENU_FALSE				
+		rect 256 456 64 32
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_ON_GREEN_TEAM
+		ownerDrawFlag CG_SHOW_GREEN_TEAM_EXISTS
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+		
+		itemDef {
+			name "green_left"
+			visible MENU_TRUE
+			rect 0 0 16 32
+			decoration
+			background "ui/gfx/hud/yscore_green"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_top"
+			visible MENU_TRUE
+			rect 16 0 40 8
+			decoration
+			background "ui/gfx/hud/yfill_top"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_topright"
+			visible MENU_TRUE
+			rect 56 0 8 8
+			decoration
+			background "ui/gfx/hud/ytop_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_right"
+			visible MENU_TRUE
+			rect 56 8 8 16
+			decoration
+			background "ui/gfx/hud/yfill_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_bottomright"
+			visible MENU_TRUE
+			rect 56 24 8 8
+			decoration
+			background "ui/gfx/hud/ybot_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_bottom"
+			visible MENU_TRUE
+			rect 16 24 40 8
+			decoration
+			background "ui/gfx/hud/yfill_bot"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_fill"
+			visible MENU_TRUE
+			rect 16 8 40 16
+			decoration
+			background "ui/gfx/hud/fill_center_grey"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_alert"
+			visible MENU_TRUE
+			rect 28 8 16 16
+			decoration
+			background "ui/gfx/hud/alert_std"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "green_score"
+			rect 18 5 40 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textscale .28
+			textalignx 36
+			textalign ITEM_ALIGN_RIGHT
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			ownerDraw CG_GREEN_SCORE
+		}
+
+ 		itemDef {
+			name "green_teamcount"
+			rect 15 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			textalignx 12
+			textalign ITEM_ALIGN_RIGHT
+			ownerDraw CG_GREEN_TEAMCOUNT
+		}
+
+		itemDef {
+			name "green_teamping"
+			rect 42 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			ownerDraw CG_GREEN_TEAMPING
+		}
+	}
+
+	// Blue Score
+	menuDef {
+		name "blue_score"
+		fullScreen MENU_FALSE				
+		rect 320 456 64 32
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_NOT_ON_BLUE_TEAM
+		ownerDrawFlag CG_SHOW_BLUE_TEAM_EXISTS
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		// Blue Score
+		itemDef {
+			name "blue_left"
+			visible MENU_TRUE
+			rect 0 0 16 32
+			decoration
+			background "ui/gfx/hud/score_blue"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_top"
+			visible MENU_TRUE
+			rect 16 0 40 8
+			decoration
+			background "ui/gfx/hud/fill_top"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_topright"
+			visible MENU_TRUE
+			rect 56 0 8 8
+			decoration
+			background "ui/gfx/hud/top_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_right"
+			visible MENU_TRUE
+			rect 56 8 8 16
+			decoration
+			background "ui/gfx/hud/fill_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_bottomright"
+			visible MENU_TRUE
+			rect 56 24 8 8
+			decoration
+			background "ui/gfx/hud/bot_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_bottom"
+			visible MENU_TRUE
+			rect 16 24 40 8
+			decoration
+			background "ui/gfx/hud/fill_bot"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_fill"
+			visible MENU_TRUE
+			rect 16 8 40 16
+			decoration
+			background "ui/gfx/hud/fill_center_grey"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_alert"
+			visible MENU_TRUE
+			rect 28 8 16 16
+			decoration
+			background "ui/gfx/hud/alert_std"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_score"
+			rect 18 5 40 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textscale .28
+			textalignx 40
+			textalign ITEM_ALIGN_RIGHT
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			ownerDraw CG_BLUE_SCORE
+		}
+
+ 		itemDef {
+			name "blue_teamcount"
+			rect 15 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			textalignx 12
+			textalign ITEM_ALIGN_RIGHT
+			ownerDraw CG_BLUE_TEAMCOUNT
+		}
+
+		itemDef {
+			name "blue_teamping"
+			rect 42 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			ownerDraw CG_BLUE_TEAMPING
+		}
+	}
+
+	// Blue Score
+	menuDef {
+		name "blue_score2"
+		fullScreen MENU_FALSE				
+		rect 320 456 64 32
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_ON_BLUE_TEAM
+		ownerDrawFlag CG_SHOW_BLUE_TEAM_EXISTS
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		// Blue Score
+		itemDef {
+			name "blue_left"
+			visible MENU_TRUE
+			rect 0 0 16 32
+			decoration
+			background "ui/gfx/hud/yscore_blue"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_top"
+			visible MENU_TRUE
+			rect 16 0 40 8
+			decoration
+			background "ui/gfx/hud/yfill_top"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_topright"
+			visible MENU_TRUE
+			rect 56 0 8 8
+			decoration
+			background "ui/gfx/hud/ytop_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_right"
+			visible MENU_TRUE
+			rect 56 8 8 16
+			decoration
+			background "ui/gfx/hud/yfill_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_bottomright"
+			visible MENU_TRUE
+			rect 56 24 8 8
+			decoration
+			background "ui/gfx/hud/ybot_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_bottom"
+			visible MENU_TRUE
+			rect 16 24 40 8
+			decoration
+			background "ui/gfx/hud/yfill_bot"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_fill"
+			visible MENU_TRUE
+			rect 16 8 40 16
+			decoration
+			background "ui/gfx/hud/fill_center_grey"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_alert"
+			visible MENU_TRUE
+			rect 28 8 16 16
+			decoration
+			background "ui/gfx/hud/alert_std"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "blue_score"
+			rect 18 5 40 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textscale .28
+			textalignx 40
+			textalign ITEM_ALIGN_RIGHT
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			ownerDraw CG_BLUE_SCORE
+		}
+
+ 		itemDef {
+			name "blue_teamcount"
+			rect 15 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			textalignx 12
+			textalign ITEM_ALIGN_RIGHT
+			ownerDraw CG_BLUE_TEAMCOUNT
+		}
+
+		itemDef {
+			name "blue_teamping"
+			rect 42 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			ownerDraw CG_BLUE_TEAMPING
+		}
+	}
+	
+	// Red Score
+	menuDef {
+		name "red_score"
+		fullScreen MENU_FALSE				
+		rect 384 456 64 32
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_NOT_ON_RED_TEAM
+		ownerDrawFlag CG_SHOW_RED_TEAM_EXISTS
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+	
+		itemDef {
+			name "red_left"
+			visible MENU_TRUE
+			rect 0 0 16 32
+			decoration
+			background "ui/gfx/hud/score_red"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_top"
+			visible MENU_TRUE
+			rect 16 0 40 8
+			decoration
+			background "ui/gfx/hud/fill_top"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_topright"
+			visible MENU_TRUE
+			rect 56 0 8 8
+			decoration
+			background "ui/gfx/hud/top_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_right"
+			visible MENU_TRUE
+			rect 56 8 8 16
+			decoration
+			background "ui/gfx/hud/fill_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_bottomright"
+			visible MENU_TRUE
+			rect 56 24 8 8
+			decoration
+			background "ui/gfx/hud/bot_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_bottom"
+			visible MENU_TRUE
+			rect 16 24 40 8
+			decoration
+			background "ui/gfx/hud/fill_bot"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_fill"
+			visible MENU_TRUE
+			rect 16 8 40 16
+			decoration
+			background "ui/gfx/hud/fill_center_grey"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_alert"
+			visible MENU_TRUE
+			rect 28 8 16 16
+			decoration
+			background "ui/gfx/hud/alert_std"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_score"
+			rect 18 5 40 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textscale .28
+			textalignx 40
+			textalign ITEM_ALIGN_RIGHT
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			ownerDraw CG_RED_SCORE
+		}
+
+ 		itemDef {
+			name "red_teamcount"
+			rect 15 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			textalignx 12
+			textalign ITEM_ALIGN_RIGHT
+			ownerDraw CG_RED_TEAMCOUNT
+		}
+
+		itemDef {
+			name "red_teamping"
+			rect 42 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			ownerDraw CG_RED_TEAMPING
+		}
+	}
+
+	// Red Score
+	menuDef {
+		name "red_score2"
+		fullScreen MENU_FALSE				
+		rect 384 456 64 32
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_ON_RED_TEAM
+		ownerDrawFlag CG_SHOW_RED_TEAM_EXISTS
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+	
+		itemDef {
+			name "red_left"
+			visible MENU_TRUE
+			rect 0 0 16 32
+			decoration
+			background "ui/gfx/hud/yscore_red"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_top"
+			visible MENU_TRUE
+			rect 16 0 40 8
+			decoration
+			background "ui/gfx/hud/yfill_top"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_topright"
+			visible MENU_TRUE
+			rect 56 0 8 8
+			decoration
+			background "ui/gfx/hud/ytop_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_right"
+			visible MENU_TRUE
+			rect 56 8 8 16
+			decoration
+			background "ui/gfx/hud/yfill_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_bottomright"
+			visible MENU_TRUE
+			rect 56 24 8 8
+			decoration
+			background "ui/gfx/hud/ybot_right"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_bottom"
+			visible MENU_TRUE
+			rect 16 24 40 8
+			decoration
+			background "ui/gfx/hud/yfill_bot"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_fill"
+			visible MENU_TRUE
+			rect 16 8 40 16
+			decoration
+			background "ui/gfx/hud/fill_center_grey"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_alert"
+			visible MENU_TRUE
+			rect 28 8 16 16
+			decoration
+			background "ui/gfx/hud/alert_std"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "red_score"
+			rect 18 5 40 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textscale .28
+			textalignx 40
+			textalign ITEM_ALIGN_RIGHT
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			ownerDraw CG_RED_SCORE
+		}
+
+ 		itemDef {
+			name "red_teamcount"
+			rect 15 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			textalignx 12
+			textalign ITEM_ALIGN_RIGHT
+			ownerDraw CG_RED_TEAMCOUNT
+		}
+
+		itemDef {
+			name "red_teamping"
+			rect 42 17 12 6
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textscale .16
+			ownerDraw CG_RED_TEAMPING
+		}
+	}
+
+	menuDef {
+		name "ammostatus"
+		fullScreen MENU_FALSE				
+		rect 488 432 160 48
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_ON_TEAM
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		// Border
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 144, 32)
+
+		// Ammo Slots
+		itemDef {
+			name "back_ammo_rocket_icon"
+			rect 8 6 16 16
+			visible MENU_TRUE
+			decoration
+			backcolor 0 0 0 .4
+			style WINDOW_STYLE_FILLED
+		}
+		
+		itemDef {
+			name "ammo_rocket_icon"
+			rect 8 6 16 16
+			visible MENU_TRUE
+			decoration
+			forecolor 1 0 0 1
+			background "ui/gfx/hud/icons/icon_rockets"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "ammo_rocket_count"
+			rect 26 8 22 10
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .2
+			ownerDraw CG_PLAYER_AMMOSLOT_ROCKET_VALUE
+		}
+
+		itemDef {
+			name "back_ammo_shells_icon"
+			rect 50 6 16 16
+			visible MENU_TRUE
+			decoration
+			backcolor 0 0 0 .4
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "ammo_shells_icon"
+			rect 50 6 16 16
+			visible MENU_TRUE
+			decoration
+			forecolor 1 1 0 1
+			background "ui/gfx/hud/icons/icon_shells"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "ammo_shells_count"
+			rect 68 8 22 10
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .2
+			ownerDraw CG_PLAYER_AMMOSLOT_SHELLS_VALUE
+		}
+
+		itemDef {
+			name "back_ammo_nails_icon"
+			rect 8 26 16 16
+			visible MENU_TRUE
+			decoration
+			backcolor 0 0 0 .4
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "ammo_nails_icon"
+			rect 8 26 16 16
+			visible MENU_TRUE
+			decoration
+			forecolor 0 1 0 1
+			background "ui/gfx/hud/icons/icon_nails"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "ammo_nails_count"
+			rect 26 28 22 10
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .2
+			ownerDraw CG_PLAYER_AMMOSLOT_NAILS_VALUE
+		}
+
+		itemDef {
+			name "back_ammo_cells_icon"
+			rect 50 26 16 16
+			visible MENU_TRUE
+			decoration
+			backcolor 0 0 0 .4
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "ammo_cells_icon"
+			rect 50 26 16 16
+			visible MENU_TRUE
+			decoration
+			forecolor 1 0 1 1
+			background "ui/gfx/hud/icons/icon_cells"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "ammo_cells_count"
+			rect 68 28 22 10
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .2
+			ownerDraw CG_PLAYER_AMMOSLOT_CELLS_VALUE
+		}
+
+		// Current weapon
+		itemDef {
+			name "back_ammo_current_icon"
+			rect 92 14 20 20
+			visible MENU_TRUE
+			decoration
+			backcolor 0 0 0 .4
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "ammo_current_icon"
+			rect 92 14 20 20
+			visible MENU_TRUE
+			decoration
+			ownerDraw CG_PLAYER_AMMO_ICON
+		}
+
+		itemDef {
+			name "ammo_current_count"
+			rect 114 13 36 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .26
+			ownerDraw CG_PLAYER_AMMO_VALUE
+		}
+
+		itemDef {
+			name "ammo_current_clipcount"
+			rect 114 25 36 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .26
+			ownerDraw CG_PLAYER_AMMO_CLIP_VALUE
+		}
+	}
+
+	menuDef {
+		name "systemstatus"
+		fullScreen MENU_FALSE				
+		rect 488 384 96 48
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_ON_TEAM
+
+		// Border
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 80, 32)
+
+		// System stats
+		itemDef {
+			name "fps"
+			rect 6 14 48 8
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .2
+			ownerDraw CG_SYSTEM_FPS
+		}
+
+		itemDef {
+			name "timer"
+			rect 6 26 48 8
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .2
+			ownerDraw CG_SYSTEM_TIMER
+		}
+
+		itemDef {
+			name "back_lagometer"
+			rect 54 6 36 36
+			visible MENU_TRUE
+			decoration
+			backcolor 0 0 0 .4
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "lagometer"
+			rect 56 8 32 32
+			visible MENU_TRUE
+			decoration
+			ownerDraw CG_SYSTEM_LAGOMETER
+			backcolor .5 .5 .5 .1
+			style WINDOW_STYLE_FILLED
+		}		
+	}
+
+	menuDef {
+		name "grenadestatus"
+		fullScreen MENU_FALSE				
+		rect 584 384 64 48
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_ON_TEAM
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		// Border
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 48, 32)
+
+		// Grenade slots
+		itemDef {
+			name "grenade_1_icon"
+			rect 8 4 20 20
+			visible MENU_TRUE
+			decoration
+			forecolor 0 0 1 1
+			background "ui/gfx/hud/icons/icon_grenade"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "grenade_1_count"
+			rect 30 9 22 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			backcolor 0 0 1 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .26
+			ownerDraw CG_PLAYER_PRIMARY_GRENADE_VALUE
+		}
+
+		itemDef {
+			name "grenade_2_icon"
+			rect 8 24 20 20
+			visible MENU_TRUE
+			decoration
+			forecolor 1 .5 0 1
+			background "ui/gfx/hud/icons/icon_grenade"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "grenade_2_count"
+			rect 30 29 22 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			backcolor 1 .5 0 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .26
+			ownerDraw CG_PLAYER_SECONDARY_GRENADE_VALUE
+		}
+	}
+
+	menuDef {
+		name "sentrycam"
+		fullScreen MENU_FALSE				
+		rect 488 264 160 120
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_PLAYER_HAS_SENTRYCAM
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+		// Border
+		FORT_ITEM_BORDER(0, 0, 144, 104)
+
+		// Camera screen
+		itemDef {
+			rect 8 8 144 104
+			visible MENU_TRUE
+			decoration
+			backcolor 0 0 0 1
+			style WINDOW_STYLE_FILLED
+		}
+		
+		// Camera screen
+		itemDef {
+			name "camerascreen"
+			rect 6 6 148 108
+			visible MENU_TRUE
+			decoration
+			ownerDraw CG_ENGINEER_SENTRYCAM
+		}
+
+		itemDef {
+			name "camerascreen_static"
+			rect 5 5 150 110
+			visible MENU_TRUE
+			decoration
+			background "ui/gfx/hud/sentrycamscreen"
+			style WINDOW_STYLE_SHADER
+		}
+	}
+
+	menuDef {
+		name "sentrystatus"
+		fullScreen MENU_FALSE				
+		rect -8 408 160 24
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_PLAYER_HAS_SENTRY
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+		// Border
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 144, 8)
+
+		// Sentry status
+		itemDef {
+			name "sentry_icon"
+			rect 10 6 12 12
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			background "gfx/hud/hud_autosentry"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "sentry_health_icon"
+			rect 30 6 12 12
+			visible MENU_TRUE
+			decoration
+			forecolor .4 .75 .13 1
+			background "gfx/hud/hud_health"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "sentryhealth"
+			rect 46 6 22 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .2
+			ownerDraw CG_ENGINEER_SENTRYHEALTH
+		}
+
+		itemDef {
+			name "back_ammo_bullets_icon"
+			rect 70 4 16 16
+			visible MENU_TRUE
+			decoration
+			backcolor 0 0 0 .4
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "ammo_bullets_icon"
+			rect 70 4 16 16
+			visible MENU_TRUE
+			decoration
+			forecolor 1 1 0 1
+			background "ui/gfx/hud/icons/icon_shells"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "sentry_bullets_count"
+			rect 88 6 22 10
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .2
+			ownerDraw CG_ENGINEER_SENTRYBULLETS
+		}
+
+		itemDef {
+			name "back_ammo_rockets_icon"
+			rect 112 4 16 16
+			visible MENU_TRUE
+			decoration
+			backcolor 0 0 0 .4
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "ammo_rockets_icon"
+			rect 112 4 16 16
+			visible MENU_TRUE
+			decoration
+			forecolor 1 0 0 1
+			background "ui/gfx/hud/icons/icon_rockets"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "sentry_rockets_count"
+			rect 130 6 22 10
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+			forecolor .5 .5 .5 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .2
+			ownerDraw CG_ENGINEER_SENTRYROCKETS
+		}
+	}
+
+	menuDef {
+		name "supstationstatus"
+		fullScreen MENU_FALSE				
+		rect -8 384 160 24
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_PLAYER_HAS_SUPSTATION
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+		// Border
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 144, 8)
+
+		// Supply Station status
+		itemDef {
+			name "supstation_icon"
+			rect 10 6 12 12
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			background "gfx/hud/hud_supplystation"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "supstation_health_icon"
+			rect 30 6 12 12
+			visible MENU_TRUE
+			decoration
+			forecolor .4 .75 .13 1
+			background "gfx/hud/hud_health"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "supstationhealth"
+			rect 46 6 22 10
+			visible MENU_TRUE
+			decoration
+			forecolor .5 .5 .5 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .2
+			ownerDraw CG_ENGINEER_SUPSTATIONHEALTH
+		}
+
+		itemDef {
+			name "back_using_supstation"
+			rect 70 6 82 12
+			visible MENU_TRUE
+			decoration
+			backcolor 0 0 0 .4
+			style WINDOW_STYLE_FILLED
+		}
+
+		itemDef {
+			name "friendly_using_supstation"
+			rect 72 8 78 8
+			visible MENU_TRUE
+			decoration
+			backcolor 0 1 0 .4
+			style WINDOW_STYLE_FILLED
+			ownerDrawFlag CG_SHOW_FRIENDLY_USE_SUPSTATION
+		}
+
+		itemDef {
+			name "enemy_using_supstation"
+			rect 72 8 78 8
+			visible MENU_TRUE
+			decoration
+			backcolor 1 0 0 .4
+			style WINDOW_STYLE_FILLED
+			ownerDrawFlag CG_SHOW_ENEMY_USE_SUPSTATION
+		}
+	}
+
+	menuDef {
+		name "scanner"
+		fullScreen MENU_FALSE				
+		rect 528 264 120 120
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_PLAYER_HAS_SCANNERON
+
+		// Border
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 104, 104)
+
+		// Scanner screen
+		itemDef {
+			name "scannerscreen_back"
+			rect 6 6 108 108
+			visible MENU_TRUE
+			decoration
+			background "ui/gfx/hud/scanner_back"
+			style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			name "scannerscreen"
+			rect 8 8 104 104
+			visible MENU_TRUE
+			decoration
+			ownerDraw CG_RECON_SCANNER
+		}
+	}
+
+	menuDef {
+		name "chatbar"
+		fullScreen MENU_FALSE				
+		rect 0 -8 640 72
+		visible MENU_TRUE
+		nonSticky
+				
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+		
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 640 72
+			decoration
+			ownerDraw CG_CHATBOX_CONTENT
+			type ITEM_TYPE_BORDER
+			anchorx 0
+			anchory 1
+			textscale .25
+			special 8
+		}
+
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 640 72
+			decoration
+			ownerDraw CG_CHATBOX_CONTENT
+			forecolor 1 1 1 1
+			anchorx 0
+			anchory 1
+			textscale .25
+			textaligny 10
+			textalignx 3
+			special 8
+		}
+	}
+
+	menuDef {
+		name "teamchatbar"
+		fullScreen MENU_FALSE				
+		rect 540 64 100 120
+		visible MENU_TRUE
+		nonSticky
+
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+		
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 100 120
+			decoration
+			ownerDraw CG_TEAMCHATBOX_CONTENT
+			type ITEM_TYPE_BORDER
+			anchorx 3
+			anchory 1
+			textscale .25
+			special 8
+		}
+
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 100 120
+			decoration
+			ownerDraw CG_TEAMCHATBOX_CONTENT
+			forecolor 1 1 1 1
+			anchorx 3
+			anchory 1
+			textscale .25
+			textaligny 10
+			textalignx 3
+			special 8
+		}
+	}
+
+	menuDef {
+		name "centerprintbar"
+		fullScreen MENU_FALSE				
+		rect 160 320 320 40
+		visible MENU_TRUE
+		nonSticky
+
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+		
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		loadborderbitmap 0 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 1 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 2 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 3 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 6 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 7 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 8 "ui/gfx/hud/fill_center_grey"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 320 40
+			decoration
+			ownerDraw CG_CENTERPRINTBOX_CONTENT
+			type ITEM_TYPE_BORDER
+			anchorx 0
+			anchory 5
+			textscale .33
+			special 4
+		}
+
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 320 40
+			decoration
+			ownerDraw CG_CENTERPRINTBOX_CONTENT
+			textalign ITEM_ALIGN_CENTER
+			forecolor 1 1 1 1
+			anchorx 0
+			anchory 5
+			textscale .3
+			textaligny 11
+			textalignx 160
+			special 4
+		}
+	}
+
+	menuDef {
+		name "crosshairinfobar"
+		fullScreen MENU_FALSE				
+		rect 160 100 320 40
+		visible MENU_TRUE
+		nonSticky
+
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+		
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		loadborderbitmap 0 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 1 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 2 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 3 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 6 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 7 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 8 "ui/gfx/hud/fill_center_grey"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 320 40
+			decoration
+			ownerDraw CG_CROSSHAIRINFO_BOX
+			type ITEM_TYPE_BORDER
+			anchorx 5
+			anchory 5
+			textscale .27
+			special 4
+		}
+
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 320 40
+			decoration
+			ownerDraw CG_CROSSHAIRINFO_BOX
+			forecolor 1 1 1 1
+			anchorx 5
+			anchory 5
+			textscale .27
+			textaligny 10
+			special 4
+		}
+	}
+
+	menuDef {
+		name "weaponswitchbar"
+		fullScreen MENU_FALSE				
+		rect 0 400 640 48
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_WEAPONSWITCH
+		ownerDrawFlag CG_SHOW_ON_TEAM
+		nonSticky
+
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 640 48
+			decoration
+			ownerDraw CG_WEAPONSWITCH_BOX
+			background "ui/gfx/hud/big_circle"
+			anchorx 5
+			special 24
+		}
+	}
+
+	menuDef {
+		name "agentstatus"
+		fullScreen MENU_FALSE				
+		rect -8 408 160 24
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_PLAYER_IS_AGENT
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+		// Border
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 144, 8)
+
+		itemDef {
+			visible MENU_TRUE
+			rect 15 6 12 12
+			decoration
+			ownerDraw CG_CLASS_ICON
+		}
+
+		itemDef {
+			rect 46 6 22 10
+			visible MENU_TRUE
+			decoration
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			forecolor 1 1 1 1
+			textaligny 12
+			textscale .25
+			ownerDraw CG_AGENTDISGUISE_INFO
+		}
+	}
+
+	menuDef {
+		name "q3fchatedit"
+		fullScreen MENU_FALSE				
+		rect 160 200 480 80
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_CHATEDIT
+		nonSticky
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 320 80
+			decoration
+			ownerDraw CG_CHATEDIT_CONTENT
+			type ITEM_TYPE_BORDER
+			anchorx 0
+			anchory 0
+			textscale .33
+			special 8
+		}
+
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 320 80
+			decoration
+			ownerDraw CG_CHATEDIT_CONTENT
+			anchorx 0
+			anchory 0
+			textscale .3
+			textaligny 11
+			special 8
+		}
+	}
+
+	menuDef {
+		name "grentimerbar"
+		fullScreen MENU_FALSE				
+		rect -8 360 160 24
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_GREN_PRIMED
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+		// Border
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 144, 8)
+
+		itemDef {
+			visible MENU_TRUE
+			rect 15 10 100 4
+			decoration
+			ownerDraw CG_GREN_TIMER
+		}
+
+		itemDef {
+			visible MENU_TRUE
+			rect 120 10 32 4
+			textscale .22
+			textaligny 7
+			decoration
+			ownerDraw CG_GREN_TIMER_DIGITS
+		}
+	}
+
+	menuDef {
+		name "powerupblob"
+		fullScreen MENU_FALSE				
+		rect 392 384 48 48
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 48 48
+			decoration
+			ownerDraw CG_POWERUP_ICON
+			type ITEM_TYPE_BORDER
+			anchorx 3
+			special 8
+		}
+
+		itemDef {
+			visible MENU_TRUE
+			textscale 0.27
+			rect 0 0 48 48
+			special 8
+			anchorx 3
+			decoration
+			ownerDraw CG_POWERUP_ICON
+		}
+	}
+	
+	menuDef {
+		name "powerupblob"
+		fullScreen MENU_FALSE				
+		rect 440 384 48 48
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 48 48
+			decoration
+			ownerDraw CG_DRAWATTACKER
+			type ITEM_TYPE_BORDER
+			anchorx 3
+			special 8
+		}
+
+		itemDef {
+			visible MENU_TRUE
+			textscale 0.27
+			rect 4 4 40 40
+			special 8
+			anchorx 3
+			decoration
+			ownerDraw CG_DRAWATTACKER
+		}
+	}
+
+	menuDef {
+		name "alerticonblob"
+		fullScreen MENU_FALSE				
+		rect 600 216 48 48
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_ALERT_ICON
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 48 48
+			decoration
+			ownerDraw CG_ALERT_ICON
+			type ITEM_TYPE_BORDER
+			anchorx 3
+			special 8
+		}
+
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 48 48
+			special 8
+			anchorx 3
+			decoration
+			ownerDraw CG_ALERT_ICON
+		}
+	}
+
+	menuDef {
+		name "grentimercrosshair"
+		fullScreen MENU_FALSE
+		rect 308 228 24 24
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_GREN_PRIMED2
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 24 24
+			decoration
+			ownerDraw CG_GREN_ANALOGUE
+			forecolor 1 1 1 0.5
+		}
+	}
+
+	menuDef {
+		name "hud_icons"
+		fullScreen MENU_FALSE
+		rect 8 64 128 320
+		visible MENU_TRUE
+		ownerDrawFlag CG_SHOW_NO_SCOREBOARD
+
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 64 64
+			decoration
+			ownerDraw CG_HUDICONS
+			textscale 0.27
+			special 0.8
+		}
+	}
+
+	// some fake items to allow stickyness to our screen edges 
+	// (8 units offest out of screen)
+	menuDef {
+		rect -16 -8 8 496
+	}
+
+	menuDef {
+		rect 648 -8 8 496
+	}
+
+	menuDef {
+		rect -8 -16 656 8
+	}
+
+	menuDef {
+		rect -8 488 656 8
+	}
+
+	// (edge of screen too, as requested... :P)
+	menuDef {
+		rect -8 0 8 480
+	}
+
+	menuDef {
+		rect 640 0 8 440
+	}
+
+	menuDef {
+		rect 0 -8 640 8
+	}
+
+	menuDef {
+		rect 0 480 640 8
+	}
+}

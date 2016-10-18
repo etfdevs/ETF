@@ -1,0 +1,56 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Getting Started page 3
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 12
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "menu_5slide_3"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+
+		onOpen { conditionalScript isconnected 2 ( "uiScript MoveMenuToY menu_5_slide_3 12" ) ( "uiScript MoveMenuToY menu_5slide_3 60" ) }		
+		onClose { conditionalScript isconnected 2 ( "setmenufocus menubar" ) ( "setmenufocus ingame" ) }
+		onESC { uiScript closeFORTBackModels }
+
+		MENUMAINRECT("Getting Started (3/ 5)")
+
+		itemDef {
+			text "The Heads-Up Display (HUD)"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 13
+			textscale .45
+			rect 0 40 640 20
+			decoration
+			visible MENU_TRUE
+			forecolor 0.7 0.7 0.7 1
+		}
+
+		itemDef {
+			text "The ETF HUD contains all the information you need to play any class as\npart of an effective and coordinated team.\n \nWithin the HUD you can bring up the in-game menu at any time by hitting the\nESCAPE key. The in-game menu will allow you to select the class you wish\nto play, read the map help screen, alter your configuration or take\npart in votes.\n \nThe ETF HUD supports player customization through the use of scripts and\nmacros- you can even enable support for the hearing impaired.\nSee the ETF Field Training Manual for more information."
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .27
+			rect 0 80 640 10
+			decoration
+			visible MENU_TRUE
+			type ITEM_TYPE_MLTEXT
+			special 13
+
+			useAssetFont
+		}
+
+		FORT_BUTTONTT(fiveslide_3_back, Back, 20, 40, 356, 102, 32, .25, "", uiScript setFORTBackModelOpenMenu menu_5slide_2, "Show previous page" )
+		FORT_BUTTONTT(fiveslide_3_next, Next, 20, 472, 356, 102, 32, .25, "", uiScript setFORTBackModelOpenMenu menu_5slide_4, "Show next page" )
+	}		
+}

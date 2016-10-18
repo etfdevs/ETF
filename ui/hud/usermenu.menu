@@ -1,0 +1,95 @@
+#include "ui/menudef.h"
+
+{
+	menuDef {
+		name "usermenu"
+		rect -8 60 180 80
+		visible MENU_FALSE
+		focusColor .85 .41 .38 1			// Menu focus color for text and items
+		disableColor .5 .5 .5 1
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+  	  	
+/* 		onKey 49 {
+  			open coms_1_0;
+ 			close usermenu; 
+  		}*/
+  		
+ 		onKey 50 {
+  			open coms_1_1;
+  			close usermenu; 
+  		}
+  		
+/* 		onKey 51 {
+  			open coms_1_2;
+  			close usermenu; 
+  		}*/
+  		
+//      ---------------- INITIAL ------------------
+
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 180, 80)
+		
+		itemDef {
+			rect 12 10 168 10
+			textscale .3
+			textalignx 84
+			textaligny 10
+			text "COMMS MENU"
+			visible 1
+			textAlign ITEM_ALIGN_CENTER
+			type ITEM_TYPE_TEXT
+			useAssetFont
+			decoration
+		}
+
+		itemDef {
+			forecolor 1.0 1.0 1.0 0.7
+			rect 12 28 168 10
+			textscale .27
+			textalignx 4
+			textaligny 10
+			text "1. Waypoint Management"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+  				open coms_1_0;
+ 				close usermenu; 
+			}
+			useAssetFont
+			decoration
+		}
+
+		itemDef {
+			rect 12 42 168 10
+			textscale .27
+			textaligny 10
+			text "2. Radio Communications"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+  				open coms_1_1;
+ 				close usermenu; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			forecolor 1.0 1.0 1.0 0.7
+			rect 12 58 168 10
+			textscale .27
+			textaligny 10
+			text "3. Configuration"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+  				open coms_1_2;
+ 				close usermenu; 
+			}
+			useAssetFont
+			decoration
+		}
+	}
+}
+		

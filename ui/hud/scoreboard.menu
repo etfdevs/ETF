@@ -1,0 +1,152 @@
+#include "ui/menudef.h"
+
+{
+	menuDef {
+		name "scoreboard"
+		rect 16 -8 608 464
+		visible 0
+		focusColor .85 .41 .38 1			// Menu focus color for text and items
+		disableColor .5 .5 .5 1
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		itemDef {
+	        	rect -20 0 660 555 
+	        	visible MENU_TRUE
+	        	decoration
+	        	forecolor 0 0 0 .5					
+	        	background "ui/gfx/hud/fill_center_grey.tga"
+	        	style WINDOW_STYLE_SHADER
+		}
+
+		itemDef {
+			ownerDraw CG_SCOREBOARD_TEAMSCORES
+			rect 32 20 544 16
+			textaligny 16
+			textalignx 0
+			textscale .26
+			forecolor 1 1 1 1
+			visible 1
+			decoration
+			useAssetFont
+		}
+
+		itemDef {
+			name "scoreboard"
+			visible MENU_TRUE
+			rect 40 66 556 600
+			textaligny -2
+			textscale .23
+			type ITEM_TYPE_LISTBOX
+			elementheight 14
+			elementtype LISTBOX_TEXT
+			feeder FEEDER_SCOREBOARD
+			outlinecolor 1 1 1 0.2
+			//columns 6 0 20 0
+			//		  48 140 20
+			//		  190 72 3
+			//		  265 64 3
+			//		  332 64 3
+			//		  300  0 20
+			columns 5 0 20 0
+					  48 140 20
+					  190 72 3
+					  265 64 3
+					  332 64 3
+					  //300  0 20			
+			forecolor 1 1 1 1
+
+			useAssetFont
+		
+		}
+			
+ 		itemDef {
+			visible MENU_TRUE
+			rect 10 0 640 72
+			decoration
+			ownerDraw CG_CHATBOX_CONTENT
+			forecolor 1 1 1 1
+			anchorx 0
+			anchory 0
+			textscale .19
+			textaligny 10
+			textalignx 3
+			special 8
+			useAssetFont
+		}
+
+		itemDef {
+			visible MENU_TRUE
+			rect 10 430 559 60
+			decoration
+			ownerDraw CG_TEAMCHATBOX_CONTENT
+			forecolor 1 1 1 1
+			anchorx 0
+			anchory 0
+			textscale .19
+			textaligny 10
+			textalignx 3
+			special 8
+			useAssetFont
+		}
+			
+		itemDef {
+			text "Player Names"
+			rect 70 55 96 16
+			textaligny 10
+			textscale .27
+			visible 1
+			forecolor 1 0 0 1
+			type ITEM_TYPE_BUTTON
+
+			useAssetFont
+		}
+
+		itemDef {
+			text "Scores"
+			rect 230 55 72 16
+			textalignx 36
+			textaligny 10
+			textscale .27
+			textalign ITEM_ALIGN_CENTER
+			visible 1
+			forecolor 1 0 0 1
+			type ITEM_TYPE_BUTTON
+
+			useAssetFont
+		} 
+
+		itemDef {
+			text "Pings"
+			rect 305 55 72 16
+			textalignx 32
+			textaligny 10
+			textscale .27
+			textalign ITEM_ALIGN_CENTER
+			visible 1
+			forecolor 1 0 0 1
+			type ITEM_TYPE_BUTTON
+
+			useAssetFont
+		} 
+		itemDef {
+			text "Time"
+			rect 370 55 72 16
+			textalignx 32
+			textaligny 10
+			textscale .27
+			textalign ITEM_ALIGN_CENTER
+			visible 1
+			forecolor 1 0 0 1
+			type ITEM_TYPE_BUTTON
+
+			useAssetFont
+		} 
+		
+
+
+
+}
+}

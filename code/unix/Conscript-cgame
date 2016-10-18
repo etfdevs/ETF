@@ -1,0 +1,87 @@
+Import qw( CC CFLAGS LDFLAGS LIBS BASEDIR );
+
+$env = new cons (
+  CC => $CC,
+  CFLAGS => "$CFLAGS -DCGAME -DCGAMEDLL -DWOLF_FLAME" ,
+  LDFLAGS => $LDFLAGS,
+  LIBS => $LIBS
+);
+
+Link 'build_cgame' => $BASEDIR;
+
+@FILES = qw (
+  build_cgame/code/game/bg_misc.c
+  build_cgame/code/game/bg_pmove.c
+  build_cgame/code/game/bg_q3f_controllable.c
+  build_cgame/code/game/bg_q3f_flyby.c
+  build_cgame/code/game/bg_q3f_grenades.c
+  build_cgame/code/game/bg_q3f_info.c
+  build_cgame/code/game/bg_q3f_mapsentry.c
+  build_cgame/code/game/bg_q3f_permon.c
+  build_cgame/code/game/bg_q3f_playerclass.c
+  build_cgame/code/game/bg_q3f_splines.c
+  build_cgame/code/game/bg_q3f_tea.c
+  build_cgame/code/game/bg_q3f_util.c
+  build_cgame/code/game/bg_q3f_weapon.c
+  build_cgame/code/game/bg_slidemove.c
+  build_cgame/code/game/bg_tracemap.c
+  build_cgame/code/cgame/cg_atmospheric.c
+  build_cgame/code/cgame/cg_consolecmds.c
+  build_cgame/code/cgame/cg_draw.c
+  build_cgame/code/cgame/cg_drawtools.c
+  build_cgame/code/cgame/cg_effects.c
+  build_cgame/code/cgame/cg_ents.c
+  build_cgame/code/cgame/cg_event.c
+  build_cgame/code/cgame/cg_flamethrower.c
+  build_cgame/code/cgame/cg_info.c
+  build_cgame/code/cgame/cg_localents.c
+  build_cgame/code/cgame/cg_main.c
+  build_cgame/code/cgame/cg_marks.c
+  build_cgame/code/cgame/cg_newdraw.c
+  build_cgame/code/cgame/cg_players.c
+  build_cgame/code/cgame/cg_playerstate.c
+  build_cgame/code/cgame/cg_polybus.c
+  build_cgame/code/cgame/cg_predict.c
+  build_cgame/code/cgame/cg_q3f_anticheat.c
+  build_cgame/code/cgame/cg_q3f_atmospheric.c
+  build_cgame/code/cgame/cg_q3f_classutil.c
+  build_cgame/code/cgame/cg_q3f_controllable.c
+  build_cgame/code/cgame/cg_q3f_crc.c
+  build_cgame/code/cgame/cg_q3f_customshader.c
+  build_cgame/code/cgame/cg_q3f_f2r.c
+  build_cgame/code/cgame/cg_q3f_flare.c
+  build_cgame/code/cgame/cg_q3f_flyby.c
+  build_cgame/code/cgame/cg_q3f_grenades.c
+  build_cgame/code/cgame/cg_q3f_init.c
+  build_cgame/code/cgame/cg_q3f_mapinfo.c
+  build_cgame/code/cgame/cg_q3f_mapselect.c
+  build_cgame/code/cgame/cg_q3f_mapsentry.c
+  build_cgame/code/cgame/cg_q3f_menu.c
+  build_cgame/code/cgame/cg_q3f_panel.c
+  build_cgame/code/cgame/cg_q3f_rendereffects.c
+  build_cgame/code/cgame/cg_q3f_scanner.c
+  build_cgame/code/cgame/cg_q3f_scriptlib.c
+  build_cgame/code/cgame/cg_q3f_sentry.c
+  build_cgame/code/cgame/cg_q3f_sounddict.c
+  build_cgame/code/cgame/cg_q3f_spawn.c
+  build_cgame/code/cgame/cg_q3f_spirit.c
+  build_cgame/code/cgame/cg_q3f_trapcalls.c
+  build_cgame/code/cgame/cg_q3f_water.c
+  build_cgame/code/cgame/cg_q3f_waypoint.c
+  build_cgame/code/cgame/cg_scoreboard.c
+  build_cgame/code/cgame/cg_servercmds.c
+  build_cgame/code/cgame/cg_snapshot.c
+  build_cgame/code/cgame/cg_trails.c
+  build_cgame/code/cgame/cg_unlagged.c
+  build_cgame/code/cgame/cg_view.c
+  build_cgame/code/cgame/cg_weapons.c
+  build_cgame/code/game/q_math.c
+  build_cgame/code/ui_new/ui_shared.c  
+  build_cgame/code/api/et/q_shared.c
+  build_cgame/code/api/et/cg_syscalls.c
+ );
+
+$FILESREF = \@FILES;
+
+Program $env 'cgame.mp.i386.so', @$FILESREF;
+

@@ -1,0 +1,117 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Edit Favourites
+	//
+
+//	MEDIUM SIZE
+	#define MENU_X 62
+	#define MENU_Y 42
+	#define MENU_WIDTH 514
+	#define MENU_HEIGHT 326
+
+	#define MENU_NAME "menu_favourites_setup"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+
+		onOpen { }
+		onEsc { uiScript closeFORTBackModels }
+		onClose { setmenufocus menubar }
+
+		MENUMAINRECT("Edit Favourites")
+
+		FORT_ITEM_BORDER(22, 40, 380, 175)
+
+		itemDef {
+			rect 30 48 380 175
+			type ITEM_TYPE_LISTBOX
+			style WINDOW_STYLE_FILLED
+			elementheight 16
+			textscale .27
+			forecolor .6 .6 .6 1
+			backcolor .1 .1 .1 .1
+			outlinecolor 1 1 1 .4
+			elementtype LISTBOX_TEXT
+			textstyle 6
+			feeder FEEDER_FAVSERVERS
+			columns 2	2	190	25
+						190	190	25
+
+			visible 1
+	 	}
+
+		itemDef {
+      		rect 80 245 100 20
+			visible MENU_TRUE
+			textalign ITEM_ALIGN_RIGHT
+			textalignx 3
+			textaligny 15
+			textscale .27
+			text "Address"
+
+			decoration
+		}
+
+		itemDef {
+      		rect 80 280 100 20
+			visible MENU_TRUE
+			textalign ITEM_ALIGN_RIGHT
+			textalignx 3
+			textaligny 15
+			textscale .27
+
+			text "Name"
+
+			decoration
+		}
+
+		itemDef {
+			name serverfield
+			visible MENU_TRUE
+      			rect 90 245 312 20 
+			textalignx 3
+			textaligny 15
+			textscale .25
+			type ITEM_TYPE_EDITFIELD
+			maxchars 50
+			maxPaintChars 30
+			cvar "ui_favServerAddress"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+
+			mouseEnter { setitemcolor serverfield backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor serverfield backcolor .5 .5 .5 .25 }
+		}
+
+		itemDef {
+			name servernamefield
+			visible MENU_TRUE
+      			rect 90 280 312 20 
+			textalignx 3
+			textaligny 15
+			textscale .25
+			type ITEM_TYPE_EDITFIELD
+			maxchars 50
+			maxPaintChars 30
+			cvar "ui_favServerName"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+
+			mouseEnter { setitemcolor servernamefield backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor servernamefield backcolor .5 .5 .5 .25 }
+		}
+
+		FORT_BUTTONTT(favServerAdd, Add, 16, 410, 245, 82, 24, .25, "", uiScript addFavServer, "Add the listed address to the favourites list")
+		FORT_BUTTONTT(favServerRemove,Remove, 16, 410, 280, 82, 24, .25, "", uiScript removeFavServer, "Remove the selected server from the favourites list")
+	}
+}

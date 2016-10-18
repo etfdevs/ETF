@@ -1,0 +1,84 @@
+#include "ui/menudef.h"
+
+{
+    assetGlobalDef {
+        font "fonts/q3f" 16             // font
+        smallFont "fonts/q3f" 12            // font
+        bigFont "fonts/q3f" 20          // font
+        cursor "ui/gfx/3_cursor2"                   // cursor   
+        //itemFocusSound "ui/sound/menu2.wav"           // sound for item getting focus (via keyboard or mouse )
+
+        fadeClamp 1.0                               // sets the fadeup alpha
+        fadeCycle 1                                 // how often fade happens in milliseconds
+        fadeAmount 0.1                              // amount to adjust alpha per cycle
+
+        shadowColor 0.1 0.1 0.1 0.25                // shadow color
+    }
+
+    menuDef {
+        name "main"
+        fullScreen MENU_TRUE                
+        rect 0 0 640 480                    // Size and position of the menu
+        visible MENU_TRUE                   // Visible on open
+        focusColor 1 .75 0 1                // Menu focus color for text and items
+
+        onOpen {        
+            playlooped "music/fui.wav"
+            uiScript startupFORTBackModels ;
+        }
+        
+//      onESC { open quit_popmenu }
+
+        // background
+        itemDef {
+            name "background_main"
+            rect 0 0 640 480
+            visible MENU_TRUE
+            decoration
+            backcolor 0 0 0 1
+            style WINDOW_STYLE_FILLED
+        }
+        // the model background
+        itemDef {
+            name "background_models"
+            rect 0 0 640 480
+            visible MENU_TRUE
+            decoration
+            ownerdraw UI_FORT_BACKMODELS
+        }
+
+	//ETF logo temp background
+	itemdef {
+		name "background_oily"
+		rect 0 0 640 480
+		visible MENU_TRUE
+		decoration
+		background "ui/gfx/oilybg"
+		style WINDOW_STYLE_SHADER
+	}
+
+	//ETF logo
+	itemdef {
+		name "background_logo"
+		rect 220 122 200 200
+		visible MENU_TRUE
+		decoration
+		background "ui/gfx/etflogo" 
+		style WINDOW_STYLE_SHADER
+	}
+
+        itemDef {
+            name "copyright"
+            rect 0 465 640 30
+            visible MENU_TRUE
+            decoration
+            //text "ETF 1.7 Pre-Release [02/20/2012] (c)2003-2012, ETF Development Team.  All Rights Reserved"
+			cvar "ui_builddate"
+            textalign ITEM_ALIGN_CENTER         
+            textalignx 320
+            textaligny 8
+            textscale .24
+            forecolor .75 .75 .75 .75
+        }
+    }
+}

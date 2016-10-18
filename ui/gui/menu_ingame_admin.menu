@@ -1,0 +1,30 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Ingame Menu - Play
+	//
+
+	#define MENU_X 385
+	#define MENU_Y 48
+	#define MENU_WIDTH 94
+	#define MENU_HEIGHT 65
+
+	#define MENU_NAME "menu_ingame_admin"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		POPUPMENUSTYLE
+		outOfBoundsClick
+//		onOOBClick { close menu_ingame_play; setmenufocus ingame }
+
+		POPUPMENUBGINGAME
+		POPUPMENUBORDERSINGAME
+
+		POPUPMENUITEM(10, 45, "Info", "serinfo", menu_serverinfo)
+//		POPUPMENUITEM(10, 45, "Punkbuster", "pb", menu_pb)
+		POPUPMENUITEM(10, 30, "Match", "match", men_match)
+		POPUPMENUITEM(10, 15, "Bots", "bots", men_bots)
+		POPUPMENUITEM(10, 0, "Admin", "client", men_clients)
+}

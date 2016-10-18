@@ -1,0 +1,201 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Quick Connect
+	//
+
+//	MEDIUM SIZE
+	#define MENU_X 62
+	#define MENU_Y 42
+	#define MENU_WIDTH 514
+	#define MENU_HEIGHT 326
+
+	#define MENU_NAME "menu_quickconnect"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+
+		onOpen { setmenufocus menu_quickconnect }
+		onClose { setmenufocus menubar }
+		onESC { uiScript closeFORTBackModels }
+
+		MENUMAINRECT("Quick Connect")
+
+		SIMPLEGROUPBOX("Options", 45, 42, 428, 70)
+
+		itemDef {
+			visible 	MENU_TRUE
+			rect 		60 65 80 15
+			textalignx 	5
+			textaligny 	10
+			textscale 	.25
+			textalign 	ITEM_ALIGN_LEFT
+			text 		"Punkbuster status:"
+			backcolor	1 .77 .33 .8
+			decoration
+		}
+
+		itemDef {
+			name		"pbstatus"
+			rect		165 63 80 15
+			ownerdraw	UI_PBSTATUS
+			textscale	.25
+			textalignx 	6
+			textaligny 	6
+			backcolor	.4 .4 .4 .8
+			bordercolor	.7 .7 .7 1
+			visible		1
+		}
+
+		FORT_BUTTONTT(btnpbenable, "Enable Punkbuster", 16, 332, 60, 130, 24, .22, "", exec pb_cl_enable, "This enables Punkbuster anti-cheat protection")
+
+		FORT_BUTTONTT(btnpbdisable, "Disable Punkbuster", 16, 332, 85, 130, 24, .22, "", exec pb_cl_disable, "This disables Punkbuster anti-cheat protection (requires a restart)")
+
+		itemDef {
+			name 		"password"
+			visible 	MENU_TRUE
+			rect 		60 90 80 15
+			textalignx 	5
+			textaligny 	10
+			textscale 	.25
+			text 		"Server password:"
+			decoration
+		}
+
+		itemDef {
+			name 		"passwordEntry"
+			visible 	MENU_TRUE
+			rect 		170 85 105 20
+			textalignx 	5
+			textaligny 	14
+			textscale 	.25
+			type 		ITEM_TYPE_EDITFIELD
+			maxchars 	15
+			cvar 		"password"
+			backcolor 	.5 .5 .5 .25
+			style 		WINDOW_STYLE_FILLED
+			border 		WINDOW_BORDER_FULL
+			bordercolor 	.5 .5 .5 .5
+			text		""
+
+			mouseEnter { setitemcolor passwordEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor passwordEntry backcolor .5 .5 .5 .25 }
+		}
+
+		SIMPLEGROUPBOX("Server", 45, 142, 428, 130)
+
+		itemDef {
+			visible 	MENU_TRUE
+			rect 		50 160 72 20
+			textalignx 	5
+			textaligny 	15
+			textscale 	.25
+			text 		"Server :"
+			decoration
+		}
+
+		itemDef {
+			name 		"specifyEntry"
+			visible 	MENU_TRUE
+			rect 		120 160 230 20
+			textalignx 	3
+			textaligny 	15
+			textscale 	.25
+			type 		ITEM_TYPE_EDITFIELD
+			maxchars 	45
+			maxPaintChars 	26
+			cvar 		"ui_specifyserver"
+			backcolor 	.5 .5 .5 .25
+			style 		WINDOW_STYLE_FILLED
+			border 		WINDOW_BORDER_FULL
+			bordercolor 	.5 .5 .5 .5
+			text 		""
+
+			mouseEnter { setitemcolor specifyEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor specifyEntry backcolor .5 .5 .5 .25 }
+		}
+
+		itemDef {
+			visible 	MENU_TRUE
+			rect 		60 185 72 20
+			textalignx 	5
+			textaligny 	15
+			textscale 	.25
+			text 		"Port :"
+			decoration
+		}
+
+		itemDef {
+			name 		"portEntry"
+			visible 	MENU_TRUE
+			rect 		120 185 125 20
+			textalignx 	3
+			textaligny 	15
+			textscale 	.25
+			type 		ITEM_TYPE_EDITFIELD
+			maxchars 	8
+			cvar 		"ui_specifyport"
+			backcolor 	.5 .5 .5 .25
+			style 		WINDOW_STYLE_FILLED
+			border 		WINDOW_BORDER_FULL
+			bordercolor 	.5 .5 .5 .5
+			text ""
+
+			mouseEnter { setitemcolor portEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor portEntry backcolor .5 .5 .5 .25 }
+		}
+
+	    	itemDef {
+			name		"addFaves"
+		      	rect		300 212 125 15
+			type		ITEM_TYPE_CHECKBOX
+			text		"Add to Favorites"
+			textscale	.25
+			textalign	ITEM_ALIGN_LEFT
+			textalignx	1
+			textaligny	14
+			forecolor	1 1 1 1
+			cvar		"ui_addSpecifyFavorites"
+			visible		1
+			tooltip		"Add these server details to Favorites list when connecting"
+		}
+
+		itemDef {
+			visible 	MENU_TRUE
+			rect 		60 210 102 20
+			textalignx 	5
+			textaligny 	15
+			textscale 	.25
+			text 		"Favourites name:"
+			decoration
+		}
+
+		itemDef {
+			name 		servernamefield
+			visible 	MENU_TRUE
+      			rect 		170 210 115 20 
+			textalignx	3
+			textaligny 	15
+			textscale 	.25
+			type 		ITEM_TYPE_EDITFIELD
+			maxchars 	50
+			maxPaintChars 	13
+			cvar 		"ui_favServerName"
+			backcolor 	.5 .5 .5 .25
+			style 		WINDOW_STYLE_FILLED
+			border 		WINDOW_BORDER_FULL
+			bordercolor 	.5 .5 .5 .5
+			text 		""
+
+			mouseEnter { setitemcolor servernamefield backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor servernamefield backcolor .5 .5 .5 .25 }
+		}
+
+
+		FORT_BUTTONTT(joinspecified, "Connect", 18, 190, 240, 140, 28, .26, "", uiScript JoinSpecifiedServer, "Connect to the specified server")
+
+	}
+}

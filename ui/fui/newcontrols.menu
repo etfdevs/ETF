@@ -1,0 +1,142 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Controls setup
+	//
+
+	#define MENU_X 7
+	#define MENU_Y 10
+	#define MENU_WIDTH 626
+	#define MENU_HEIGHT 388
+
+	#define MENU_NAME "menu_controls"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+		
+		onOpen {uiScript setConfigReadMode CONFIG_READ_NORMAL;
+			uiScript ExecConfig;
+			uiScript readBindings;
+			conditionalScript isconnected 2 ( "uiScript MoveMenuToY menu_controls 17" ) ( "uiScript MoveMenuToY menu_controls 68" )
+		}
+		onEsc { uiScript closeFORTBackModels }
+		onClose {  uiScript applyBindings ; uiScript saveBindings ; uiScript closeFORTBackModels ; conditionalScript isconnected 2 ( "setmenufocus menubar" ) ( "setmenufocus ingame" ) }
+
+		onKey 127 { uiScript clearBinding }
+
+		MENUMAINRECTSMALL("Setup Controls")   // -40
+
+		SIMPLEGROUPBOXBG("Movement", 10, 28, 292, 118, 0 0 0 .7 )	
+		itemDef {
+			name 		movebindingFeeder
+			rect 		12 42 300 106
+			type 		ITEM_TYPE_LISTBOX
+			elementheight 	14
+			textscale 	.24
+			forecolor 	.8 .8 .8 1
+			outlinecolor 	0 0 0 0
+			elementtype 	LISTBOX_MULTI_CONTROLS
+			feeder 		FEEDER_BIND_MOVE
+			columns 3	
+					1	110	21
+					110	86	14
+					196	86	12
+
+			doubleclick { uiScript grabFeedKey FEEDER_BIND_MOVE }
+			mouseEnter { setitemcolor movebindingFeeder outlinecolor 1 1 1 .4 ; uiScript setBindingFeederMode BINDING_TABLE_MOVE }
+			mouseExit  { setitemcolor movebindingFeeder outlinecolor 0 0 0 0 }
+			visible 1
+	 	}
+
+		SIMPLEGROUPBOXBG("Miscellaneous", 10, 156, 292, 200, 0 0 0 .7 )	
+		itemDef {
+			name 		miscbindingFeeder
+			rect 		12 168 300 194
+			type 		ITEM_TYPE_LISTBOX
+			elementheight 	14
+			textscale 	.24
+			forecolor 	.8 .8 .8 1
+			outlinecolor 	0 0 0 0
+			elementtype 	LISTBOX_MULTI_CONTROLS
+			feeder 		FEEDER_BIND_MISC
+			columns 3	
+					1	110	21
+					110	86	14
+					196	86	12
+
+			doubleclick { uiScript grabFeedKey FEEDER_BIND_MISC }
+			mouseEnter { setitemcolor miscbindingFeeder outlinecolor 1 1 1 .4 ; uiScript setBindingFeederMode BINDING_TABLE_MISC }
+			mouseExit  { setitemcolor miscbindingFeeder outlinecolor 0 0 0 0 }
+			visible 1
+	 	}
+
+		SIMPLEGROUPBOXBG("Attacking", 314, 28, 302, 228, 0 0 0 .7 )	
+		itemDef {
+			name 		lookbindingFeeder
+			rect 		316 40 310 220
+			type 		ITEM_TYPE_LISTBOX
+			elementheight 	14
+			textscale 	.24
+			forecolor 	.8 .8 .8 1
+			outlinecolor 	0 0 0 0
+			elementtype 	LISTBOX_MULTI_CONTROLS
+			feeder 		FEEDER_BIND_SHOOT
+			columns 3	
+					1	120	21
+					120	86	14
+					206	86	12
+
+			doubleclick { uiScript grabFeedKey FEEDER_BIND_SHOOT }
+			mouseEnter { setitemcolor lookbindingFeeder outlinecolor 1 1 1 .4 ; uiScript setBindingFeederMode BINDING_TABLE_SHOOT }
+			mouseExit  { setitemcolor lookbindingFeeder outlinecolor 0 0 0 0 }
+
+			visible 1
+	 	}
+
+		SIMPLEGROUPBOXBG("Communications", 314, 268, 302, 88, 0 0 0 .7 )	
+		itemDef {
+			name 		comsbindingFeeder
+			rect 		316 280 310 80
+			type 		ITEM_TYPE_LISTBOX
+			elementheight 	14
+			textscale 	.24
+			forecolor 	.8 .8 .8 1
+			outlinecolor 	0 0 0 0
+			elementtype 	LISTBOX_MULTI_CONTROLS
+			feeder 		FEEDER_BIND_COMS
+			columns 3	
+					1	120	21
+					120	86	14
+					206	86	12
+
+			doubleclick { uiScript grabFeedKey FEEDER_BIND_COMS }
+			mouseEnter { setitemcolor comsbindingFeeder outlinecolor 1 1 1 .4 ; uiScript setBindingFeederMode BINDING_TABLE_COMS }
+			mouseExit  { setitemcolor comsbindingFeeder outlinecolor 0 0 0 0 }
+
+			visible 1
+	 	}
+
+//		FORT_BUTTONTT(bindingsSet,	Set,	20, 120, 302, 82, 32, .28, "", uiScript grabKey, "Define this key")
+//		FORT_BUTTONTT(bindingsClear,	Clear,	20, 218, 302, 82, 32, .28, "", uiScript clearBinding, "Clear this keybinding")
+//		FORT_BUTTONTT(bindingsApply,	Apply,	20, 336, 302, 82, 32, .28, "", uiScript applyBindings, "Activate the keybindings")
+//		FORT_BUTTONTT(bindingsRevert,	Revert,	20, 438, 302, 82, 32, .28, "", uiScript readBindings, "Undo all changes")
+		
+//		FORT_BUTTONTT(bindingsSave,	Save,	20, 336, 344, 82, 32, .28, "", uiScript applyBindings; uiScript saveBindings, "Save these changes now")
+//		FORT_BUTTONTT(bindingsLoad,	Load,	20, 438, 344, 82, 32, .28, "", uiScript setFORTBackModelOpenMenu menu_loadconfig, "Load an existing configuration file")
+
+		itemDef {
+			ownerdraw UI_KEYBINDSTATUS
+			textscale .25
+			textalign ITEM_ALIGN_LEFT
+			textalignx 6
+			textaligny 10
+			visible 1
+			decoration
+			rect 10 360 292 20
+		}
+	}
+}
+

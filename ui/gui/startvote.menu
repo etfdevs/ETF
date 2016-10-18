@@ -1,0 +1,161 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Start Votes
+	//
+
+	#define MENU_X 32
+	#define MENU_Y 60
+	#define MENU_WIDTH 574
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "men_svote"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+		
+		onOpen { uiScript loadArenas men_svote; uiScript buildPlayerList; uiScript setupGameIndexMulti }
+		onEsc { uiScript closeFORTBackModels }
+		onClose { setmenufocus menubar }
+
+		MENUMAINRECT("Start a vote")
+
+		itemDef {
+			name maplist
+    			rect 22 40 192 212
+			type ITEM_TYPE_LISTBOX
+			style WINDOW_STYLE_FILLED
+			elementwidth 170
+			elementheight 17
+			textscale .27
+			elementtype LISTBOX_TEXT
+			feeder FEEDER_ALLMAPS
+			textstyle 6
+			textalign 3
+			textaligny -2
+			forecolor .8 .8 .8 1
+			backcolor 0 0 0 1
+			outlinecolor 1 1 1 .4
+			visible 1
+			columns 1 2 170 23
+  		}
+		SIMPLEGROUPBOX( "Select Map", 20, 26, 194, 226 )
+
+
+
+		itemDef {
+			name "gameindexmapname"
+			visible MENU_TRUE
+			rect 250 35 192 18
+			ownerdraw UI_GAMEINDEX_MAPNAME
+			textalign ITEM_ALIGN_LEFT
+			align ITEM_ALIGN_CENTER
+			textalignx 1
+			textaligny 8
+			textscale .26
+
+			action { play "ui/sound/menu4.wav" ; 
+				 uiScript changeGameIndex }
+		}
+
+		itemDef {
+			rect 250 72 100 15
+			textalignx 1
+			textaligny 8
+			textalign ITEM_ALIGN_LEFT
+			textscale .26
+			text "Game index"
+			decoration
+			visible 1
+		}
+
+		itemDef {
+			name "adminGameIndexEntry"
+			rect 332 64 80 20
+			textalignx 3
+			textaligny 15
+			textscale .27
+			type ITEM_TYPE_EDITFIELD
+			maxchars 8
+			cvar "hud_admingameindex"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+
+			mouseEnter { setitemcolor adminGameIndexEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor adminGameIndexEntry backcolor .5 .5 .5 .25 }
+			visible 1
+		}				
+
+		FORT_BUTTONTT(vote_voteMap, "Change Map", 18, 428, 64, 120, 28, .27, "", uiScript VoteMap, "Vote to start the selected map" )
+
+		itemDef {
+			rect 250 122 100 15
+			textalignx 1
+			textaligny 8
+			textalign ITEM_ALIGN_LEFT
+			textscale .26
+			text "Time limit"
+			decoration
+			visible 1
+		}
+
+		itemDef {
+			name "voteTimelimit"
+			rect 332 114 80 20
+			textalignx 3
+			textaligny 15
+			textscale .27
+			type ITEM_TYPE_EDITFIELD
+			maxchars 8
+			cvar "hud_votetimelimit"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+
+			mouseEnter { setitemcolor voteTimelimit backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor voteTimelimit backcolor .5 .5 .5 .25 }
+			visible 1
+		}				
+
+		FORT_BUTTONTT(vote_timelimitVote, "Time Limit", 18, 428, 114, 120, 28, .27, "", uiScript VoteTimelimit, "Vote to change the timelimit")
+
+		FORT_BUTTONTT(vote_voteNextmap,	"Next Map", 18, 250, 180, 120, 28, .27, "", uiScript ExecText "callvote nextmap", "Vote to start the next map in server map list")
+		FORT_BUTTONTT(vote_voteRestartmap, "Restart Map", 18, 250, 215, 120, 28, .27, "", uiScript ExecText "callvote map_restart", "Vote to restart this map")
+
+		FORT_BUTTONTT(vote_ceasefireOn,	"Ceasefire On",	18, 428, 180, 120, 28, .27, "", uiScript ExecText "callvote ceasefire on", "Turn Ceasefire on")
+		FORT_BUTTONTT(vote_ceasefireOff, "Ceasefire Off", 18, 428, 215, 120, 28, .27, "", uiScript ExecText "callvote ceasefire off", "Turn Ceasefire off")
+
+
+		itemDef {
+			name playerlist
+    			rect 22 274 192 105
+			type ITEM_TYPE_LISTBOX
+			style WINDOW_STYLE_FILLED
+			elementwidth 170
+			elementheight 17
+			textscale .27
+			elementtype LISTBOX_TEXT
+			feeder FEEDER_ADMIN_PLAYERS
+			textstyle 6
+			textalign 3
+			textaligny -2
+			forecolor .8 .8 .8 1
+			backcolor 0 0 0 1
+			outlinecolor 1 1 1 .4
+			visible 1
+			columns 1 2 170 23
+  		}
+		SIMPLEGROUPBOX( "Select Player", 20, 260, 194, 119 )
+
+		FORT_BUTTONTT(vote_kickVote, Kick, 18, 250, 353, 120, 28, .27, "", uiScript voteKick, "Start a vote to kick this player")
+
+	}
+}

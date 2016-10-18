@@ -1,0 +1,33 @@
+// menu defs
+// 
+{
+	// ingame variation of menubar
+	loadMenu { "ui/gui/ingame_menubar.menu" }
+
+	loadMenu { "ui/hud/endgame.menu" }
+
+	// ingame specific popups
+	loadMenu { "ui/gui/menu_ingame_play.menu" }
+	loadMenu { "ui/gui/menu_ingame_setup.menu" }
+	loadMenu { "ui/gui/menu_ingame_vote.menu" }
+	loadMenu { "ui/gui/menu_ingame_admin.menu" }
+	loadMenu { "ui/gui/menu_ingame_help.menu" }
+	loadMenu { "ui/gui/menu_ingame_quit.menu" }
+	loadMenu { "ui/gui/menu_endgame_quit.menu" }
+
+	// dialogs
+	loadMenu { "ui/gui/reconnect.menu" }
+	loadMenu { "ui/gui/disconnect.menu" }
+
+	// menu screens
+	loadMenu { "ui/gui/ingame_team.menu" }
+	loadMenu { "ui/gui/ingame_class.menu" }
+	loadMenu { "ui/gui/startvote.menu" }
+	loadMenu { "ui/gui/dovote.menu" }
+	loadMenu { "ui/gui/doready.menu" }
+	loadMenu { "ui/gui/adminmatch.menu" }
+	loadMenu { "ui/gui/adminclient.menu" }
+	loadMenu { "ui/gui/adminbots.menu" }
+//	loadMenu { "ui/gui/adminpb.menu" }
+
+}

@@ -1,0 +1,52 @@
+// menu defs
+// 
+{	
+	loadMenu { "ui/fui/newmain.menu" }
+
+	// menu bar
+	loadMenu { "ui/fui/newmenubar.menu" }
+	loadMenu { "ui/fui/newmenu_play.menu" }
+	loadMenu { "ui/fui/newmenu_setup.menu" }
+	loadMenu { "ui/fui/newmenu_extras.menu" }
+	loadMenu { "ui/fui/newmenu_help.menu" }
+	loadMenu { "ui/fui/newmenu_favourites.menu" }
+
+	//error popup
+	loadMenu { "ui/fui/error.menu" }
+	loadMenu { "ui/fui/quit.menu" }
+	loadMenu { "ui/fui/popup_password.menu" }
+	loadMenu { "ui/fui/profile.menu" }
+
+	// menus
+	loadMenu { "ui/fui/newfindgame.menu" }			// server browser
+	loadMenu { "ui/fui/newserverinfo.menu" }		// server info
+	loadMenu { "ui/fui/connect.menu" }			// connecting to server, starting up
+	loadMenu { "ui/fui/newcreategame.menu" }		// creating a new game
+	loadMenu { "ui/fui/newfindplayer.menu" }		// find a friend
+	loadMenu { "ui/fui/newoptions.menu" }			// game options
+ 	loadMenu { "ui/fui/viewoptions.menu" }			// view options
+        loadMenu { "ui/fui/newselecthud.menu" }
+	loadMenu { "ui/fui/resetdefaults.menu" }
+	loadMenu { "ui/fui/newcontrols.menu" }
+//	loadMenu { "ui/fui/loadconfig.menu" }
+//	loadMenu { "ui/fui/classconfig.menu" }
+//	loadMenu { "ui/fui/classconfig_select.menu" }
+//	loadMenu { "ui/fui/classconfig_discards.menu" }
+//	loadMenu { "ui/fui/classconfig_load.menu" }
+	loadMenu { "ui/fui/newsystem.menu" }
+	loadMenu { "ui/fui/favourites.menu" }
+	loadMenu { "ui/fui/newmovies.menu" }
+	loadMenu { "ui/fui/newcredits.menu" }
+	loadMenu { "ui/fui/newcommunity.menu" }
+	loadMenu { "ui/fui/quickconnect.menu" }
+	loadMenu { "ui/fui/aboutmaps.menu" }
+	loadMenu { "ui/fui/aboutclasses.menu" }
+	loadMenu { "ui/fui/aboutweapons.menu" }
+
+	// 5slide
+	loadMenu { "ui/fui/five_slide_1.menu" }
+	loadMenu { "ui/fui/five_slide_2.menu" }
+	loadMenu { "ui/fui/five_slide_3.menu" }
+	loadMenu { "ui/fui/five_slide_4.menu" }
+	loadMenu { "ui/fui/five_slide_5.menu" }
+}

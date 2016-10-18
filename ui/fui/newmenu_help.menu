@@ -1,0 +1,30 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Main Menu - Help
+	//
+
+	#define MENU_X 298
+	#define MENU_Y 345
+	#define MENU_WIDTH 130
+	#define MENU_HEIGHT 75
+
+	#define MENU_NAME "menu_help"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		POPUPMENUSTYLE
+		outOfBoundsClick
+//		onOOBClick { close menu_help; conditionalScript isconnected 2 ( "setmenufocus menubar" ) ( "setmenufocus ingame" ) }
+
+		POPUPMENUBG
+		POPUPMENUBORDERS
+
+		POPUPMENUITEM(10, 10, "Getting Started", "getstart", menu_5slide_1)
+		POPUPMENUITEM(10, 25, "Know Your Role", "knowrole", "menu_yourrole")
+		POPUPMENUITEM(10, 40, "Your Weapons", "aboutweaps", "menu_weapons")
+		POPUPMENUITEM(10, 55, "About the Maps", "aboutmaps", "menu_aboutmaps")
+	}
+}

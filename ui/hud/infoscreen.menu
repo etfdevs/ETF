@@ -1,0 +1,109 @@
+#include "ui/menudef.h"
+
+{
+	menuDef {
+		name "infoscreen"
+		fullScreen MENU_TRUE
+		rect 0 0 640 480
+		visible MENU_FALSE
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 640 480
+			decoration
+			style WINDOW_STYLE_FILLED
+			backcolor 0 0 0 1
+		}
+		
+		itemDef {
+			visible MENU_TRUE
+			rect 0 32 640 16
+			ownerDraw CG_MAPNAME
+			textalignx 10
+			textaligny 15
+			textscale .45
+			decoration
+		}		
+
+		itemDef {
+			visible MENU_TRUE
+			rect 0 44 640 16
+			ownerDraw CG_MOTD
+			textalignx 320
+			textaligny 15
+			textscale .45
+			textalign ITEM_ALIGN_CENTER
+			decoration
+		}		
+
+		itemDef {
+			visible MENU_TRUE
+			rect 0 80 640 160
+			decoration
+			ownerDraw CG_LEVELSHOT		
+		}
+		
+		itemDef {
+			visible MENU_TRUE
+			rect 0 80 640 160
+			decoration
+			ownerDraw CG_LOADPROGRESS
+		}
+		
+		itemDef {
+			visible MENU_TRUE
+			rect 0 79 640 161
+			decoration
+			border WINDOW_BORDER_HORZ
+			bordercolor 1 1 1 1
+			bordersize 1
+		}
+		
+		itemDef {
+			visible MENU_TRUE
+			rect 0 98 640 20
+			ownerDraw CG_LOADSTATUS
+			textalignx 160
+			textaligny 15
+			textscale .4
+			textalign ITEM_ALIGN_CENTER
+			decoration
+		}		
+
+		FORT_ITEM_BORDER_FILLED_NEW(16, 256, 592, 192)
+
+/*		itemDef {
+			visible MENU_TRUE
+			rect 24 30 592 272
+			ownerDraw CG_LOADINFO
+			textaligny 10
+			textscale .33
+			decoration
+			useAssetFont
+			special 13
+		}*/
+	
+	
+		itemDef {
+			visible MENU_TRUE
+			rect 24 272 592 272
+			ownerDraw CG_MAPINFO
+			textaligny 10
+			textscale .33
+			decoration
+			useAssetFont
+			special 13
+		}
+		
+/*		itemDef {
+			rect 480 280 112 112
+			ownerDraw CG_FORTLOGO
+			decoration
+			visible 1
+		}*/
+	}
+}

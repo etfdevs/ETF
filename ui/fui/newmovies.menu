@@ -1,0 +1,67 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Play movies & demos
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 12
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "menu_movies"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+		
+		onOpen { uiScript LoadMovies; uiScript LoadDemos }
+		onEsc { uiScript closeFORTBackModels }
+		onClose { setmenufocus menubar }
+
+		MENUMAINRECT("Play Movies & Demos")
+
+		SIMPLEGROUPBOX("Movies", 22, 35, 272, 289)
+
+		itemDef {
+			rect 		24 49 270 275
+			type 		ITEM_TYPE_LISTBOX
+			style 		WINDOW_STYLE_FILLED
+			elementheight 	16
+			textscale 	.25
+			forecolor 	.6 .6 .6 1
+			backcolor 	.1 .1 .1 .11
+			outlinecolor 	1 1 1 .4
+			elementtype 	LISTBOX_TEXT
+			textstyle 	6
+			feeder 		FEEDER_CINEMATICS
+			columns 1	2	250	30
+
+			visible 1
+	 	}
+
+		FORT_BUTTONTT(movAccept, "Play Movie", 20, 110, 345, 82, 32, .25, "", uiScript playMovie, "Play the selected movie")
+
+		SIMPLEGROUPBOX("Demos", 320, 35, 272, 289 )
+		itemDef {
+			rect 		322 49 270 275
+			type 		ITEM_TYPE_LISTBOX
+			style 		WINDOW_STYLE_FILLED
+			elementheight 	16
+			textscale 	.25
+			forecolor 	.6 .6 .6 1
+			backcolor 	.1 .1 .1 .11
+			outlinecolor 	1 1 1 .4
+			elementtype 	LISTBOX_TEXT
+			textstyle 	6
+			feeder 		FEEDER_DEMOS
+			columns 1	2	250	30
+
+			visible 1
+	 	}
+
+		FORT_BUTTONTT(demAccept, "Run Demo", 20, 415, 345, 82, 32, .25, "", uiScript RunDemo, "Run the selected demo")
+	}
+}

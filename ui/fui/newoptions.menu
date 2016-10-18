@@ -1,0 +1,422 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// options - game options
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 12
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "menu_options"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+		
+		onOpen { uiScript readname; conditionalScript isconnected 2 ( "uiScript MoveMenuToY menu_options 12" ) ( "uiScript MoveMenuToY menu_options 60" ) }
+		onEsc { uiScript closeFORTBackModels }
+		onClose { conditionalScript isconnected 2 ( "setmenufocus menubar" ) ( "setmenufocus ingame" ) }
+
+		MENUMAINRECT("Options")
+
+
+	SIMPLEGROUPBOX("Player", 15, 30, 585, 55)
+
+// ---- player name field -----
+
+	itemDef {
+		visible 	MENU_TRUE
+		rect 		30 60 80 15
+		textalignx 	80
+		textaligny 	10
+		textscale 	.24
+		textalign 	ITEM_ALIGN_RIGHT
+		text 		"Player Name:"
+		decoration
+	}
+
+	itemDef {
+		name 		namefield
+		visible 	MENU_TRUE
+		rect 		120 54 260 20
+		textalignx 	3
+		textaligny 	15
+		textscale 	.24
+		type 		ITEM_TYPE_EDITFIELD
+		maxchars 	35
+		maxPaintChars 	25
+		cvar 		"ui_name"
+		backcolor 	.5 .5 .5 .25
+		style 		WINDOW_STYLE_FILLED
+		border 		WINDOW_BORDER_FULL
+		bordercolor 	.5 .5 .5 .5
+		text 		""
+		tooltip		"The name you are playing as"
+
+		mouseEnter { setitemcolor namefield backcolor .5 .5 .5 .5 }
+		mouseExit { setitemcolor namefield backcolor .5 .5 .5 .25 }
+	}
+
+	FORT_BUTTONTT(changeName, "Set Name", 18, 410, 53, 128, 28, .28, "", uiScript setname, "Change name")
+
+
+// ---- /player name field -----
+
+
+	SIMPLEGROUPBOX("Gameplay Options", 15, 100, 585, 200)
+
+
+// --- Checkbox Options
+
+    	itemDef {
+	      	rect		30 126 110 15    
+		type		ITEM_TYPE_CHECKBOX
+		text		"Show Tooltips"
+		textscale	.24
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		"ui_showtooltips"
+		visible		1
+		tooltip		"Enables or disables the display of tooltips"
+	}
+
+    	itemDef {
+	      	rect		30 143 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Adjust Agent Speed"
+		textscale	.24
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		"cg_adjustAgentSpeed"
+		visible		1
+		tooltip		"Adjust agent speed to match disguised class"
+	}
+
+    	itemDef {
+	      	rect		30 160 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Use Map Configs"
+		textscale	.24
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		"cg_execMapConfigs"
+		visible		1
+		tooltip		"Execute map-specific configuration"
+	}
+
+    	itemDef {
+	      	rect		30 177 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Filter Obituaries"
+		textscale	.24
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		"cg_filterObituaries"
+		visible		1
+		tooltip		"Disable death messages"
+	}
+
+    	itemDef {
+	      	rect		30 194 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Play Class Sound"
+		textscale	.24
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		"cg_playClassSound"
+		visible		1
+		tooltip		"A sound lets you know which class you are playing"
+	}
+
+   	itemDef {
+	      	rect		30 211 110 15
+		type		ITEM_TYPE_CHECKBOX
+		text		"Auto Download"
+		textscale	.24
+		textalign	ITEM_ALIGN_LEFT
+		textalignx	1
+		textaligny	14
+		cvar		"cl_allowDownload"
+		visible		1
+		tooltip		"Automatically download missing files from server"
+	}
+
+	itemDef {
+		visible 	MENU_TRUE
+		type		ITEM_TYPE_CHECKBOX
+		text		"Smooth Mouse"
+		rect		30 228 110 15
+		textscale	.24
+		textalignx	1
+		textaligny	14
+		cvar		m_filter
+		tooltip		"Smooths out mouse movement" 
+		visible		1
+	}
+
+	itemDef {
+		visible 	MENU_TRUE
+		type		ITEM_TYPE_CHECKBOX
+		text		"Weapon Prediction"
+		rect		30 245 110 15
+		textscale	.24
+		textalignx	1
+		textaligny	14
+		cvar		cg_predictWeapons
+		tooltip		"Enables the prediction of hitscan weapons" 
+		visible		1
+	}
+
+	itemDef {
+		visible 	MENU_TRUE
+		type		ITEM_TYPE_CHECKBOX
+		text		"Radio Comm Sounds"
+		rect		30 262 110 15
+		textscale	.24
+		textalignx	1
+		textaligny	14
+		cvar		cg_teamchatsounds
+		tooltip		"Play radio communication sounds from your team mates" 
+		visible		1
+	}
+
+// --- end checkboxestooltips
+
+// --- non-checkbox options
+
+		itemDef {
+			name 		discard_cells_slider
+			rect 		420 126 160 15
+			type 		ITEM_TYPE_SLIDER
+			text 		"Discard Cells Limit:"
+			textalign	ITEM_ALIGN_RIGHT
+			textalignx 	0
+			textaligny 	15
+			textscale 	.25
+			visible 	MENU_TRUE
+			cvarfloat 	"discard_cells" -1 -1 100 
+			scale 		1
+			backcolor 	.5 .5 .5 .25
+			tooltip 	"How many cells you wish to discard"
+		}
+
+    		itemDef {
+			name 		"cvarlabel_cells_discard"
+		 	rect		560 128 10 13 
+			type		ITEM_TYPE_TEXT
+			textscale 	0.22
+			textstyle	ITEM_TEXTSTYLE_SHADOWED
+			textalign 	ITEM_ALIGN_LEFT
+			textalignx 	0
+			textaligny	13
+			forecolor	.6 .6 .6 1
+			cvar		"discard_cells"
+			visible		1
+			decoration
+			textasint
+    }
+// ---- Cells End
+
+// ---- Shells Start
+
+		itemDef {
+			name 		discard_shells_slider
+			rect 		420 143 260 16
+			type 		ITEM_TYPE_SLIDER
+			text 		"Discard Shells Limit"
+			textalign	ITEM_ALIGN_RIGHT
+			textalignx 	0
+			textaligny 	15
+			textscale 	.24
+			visible 	MENU_TRUE
+			cvarfloat 	"discard_shells" -1 -1 100 
+			backcolor 	.5 .5 .5 .25
+			tooltip 	"Indicate how many shells you wish to discard"
+		}
+
+    		itemDef {
+			name 		"cvarlabel_shells_discard"
+		 	rect		560 145 10 13 
+			type		ITEM_TYPE_TEXT
+			textscale 	0.22
+			textstyle	ITEM_TEXTSTYLE_SHADOWED
+			textalign 	ITEM_ALIGN_LEFT
+			textalignx 	0
+			textaligny	13
+			forecolor	.6 .6 .6 1
+			cvar		"discard_shells"
+			visible		1
+			decoration
+			textasint
+		}
+
+// ---- Shells End
+
+// ---- Rockets Start
+
+		itemDef {
+			name 		discard_rockets_slider
+			rect 		420 160 260 16
+			type 		ITEM_TYPE_SLIDER
+			text 		"Discard Rockets Limit"
+			textalign	ITEM_ALIGN_RIGHT
+			textalignx 	0
+			textaligny 	15
+			textscale 	.24
+			visible 	MENU_TRUE
+			cvarfloat 	"discard_rockets" -1 -1 100 
+			backcolor 	.5 .5 .5 .25
+			tooltip 	"How many rockets you wish to discard"
+		}
+
+    		itemDef {
+			name 		"cvarlabel_rockets_discard"
+		 	rect		560 162 10 13 
+			type		ITEM_TYPE_TEXT
+			textscale 	0.22
+			textstyle	ITEM_TEXTSTYLE_SHADOWED
+			textalign 	ITEM_ALIGN_LEFT
+			textalignx 	0
+			textaligny	13
+			forecolor	.6 .6 .6 1
+			cvar		"discard_rockets"
+			visible		1
+			decoration
+			textasint
+		}
+
+		itemDef {
+			visible 	MENU_TRUE
+			type		ITEM_TYPE_SLIDER
+			rect		420 177 260 16
+			textalign	ITEM_ALIGN_RIGHT
+			textalignx	0
+			textaligny	15
+			textscale	.24
+			text		"Mouse sensitivity"
+			cvarfloat	"sensitivity" 5 2 30
+			scale 1
+			backcolor 	.5 .5 .5 .25
+			tooltip		"How much your mouse movement affects game movement" 
+			visible		1
+		}
+
+    		itemDef {
+			name 		"cvarlabel_sens"
+		 	rect		560 179 10 13 
+			type		ITEM_TYPE_TEXT
+			textscale 	0.22
+			textstyle	ITEM_TEXTSTYLE_SHADOWED
+			textalign 	ITEM_ALIGN_LEFT
+			textalignx 	0
+			textaligny	13
+			forecolor	.6 .6 .6 1
+			cvar		"sensitivity"
+			visible		1
+			decoration
+			textasint
+		}
+
+		itemDef {
+			type		ITEM_TYPE_MULTI
+			rect		285 217 140 15
+			textalign	ITEM_ALIGN_AUTO
+			textalignx	40
+			textaligny	10
+			text		"Scoreboard Snapshot:"
+			textscale	.25
+			cvar		cg_ScoreSnapshot
+			cvarFloatList  	{ "Off" 0 "TGA" 1 "JPEG" 2 }
+			tooltip		"Take an automatic image from the scoreboard at game end"
+			visible		1
+		}
+
+		itemDef {
+			type		ITEM_TYPE_MULTI
+			rect		285 234 140 15
+			textalign	ITEM_ALIGN_AUTO
+			textalignx	110
+			textaligny	10
+			text		"Use ALL Class Configs:"
+			textscale	.25
+			cvar		cg_execClassConfigs
+			cvarFloatList  	{ "Off" 0 "On First Spawn" 1 "On All Spawns" 2 }
+			tooltip		"When to run the Class Configs"
+			visible		1
+		}
+
+		itemDef {
+			type		ITEM_TYPE_MULTI
+			rect		285 251 140 15
+			textalign	ITEM_ALIGN_AUTO
+			textalignx	130
+			textaligny	10
+			text		"Weapon Reload:"
+			textscale	.25
+			cvar		cg_autoreload
+			cvarFloatList  	{ "Never" 0 "Firing empty clip" 1 "As soon as clip is empty" 2 }
+			tooltip		"Determines when (or if) your gun reloads"
+			visible		1
+		}
+
+		itemDef {
+			type		ITEM_TYPE_MULTI
+			rect		285 268 140 15
+			textalign 	ITEM_ALIGN_AUTO
+			textalignx	60
+			textaligny	10
+			textscale	.25
+			cvar		m_pitch
+			text		"Invert Mouse:"
+			cvarFloatList   { "No" 0.022 "Yes" -0.022 }
+			tooltip		"Reverse the up/down direction of your mouse" 
+			visible		1
+		}
+
+
+// ----
+
+	SIMPLEGROUPBOX("Grenade Timer", 15, 315, 585, 65)
+
+	itemDef {
+		name		"grensound"
+		type		ITEM_TYPE_MULTI
+		rect		15 345 140 15
+		textalign	ITEM_ALIGN_AUTO
+		textalignx	100
+		textaligny	10
+		text		"Grenade Timer:"
+		textscale	.25
+		cvar		cg_grenadeprimesound
+		cvarStrList   	{ "None"; ""; "Countdown"; "sound/grentimer/grentimer.wav"; "Countdown 2"; "sound/grentimer/grentimer_zzprime2.wav"; "Beep"; "sound/grentimer/grentimer1.wav"; "Beep 2"; "sound/grentimer/grentimer2.wav"; "Loud Beep"; "sound/grentimer/grentimer_deaf.wav"; "BH 1"; "sound/grentimer/grentimer_bh1.wav"; "BH 2"; "sound/grentimer/grentimer_bh2.wav"; "DON 1"; "sound/grentimer/grentimer_don1.wav"; "DON 2"; "sound/grentimer/grentimer_don2.wav"; "ELD 1"; "sound/grentimer/grentimer_eld1.wav"; "EQ 1"; "sound/grentimer/grentimer_eq1.wav"; "EQ 2"; "sound/grentimer/grentimer_eq2.wav"; "EQ 3"; "sound/grentimer/grentimer_eq3.wav"; "EQ 4"; "sound/grentimer/grentimer_eq4.wav"; "GBMH 1"; "sound/grentimer/grentimer_gmbh1.wav"; "GT 1"; "sound/grentimer/grentimer_gt1.wav"; "JM 1"; "sound/grentimer/grentimer_jm1.wav"; "JM 2"; "sound/grentimer/grentimer_jm2.wav"; "JM 3"; "sound/grentimer/grentimer_jm3.wav"; "JM 4"; "sound/grentimer/grentimer_jm4.wav"; "LOL 1"; "sound/grentimer/grentimer_lol1.wav"; "LOL 2"; "sound/grentimer/grentimer_lol2.wav"; "MOV"; "sound/grentimer/grentimer_mov1.wav";"Swiss"; "sound/grentimer/grentimer_swiss.wav" }
+		tooltip		"The sound played when a grenade is primed"
+		visible		1
+	}
+
+
+	itemDef {
+		name		"grentimepreview"
+		rect		300 335 32 32
+		visible 	MENU_TRUE
+		background 	"ui/gfx/button_play"
+		altbackground	"ui/gfx/button_play_h"
+		style 		WINDOW_STYLE_SHADER
+		type		ITEM_TYPE_BUTTON
+		action		{ uiScript playGrenSound }
+		tooltip		"Play the timer sound"
+
+		mouseEnter	{ setitembackground grentimepreview alt }
+		mouseExit	{ setitembackground grentimepreview primary }
+	}
+
+	}
+}

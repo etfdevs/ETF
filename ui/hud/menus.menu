@@ -1,0 +1,754 @@
+#include "ui/menudef.h"
+
+{
+	menuDef {
+		name "menubox_specteam"
+		fullScreen MENU_FALSE				
+		rect 0 64 200 212
+		visible MENU_FALSE
+		nonSticky
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 200 212
+			decoration
+			ownerDraw CG_FORT_MENU_BORDER
+			type ITEM_TYPE_BORDER
+			special 8
+		}
+
+		itemDef {
+			rect 8 16 184 20
+			visible MENU_TRUE
+			decoration
+			textalign ITEM_ALIGN_CENTER
+			textalignx 92
+			textaligny 12
+			textscale .33
+			text "Choose a team"
+			forecolor 1 1 1 0.5
+			ownerDraw CG_FORT_MENU_TITLE
+		}
+
+		FORT_MENU_ITEM_OPTION(56, 0)
+		FORT_MENU_ITEM_NUMBER(56, 0)
+		FORT_MENU_ITEM_RIGHT( 56, 0)
+
+		FORT_MENU_ITEM_OPTION(80, 1)
+		FORT_MENU_ITEM_NUMBER(80, 1)
+		FORT_MENU_ITEM_RIGHT( 80, 1)
+
+		FORT_MENU_ITEM_OPTION(104, 2)
+		FORT_MENU_ITEM_NUMBER(104, 2)
+		FORT_MENU_ITEM_RIGHT( 104, 2)
+
+		FORT_MENU_ITEM_OPTION(128, 3)
+		FORT_MENU_ITEM_NUMBER(128, 3)
+		FORT_MENU_ITEM_RIGHT( 128, 3)
+
+		FORT_MENU_ITEM_OPTION(152, 4)
+		FORT_MENU_ITEM_NUMBER(152, 4)
+
+		FORT_MENU_ITEM_OPTION(176, 5)
+		FORT_MENU_ITEM_NUMBER(176, 5)
+	}
+
+	menuDef {
+		name "menubox_specopts"
+		fullScreen MENU_FALSE				
+		rect 0 64 224 292
+		visible MENU_FALSE
+		nonSticky
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 224 292
+			decoration
+			ownerDraw CG_FORT_MENU_BORDER
+			type ITEM_TYPE_BORDER
+			special 8
+		}
+
+		itemDef {
+			rect 8 16 208 20
+			visible MENU_TRUE
+			decoration
+			textalign ITEM_ALIGN_CENTER
+			textalignx 104
+			textaligny 12
+			textscale .33
+			text "Spectator Modes"
+			forecolor 1 1 1 0.5
+			ownerDraw CG_FORT_MENU_TITLE
+		}
+
+		FORT_MENU_ITEM_OPTION(56, 0)
+		FORT_MENU_ITEM_NUMBER(56, 0)
+
+		FORT_MENU_ITEM_OPTION(76, 1)
+		FORT_MENU_ITEM_NUMBER(76, 1)
+
+		FORT_MENU_ITEM_OPTION(96, 2)
+		FORT_MENU_ITEM_NUMBER(96, 2)
+
+		FORT_MENU_ITEM_OPTION(116, 3)
+		FORT_MENU_ITEM_NUMBER(116, 3)
+
+
+		FORT_MENU_ITEM_OPTION(156, 4)
+		FORT_MENU_ITEM_NUMBER(156, 4)
+
+		FORT_MENU_ITEM_OPTION(176, 5)
+		FORT_MENU_ITEM_NUMBER(176, 5)
+
+		FORT_MENU_ITEM_OPTION(196, 6)
+		FORT_MENU_ITEM_NUMBER(196, 6)
+
+		FORT_MENU_ITEM_OPTION(216, 7)
+		FORT_MENU_ITEM_NUMBER(216, 7)
+
+
+		FORT_MENU_ITEM_OPTION(256, 9)
+		FORT_MENU_ITEM_NUMBER(256, 9)
+	}
+
+	menuDef {
+		name "menubox_changeclass"
+		fullScreen MENU_FALSE				
+		rect 0 64 184 272
+		visible MENU_FALSE
+		nonSticky
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 184 272
+			decoration
+			ownerDraw CG_FORT_MENU_BORDER
+			type ITEM_TYPE_BORDER
+			special 8
+		}
+
+		itemDef {
+			rect 8 16 168 20
+			visible MENU_TRUE
+			decoration
+			textalign ITEM_ALIGN_CENTER
+			textalignx 84
+			textaligny 12
+			textscale .33
+			text "Choose Class"
+			forecolor 1 1 1 0.5
+			ownerDraw CG_FORT_MENU_TITLE
+		}
+
+		FORT_MENU_ITEM_OPTION(	56, 0)
+		FORT_MENU_ITEM_NUMBER(	56, 0)
+		FORT_MENU_ITEM_RIGHT(	56, 0)
+
+		FORT_MENU_ITEM_OPTION(	76, 1)
+		FORT_MENU_ITEM_NUMBER(	76, 1)
+		FORT_MENU_ITEM_RIGHT(	76, 1)
+
+		FORT_MENU_ITEM_OPTION(	96, 2)
+		FORT_MENU_ITEM_NUMBER(	96, 2)
+		FORT_MENU_ITEM_RIGHT(	96, 2)
+
+		FORT_MENU_ITEM_OPTION(	116, 3)
+		FORT_MENU_ITEM_NUMBER(	116, 3)
+		FORT_MENU_ITEM_RIGHT(	116, 3)
+
+		FORT_MENU_ITEM_OPTION(	136, 4)
+		FORT_MENU_ITEM_NUMBER(	136, 4)
+		FORT_MENU_ITEM_RIGHT(	136, 4)
+
+		FORT_MENU_ITEM_OPTION(	156, 5)
+		FORT_MENU_ITEM_NUMBER(	156, 5)
+		FORT_MENU_ITEM_RIGHT(	156, 5)
+
+		FORT_MENU_ITEM_OPTION(	176, 6)
+		FORT_MENU_ITEM_NUMBER(	176, 6)
+		FORT_MENU_ITEM_RIGHT(	176, 6)
+
+		FORT_MENU_ITEM_OPTION(	196, 7)
+		FORT_MENU_ITEM_NUMBER(	196, 7)
+		FORT_MENU_ITEM_RIGHT(	196, 7)
+
+		FORT_MENU_ITEM_OPTION(	216, 8)
+		FORT_MENU_ITEM_NUMBER(	216, 8)
+		FORT_MENU_ITEM_RIGHT(	216, 8)
+
+		FORT_MENU_ITEM_OPTION(	236, 9)
+		FORT_MENU_ITEM_NUMBER(	236, 9)
+		FORT_MENU_ITEM_RIGHT(	236, 9)
+	}
+
+	menuDef {
+		name "menubox_changeteam"
+		fullScreen MENU_FALSE				
+		rect 0 64 200 236
+		visible MENU_FALSE
+		nonSticky
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 200 236
+			decoration
+			ownerDraw CG_FORT_MENU_BORDER
+			type ITEM_TYPE_BORDER
+			special 8
+		}
+
+		itemDef {
+			rect 8 16 168 20
+			visible MENU_TRUE
+			decoration
+			textalign ITEM_ALIGN_CENTER
+			textalignx 84
+			textaligny 12
+			textscale .33
+			text "Choose Team"
+			forecolor 1 1 1 0.5
+			ownerDraw CG_FORT_MENU_TITLE
+		}
+
+		FORT_MENU_ITEM_OPTION(56, 0)
+		FORT_MENU_ITEM_NUMBER(56, 0)
+		FORT_MENU_ITEM_RIGHT( 56, 0)
+
+		FORT_MENU_ITEM_OPTION(80, 1)
+		FORT_MENU_ITEM_NUMBER(80, 1)
+		FORT_MENU_ITEM_RIGHT( 80, 1)
+
+		FORT_MENU_ITEM_OPTION(104, 2)
+		FORT_MENU_ITEM_NUMBER(104, 2)
+		FORT_MENU_ITEM_RIGHT( 104, 2)
+
+		FORT_MENU_ITEM_OPTION(128, 3)
+		FORT_MENU_ITEM_NUMBER(128, 3)
+		FORT_MENU_ITEM_RIGHT( 128, 3)
+
+		FORT_MENU_ITEM_OPTION(152, 4)
+		FORT_MENU_ITEM_NUMBER(152, 4)
+
+		FORT_MENU_ITEM_OPTION(176, 5)
+		FORT_MENU_ITEM_NUMBER(176, 5)
+
+		FORT_MENU_ITEM_OPTION(200, 9)
+		FORT_MENU_ITEM_NUMBER(200, 9)
+	}
+
+	menuDef {
+		name "menubox_agentteam"
+		fullScreen MENU_FALSE
+		rect 0 64 200 188
+		visible MENU_FALSE
+		nonSticky
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 200 236
+			decoration
+			ownerDraw CG_FORT_MENU_BORDER
+			type ITEM_TYPE_BORDER
+			special 8
+		}
+
+		itemDef {
+			rect 8 16 168 20
+			visible MENU_TRUE
+			decoration
+			textalign ITEM_ALIGN_CENTER
+			textalignx 84
+			textaligny 12
+			textscale .33
+			text "Choose Team"
+			forecolor 1 1 1 0.5
+			ownerDraw CG_FORT_MENU_TITLE
+		}
+
+		FORT_MENU_ITEM_OPTION(56, 0)
+		FORT_MENU_ITEM_NUMBER(56, 0)
+		FORT_MENU_ITEM_RIGHT( 56, 0)
+
+		FORT_MENU_ITEM_OPTION(80, 1)
+		FORT_MENU_ITEM_NUMBER(80, 1)
+		FORT_MENU_ITEM_RIGHT( 80, 1)
+
+		FORT_MENU_ITEM_OPTION(104, 2)
+		FORT_MENU_ITEM_NUMBER(104, 2)
+		FORT_MENU_ITEM_RIGHT( 104, 2)
+
+		FORT_MENU_ITEM_OPTION(128, 3)
+		FORT_MENU_ITEM_NUMBER(128, 3)
+		FORT_MENU_ITEM_RIGHT( 128, 3)
+
+		FORT_MENU_ITEM_OPTION(152, 4)
+		FORT_MENU_ITEM_NUMBER(152, 4)
+
+		FORT_MENU_ITEM_OPTION(176, 5)
+		FORT_MENU_ITEM_NUMBER(176, 5)
+
+		FORT_MENU_ITEM_OPTION(200, 9)
+		FORT_MENU_ITEM_NUMBER(200, 9)
+	}		
+
+	menuDef {
+		name "menubox_agentclass"
+		fullScreen MENU_FALSE				
+		rect 0 64 184 272
+		visible MENU_FALSE
+		nonSticky
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 184 272
+			decoration
+			ownerDraw CG_FORT_MENU_BORDER
+			type ITEM_TYPE_BORDER
+			special 8
+		}
+
+		itemDef {
+			rect 8 16 168 20
+			visible MENU_TRUE
+			decoration
+			textalign ITEM_ALIGN_CENTER
+			textalignx 84
+			textaligny 12
+			textscale .33
+			text "Choose Class"
+			forecolor 1 1 1 0.5
+			ownerDraw CG_FORT_MENU_TITLE
+		}
+
+		FORT_MENU_ITEM_OPTION(	56, 0)
+		FORT_MENU_ITEM_NUMBER(	56, 0)
+
+		FORT_MENU_ITEM_OPTION(	76, 1)
+		FORT_MENU_ITEM_NUMBER(	76, 1)
+
+		FORT_MENU_ITEM_OPTION(	96, 2)
+		FORT_MENU_ITEM_NUMBER(	96, 2)
+
+		FORT_MENU_ITEM_OPTION(	116, 3)
+		FORT_MENU_ITEM_NUMBER(	116, 3)
+
+		FORT_MENU_ITEM_OPTION(	136, 4)
+		FORT_MENU_ITEM_NUMBER(	136, 4)
+
+		FORT_MENU_ITEM_OPTION(	156, 5)
+		FORT_MENU_ITEM_NUMBER(	156, 5)
+
+		FORT_MENU_ITEM_OPTION(	176, 6)
+		FORT_MENU_ITEM_NUMBER(	176, 6)
+
+		FORT_MENU_ITEM_OPTION(	196, 7)
+		FORT_MENU_ITEM_NUMBER(	196, 7)
+
+		FORT_MENU_ITEM_OPTION(	216, 8)
+		FORT_MENU_ITEM_NUMBER(	216, 8)
+
+		FORT_MENU_ITEM_OPTION(	236, 9)
+		FORT_MENU_ITEM_NUMBER(	236, 9)
+	}
+
+	menuDef {
+		name "menubox_agentopts"
+		fullScreen MENU_FALSE				
+		rect 0 64 224 192
+		visible MENU_FALSE
+		nonSticky
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 224 192
+			decoration
+			ownerDraw CG_FORT_MENU_BORDER
+			type ITEM_TYPE_BORDER
+			special 8
+		}
+
+		itemDef {
+			rect 8 16 208 20
+			visible MENU_TRUE
+			decoration
+			textalign ITEM_ALIGN_CENTER
+			textalignx 104
+			textaligny 12
+			textscale .33
+			text "Disguise Menu"
+			forecolor 1 1 1 0.5
+			ownerDraw CG_FORT_MENU_TITLE
+		}
+
+		FORT_MENU_ITEM_OPTION(	56, 0)
+		FORT_MENU_ITEM_NUMBER(	56, 0)
+
+		FORT_MENU_ITEM_OPTION(	76, 1)
+		FORT_MENU_ITEM_NUMBER(	76, 1)
+
+		FORT_MENU_ITEM_OPTION(	96, 2)
+		FORT_MENU_ITEM_NUMBER(	96, 2)
+
+		FORT_MENU_ITEM_OPTION(	116, 3)
+		FORT_MENU_ITEM_NUMBER(	116, 3)
+
+		FORT_MENU_ITEM_OPTION(	156, 9)
+		FORT_MENU_ITEM_NUMBER(	156, 9)
+	}
+
+	menuDef {
+		name "menubox_charge"
+		fullScreen MENU_FALSE				
+		rect 0 64 224 272
+		visible MENU_FALSE
+		nonSticky
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 224 272
+			decoration
+			ownerDraw CG_FORT_MENU_BORDER
+			type ITEM_TYPE_BORDER
+			special 8
+		}
+
+		itemDef {
+			rect 8 16 208 20
+			visible MENU_TRUE
+			decoration
+			textalign ITEM_ALIGN_CENTER
+			textalignx 104
+			textaligny 12
+			textscale .33
+			text "Lay your charge..."
+			forecolor 1 1 1 0.5
+			ownerDraw CG_FORT_MENU_TITLE
+		}
+
+		FORT_MENU_ITEM_OPTION(	56, 0)
+		FORT_MENU_ITEM_NUMBER(	56, 0)
+
+		FORT_MENU_ITEM_OPTION(	76, 1)
+		FORT_MENU_ITEM_NUMBER(	76, 1)
+
+		FORT_MENU_ITEM_OPTION(	96, 2)
+		FORT_MENU_ITEM_NUMBER(	96, 2)
+
+		FORT_MENU_ITEM_OPTION(	116, 3)
+		FORT_MENU_ITEM_NUMBER(	116, 3)
+
+		FORT_MENU_ITEM_OPTION(	136, 4)
+		FORT_MENU_ITEM_NUMBER(	136, 4)
+
+		FORT_MENU_ITEM_OPTION(	156, 5)
+		FORT_MENU_ITEM_NUMBER(	156, 5)
+
+		FORT_MENU_ITEM_OPTION(	176, 6)
+		FORT_MENU_ITEM_NUMBER(	176, 6)
+
+		FORT_MENU_ITEM_OPTION(	216, 8)
+		FORT_MENU_ITEM_NUMBER(	216, 8)
+
+		FORT_MENU_ITEM_OPTION(	236, 9)
+		FORT_MENU_ITEM_NUMBER(	236, 9)
+	}
+
+	menuDef {
+		name "menubox_build"
+		fullScreen MENU_FALSE				
+		rect 0 64 264 212
+		visible MENU_FALSE
+		nonSticky
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 264 212
+			decoration
+			ownerDraw CG_FORT_MENU_BORDER
+			type ITEM_TYPE_BORDER
+			special 8
+		}
+
+		itemDef {
+			rect 8 16 208 20
+			visible MENU_TRUE
+			decoration
+			textalign ITEM_ALIGN_CENTER
+			textalignx 104
+			textaligny 12
+			textscale .33
+			text "Build Menu"
+			forecolor 1 1 1 0.5
+			ownerDraw CG_FORT_MENU_TITLE
+		}
+
+		FORT_MENU_ITEM_OPTION(	56, 0)
+		FORT_MENU_ITEM_NUMBER(	56, 0)
+
+		FORT_MENU_ITEM_OPTION(	76, 1)
+		FORT_MENU_ITEM_NUMBER(	76, 1)
+
+		FORT_MENU_ITEM_OPTION(	116, 7)
+		FORT_MENU_ITEM_NUMBER(	116, 7)
+
+		FORT_MENU_ITEM_OPTION(	136, 8)
+		FORT_MENU_ITEM_NUMBER(	136, 8)
+
+		FORT_MENU_ITEM_OPTION(	176, 9)
+		FORT_MENU_ITEM_NUMBER(	176, 9)
+	}
+
+	menuDef {
+		name "menubox_upgrade"
+		fullScreen MENU_FALSE				
+		rect 0 64 224 172
+		visible MENU_FALSE
+		nonSticky
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 224 172
+			decoration
+			ownerDraw CG_FORT_MENU_BORDER
+			type ITEM_TYPE_BORDER
+			special 8
+		}
+
+		itemDef {
+			rect 8 16 208 20
+			visible MENU_TRUE
+			decoration
+			textalign ITEM_ALIGN_CENTER
+			textalignx 104
+			textaligny 12
+			textscale .33
+			text "Sentry Menu"
+			forecolor 1 1 1 0.5
+			ownerDraw CG_FORT_MENU_TITLE
+		}
+
+		FORT_MENU_ITEM_OPTION(	56, 0)
+		FORT_MENU_ITEM_NUMBER(	56, 0)
+
+		FORT_MENU_ITEM_OPTION(	76, 1)
+		FORT_MENU_ITEM_NUMBER(	76, 1)
+
+		FORT_MENU_ITEM_OPTION(	96, 3)
+		FORT_MENU_ITEM_NUMBER(	96, 3)
+
+		FORT_MENU_ITEM_OPTION(	136, 9)
+		FORT_MENU_ITEM_NUMBER(	136, 9)
+	}
+
+	menuDef {
+		name "menubox_drop"
+		fullScreen MENU_FALSE				
+		rect 0 64 224 272
+		visible MENU_FALSE
+		nonSticky
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+
+		loadborderbitmap 0 "ui/gfx/hud/top_left"
+		loadborderbitmap 1 "ui/gfx/hud/fill_left"
+		loadborderbitmap 2 "ui/gfx/hud/bot_left"
+		loadborderbitmap 3 "ui/gfx/hud/fill_top"
+		loadborderbitmap 4 "ui/gfx/hud/fill_center_grey"
+		loadborderbitmap 5 "ui/gfx/hud/fill_bot"
+		loadborderbitmap 6 "ui/gfx/hud/top_right"
+		loadborderbitmap 7 "ui/gfx/hud/fill_right"
+		loadborderbitmap 8 "ui/gfx/hud/bot_right"
+				
+		itemDef {
+			visible MENU_TRUE
+			rect 0 0 224 272
+			decoration
+			ownerDraw CG_FORT_MENU_BORDER
+			type ITEM_TYPE_BORDER
+			special 8
+		}
+
+		itemDef {
+			rect 8 16 208 20
+			visible MENU_TRUE
+			decoration
+			textalign ITEM_ALIGN_CENTER
+			textalignx 104
+			textaligny 12
+			textscale .33
+			text "Drop ammo..."
+			ownerDraw CG_FORT_MENU_TITLE
+			forecolor 1 1 1 0.5
+		}
+
+		FORT_MENU_ITEM_OPTION(	56, 0)
+		FORT_MENU_ITEM_NUMBER(	56, 0)
+
+		FORT_MENU_ITEM_OPTION(	76, 1)
+		FORT_MENU_ITEM_NUMBER(	76, 1)
+
+		FORT_MENU_ITEM_OPTION(	96, 2)
+		FORT_MENU_ITEM_NUMBER(	96, 2)
+
+		FORT_MENU_ITEM_OPTION(	116, 3)
+		FORT_MENU_ITEM_NUMBER(	116, 3)
+
+		FORT_MENU_ITEM_OPTION(	136, 4)
+		FORT_MENU_ITEM_NUMBER(	136, 4)
+
+		FORT_MENU_ITEM_OPTION(	156, 5)
+		FORT_MENU_ITEM_NUMBER(	156, 5)
+
+		FORT_MENU_ITEM_OPTION(	176, 6)
+		FORT_MENU_ITEM_NUMBER(	176, 6)
+
+		FORT_MENU_ITEM_OPTION(	196, 7)
+		FORT_MENU_ITEM_NUMBER(	196, 7)
+
+		FORT_MENU_ITEM_OPTION(	236, 9)
+		FORT_MENU_ITEM_NUMBER(	236, 9)
+	}
+}

@@ -1,0 +1,55 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// 
+	//
+
+	#define MENU_X 365
+	#define MENU_Y 245
+	#define MENU_WIDTH 145
+	#define MENU_HEIGHT 175
+
+	#define MENU_NAME "menu_favourites"
+
+	#include "ui/etfmenu.h"
+
+	#define FORT_FAVOURITE_MENU_ITEM(number, item_name) \
+		itemDef {									\
+			name item_name								\
+			rect 10 $evalint( 25 + ( number * 15 ) ) $evalint(MENU_WIDTH - 22) 14	\
+			visible MENU_TRUE							\
+			textalignx 3								\
+      			textaligny 5								\
+			textscale .22								\
+			forecolor 1 1 1 1							\
+			textstyle ITEM_TEXTSTYLE_SHADOWED					\
+			backcolor .3 .3 .3 0							\
+			style WINDOW_STYLE_FILLED						\
+			noPulseOnFocus								\
+			ownerdraw $evalint( UI_FAV_SERVER_0 + number )				\
+			mouseEnter { setitemcolor item_name backcolor .8 .1 .1 .9 }		\
+			mouseExit  { setitemcolor item_name backcolor .3 .3 .3 0 }		\
+		}
+
+	menuDef {
+		POPUPMENUSTYLE
+		outOfBoundsClick
+
+		POPUPMENUBG
+		POPUPMENUBORDERS
+
+		POPUPMENUITEM(10, 10, "Edit Favourites", "edfav", menu_favourites_setup)
+
+		FORT_FAVOURITE_MENU_ITEM(0, menu_favourites_fav0)
+		FORT_FAVOURITE_MENU_ITEM(1, menu_favourites_fav1)
+		FORT_FAVOURITE_MENU_ITEM(2, menu_favourites_fav2)
+		FORT_FAVOURITE_MENU_ITEM(3, menu_favourites_fav3)
+		FORT_FAVOURITE_MENU_ITEM(4, menu_favourites_fav4)
+		FORT_FAVOURITE_MENU_ITEM(5, menu_favourites_fav5)
+		FORT_FAVOURITE_MENU_ITEM(6, menu_favourites_fav6)
+		FORT_FAVOURITE_MENU_ITEM(7, menu_favourites_fav7)
+		FORT_FAVOURITE_MENU_ITEM(8, menu_favourites_fav8)
+		FORT_FAVOURITE_MENU_ITEM(9, menu_favourites_fav9)
+	}
+}

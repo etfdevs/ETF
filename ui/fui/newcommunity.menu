@@ -1,0 +1,197 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// 
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 12
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "menu_community"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+		
+		onClose { conditionalScript isconnected 2 ( "setmenufocus menubar" ) ( "setmenufocus ingame" ) }
+		onESC { uiScript closeFORTBackModels }
+
+		MENUMAINRECT("Community")
+
+		itemDef {
+			text "Visit the official ETF website at"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .30
+			rect 0 43 640 20
+			visible MENU_TRUE
+			decoration
+			forecolor 0.8 0.8 0.8 1
+		}
+
+		itemDef {
+			text "www.etfgame.com"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .24
+			rect 0 56 640 13
+			visible MENU_TRUE
+			special 13
+			decoration
+			useAssetFont
+		}
+
+		itemDef {
+			text "Official Enemy Territory website:"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .30
+			rect 0 104 640 20
+			visible MENU_TRUE
+			decoration
+			forecolor 0.8 0.8 0.8 1
+		}
+
+		itemDef {
+			text "www.splashdamage.com"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .24
+			rect 0 117 640 13
+			visible MENU_TRUE
+			special 13
+			decoration
+			useAssetFont
+		}
+
+
+		itemDef {
+			text "Community websites:"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .30
+			rect 0 165 640 20
+			visible MENU_TRUE
+			decoration
+			forecolor 0.8 0.8 0.8 1
+		}
+
+		itemDef {
+			text "www.planetetf.com"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .24
+			rect 0 178 640 13
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+		}
+
+		itemDef {
+			text "www.railbait.com"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .24
+			rect 0 191 640 13
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+		}
+
+		itemDef {
+			text "www.etf-center.com"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .24
+			rect 0 204 640 13
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+		}
+
+		itemDef {
+			text "fu.etf-center.com"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .24
+			rect 0 217 640 13
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+		}
+
+
+		itemDef {
+			text "Other websites:"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .30
+			rect 0 270 640 20
+			visible MENU_TRUE
+			decoration
+			forecolor 0.8 0.8 0.8 1
+		}
+
+		itemDef {
+			text "www.idsoftware.com"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .24
+			rect 0 283 640 13
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+		}
+
+		itemDef {
+			text "Official IRC channels"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .30
+			rect 0 334 640 13
+			visible MENU_TRUE
+			decoration
+			forecolor 0.8 0.8 0.8 1
+		}
+
+		itemDef {
+			text "#etfgame on QuakeNet"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .24
+			rect 0 347 640 20
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+		}
+
+		itemDef {
+			text "#spontanetf on QuakeNet to play"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .24
+			rect 0 360 640 20
+			visible MENU_TRUE
+			decoration
+			useAssetFont
+		}
+	}
+}

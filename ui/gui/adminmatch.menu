@@ -1,0 +1,239 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Admin Maps
+	//
+
+	#define MENU_X 149
+	#define MENU_Y 75
+	#define MENU_WIDTH 350
+	#define MENU_HEIGHT 350
+
+	#define MENU_NAME "men_match"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+
+		onOpen { }
+		onEsc { uiScript closeFORTBackModels }
+		onClose { setmenufocus ingame }
+
+		MENUMAINRECT("Admin: Match")
+
+		SIMPLEGROUPBOX( "Match Setup", 30, 30, 290, 190 )
+		
+		itemDef {
+			rect 38 55 64 20
+			textalignx 64
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "Warmup:"
+			decoration
+			visible 1
+		}
+
+		itemDef {
+			rect 110 55 64 20
+			textalignx 38
+			textaligny 15
+			textalign ITEM_ALIGN_LEFT
+			textscale .26
+			text "(seconds)"
+			forecolor 1 1 1 .6
+			decoration
+			visible 1
+		}
+
+		itemDef {
+			name "adminMatchWarmup"
+			rect 110 53 140 20
+			textalignx 3
+			textaligny 15
+			textscale .27
+			type ITEM_TYPE_EDITFIELD
+			maxchars 10
+			cvar "hud_adminmatchwarmup"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+
+			mouseEnter { setitemcolor adminMatchWarmup backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor adminMatchWarmup backcolor .5 .5 .5 .25 }
+			visible 1
+		}				
+
+		FORT_BUTTONTT(admin_matchsetwarmup, "Set", 16, 260, 52, 40, 24, .26, "", uiscript AdminSetWarmup, "Set the new warmup value")
+
+		itemDef {
+			rect 38 87 64 20
+			textalignx 64
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "Timelimit:"
+			decoration
+			visible 1
+		}
+
+		itemDef {
+			name "adminMatchTimelimit"
+			rect 110 85 140 20
+			textalignx 3
+			textaligny 15
+			textscale .27
+			type ITEM_TYPE_EDITFIELD
+			maxchars 10
+			cvar "hud_admintimelimit"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+
+			mouseEnter { setitemcolor adminMatchTimelimit backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor adminMatchTimelimit backcolor .5 .5 .5 .25 }
+			visible 1
+		}				
+
+		itemDef {
+			rect 110 85 64 20
+			textalignx 40
+			textaligny 15
+			textalign ITEM_ALIGN_LEFT
+			textscale .26
+			text "(minutes)"
+			forecolor 1 1 1 .6
+			decoration
+			visible 1
+		}
+
+		FORT_BUTTONTT(admin_matchsettimelimit, "Set", 16, 260, 84, 40, 24, .26, "", uiscript AdminSetTimelimit, "Set the new timelimit value")
+
+
+		itemDef {
+		      	rect		50 115 90 15
+			type		ITEM_TYPE_CHECKBOX
+			text		"Match Mode"
+			textscale	.25
+			textalign	ITEM_ALIGN_LEFT
+			textalignx	0
+			textaligny	14
+			cvar		hud_admin_matchmode
+			visible		1
+			tooltip		"Stay in matchmode"
+		}
+
+		itemDef {
+		      	rect		200 115 90 15
+			type		ITEM_TYPE_CHECKBOX
+			text		"No Ready-up"
+			textscale	.25
+			textalign	ITEM_ALIGN_LEFT
+			textalignx	0
+			textaligny	14
+			cvar		hud_admin_match_noreadyup
+			visible		1
+			tooltip		"Start matches without ready up"
+		}
+
+		FORT_BUTTONTT(admin_startmatch, "Start Match", 18, 50, 140, 122, 28, .26, "", uiscript AdminStartMatch, "Start a match with these settings")
+
+		FORT_BUTTONTT(admin_stopmatch, "End Match", 18, 182, 140, 122, 28, .26, "", uiscript AdminEndMatch, "End the current match")
+
+		FORT_BUTTONTT(admin_forceready, "Force Ready", 18, 116, 180, 122, 28, .26, "", uiscript AdminForceReady, "Force all players to be ready")
+
+		SIMPLEGROUPBOX("Remote Console", 30, 227, 290, 113)
+		
+		itemDef {
+			group tab_admin_items
+			rect 22 250 64 20
+			textalignx 64
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "RCON:"
+			visible 1
+			decoration
+		}
+
+		itemDef {
+			group tab_admin_items
+			name "rconEntry"
+			rect 98 248 154 20
+			textalignx 3
+			textaligny 15
+			textscale .26
+			type ITEM_TYPE_EDITFIELD
+			maxchars 15
+			cvar "hud_rconpassword"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+			visible 1
+
+			mouseEnter { setitemcolor rconEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor rconEntry backcolor .5 .5 .5 .25 }
+		}		
+		
+		itemDef {
+			group tab_admin_items
+			rect 258 248 16 16
+			decoration
+			type ITEM_TYPE_LED
+			cvar hud_rcon_auth
+			visible 1
+		}
+
+		itemDef {
+			group tab_admin_items
+			rect 22 273 64 20
+			textalignx 64
+			textaligny 15
+			textalign ITEM_ALIGN_RIGHT
+			textscale .26
+			text "ADMIN:"
+			decoration
+			visible 1
+		}
+
+		itemDef {
+			group tab_admin_items
+			name "adminEntry"
+			rect 98 273 154 20
+			textalignx 3
+			textaligny 15
+			textscale .26
+			type ITEM_TYPE_EDITFIELD
+			maxchars 15
+			cvar "hud_adminpassword"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+			visible 1
+
+			mouseEnter { setitemcolor adminEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor adminEntry backcolor .5 .5 .5 .25 }
+		}		
+		
+		itemDef {
+			rect 258 275 16 16
+			decoration
+			type ITEM_TYPE_LED
+			cvar hud_admin_auth
+			visible 1
+		}
+
+		FORT_BUTTONTT(admin_Auth, "Send Password", 18, 101, 303, 152, 28, .26, "", uiScript AuthorizeClient, "Send these passwords to the server")
+
+	}
+}

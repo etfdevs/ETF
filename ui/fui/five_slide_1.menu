@@ -1,0 +1,54 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Getting started page 1
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 12
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "menu_5slide_1"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+
+		onOpen { setfocus fiveslide_1_next; conditionalScript isconnected 2 ( "uiScript MoveMenuToY menu_5_slide_1 12" ) ( "uiScript MoveMenuToY menu_5slide_1 60" ) }
+		onClose { uiScript closeFORTBackModels ; conditionalScript isconnected 2 ( "setmenufocus menubar" ) ( "setmenufocus ingame" ) }
+		onESC { uiScript closeFORTBackModels }
+
+		MENUMAINRECT("Getting Started (1/ 5)")
+
+		itemDef {
+			text "Character Classes"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 13
+			textscale .5
+			rect 0 40 640 20
+			visible MENU_TRUE
+			decoration
+			forecolor 0.7 0.7 0.7 1
+		}
+
+		itemDef {
+			text "ETF is a class-based game, allowing you to play the role\nof one of ten character classes.\n \nClasses include the Recon, Sniper, Soldier, Grenadier, Paramedic,\nFlame-Trooper, Mini-Gunner, Agent, Engineer and Civilian.\n \nEach class has one or more unique abilities. For example the\nParamedic can heal his team-mates while the Agent can disguise himself\nas a member of the enemy team.\n \nAll ETF's classes have their own weapons and attributes.\nThe Recon is ultra-fast, lightly armored and carries a Nailgun; while the Flametrooper\nis slower but more heavily armored and carries a Flamethrower.\n \nSome classes are better suited to certain roles.  The Engineer is great\non defense because he's able to build Supply-Stations and Sentry-Guns.\n \nFor detailed information on each class, check out the class selection\nmenu by hitting the ESCAPE key while in-game."
+			textalign ITEM_ALIGN_CENTER
+			textalignx 320
+			textaligny 10
+			textscale .27
+			rect 0 80 640 300
+			visible MENU_TRUE
+			type ITEM_TYPE_MLTEXT
+			special 13
+			decoration
+			useAssetFont
+		}
+
+		FORT_BUTTONTT(fiveslide_1_next, "Next", 20, 472, 356, 102, 32, .25, "", uiScript setFORTBackModelOpenMenu menu_5slide_2, "Show next page" )
+	}		
+}

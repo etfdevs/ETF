@@ -1,0 +1,152 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// findplayer - Search servers for a given player
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 12
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "menu_findplayer"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+		
+		onOpen { uiScript UpdateFilter; uiScript FindPlayer ; setfocus namefield }  // setEditFocus
+		onEsc { uiScript closeFORTBackModels }
+		onClose { setmenufocus menubar }
+
+		MENUMAINRECT("Find a Player")
+
+		SIMPLEGROUPBOX("Search", 55, 32, 120, 270)
+
+		itemDef {
+			visible MENU_TRUE
+			rect 65 60 70 15
+			textalignx 1
+			textaligny 10
+			textscale .25
+			text "Look For:"
+			decoration
+		}
+
+		itemDef {
+			name namefield
+			visible MENU_TRUE
+	      		rect 65 76 100 20 
+			textalignx 3
+			textaligny 15
+			textscale .25
+			type ITEM_TYPE_EDITFIELD
+			maxchars 15
+			maxpaintchars 10
+			cvar "ui_findplayer"
+			backcolor .5 .5 .5 .25
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			bordercolor .5 .5 .5 .5
+			text ""
+
+			mouseEnter { setitemcolor namefield backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor namefield backcolor .5 .5 .5 .25 }
+		}
+
+		FORT_BUTTONTT(findPlayer_srch, Search, 16, 65, 115, 100, 24, .25, "", uiScript FindPlayer, "Search for this player")
+	
+		FORT_BUTTONTT(findPlayer_join, Join, 16, 65, 275, 100, 24, .22, "", uiScript FoundPlayerJoinServer, "Join the selected server")
+
+
+// ----- Player List -----
+
+		SIMPLEGROUPBOX("Search results", 190, 32, 365, 270)
+
+		itemDef {
+			name serverNameList
+			rect 192 46 362 254
+			type ITEM_TYPE_LISTBOX
+			style WINDOW_STYLE_FILLED
+			elementheight 16
+			textscale .25
+			forecolor .6 .6 .6 1
+			backcolor 0 0 0 1
+			outlinecolor 1 1 1 .4
+			elementtype LISTBOX_TEXT
+			textstyle 6
+			feeder FEEDER_FINDPLAYER
+			columns 2	2	130	17
+						130	160	20
+			visible 1
+	 	}
+
+// ----- /Player List -----
+
+		SIMPLEGROUPBOX("Options", 55, 316, 500, 70)
+
+		itemDef {
+			visible 	MENU_TRUE
+			rect 		60 340 80 15
+			textalignx 	5
+			textaligny 	10
+			textscale 	.24
+			textalign 	ITEM_ALIGN_LEFT
+			text 		"Punkbuster status:"
+			backcolor	1 .77 .33 .8
+			decoration
+		}
+	
+		itemDef {
+			name 		"password"
+			visible 	MENU_TRUE
+			rect 		60 365 80 15
+			textalignx 	5
+			textaligny 	10
+			textscale 	.24
+			text 		"Server password:"
+			decoration
+		}
+
+		itemDef {
+			name		"pbstatus"
+			rect		165 338 80 15
+//			style		WINDOW_STYLE_FILLED
+			ownerdraw	UI_PBSTATUS
+			textscale	.24
+			textalignx 	6
+			textaligny 	6
+			backcolor	.4 .4 .4 .8
+//			border		WINDOW_BORDER_FULL
+			bordercolor	.7 .7 .7 1
+			visible		1
+		}
+
+		itemDef {
+			name 		"passwordEntry"
+			visible 	MENU_TRUE
+			rect 		170 360 105 20
+			textalignx 	5
+			textaligny 	14
+			textscale 	.22
+			type 		ITEM_TYPE_EDITFIELD
+			maxchars 	15
+			cvar 		"password"
+			backcolor 	.5 .5 .5 .25
+			style 		WINDOW_STYLE_FILLED
+			border 		WINDOW_BORDER_FULL
+			bordercolor 	.5 .5 .5 .5
+			text		""
+
+			mouseEnter { setitemcolor passwordEntry backcolor .5 .5 .5 .5 }
+			mouseExit { setitemcolor passwordEntry backcolor .5 .5 .5 .25 }
+		}
+
+		FORT_BUTTONTT(btnpbenable, "Enable Punkbuster", 16, 340, 335, 130, 24, .22, "", exec pb_cl_enable, "This enables Punkbuster anti-cheat protection")
+
+		FORT_BUTTONTT(btnpbdisable, "Disable Punkbuster", 16, 340, 360, 130, 24, .22, "", exec pb_cl_disable, "This disables Punkbuster anti-cheat protection (requires a restart)")
+
+	}
+}

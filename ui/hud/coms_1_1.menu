@@ -1,0 +1,2011 @@
+#include "ui/menudef.h"
+
+{
+	menuDef {
+		name "coms_1_1"
+		rect -8 60 180 136
+		visible MENU_FALSE
+		focusColor .85 .41 .38 1			// Menu focus color for text and items
+		disableColor .5 .5 .5 1
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+  	  	
+  	  	onKey 49 {
+			open coms_1_1_0;
+			close coms_1_1; 
+  	  	}
+  	  	
+  	  	onKey 50 {
+			open coms_1_1_1;
+			close coms_1_1; 
+  	  	}
+  	  	
+  	  	onKey 51 {
+			open coms_1_1_2;
+			close coms_1_1; 
+  	  	}
+  	  	
+  	  	onKey 52 {
+			open coms_1_1_3;
+			close coms_1_1; 
+  	  	}
+  	  	
+  	  	onKey 53 {
+			open coms_1_1_4;
+			close coms_1_1; 
+  	  	}
+  	  	
+  	  	onKey 54 {
+			open coms_1_1_5;
+			close coms_1_1; 
+  	  	}
+  	  	
+  	  	onKey 55 {
+			uiScript say "#" / "&sound/voices/spencer/gen_yes1.wav" / "Acknowledged";
+			close coms_1_1; 
+  	  	}
+  	  	
+  	  	onKey 56 {
+			uiScript say "#" / "&sound/voices/spencer/gen_no1.wav" / "Negative";
+			close coms_1_1; 
+  	  	}
+  	  	
+  	  	onKey 57 {
+  			open coms_1_1_6;
+			close coms_1_1; 
+  	  	}
+  	  	
+//      ---------------- RADIO COMS ------------------
+
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 180, 150)
+		
+		itemDef {
+			rect 12 10 168 10
+			textscale .3
+			textalignx 84
+			textaligny 10
+			text "RADIO COMMS"
+			visible 1
+			type ITEM_TYPE_TEXT
+			textAlign ITEM_ALIGN_CENTER
+			useAssetFont
+			decoration
+		}
+		
+		itemDef {
+			rect 12 28 168 10
+			textscale .27
+			textalignx 4
+			textaligny 10
+			text "1. Offence (team)"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+  				open coms_1_1_0;
+ 				close coms_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 42 168 10
+			textscale .27
+			textaligny 10
+			text "2. Defence (team)"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+  				open coms_1_1_1;
+ 				close coms_1_1; 
+			}
+			useAssetFont
+		}
+		
+		itemDef {
+			rect 12 56 168 10
+			textscale .27
+			textaligny 10
+			text "3. General"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+  				open coms_1_1_2;
+ 				close coms_1_1; 
+			}
+			useAssetFont
+		}
+		
+		itemDef {
+			rect 12 70 168 10
+			textscale .27
+			textaligny 10
+			text "4. General (team)"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+  				open coms_1_1_3;
+ 				close coms_1_1; 
+			}
+			useAssetFont
+		}
+		
+		itemDef {
+			rect 12 84 168 10
+			textscale .27
+			textaligny 10
+			text "5. Taunts & Praises"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+  				open coms_1_1_4;
+ 				close coms_1_1; 
+			}
+			useAssetFont
+		}
+		
+		itemDef {
+			rect 12 98 168 10
+			textscale .27
+			textaligny 10
+			text "6. Taunts & Praises (team)"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+  				open coms_1_1_5;
+ 				close coms_1_1; 
+			}
+			useAssetFont
+		}
+		
+		itemDef {
+			rect 12 112 168 10
+			textscale .27
+			textaligny 10
+			text "7. Acknowledged"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/gen_yes1.wav" / "Acknowledged";
+ 				close coms_1_1; 
+			}
+			useAssetFont
+		}
+		
+		itemDef {
+			rect 12 126 168 10
+			textscale .27
+			textaligny 10
+			text "8. Negative"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/gen_no1.wav" / "Negative";
+ 				close coms_1_1; 
+			}
+			useAssetFont
+		}
+		
+		itemDef {
+			rect 12 140 168 10
+			textscale .27
+			textaligny 10
+			text "9. Gesture"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+  				open coms_1_1_6;
+				close coms_1_1; 
+			}
+			useAssetFont
+		}		
+	}
+	
+	
+// --------------------------------------------------------------------------------------------------------------------------------
+
+
+	menuDef {
+		name "coms_1_1_0"
+		rect -8 60 180 220
+		visible MENU_FALSE
+		focusColor .85 .41 .38 1			// Menu focus color for text and items
+		disableColor .5 .5 .5 1
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+  	  	
+  	  	onKey 49 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_imatt.wav" / "I'm Attacking";
+			close coms_1_1_0; 
+  	  	}
+  	  	
+  	  	onKey 50 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_spotsen.wav" / "Sentry spotted $L";
+			close coms_1_1_0; 
+  	  	}
+  	  	
+  	  	onKey 51 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_spotpipe.wav" / "Pipes spotted $L";
+			close coms_1_1_0; 
+  	  	}
+  	  	
+ 	  	onKey 52 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_dephe.wav" / "Heavy explosive deployed $L";
+			close coms_1_1_0; 
+  	  	}
+  	  	
+  	  	onKey 53 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_flaghave.wav" / "I have the enemy flag $L";
+			close coms_1_1_0; 
+  	  	}
+  	  	
+ 	  	onKey 54 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_flagget.wav" / "Get the enemy flag $L";
+			close coms_1_1_0; 
+  	  	}
+  	  	
+  	  	onKey 55 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_flaggive.wav" / "Give me the flag $L";
+			close coms_1_1_0; 
+  	  	}
+  	  	
+  	  	onKey 56 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_flagtake.wav" / "Take the flag from me $L";
+			close coms_1_1_0;
+  	  	}
+  	  	
+  	  	onKey 57 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_defhvy.wav" / "Enemy defense heavy $L";
+			close coms_1_1_0; 
+  	  	}
+  	  	
+  	  	onKey 48 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_deflight.wav" / "Enemy defense light $L";
+			close coms_1_1_0; 
+  	  	}
+  	  	
+  	  	onKey 97 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_carrsupp.wav" / "Support our flag carrier";
+			close coms_1_1_0; 
+  	  	}
+  	  	
+  	  	onKey 98 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_attobj.wav" / "Attack the objective $L";
+			close coms_1_1_0; 
+  	  	}
+  	  	
+  	  	onKey 99 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_attsentry.wav" / "Attack the enemy sentry";
+			close coms_1_1_0; 
+  	  	}
+  	  	
+  	  	onKey 100 {
+			uiScript say_team "#" / "&sound/voices/spencer/off_coverme.wav" / "Cover me";
+			close coms_1_1_0; 
+  	  	}
+  	  	
+//      ---------------- OFFENCE (TEAM) ------------------
+
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 180, 220)
+		
+		itemDef {
+			rect 12 10 168 10
+			textscale .3
+			textalignx 84
+			textaligny 10
+			text "OFFENCE (TEAM)"
+			visible 1
+			type ITEM_TYPE_TEXT
+			textAlign ITEM_ALIGN_CENTER
+			useAssetFont
+			decoration
+		}
+		
+		itemDef {
+			rect 12 28 168 10
+			textscale .27
+			textalignx 4
+			textaligny 10
+			text "1. I'm Attacking"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_imatt.wav" / "I'm Attacking";
+				close coms_1_1_0; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 42 168 10
+			textscale .27
+			textaligny 10
+			text "2. Sentry spotted"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_spotsen.wav" / "Sentry spotted $L";
+				close coms_1_1_0; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 56 168 10
+			textscale .27
+			textaligny 10
+			text "3. Pipes spotted"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_spotpipe.wav" / "Pipes spotted $L";
+				close coms_1_1_0; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 70 168 10
+			textscale .27
+			textaligny 10
+			text "4. Heavy Explosives Deployed"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_dephe.wav" / "Heavy explosive deployed $L";
+				close coms_1_1_0; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 84 168 10
+			textscale .27
+			textaligny 10
+			text "5. I Have The Flag"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_flaghave.wav" / "I have the enemy flag $L";
+				close coms_1_1_0; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 98 168 10
+			textscale .27
+			textaligny 10
+			text "6. Get The Enemy Flag!"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_flagget.wav" / "Get the enemy flag $L";
+				close coms_1_1_0; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 112 168 10
+			textscale .27
+			textaligny 10
+			text "7. Give Me The Flag"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_flaggive.wav" / "Give me the flag $L";
+				close coms_1_1_0; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 126 168 10
+			textscale .27
+			textaligny 10
+			text "8. Take The Flag From Me"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_flagtake.wav" / "Take the flag from me $L";
+				close coms_1_1_0;
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 140 168 10
+			textscale .27
+			textaligny 10
+			text "9. Enemy Defense Heavy"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_defhvy.wav" / "Enemy defense heavy $L";
+				close coms_1_1_0; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 154 168 10
+			textscale .27
+			textaligny 10
+			text "0. Enemy Defense Light"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_deflight.wav" / "Enemy defense light $L";
+				close coms_1_1_0; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 168 168 10
+			textscale .27
+			textaligny 10
+			text "A. Support Our Flag Carrier"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_carrsupp.wav" / "Support our flag carrier";
+				close coms_1_1_0; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 182 168 10
+			textscale .27
+			textaligny 10
+			text "B. Attack The Objective"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_attobj.wav" / "Attack the objective $L";
+				close coms_1_1_0; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 196 168 10
+			textscale .27
+			textaligny 10
+			text "C. Attack The Enemy Sentry"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_attsentry.wav" / "Attack the enemy sentry";
+				close coms_1_1_0; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 210 168 10
+			textscale .27
+			textaligny 10
+			text "D. Cover Me"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/off_coverme.wav" / "Cover me";
+				close coms_1_1_0; 
+			}
+			useAssetFont
+		}
+	}
+
+
+// --------------------------------------------------------------------------------------------------------------------------------
+
+
+	menuDef {
+		name "coms_1_1_1"
+		rect -8 60 180 234
+		visible MENU_FALSE
+		focusColor .85 .41 .38 1			// Menu focus color for text and items
+		disableColor .5 .5 .5 1
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+  	  	
+  	  	onKey 49 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_iam.wav" / "I'm defending";
+			close coms_1_1_1; 
+  	  	}
+  	  	
+  	  	onKey 50 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_depsen.wav" / "Sentry deployed $L";
+			close coms_1_1_1; 
+  	  	}
+  	  	
+  	  	onKey 51 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_deppipe.wav" / "Pipe trap deployed $L";
+			close coms_1_1_1; 
+  	  	}
+  	  	
+ 	  	onKey 52 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_depdisp.wav" / "Dispenser deployed $L";
+			close coms_1_1_1; 
+  	  	}
+  	  	
+		onKey 53 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_flagprimexit.wav" / "Our flag outbound";
+			close coms_1_1_1; 
+  	  	}
+  	  	
+ 	  	onKey 54 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_dropflag.wav" / "Defend Dropped Flag";
+			close coms_1_1_1; 
+  	  	}
+  	  	
+  	  	onKey 55 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_incprimrte.wav" / "Incoming primary route";
+			close coms_1_1_1; 
+  	  	}
+  	  	
+  	  	onKey 56 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_incsecrte.wav" / "Incoming Secondary Route";
+			close coms_1_1_1; 
+  	  	}
+  	  	
+  	  	onKey 57 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_incflag2.wav" / "Incoming to flag";
+			close coms_1_1_1;
+  	  	}
+  	  	
+  	  	onKey 48 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_incflag1.wav" / "Our base is overrun";
+			close coms_1_1_1; 
+  	  	}
+  	  	
+  	  	onKey 97 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_flagsafe.wav" / "Our base is secure";
+			close coms_1_1_1; 
+ 	  	}
+  	  	
+  	  	onKey 98 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_flag.wav" / "Defend our flag";
+			close coms_1_1_1; 
+  	  	}
+  	  	
+  	  	onKey 99 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_obj.wav" / "Defend the objective $L";
+			close coms_1_1_1; 
+  	  	}
+  	  	
+  	  	onKey 100 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_fixsenty.wav" / "Repair our sentries";
+			close coms_1_1_1; 
+  	  	}
+  	  	
+  	  	onKey 101 {
+			uiScript say_team "#" / "&sound/voices/spencer/def_needsupp.wav" / "Need support $L";
+			close coms_1_1_1; 
+  	  	}
+  	  	
+//      ---------------- DEFENCE (TEAM) ------------------
+
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 180, 234)
+		
+		itemDef {
+			rect 12 10 168 10
+			textscale .3
+			textalignx 84
+			textaligny 10
+			text "DEFENCE (TEAM)"
+			visible 1
+			type ITEM_TYPE_TEXT
+			textAlign ITEM_ALIGN_CENTER
+			useAssetFont
+			decoration
+		}
+		
+		itemDef {
+			rect 12 28 168 10
+			textscale .27
+			textalignx 4
+			textaligny 10
+			text "1. I'm Defending"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_iam.wav" / "I'm defending";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 42 168 10
+			textscale .27
+			textaligny 10
+			text "2. Sentry Deployed"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_depsen.wav" / "Sentry deployed $L";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 56 168 10
+			textscale .27
+			textaligny 10
+			text "3. Pipe Trap Deployed"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_deppipe.wav" / "Pipe trap deployed $L";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 70 168 10
+			textscale .27
+			textaligny 10
+			text "4. Dispencer Deployed"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_depdisp.wav" / "Dispenser deployed $L";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 84 168 10
+			textscale .27
+			textaligny 10
+			text "5. Our Flag Outbound"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_flagprimexit.wav" / "Our flag outbound";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 98 168 10
+			textscale .27
+			textaligny 10
+			text "6. Defend Dropped Flag"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_dropflag.wav" / "Defend Dropped Flag";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 112 168 10
+			textscale .27
+			textaligny 10
+			text "7. Incoming Primary Route"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_incprimrte.wav" / "Incoming primary route";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 126 168 10
+			textscale .27
+			textaligny 10
+			text "8. Incoming Secondary Route"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_incsecrte.wav" / "Incoming Secondary Route";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 140 168 10
+			textscale .27
+			textaligny 10
+			text "9. Incoming To Flag"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_incflag2.wav" / "Incoming to flag";
+				close coms_1_1_1;
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 154 168 10
+			textscale .27
+			textaligny 10
+			text "0. Our base Is Overrun"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_incflag1.wav" / "Our base is overrun";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 168 168 10
+			textscale .27
+			textaligny 10
+			text "A. Our base Is Secure"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_flagsafe.wav" / "Our base is secure";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 182 168 10
+			textscale .27
+			textaligny 10
+			text "B. Defend Our Flag"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_flag.wav" / "Defend our flag";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 196 168 10
+			textscale .27
+			textaligny 10
+			text "C. Defend The Objective"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_obj.wav" / "Defend the objective $L";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 210 168 10
+			textscale .27
+			textaligny 10
+			text "D. Repair Our Sentries"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_fixsenty.wav" / "Repair our sentries";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 224 168 10
+			textscale .27
+			textaligny 10
+			text "E. Need Support"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/def_needsupp.wav" / "Need support";
+				close coms_1_1_1; 
+			}
+			useAssetFont
+		}
+	}
+	
+
+// --------------------------------------------------------------------------------------------------------------------------------
+
+	menuDef {
+		name "coms_1_1_2"
+		rect -8 60 180 136
+		visible MENU_FALSE
+		focusColor .85 .41 .38 1			// Menu focus color for text and items
+		disableColor .5 .5 .5 1
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+  	  	
+ 	  	onKey 49 {
+			uiScript say "#" / "&sound/voices/spencer/gen_yes1.wav" / "Yes";
+			close coms_1_1_2; 
+  	  	}
+  	  	
+ 	  	onKey 50 {
+				uiScript say "#" / "&sound/voices/spencer/gen_no1.wav" / "No";
+				close coms_1_1_2; 
+  	  	}
+  	  	
+  	  	onKey 51 {
+			uiScript say "#" / "&sound/voices/spencer/gen_hello1.wav" / "Hello";
+			close coms_1_1_2; 
+  	  	}
+  	  	
+  	  	onKey 52 {
+			uiScript say "#" / "&sound/voices/spencer/gen_goodbye1.wav" / "Goodbye";
+			close coms_1_1_2; 
+  	  	}
+  	  	
+		onKey 53 {
+			uiScript say "#" / "&sound/voices/spencer/gen_oops.wav" / "Oops";
+			close coms_1_1_2; 
+  	  	}
+  	  	
+ 	  	onKey 54 {
+			uiScript say "#" / "&sound/voices/spencer/gen_noprob.wav" / "No problem";
+			close coms_1_1_2; 
+ 	  	}
+  	  	
+  	  	onKey 55 {
+			uiScript say "#" / "&sound/voices/spencer/gen_stop.wav" / "Stop";
+			close coms_1_1_2; 
+  	  	}
+  	  	
+  	  	onKey 56 {
+			uiScript say "#" / "&sound/voices/spencer/gen_pass.wav" / "Pass";
+			close coms_1_1_2; 
+  	  	}
+  	  	
+//      ---------------- GENERAL ------------------
+
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 180, 136)
+		
+		itemDef {
+			rect 12 10 168 10
+			textscale .3
+			textalignx 84
+			textaligny 10
+			text "GENERAL"
+			visible 1
+			type ITEM_TYPE_TEXT
+			textAlign ITEM_ALIGN_CENTER
+			useAssetFont
+			decoration
+		}
+		
+		itemDef {
+			rect 12 28 168 10
+			textscale .27
+			textalignx 4
+			textaligny 10
+			text "1. Yes"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/gen_yes1.wav" / "Yes";
+				close coms_1_1_2; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 42 168 10
+			textscale .27
+			textaligny 10
+			text "2. No"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/gen_no1.wav" / "No";
+				close coms_1_1_2; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 56 168 10
+			textscale .27
+			textaligny 10
+			text "3. Hello"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/gen_hello1.wav" / "Hello";
+				close coms_1_1_2; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 70 168 10
+			textscale .27
+			textaligny 10
+			text "4. Goodbye"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/gen_goodbye1.wav" / "Goodbye";
+				close coms_1_1_2; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 84 168 10
+			textscale .27
+			textaligny 10
+			text "5. Oops"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/gen_oops.wav" / "Oops";
+				close coms_1_1_2; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 98 168 10
+			textscale .27
+			textaligny 10
+			text "6. No Problem"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/gen_noprob.wav" / "No problem";
+				close coms_1_1_2; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 112 168 10
+			textscale .27
+			textaligny 10
+			text "7. Stop"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/gen_stop.wav" / "Stop";
+				close coms_1_1_2; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 126 168 10
+			textscale .27
+			textaligny 10
+			text "8. Pass"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/gen_pass.wav" / "Pass";
+				close coms_1_1_2; 
+			}
+			useAssetFont
+		}
+	}	
+
+
+// --------------------------------------------------------------------------------------------------------------------------------
+
+	menuDef {
+		name "coms_1_1_3"
+		rect -8 60 180 290
+		visible MENU_FALSE
+		focusColor .85 .41 .38 1			// Menu focus color for text and items
+		disableColor .5 .5 .5 1
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+  	  	
+ 	  	onKey 49 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_yes2.wav" / "Yes";
+			close coms_1_1_3; 
+  	  	}
+  	  	
+ 	  	onKey 50 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_no2.wav" / "No";
+			close coms_1_1_3; 
+  	  	}
+  	  	
+  	  	onKey 51 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_hello2.wav" / "Hello";
+			close coms_1_1_3; 
+  	  	}
+  	  	
+  	  	onKey 52 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_goodbye2.wav" / "Goodbye";
+			close coms_1_1_3; 
+  	  	}
+  	  	
+		onKey 53 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_sorry.wav" / "Sorry";
+			close coms_1_1_3; 
+  	  	}
+  	  	
+ 	  	onKey 54 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_anytime.wav" / "Any time";
+			close coms_1_1_3; 
+ 	  	}
+  	  	
+  	  	onKey 55 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_halt.wav" / "Halt";
+			close coms_1_1_3; 
+  	  	}
+  	  	
+  	  	onKey 56 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_gogogo.wav" / "Go Go Go!";
+			close coms_1_1_3; 
+  	  	}
+
+  	  	onKey 57 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_movepls.wav" / "Move, please";
+			close coms_1_1_3; 
+  	  	}
+  	  	
+  	  	onKey 48 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_waitord.wav" / "Awaiting orders";
+			close coms_1_1_3; 
+  	  	}
+
+  	  	onKey 97 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_objcplt.wav" / "Objective complete";
+			close coms_1_1_3; 
+  	  	}
+
+  	  	onKey 98 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_objfld.wav" / "Objective failed";
+			close coms_1_1_3; 
+  	  	}
+
+  	  	onKey 99 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_firehole.wav" / "Fire in the hole";
+			close coms_1_1_3; 
+  	  	}
+
+  	  	onKey 100 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_reportin.wav" / "Report in";
+			close coms_1_1_3; 
+  	  	}
+
+  	  	onKey 101 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_inpos.wav" / "In position";
+			close coms_1_1_3; 
+  	  	}
+
+  	  	onKey 102 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_giveammo.wav" / "Give me some ammunition";
+			close coms_1_1_3; 
+  	  	}
+
+  	  	onKey 103 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_watchfire.wav" / "Watch where you're shooting";
+			close coms_1_1_3; 
+  	  	}
+
+  	  	onKey 104 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_isbasesec.wav" / "Is our base secure?";
+			close coms_1_1_3; 
+  	  	}
+
+  	  	onKey 105 {
+			uiScript say_team "#" / "&sound/voices/spencer/gen_ceasefire.wav" / "Cease-fire";
+			close coms_1_1_3; 
+  	  	}
+
+//      ---------------- GENERAL (TEAM) ------------------
+
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 180, 290)
+		
+		itemDef {
+			rect 12 10 168 10
+			textscale .3
+			textalignx 84
+			textaligny 10
+			text "GENERAL (TEAM)"
+			visible 1
+			type ITEM_TYPE_TEXT
+			textAlign ITEM_ALIGN_CENTER
+			useAssetFont
+			decoration
+		}
+		
+		itemDef {
+			rect 12 28 168 10
+			textscale .27
+			textalignx 4
+			textaligny 10
+			text "1. Yes"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_yes1.wav" / "Yes";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 42 168 10
+			textscale .27
+			textaligny 10
+			text "2. No"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_no2.wav" / "No";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 56 168 10
+			textscale .27
+			textaligny 10
+			text "3. Hello"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_hello2.wav" / "Hello";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 70 168 10
+			textscale .27
+			textaligny 10
+			text "4. Goodbye"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_goodbye2.wav" / "Goodbye";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 84 168 10
+			textscale .27
+			textaligny 10
+			text "5. Sorry"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_sorry.wav" / "Sorry";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 98 168 10
+			textscale .27
+			textaligny 10
+			text "6. Any time"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_anytime.wav" / "Any time";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 112 168 10
+			textscale .27
+			textaligny 10
+			text "7. Halt"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_halt.wav" / "Halt";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 126 168 10
+			textscale .27
+			textaligny 10
+			text "8. Go Go Go!"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_gogogo.wav" / "Go Go Go!";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+		
+		itemDef {
+			rect 12 140 168 10
+			textscale .27
+			textaligny 10
+			text "9. Move, Please"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_movepls.wav" / "Move, please";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 154 168 10
+			textscale .27
+			textaligny 10
+			text "0. Awaiting Orders"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_waitord.wav" / "Awaiting orders";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 168 168 10
+			textscale .27
+			textaligny 10
+			text "A. Objective Complete"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_objcplt.wav" / "Objective complete";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 182 168 10
+			textscale .27
+			textaligny 10
+			text "B. Objective Failed"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_objfld.wav" / "Objective failed";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 196 168 10
+			textscale .27
+			textaligny 10
+			text "C. Fire In The Hole"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_firehole.wav" / "Fire in the hole";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 210 168 10
+			textscale .27
+			textaligny 10
+			text "D. Report In"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_reportin.wav" / "Report in";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 224 168 10
+			textscale .27
+			textaligny 10
+			text "E. In Position"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_inpos.wav" / "In position";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 238 168 10
+			textscale .27
+			textaligny 10
+			text "F. Give Me Some Ammunition"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_giveammo.wav" / "Give me some ammunition";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 252 168 10
+			textscale .27
+			textaligny 10
+			text "G. Watch Your Fire"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_watchfire.wav" / "Watch your fire";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 266 168 10
+			textscale .27
+			textaligny 10
+			text "H. Is Our Base Secure?"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_isbasesec.wav" / "Is our base secure?";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 280 168 10
+			textscale .27
+			textaligny 10
+			text "I. Cease-fire"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/gen_ceasefire.wav" / "Cease-fire";
+				close coms_1_1_3; 
+			}
+			useAssetFont
+		}
+	}	
+
+
+// --------------------------------------------------------------------------------------------------------------------------------
+
+	menuDef {
+		name "coms_1_1_4"
+		rect -8 60 180 192
+		visible MENU_FALSE
+		focusColor .85 .41 .38 1			// Menu focus color for text and items
+		disableColor .5 .5 .5 1
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+  	  	
+ 	  	onKey 49 {
+			uiScript say "#" / "&sound/voices/spencer/tap_goodgame1.wav" / "Good game";
+			close coms_1_1_4; 
+  	  	}
+  	  	
+ 	  	onKey 50 {
+			uiScript say "#" / "&sound/voices/spencer/tap_wellplayed1.wav" / "Well played";
+			close coms_1_1_4; 
+  	  	}
+  	  	
+  	  	onKey 51 {
+			uiScript say "#" / "&sound/voices/spencer/tap_nicemove1.wav" / "Nice move";
+			close coms_1_1_4; 
+  	  	}
+  	  	
+  	  	onKey 52 {
+			uiScript say "#" / "&sound/voices/spencer/tap_niceshot.wav" / "Nice shot";
+			close coms_1_1_4; 
+  	  	}
+  	  	
+		onKey 53 {
+			uiScript say "#" / "&sound/voices/spencer/tap_yourock.wav" / "You rock";
+			close coms_1_1_4; 
+  	  	}
+  	  	
+ 	  	onKey 54 {
+			uiScript say "#" / "&sound/voices/spencer/tap_sneakybastard.wav" / "You sneaky bastard";
+			close coms_1_1_4; 
+ 	  	}
+  	  	
+  	  	onKey 55 {
+			uiScript say "#" / "&sound/voices/spencer/tap_nicecapture1.wav" / "Nice capture";
+			close coms_1_1_4; 
+  	  	}
+  	  	
+  	  	onKey 56 {
+			uiScript say "#" / "&sound/voices/spencer/tap_aw.wav" / "Aw";
+			close coms_1_1_4; 
+  	  	}
+
+  	  	onKey 57 {
+			uiScript say "#" / "&sound/voices/spencer/tap_yourmine.wav" / "You're mine";
+			close coms_1_1_4; 
+  	  	}
+  	  	
+  	  	onKey 48 {
+			uiScript say "#" / "&sound/voices/spencer/tap_myflag1.wav" / "My Flag";
+			close coms_1_1_4; 
+  	  	}
+
+  	  	onKey 97 {
+			uiScript say "#" / "&sound/voices/spencer/tap_goaway.wav" / "Go Away";
+			close coms_1_1_4; 
+  	  	}
+
+  	  	onKey 98 {
+			uiScript say "#" / "&sound/voices/spencer/tap_thegreatest.wav" / "We are the greatest";
+			close coms_1_1_4; 
+  	  	}
+
+//      ---------------- TAUNTS & PRAISES ------------------
+
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 180, 192)
+		
+		itemDef {
+			rect 12 10 168 10
+			textscale .3
+			textalignx 84
+			textaligny 10
+			text "TAUNTS AND PRAISES"
+			visible 1
+			type ITEM_TYPE_TEXT
+			textAlign ITEM_ALIGN_CENTER
+			useAssetFont
+			decoration
+		}
+		
+		itemDef {
+			rect 12 28 168 10
+			textscale .27
+			textalignx 4
+			textaligny 10
+			text "1. Good Game"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/tap_goodgame1.wav" / "Good game";
+				close coms_1_1_4; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 42 168 10
+			textscale .27
+			textaligny 10
+			text "2. Well Played"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/tap_wellplayed1.wav" / "Well played";
+				close coms_1_1_4; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 56 168 10
+			textscale .27
+			textaligny 10
+			text "3. Nice Move"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/tap_nicemove1.wav" / "Nice move";
+				close coms_1_1_4; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 70 168 10
+			textscale .27
+			textaligny 10
+			text "4. Nice Shot"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/tap_niceshot.wav" / "Nice shot";
+				close coms_1_1_4; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 84 168 10
+			textscale .27
+			textaligny 10
+			text "5. You Rock"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/tap_yourock.wav" / "You rock";
+				close coms_1_1_4; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 98 168 10
+			textscale .27
+			textaligny 10
+			text "6. You Sneaky Bastard"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/tap_sneakybastard.wav" / "You sneaky bastard";
+				close coms_1_1_4; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 112 168 10
+			textscale .27
+			textaligny 10
+			text "7. Nice Capture"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/tap_nicecapture1.wav" / "Nice capture";
+				close coms_1_1_4; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 126 168 10
+			textscale .27
+			textaligny 10
+			text "8. Aw"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/tap_aw.wav" / "Aw";
+				close coms_1_1_4; 
+			}
+			useAssetFont
+		}
+		
+		itemDef {
+			rect 12 140 168 10
+			textscale .27
+			textaligny 10
+			text "9. You're Mine"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/tap_yourmine.wav" / "You're mine";
+				close coms_1_1_4; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 154 168 10
+			textscale .27
+			textaligny 10
+			text "0. My Flag!"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/tap_myflag1.wav" / "My Flag";
+				close coms_1_1_4; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 168 168 10
+			textscale .27
+			textaligny 10
+			text "A. Go Away"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/tap_goaway.wav" / "Go Away";
+				close coms_1_1_4; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 182 168 10
+			textscale .27
+			textaligny 10
+			text "B. We Are The Greatest"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say "#" / "&sound/voices/spencer/tap_thegreatest.wav" / "We are the greatest";
+				close coms_1_1_4; 
+			}
+			useAssetFont
+		}
+	}	
+
+
+// --------------------------------------------------------------------------------------------------------------------------------
+
+	menuDef {
+		name "coms_1_1_5"
+		rect -8 60 180 136
+		visible MENU_FALSE
+		focusColor .85 .41 .38 1			// Menu focus color for text and items
+		disableColor .5 .5 .5 1
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+  	  	
+ 	  	onKey 49 {
+			uiScript say_team "#" / "&sound/voices/spencer/tap_goodgame2.wav" / "Good game";
+			close coms_1_1_5; 
+  	  	}
+  	  	
+ 	  	onKey 50 {
+			uiScript say_team "#" / "&sound/voices/spencer/tap_wellplayed2.wav" / "Well played";
+			close coms_1_1_5; 
+  	  	}
+  	  	
+  	  	onKey 51 {
+			uiScript say_team "#" / "&sound/voices/spencer/tap_nicemove2.wav" / "Nice move";
+			close coms_1_1_5; 
+  	  	}
+  	  	
+  	  	onKey 52 {
+			uiScript say_team "#" / "&sound/voices/spencer/tap_niceshot.wav" / "Nice shot";
+			close coms_1_1_5; 
+  	  	}
+  	  	
+		onKey 53 {
+			uiScript say_team "#" / "&sound/voices/spencer/tap_werock1.wav" / "We rock";
+			close coms_1_1_5; 
+  	  	}
+  	  	
+ 	  	onKey 54 {
+			uiScript say_team "#" / "&sound/voices/spencer/tap_sneakybastard.wav" / "You sneaky bastard";
+			close coms_1_1_5; 
+ 	  	}
+  	  	
+  	  	onKey 55 {
+			uiScript say_team "#" / "&sound/voices/spencer/tap_nicecapture2.wav" / "Nice capture";
+			close coms_1_1_5; 
+  	  	}
+  	  	
+  	  	onKey 56 {
+			uiScript say_team "#" / "&sound/voices/spencer/tap_aw.wav" / "Aw";
+			close coms_1_1_5; 
+  	  	}
+
+//      ---------------- TAUNTS & PRAISES (TEAM)------------------
+
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 180, 136)
+		
+		itemDef {
+			rect 12 10 168 10
+			textscale .3
+			textalignx 84
+			textaligny 10
+			text "GENERAL (TEAM)"
+			visible 1
+			type ITEM_TYPE_TEXT
+			textAlign ITEM_ALIGN_CENTER
+			useAssetFont
+			decoration
+		}
+		
+		itemDef {
+			rect 12 28 168 10
+			textscale .27
+			textalignx 4
+			textaligny 10
+			text "1. Good Game"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/tap_goodgame2.wav" / "Good game";
+				close coms_1_1_5; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 42 168 10
+			textscale .27
+			textaligny 10
+			text "2. Well Played"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/tap_wellplayed2.wav" / "Well played";
+				close coms_1_1_5; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 56 168 10
+			textscale .27
+			textaligny 10
+			text "3. Nice Move"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/tap_nicemove2.wav" / "Nice move";
+				close coms_1_1_5; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 70 168 10
+			textscale .27
+			textaligny 10
+			text "4. Nice Shot"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/tap_niceshot.wav" / "Nice shot";
+				close coms_1_1_5; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 84 168 10
+			textscale .27
+			textaligny 10
+			text "5. We Rock"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/tap_werock1.wav" / "We rock";
+				close coms_1_1_5; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 98 168 10
+			textscale .27
+			textaligny 10
+			text "6. You Sneaky Bastard"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/tap_sneakybastard.wav" / "You sneaky bastard";
+				close coms_1_1_5; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 112 168 10
+			textscale .27
+			textaligny 10
+			text "7. Nice Capture"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/tap_nicecapture2.wav" / "Nice capture";
+				close coms_1_1_5; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 126 168 10
+			textscale .27
+			textaligny 10
+			text "8. Aw"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript say_team "#" / "&sound/voices/spencer/tap_aw.wav" / "Aw";
+				close coms_1_1_5; 
+			}
+			useAssetFont
+		}
+	}	
+	
+	menuDef {
+		name "coms_1_1_6"
+		rect -8 60 180 136
+		visible MENU_FALSE
+		focusColor .85 .41 .38 1			// Menu focus color for text and items
+		disableColor .5 .5 .5 1
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+  	  	
+ 	  	onKey 49 {
+			uiScript ExecText "+button3; wait; -button3"
+			close coms_1_1_6; 
+  	  	}
+  	  	
+ 	  	onKey 50 {
+			uiScript ExecText "+button5; wait; -button5"
+			close coms_1_1_6; 
+  	  	}
+  	  	
+  	  	onKey 51 {
+			uiScript ExecText "+button6; wait; -button6"
+			close coms_1_1_6; 
+  	  	}
+  	  	
+  	  	onKey 52 {
+			uiScript ExecText "+button7; wait; -button7"
+			close coms_1_1_6; 
+  	  	}
+  	  	
+		onKey 53 {
+			uiScript ExecText "+button8; wait; -button8"
+			close coms_1_1_6; 
+  	  	}
+  	  	
+ 	  	onKey 54 {
+			uiScript ExecText "+button9; wait; -button9"
+			close coms_1_1_6; 
+ 	  	}
+  	  	
+ 	  	onKey 55 {
+			uiScript ExecText "+button10; wait; -button10"
+			close coms_1_1_6; 
+ 	  	}
+  	  	
+//      ---------------- GESTURES ------------------
+
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 180, 122)
+		
+		itemDef {
+			rect 12 10 168 10
+			textscale .3
+			textalignx 84
+			textaligny 10
+			text "GESTURES"
+			visible 1
+			type ITEM_TYPE_TEXT
+			textAlign ITEM_ALIGN_CENTER
+			useAssetFont
+			decoration
+		}
+		
+		itemDef {
+			rect 12 28 168 10
+			textscale .27
+			textalignx 4
+			textaligny 10
+			text "1. Taunt"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript ExecText "+button3; wait; -button3";
+				close coms_1_1_6; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 42 168 10
+			textscale .27
+			textaligny 10
+			text "2. Wave No"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript ExecText "+button5; wait; -button5";
+				close coms_1_1_6; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 56 168 10
+			textscale .27
+			textaligny 10
+			text "3. Wave Yes"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript ExecText "+button6; wait; -button6";
+				close coms_1_1_6; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 70 168 10
+			textscale .27
+			textaligny 10
+			text "4. Look"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript ExecText "+button7; wait; -button7";
+				close coms_1_1_6; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 84 168 10
+			textscale .27
+			textaligny 10
+			text "5. Beckon"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript ExecText "+button8; wait; -button8";
+				close coms_1_1_6; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 98 168 10
+			textscale .27
+			textaligny 10
+			text "6. Stop"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript ExecText "+button9; wait; -button9";
+				close coms_1_1_6; 
+			}
+			useAssetFont
+		}
+
+		itemDef {
+			rect 12 112 168 10
+			textscale .27
+			textaligny 10
+			text "7. Point"
+			visible 1
+			type ITEM_TYPE_BUTTON
+			action {
+				uiScript ExecText "+button10; wait; -button10";
+				close coms_1_1_6; 
+			}
+			useAssetFont
+		}
+	}	
+}

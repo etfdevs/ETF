@@ -1,0 +1,303 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// creategame - Server Creation
+	//
+
+	#define MENU_X 12
+	#define MENU_Y 12
+	#define MENU_WIDTH 614
+	#define MENU_HEIGHT 396
+
+	#define MENU_NAME "menu_creategame"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+		MENUSCREENSTYLE
+//		keepOpenOnFocusLost
+
+		onOpen { uiScript loadArenas menu_creategame ; uiScript setupGameIndexMulti ; setmenufocus menu_creategame }
+		onEsc { uiScript closeFORTBackModels }
+		onClose { setmenufocus menubar }
+
+		MENUMAINRECT("Start a Game")
+
+// ------ LEVELSHOT ------
+		SIMPLEGROUPBOX( "Map Preview", 230, 26, 370, 134 )
+
+		itemDef {
+			name "mappreview"
+			visible MENU_TRUE
+			rect 232 40 368 120
+			ownerdraw UI_MAPPREVIEW			
+		}
+		
+// ------ /LEVELSHOT ------
+
+// ------ MAP LIST ------
+
+		itemDef {
+			name maplist
+    			rect 22 40 192 334
+			type ITEM_TYPE_LISTBOX
+			style WINDOW_STYLE_FILLED
+			elementwidth 170
+			elementheight 18
+			textscale .27
+			elementtype LISTBOX_TEXT
+			feeder FEEDER_ALLMAPS
+			textstyle 6
+			textalign 3
+			textaligny -3
+			forecolor .8 .8 .8 1
+			backcolor 0 0 0 1
+			outlinecolor 1 1 1 .4
+			visible 1
+			columns 1 2 170 23
+  		}
+		SIMPLEGROUPBOX( "Select Map", 20, 26, 194, 344 )
+
+		itemDef {
+			name "gameindexmapname"
+			visible MENU_TRUE
+			rect 22 370 192 18
+			ownerdraw UI_GAMEINDEX_MAPNAME
+			textalign ITEM_ALIGN_CENTER
+			align ITEM_ALIGN_CENTER
+			textalignx 48
+			textaligny 8
+			textscale .24
+
+			action { play "ui/sound/menu4.wav" ; 
+				 uiScript changeGameIndex }
+		}
+
+// ------ /MAP LIST ------
+
+// ------ SERVER OPTIONS  ------
+
+		SIMPLEGROUPBOX( "Game Options", 230, 170, 370, 215 )
+
+		itemDef {
+			visible 	1
+			rect 		250 190 80 15
+			textalign 	ITEM_ALIGN_AUTO
+			textalignx	100
+			textaligny 	10
+			textscale 	.25
+			type 		ITEM_TYPE_EDITFIELD
+			maxchars 	15
+			maxPaintChars	10
+			cvar 		"hostname"
+			text 		"Server name:"
+		}
+
+		itemDef {
+			rect 		250 205 80 15
+	      		type 		ITEM_TYPE_EDITFIELD
+			text 		"Game Index:"
+			cvar 		"hud_admingameindex"
+			textalign 	ITEM_ALIGN_AUTO
+			textalignx	100
+			textaligny 	10
+			textscale 	.25
+			maxchars	3
+			visible 	1
+		}
+
+		itemDef {
+	      		type 		ITEM_TYPE_MULTI
+			text 		"Dedicated:"
+			cvar 		"ui_dedicated"
+			cvarFloatList 	{ "No" 0 "LAN" 1 "Internet" 2 }
+			rect 		250 220 80 15
+			textalign 	ITEM_ALIGN_AUTO
+			textaligny 	10
+			textalignx	80
+			textscale 	.25
+			visible 1
+		}
+
+		itemDef {
+			visible 	1
+			rect 		250 235 80 15
+			textalign 	ITEM_ALIGN_AUTO
+			textalignx	60
+			textaligny 	10
+			textscale 	.25
+			type 		ITEM_TYPE_NUMERICFIELD
+			maxchars 	15
+			cvar 		"capturelimit"
+			text 		"Capture Limit:"
+		}
+
+		itemDef {
+			visible 	1
+			rect 		250 250 80 15
+			textalign 	ITEM_ALIGN_AUTO
+			textalignx	60
+			textaligny 	10
+			textscale 	.25
+			type 		ITEM_TYPE_NUMERICFIELD
+			maxchars 	15
+			cvar 		"sv_maxclients"
+			text 		"Max Clients:"
+		}
+
+		itemDef {
+			visible 	1
+			rect 		250 265 80 15
+			textalign 	ITEM_ALIGN_AUTO
+			textalignx	60
+			textaligny 	10
+			textscale 	.25
+			type 		ITEM_TYPE_NUMERICFIELD
+			maxchars 	15
+			cvar 		"timelimit"
+			text 		"Time Limit:"
+		}		
+
+		itemDef {
+			visible 	1
+			rect 		250 280 80 15
+			textalign 	ITEM_ALIGN_AUTO
+			textalignx	60
+			textaligny 	10
+			textscale 	.25
+			type 		ITEM_TYPE_NUMERICFIELD
+			maxchars 	15
+			cvar 		"sv_minPing"
+			text 		"Min Ping:"
+		}
+
+		itemDef {
+			visible 1
+			rect 		250 295 80 15
+			textalign 	ITEM_ALIGN_AUTO
+			textalignx	60
+			textaligny 	10
+			textscale 	.25
+			type 		ITEM_TYPE_NUMERICFIELD
+			maxchars 	15
+			cvar 		"sv_minRate"
+			text 		"Min Rate:"
+		}
+
+		itemDef {
+			visible 	1
+			rect 		250 310 80 15
+			textalign 	ITEM_ALIGN_AUTO
+			textalignx	60
+			textaligny 	10
+			textscale 	.25
+			type 		ITEM_TYPE_NUMERICFIELD
+			maxchars 	15
+			cvar 		"sv_minSnaps"
+			text 		"Min Snaps:"
+		}
+
+		itemDef {
+			visible 	1
+			rect 		460 186 100 15
+			textaligny 	14
+			textscale 	.25
+			type		ITEM_TYPE_CHECKBOX
+			cvar 		"g_friendlyFire"
+			text 		"Friendly Fire"
+		}
+
+		itemDef {
+			visible 	1
+			rect  		460 201 100 15
+			textaligny 	14
+			textscale 	.25
+			type		ITEM_TYPE_CHECKBOX
+			cvar 		"sv_pure"
+			text 		"Pure Server"
+		}
+
+		itemDef {
+			visible 	1
+			rect 		460 216 130 15
+			textaligny 	14
+			textscale 	.25
+			type		ITEM_TYPE_CHECKBOX
+			cvar 		"sv_allowDownload"
+			text 		"Allow Downloads"
+		}
+		
+		itemDef {
+			visible 	1
+			rect 		460 231 120 15
+			textaligny 	14
+			textscale 	.25
+			type 		ITEM_TYPE_CHECKBOX
+			cvar 		"g_allowVote"
+			text 		"Allow Votes"
+		}
+
+		SIMPLEGROUPBOX( "Passwords", 416, 260, 178, 82 )
+
+		itemDef {
+			visible 	1
+			rect 		418 280 44 15
+			textalign 	ITEM_ALIGN_AUTO
+			textalignx	100
+			textaligny 	10
+			textscale 	.25
+			type 		ITEM_TYPE_EDITFIELD
+			maxchars 	10
+			cvar 		"password"
+			text 		"Game:"
+		}
+
+		itemDef {
+			name 		"rconpasswordEntry"
+			visible 	1
+			rect 		418 295 44 15
+			textalign 	ITEM_ALIGN_AUTO
+			textalignx	100
+			textaligny 	10
+			textscale 	.25
+			type 		ITEM_TYPE_EDITFIELD
+			maxchars 	10
+			cvar 		"rconPassword"
+			text 		"Rcon:"
+		}
+
+		itemDef {
+			name 		"adminpasswordEntry"
+			visible 	1
+			rect 		418 310 44 15
+			textalign 	ITEM_ALIGN_AUTO
+			textalignx	100
+			textaligny 	10
+			textscale 	.25
+			type 		ITEM_TYPE_EDITFIELD
+			maxchars 	10
+			cvar 		g_adminPassword
+			text 		"Admin:"
+		}
+
+		itemDef {
+			name 		"matchpasswordEntry"
+			visible 	1
+			rect 		418 325 44 15
+			textalign 	ITEM_ALIGN_AUTO
+			textalignx	100
+			textaligny 	10
+			textscale 	.25
+			type 		ITEM_TYPE_EDITFIELD
+			maxchars 	10
+			cvar 		g_matchPassword
+			text 		"Match:"
+		}
+
+
+		FORT_BUTTONTT(startServer, Start, 18, 416, 354, 178, 28, .28, "", uiScript StartServer, "Start Server")
+
+// ------ /SERVER OPTIONS  ------
+	}
+}

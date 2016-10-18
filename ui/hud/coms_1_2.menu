@@ -1,0 +1,30 @@
+#include "ui/menudef.h"
+
+{
+	menuDef {
+		name "coms_1_2"
+		rect -8 60 180 80
+		visible MENU_FALSE
+		focusColor .85 .41 .38 1			// Menu focus color for text and items
+		disableColor .5 .5 .5 1
+
+ 	   	font "fonts/sf_quartzite" 15
+  	  	smallFont "fonts/sf_quartzite" 10
+  	  	bigFont "fonts/sf_quartzite" 19
+  	  	
+//      ---------------- CONFIG ------------------
+		
+		FORT_ITEM_BORDER_FILLED_NEW(0, 0, 180, 80)
+		
+		itemDef {
+			rect 12 20 168 10
+			textscale .3
+			textalignx 84
+			text "CONFIGURATION"
+			visible 1
+			type ITEM_TYPE_TEXT
+			textAlign ITEM_ALIGN_CENTER
+			useAssetFont
+		}
+	}
+}

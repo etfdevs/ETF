@@ -1,0 +1,202 @@
+#include "ui/menudef.h"
+
+{
+	//
+	// Main menu bar at top of the screen
+	//
+
+	menuDef {
+		name "menubar"
+		visible MENU_FALSE
+		fullscreen MENU_FALSE
+		rect 12 420 614 36
+		focusColor 1 1 1 1				// Menu focus color for text and items
+		disableColor .5 .5 .5 1
+		drawAlwaysOnTop
+		keepOpenOnFocusLost
+
+ 	   	font "fonts/veramobd" 26
+  	  	smallFont "fonts/veramobd" 20
+  	  	bigFont "fonts/veramobd" 32
+
+// 	   	font "fonts/standard" 16
+//  	  	smallFont "fonts/standard" 14
+// 	  	bigFont "fonts/standard" 21
+
+
+		onOpen { setfocus menubar_bttn_play }
+		onEsc { uiScript closeFORTBackModels }
+
+		// the menu bar gfx
+
+		itemDef {
+			name "menubar"
+			rect 0 0 614 36
+			visible MENU_TRUE
+			decoration
+			background "ui/gfx/etfmenubar.tga"
+			style WINDOW_STYLE_SHADER
+		}
+
+		// highlights
+		itemDef {
+			name "hibig"
+			rect 0 0 0 0
+			visible MENU_TRUE
+			decoration
+			background "ui/gfx/hilite_big.tga"
+			style WINDOW_STYLE_SHADER
+		}
+		itemDef {
+			name "hismall"
+			rect 0 0 0 0
+			visible MENU_TRUE
+			decoration
+			background "ui/gfx/hilite_small.tga"
+			style WINDOW_STYLE_SHADER
+		}
+
+		// buttons
+
+		itemDef {
+			name "menubar_bttn_play"
+			rect 56 10 80 16
+			visible MENU_TRUE
+			text "Play"
+			textalignx 30
+      			textaligny 12
+			textscale .22
+			forecolor 1 1 1 1
+			type ITEM_TYPE_BUTTON			
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			noPulseOnFocus
+
+			action { open menu_play }
+			mouseEnter {	close menu_setup;
+					close menu_extras;
+					close menu_help;
+					close menu_favourites;
+					open menu_play;
+					transition hibig 43 7 102 23 43 7 102 23 1 10 }
+			mouseExit { 	transition hibig 1 1 0 0 1 1 0 0 1 10}
+		}
+
+		itemDef {
+			name "menubar_bttn_setup"
+			rect 154 10 66 16
+			visible MENU_TRUE
+			text "Setup"
+			textalignx 14
+      			textaligny 12
+			textscale .22
+			forecolor 1 1 1 1
+			type ITEM_TYPE_BUTTON			
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			noPulseOnFocus
+
+			action { open menu_setup }
+			mouseEnter { 	open menu_setup;
+					close menu_extras;
+					close menu_help;
+					close menu_favourites;
+					close menu_play;
+					transition hismall 132 8 100 24 132 8 100 24 1 10}
+			mouseExit { 	transition hismall 1 1 0 0 1 1 0 0 1 10}
+		}
+
+		itemDef {
+			name "menubar_bttn_extras"
+			rect 234 10 64 16
+			visible MENU_TRUE
+			text "Extras"
+			textalignx 12
+      			textaligny 12
+			textscale .22
+			forecolor 1 1 1 1
+			type ITEM_TYPE_BUTTON			
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			noPulseOnFocus
+	
+			action { open menu_extras }
+			mouseEnter { 	close menu_setup;
+					open menu_extras;
+					close menu_help;
+					close menu_favourites;
+					close menu_play;
+					transition hismall 210 8 100 24 210 8 100 24 1 10}
+			mouseExit { 	transition hismall 1 1 0 0 1 1 0 0 1 10}
+		}
+
+		itemDef {
+			name "menubar_bttn_help"
+			rect 310 10 64 16
+			visible MENU_TRUE
+			text "Help"
+			textalignx 20
+      			textaligny 12
+			textscale .22
+			forecolor 1 1 1 1
+			type ITEM_TYPE_BUTTON			
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			noPulseOnFocus
+	
+			action { open menu_help }
+			mouseEnter { 	close menu_setup;
+					close menu_extras;
+					open menu_help;
+					close menu_favourites;
+					close menu_play;
+					transition hismall 289 8 100 24 289 8 100 24 1 10}
+			mouseExit { 	transition hismall 1 1 0 0 1 1 0 0 1 10}
+		}
+
+		itemDef {
+			name "menubar_bttn_favs"
+			rect 390 10 64 16
+			visible MENU_TRUE
+			text "Servers"
+			textalignx 8
+      			textaligny 12
+			textscale .22
+			forecolor 1 1 1 1
+			type ITEM_TYPE_BUTTON			
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			noPulseOnFocus
+		
+			action { open menu_favourites }
+			mouseEnter { 	close menu_setup;
+					close menu_extras;
+					close menu_help;
+					open menu_favourites;
+					close menu_play;
+					transition hismall 367 8 100 24 367 8 100 24 1 10}
+			mouseExit { 	transition hismall 1 1 0 0 1 1 0 0 1 10}
+		}
+
+		itemDef {
+			name "menubar_bttn_quit"
+			rect 480 10 78 16
+			visible MENU_TRUE
+			text "Quit"
+			textalignx 22
+      			textaligny 12
+			textscale .22
+			forecolor 1 1 1 1
+			type ITEM_TYPE_BUTTON			
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			noPulseOnFocus
+
+			mouseEnter { 	close menu_play;
+				 	close menu_extras;
+					close menu_help;
+					close menu_favourites;
+					close menu_configure;
+					transition hibig 462 7 102 23 462 7 102 23 1 10 }
+			mouseExit { 	transition hibig 1 1 0 0 1 1 0 0 1 10}
+
+			action { uiScript closeFORTBackModels; open quit_popmenu }
+		}
+
+
+	}
+}

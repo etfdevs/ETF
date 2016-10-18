@@ -1,0 +1,70 @@
+#include "ui/menudef.h"
+
+{
+\\ END OF GAME \\
+
+//	MEDIUM SIZE
+	#define MENU_X 168
+	#define MENU_Y 110
+	#define MENU_WIDTH 304
+	#define MENU_HEIGHT 204
+
+	#define MENU_NAME "quit_popmenu"
+
+	#include "ui/etfmenu.h"
+
+	menuDef {
+ 		MENUSCREENSTYLE
+		onClose { setmenufocus menubar }
+		onESC { close quit_popmenu }
+   		style 1
+		popup
+
+		itemDef {
+			rect 0 0 $evalint(MENU_WIDTH) $evalint(MENU_HEIGHT)
+			style 1
+			backcolor .5 .5 .5 .2
+			visible 1
+			border 1
+			bordersize 1
+			bordercolor .4 .4 .4 0
+			decoration
+		}
+
+		MENUMAINRECT("Confirm Quit")
+
+		itemDef {
+			rect 0 50 320 20	
+			text "Quit:"
+			textalign 1
+			textstyle 6
+			textscale .333
+			textalignx 160
+			textaligny 23
+			forecolor 1 1 1 1
+			visible 1
+			decoration
+		}
+	
+		itemDef {
+			text "Are you sure?"
+			rect 60 80 200 170
+			type ITEM_TYPE_TEXT
+			style 1
+			textstyle 3
+			autowrapped
+			textalign ITEM_ALIGN_CENTER
+			textalignx 100
+			textaligny 23
+			textscale .25
+			forecolor 1 1 1 1
+			visible 1
+			decoration
+		}
+
+		FORT_BUTTONTT(NoQuitbtn, Cancel, 16, 187, 175, 82, 24, .22, "", close quit_popmenu, "Play some more")
+		FORT_BUTTONTT(Quitbtn, Quit, 16, 35, 175, 82, 24, .22, "", uiScript "quit", "Quit game")
+	}
+}
+
+
