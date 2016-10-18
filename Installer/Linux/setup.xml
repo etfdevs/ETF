@@ -1,0 +1,22 @@
+<?xml version="1.0" standalone="yes"?>
+<install product="enemy-territory/etf" desc="ETF mod for ET" version="0.7" uninstall="uninstall.sh" binarypath="/usr/bin"
+         promptbinaries="yes" url="http://www.etfgame.com" express="no">
+  <readme>
+    README
+  </readme>
+  <eula>
+   license.txt
+  </eula>
+   <option install="true" required="true">
+    ETF
+    <help>Base ETF files.  These must be installed to your Wolfenstein: Enemy Territory directory</help>
+    <binary arch="any" libc="any" symlink="etf" icon="etf.xpm">
+      etf/etf.sh
+    </binary>
+    <files>
+      etf/
+      etf.xpm
+      etf.bmp
+    </files>
+   </option>
+</install>
