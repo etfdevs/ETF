@@ -5839,6 +5839,7 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 						*handle = uiInfo.uiDC.Assets.pureoff;
 					}
 					return NULL;
+#if 0
 				case SORT_NUMBOTS:
 					if (atoi(Info_ValueForKey(info, "weaprestrict")) != 0) {
 						*handle = uiInfo.uiDC.Assets.pureon;
@@ -5847,6 +5848,7 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 						*handle = uiInfo.uiDC.Assets.pureoff;
 					}
 					return "";
+#endif
 				case SORT_PUNKBUSTER:// {
 					//char *s;
 					//s = Info_ValueForKey(info, "punkbuster");
@@ -5859,6 +5861,7 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 					}
 					return NULL;
 				//}
+#if 0
 				case SORT_VERSION:
 					if (atoi(Info_ValueForKey(info, "balancedteams")) == FORTS_VERSIONINT) {
 						*handle = uiInfo.uiDC.Assets.pureon;
@@ -5867,6 +5870,7 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 						*handle = uiInfo.uiDC.Assets.pureoff;
 					}
 					return "";
+#endif
 			}
 		}
 	} else if (feederID == FEEDER_SERVERSTATUS) {
