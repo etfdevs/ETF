@@ -7693,10 +7693,12 @@ static void UI_StartServerRefresh(qboolean full)
 
 		ptr = UI_Cvar_VariableString("protocol");
 		if( *ptr ) {
-			trap_Cmd_ExecuteText( EXEC_APPEND, va( "globalservers %d %s \\game\\etf\n", i, ptr));  // \\game\\etf
+			trap_Cmd_ExecuteText( EXEC_APPEND, va( "globalservers %d %s full empty\n", i, ptr));  // \\game\\etf
+			//trap_Cmd_ExecuteText( EXEC_APPEND, va( "globalservers %d %s \\game\\etf\n", i, ptr));  // \\game\\etf
 		}
 		else {
-			trap_Cmd_ExecuteText( EXEC_APPEND, va( "globalservers %d %d \\game\\etf\n", i, (int)trap_Cvar_VariableValue( "protocol" ) ) );
+			trap_Cmd_ExecuteText( EXEC_APPEND, va( "globalservers %d %d full empty\n", i, (int)trap_Cvar_VariableValue( "protocol" ) ) );
+			//trap_Cmd_ExecuteText( EXEC_APPEND, va( "globalservers %d %d \\game\\etf\n", i, (int)trap_Cvar_VariableValue( "protocol" ) ) );
 			//trap_Cmd_ExecuteText( EXEC_APPEND, va( "globalservers %d %d q3f\n", i, (int)trap_Cvar_VariableValue( "protocol" ) ) );
 		}
 	}
