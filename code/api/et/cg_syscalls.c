@@ -182,7 +182,13 @@ void		trap_R_ClearDecals( void )
 }
 
 
-void	trap_S_StartSound( const vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx ) {
+void	trap_S_RealStartSound( const vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx, const char* file, int line ) {
+	// if the number returned is negative or above this number its bad
+	// trying to detect where the random sound handles go wrong
+	// 4096 is the size of the s_knownSfx array in th engine
+	if(sfx < 0 || sfx >= 4096) {
+		Com_Printf("^1Warning: trap_S_StartSound out of range handle %i\nFile: '%s' Line: %i", sfx, file, line);
+	}
 	Q_syscall( CG_S_STARTSOUND, origin, entityNum, entchannel, sfx, 127 /* Gordon: default volume always for the moment*/ );
 }
 
@@ -200,7 +206,13 @@ void	trap_S_StartSoundExVControl( const vec3_t origin, int entityNum, int entcha
 	Q_syscall( CG_S_STARTSOUNDEX, origin, entityNum, entchannel, sfx, flags, volume );
 }
 
-void	trap_S_StartLocalSound( sfxHandle_t sfx, int channelNum ) {
+void	trap_S_RealStartLocalSound( sfxHandle_t sfx, int channelNum, const char* file, int line ) {
+	// if the number returned is negative or above this number its bad
+	// trying to detect where the random sound handles go wrong
+	// 4096 is the size of the s_knownSfx array in th engine
+	if(sfx < 0 || sfx >= 4096) {
+		Com_Printf("^1Warning: trap_S_StartSound out of range handle %i\nFile: '%s' Line: %i", sfx, file, line);
+	}
 	Q_syscall( CG_S_STARTLOCALSOUND, sfx, channelNum, 127 /* Gordon: default volume always for the moment*/ );
 }
 
@@ -628,6 +640,12 @@ sfxHandle_t	trap_S_RealRegisterSound( const char *sample, qboolean compressed ) 
 	}
 	if(snd == 0) {
 		Com_Printf("^1Warning: Failed to load sound: %s\n", sample);
+	}
+	// if the number returned is negative or above this number its bad
+	// trying to detect where the random sound handles go wrong
+	// 4096 is the size of the s_knownSfx array in th engine
+	if(snd < 0 || snd >= 4096) {
+		Com_Printf("^1Warning: Failed to load sound: %s (out of range handle %i)\n", sample, snd);
 	}
 	DEBUG_REGISTERPROFILE_EXEC("trap_S_RealRegisterSound",sample)
 //	trap_PumpEventLoop();
