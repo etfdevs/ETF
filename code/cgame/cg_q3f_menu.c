@@ -152,7 +152,7 @@ qboolean CG_Q3F_MenuChoice( int choice )
 	} */ else if ( !Q_stricmp( "flyby", menucommands[menuchoice] ) ) {
 		CG_Q3F_Flyby();
 	} else { 
-		trap_SendConsoleCommand( menucommands[menuchoice] );
+		trap_SendConsoleCommand( va("%s\n", menucommands[menuchoice]) );
 	}
 
 	// hack for supplystation

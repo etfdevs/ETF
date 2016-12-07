@@ -12,21 +12,6 @@
 
 extern int menuCount;
 
-#if 0
-void CG_TargetCommand_f( void ) {
-	int		targetNum;
-	char	test[4];
-
-	targetNum = CG_CrosshairPlayer();
-	if (!targetNum ) {
-		return;
-	}
-
-	trap_Argv( 1, test, 4 );
-	trap_SendConsoleCommand( va( "gc %i %i\n", targetNum, atoi( test ) ) );
-}
-#endif
-
 /*
 =================
 CG_MediaDump_f
@@ -748,23 +733,23 @@ static void CG_Q3F_Special2( void ) {
 		break;
 	case Q3F_CLASS_GRENADIER:
 		if (cg.snap->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_LAYCHARGE) ) {
-           trap_SendConsoleCommand("charge cancel");
+           trap_SendConsoleCommand("charge cancel\n");
 		} else {
-			trap_SendConsoleCommand("charge menu");
+			trap_SendConsoleCommand("charge menu\n");
 		}
 		break;
 	case Q3F_CLASS_ENGINEER:
 		/* Cancel, destroy or build the supplystation */
 		if( cg.snap->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING) ) {
-			trap_SendConsoleCommand("build cancel");
+			trap_SendConsoleCommand("build cancel\n");
 		} else if( cg.snap->ps.ammo[AMMO_Q3F_ENGDATA1] & 0xFF00 ) {
-			trap_SendConsoleCommand("destroy supplystation");
+			trap_SendConsoleCommand("destroy supplystation\n");
 		} else {
-			trap_SendConsoleCommand("build supplystation");
+			trap_SendConsoleCommand("build supplystation\n");
 		}
 		break;
 	case Q3F_CLASS_AGENT:
-		trap_SendConsoleCommand("invisible");
+		trap_SendConsoleCommand("invisible\n");
 		break;
 	}
 }
@@ -1304,7 +1289,7 @@ static void CG_Q3F_Discard_f( void ) {
 		rockets = atoi(buffer);
 	}
 
-	trap_SendConsoleCommand(va("discard_etf %d %d %d", cells, shells, rockets));
+	trap_SendConsoleCommand(va("discard_etf %d %d %d\n", cells, shells, rockets));
 }
 
 static void CG_Q3F_TraceSurface_f( void ) {
@@ -1384,12 +1369,6 @@ static consoleCommand_t	commands[] = {
 	{ "tell_target", CG_TellTarget_f },
 	{ "tell_teamtarget", CG_TellTeamTarget_f }, // RR2DO2
 	{ "tell_attacker", CG_TellAttacker_f },
-#if 0
-	{ "vtell_target", CG_VoiceTellTarget_f },
-	{ "vtell_teamtarget", CG_VoiceTellTeamTarget_f }, // RR2DO2
-	{ "vtell_attacker", CG_VoiceTellAttacker_f },
-#endif
-	//{ "tcmd", CG_TargetCommand_f },
 	{ "startOrbit", CG_StartOrbit_f },
 //	{ "camera", CG_Camera_f },
 

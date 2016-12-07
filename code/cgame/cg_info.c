@@ -72,13 +72,13 @@ void CG_ETF_DemoParseString(const char* in, char* out, int size) {
 				case 'l':
 					if(cgs.mapInfoLoaded && *cgs.mapinfo.mapName) {
 						char buffer[ MAX_STRING_CHARS ];
-						char* p;
+						char* mp;
 
 						Q_strncpyz( buffer, cgs.mapinfo.mapName, sizeof( buffer ) );
 
-						for( p = buffer; *p; p++ ) {
-							if( *p == ':' || *p == '\\' || *p == '/' || *p == '|' || *p == '<' || *p == '>' || *p == '"' || *p == '?' || *p == ' ' ) {
-								*p = '_';
+						for( mp = buffer; *mp; mp++ ) {
+							if( *mp == ':' || *mp == '\\' || *mp == '/' || *mp == '|' || *mp == '<' || *mp == '>' || *mp == '"' || *mp == '?' || *mp == ' ' ) {
+								*mp = '_';
 							}
 						}
 
@@ -140,7 +140,7 @@ void CG_MatchLog_f( void ) {
 			trap_FS_FOpenFile( buf, &bakHandle, FS_WRITE );
 			if (bakHandle > 0 ) {
 				Com_Printf( "Creating matchlog backup to %s\n", buf);
-				while (i > sizeof(buf) ) {
+				while (i > (int)sizeof(buf) ) {
 					trap_FS_Read( buf, sizeof(buf), copyHandle );
 					trap_FS_Write( buf, sizeof(buf), bakHandle );
 					i -= sizeof( buf );
@@ -235,13 +235,13 @@ void CG_DemoClick( int key, qboolean down ) {
 		// Screenshot keys
 	case K_F11:
 		if ( !down ) {
-			trap_SendConsoleCommand( "screenshot_etf" );
+			trap_SendConsoleCommand( "screenshot_etf\n" );
 			//trap_SendConsoleCommand( va( "screenshot%s\n", ( ( cg_useScreenshotJPEG.integer ) ? "JPEG" : "" ) ) );
 		}
 		return;
 	case K_F12:
 		if ( !down ) {
-			trap_SendConsoleCommand( "screenshotJPEG_etf" );
+			trap_SendConsoleCommand( "screenshotJPEG_etf\n" );
 			//CG_autoScreenShot_f();
 		}
 		return;

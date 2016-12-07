@@ -307,7 +307,9 @@ vmCvar_t	demo_scoresToggle;
 
 vmCvar_t	cg_drawFollowText;
 
+#ifdef BUILD_BOTS
 vmCvar_t	cg_omnibotdrawing;
+#endif
 
 vmCvar_t	cg_rocketTrail;
 vmCvar_t	cg_grenadeTrail;
@@ -544,7 +546,9 @@ static cvarTable_t		cvarTable[] = {
 
 	{ &cg_drawFollowText,			"cg_drawFollowText",		"1",		CVAR_ARCHIVE },
 
+#ifdef BUILD_BOTS
 	{ &cg_omnibotdrawing,			"cg_omnibotdrawing",		"0",		CVAR_ARCHIVE },
+#endif
 
 	{ &cg_rocketTrail,				"cg_rocketTrail",			"1",		CVAR_ARCHIVE },
 	{ &cg_grenadeTrail,				"cg_grenadeTrail",			"1",		CVAR_ARCHIVE },
@@ -1714,7 +1718,7 @@ typedef struct {
 
 scoreInfo_t sortedScores[MAX_CLIENTS];
 
-static score_t* CG_ScoreFromClientinfo(clientInfo_t* client) {
+/*static score_t* CG_ScoreFromClientinfo(clientInfo_t* client) {
 	int i;
 
 	for (i = 0; i < cg.numScores; i++) {
@@ -1723,7 +1727,7 @@ static score_t* CG_ScoreFromClientinfo(clientInfo_t* client) {
 		}
 	}
 	return NULL;
-}
+}*/
 
 #define ta ((scoreInfo_t*)a)
 #define tb ((scoreInfo_t*)b)
@@ -2314,6 +2318,10 @@ static void CG_RunCinematicFrame(int handle) {
 	trap_CIN_RunCinematic(handle);
 }
 
+static void CG_S_StartLocalSound( sfxHandle_t sfx, int channelNum ) {
+	trap_S_RealStartLocalSound(sfx, channelNum, __FILE__, __LINE__ );
+}
+
 /*
 =================
 CG_LoadHudMenu();
@@ -2352,7 +2360,7 @@ void CG_LoadHudMenu() {
 	cgDC.drawTextWithCursor = &CG_Text_PaintWithCursor;
 	//cgDC.setOverstrikeMode = &trap_Key_SetOverstrikeMode;
 	//cgDC.getOverstrikeMode = &trap_Key_GetOverstrikeMode;
-	cgDC.startLocalSound = &trap_S_StartLocalSound;
+	cgDC.startLocalSound = &CG_S_StartLocalSound;
 	cgDC.ownerDrawHandleKey = &CG_OwnerDrawHandleKey;
 	cgDC.feederCount = &CG_FeederCount;
 	cgDC.feederItemImage = &CG_FeederItemImage;
@@ -2450,7 +2458,7 @@ void CG_Q3F_LoadMapConfig( void ) {
 		{
 			trap_FS_FCloseFile( fh );
 			CG_Printf( BOX_PRINT_MODE_CHAT, "Executing map_default.cfg...\n" );
-			trap_SendConsoleCommand( va( "exec map_default.cfg" ) );
+			trap_SendConsoleCommand( va( "exec map_default.cfg\n" ) );
 		}
 
 		Q_strncpyz( mapcfg, COM_SkipPath( cgs.mapname ), sizeof(mapcfg) );
@@ -2461,7 +2469,7 @@ void CG_Q3F_LoadMapConfig( void ) {
 		{
 			trap_FS_FCloseFile( fh );
 			CG_Printf( BOX_PRINT_MODE_CHAT, "Executing %s...\n", mapcfg );
-			trap_SendConsoleCommand( va( "exec %s", mapcfg ) );
+			trap_SendConsoleCommand( va( "exec %s\n", mapcfg ) );
 			return;
 		}
 
@@ -2473,7 +2481,7 @@ void CG_Q3F_LoadMapConfig( void ) {
 		{
 			trap_FS_FCloseFile( fh );
 			CG_Printf( BOX_PRINT_MODE_CHAT, "Executing %s...\n", mapcfg );
-			trap_SendConsoleCommand( va( "exec %s", mapcfg ) );
+			trap_SendConsoleCommand( va( "exec %s\n", mapcfg ) );
 		}
 	}
 }

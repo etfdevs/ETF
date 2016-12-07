@@ -4751,14 +4751,14 @@ static void UI_RunMenuScript(char **args) {
 			trap_Cmd_ExecuteText( EXEC_APPEND, va("admin bot minbots %d\n", (int)trap_Cvar_VariableValue("hud_botmin")));
 		} 
 		else if (Q_stricmp(name, "BotAdd") == 0) {
-			char name[128];
-			trap_Cvar_VariableStringBuffer("hud_addbotname", name, 128);
-			trap_Cmd_ExecuteText( EXEC_APPEND, va("admin bot addbot %s %d %d\n", name, (int)trap_Cvar_VariableValue("hud_botteam") + 1, (int)trap_Cvar_VariableValue("hud_botclass") + 1));
+			char botname[128];
+			trap_Cvar_VariableStringBuffer("hud_addbotname", botname, 128);
+			trap_Cmd_ExecuteText( EXEC_APPEND, va("admin bot addbot %s %d %d\n", botname, (int)trap_Cvar_VariableValue("hud_botteam") + 1, (int)trap_Cvar_VariableValue("hud_botclass") + 1));
 		} 
 		else if (Q_stricmp(name, "BotKick") == 0) {
-			char name[128];
-			trap_Cvar_VariableStringBuffer("hud_botname", name, 128);
-			trap_Cmd_ExecuteText( EXEC_APPEND, va("admin bot kickbot %s\n", name));
+			char botname[128];
+			trap_Cvar_VariableStringBuffer("hud_botname", botname, 128);
+			trap_Cmd_ExecuteText( EXEC_APPEND, va("admin bot kickbot %s\n", botname));
 		} 
 		else if (Q_stricmp(name, "ExecText") == 0) {
 			const char* command;
@@ -4797,7 +4797,7 @@ static void UI_RunMenuScript(char **args) {
 			trap_Cvar_VariableStringBuffer("hud_uichat", buffer, MAX_SAY_TEXT);
 
 			if(*buffer) {
-				trap_Cmd_ExecuteText(EXEC_APPEND, va("say \"%s\"", buffer));
+				trap_Cmd_ExecuteText(EXEC_APPEND, va("say \"%s\"\n", buffer));
 			}
 
 			trap_Cvar_Set("hud_uichat", "");

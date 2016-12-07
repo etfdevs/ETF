@@ -142,7 +142,7 @@ void CG_Q3F_CustomMenuKeyEvent( int key ) {
 	for (i=0;i<Custom_ItemsUsed;i++) {
 		if ( Custom_Items[i].key == key ) {
 			CG_EventHandling( CGAME_EVENT_NONE, qfalse );
-			trap_SendConsoleCommand(Custom_Items[i].command);
+			trap_SendConsoleCommand( va( "%s\n", Custom_Items[i].command ));
 		}
 	}
 }
