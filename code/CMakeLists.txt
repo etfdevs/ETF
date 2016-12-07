@@ -1,5 +1,5 @@
-project(etf C CXX)
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
+project(etf VERSION 1.7 LANGUAGES C CXX)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
@@ -9,10 +9,9 @@ include(CheckCXXCompilerFlag)
 include(CheckFunctionExists)
 
 option(CGAME			"Build the cgame dll code" ON)
-option(GAME			"Build the qagame dll code" ON)
-option(UI					"Build the ui dll code" ON)
-option(BOTS				"Enable bot support" ON)
-#option(ETXREAL		"Compatible with ETXreaL" OFF)
+option(GAME				"Build the qagame dll code" ON)
+option(UI				"Build the ui dll code" ON)
+option(BOTS				"Enable bot support" OFF)
 
 if (NOT CMAKE_SYSTEM_PROCESSOR)
 	message(FATAL_ERROR "No target CPU architecture set")
@@ -25,8 +24,6 @@ endif()
 Include(CheckTypeSize)
 check_type_size("void*" CMAKE_SIZEOF_VOID_P)
 
-# ${Architecture} must match ARCH_STRING in q_platform.h,
-# and is used in DLL names (jagamex86.dll, jagamex86.dylib, jagamei386.so).
 if(WIN32)
 	set(X86 ON)
 	if(CMAKE_SIZEOF_VOID_P MATCHES "8")
@@ -82,27 +79,37 @@ else()
 	string(TOLOWER "${CMAKE_SYSTEM_NAME}" os)
 endif()
 
-# build type
-if (NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE "RelWithDebInfo")
+# Set a default build type if none was specified
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message("Setting build type to 'Release' as none was specified.")
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
 # compiler specific flags
-if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
-	add_definitions(-pipe)
-	add_definitions(-Wall)
 
-	if (NOT CMAKE_CROSSCOMPILING AND ONATIVE)
+#set(nix_compiler_options -pipe -Wall -fno-strict-aliasing -Wno-sign-compare -Wno-switch -Wno-format-security)
+
+if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+	#add_definitions(-pipe)
+	add_definitions(-Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-old-style-declaration -Wno-missing-field-initializers)
+
+	if (NOT APPLE AND Architecture STREQUAL "x86")
+		add_definitions(-march=pentium -mcpu=pentiumpro)
+	elseif (NOT CMAKE_CROSSCOMPILING AND ONATIVE)
 		add_definitions(-march=native)
-	elseif (NOT APPLE AND Architecture STREQUAL "x86")
-		add_definitions(-march=pentium3)
 	endif()
 
-	set(CMAKE_C_FLAGS_DEBUG "-g -D_DEBUG -O1")
-	set(CMAKE_C_FLAGS_DEBUGALL "-g -ggdb -D_DEBUG")
-	set(CMAKE_C_FLAGS_RELEASE "-O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
-	set(CMAKE_C_FLAGS_RELWITHDEBINFO "-g -O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
-	set(CMAKE_C_FLAGS_MINSIZEREL "-Os -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
+	add_definitions(-fPIC)
+
+	message(STATUS "CMAKE_C_FLAGS_RELEASE is ${CMAKE_C_FLAGS_RELEASE}")
+
+	#set(CMAKE_C_FLAGS_DEBUG "-g -ggdb -D_DEBUG")
+	#set(CMAKE_C_FLAGS_DEBUGALL "-g -ggdb -D_DEBUG")
+	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer -fstrength-reduce")
+	set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer -fstrength-reduce")
+	set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL} -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer -fstrength-reduce")
 
 	add_definitions(-fno-strict-aliasing)
 
@@ -113,9 +120,9 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	add_definitions(-fvisibility=hidden)
 
 	# TODO fix these warnings
-	add_definitions(-Wno-sign-compare)
-	add_definitions(-Wno-switch)
-	add_definitions(-Wno-format-security)
+	#add_definitions(-Wno-sign-compare)
+	#add_definitions(-Wno-switch)
+	#add_definitions(-Wno-format-security)
 
 	#CHECK_CXX_COMPILER_FLAG("-Woverloaded-virtual" cxx_has_Woverload_virtual)
 	#if (cxx_has_Woverload_virtual)
@@ -211,6 +218,7 @@ configure_file(
     "${CMAKE_BINARY_DIR}/config.h"
 )
 
+message(STATUS "CMAKE_C_FLAGS_RELEASE is ${CMAKE_C_FLAGS_RELEASE}")
 message(STATUS "Building ${CMAKE_BUILD_TYPE} for ${os}-${Architecture}")
 
 set(src_shared
@@ -227,7 +235,6 @@ set(src_shared
 	${CMAKE_SOURCE_DIR}/api/et/q_shared.c
 	${CMAKE_SOURCE_DIR}/api/shared/q_platform.h
 )
-	
 
 set(src_cgame
 	game/bg_misc.c
@@ -256,6 +263,7 @@ set(src_cgame
 	cgame/cg_info.c
 	cgame/cg_localents.c
 	cgame/cg_main.c
+	cgame/cg_local.h
 	cgame/cg_marks.c
 	cgame/cg_newdraw.c
 	#cgame/cg_omnibot.c
@@ -300,7 +308,12 @@ set(src_cgame
 	cgame/cgame.def
 	${src_shared}
 	ui_new/ui_shared.c
+	ui_new/ui_shared.h
 )
+
+if(BOTS)
+	set( src_cgame ${src_cgame} cg_omnibot.c cgame/Omnibot_Interprocess.cpp )
+endif(BOTS)
 
 set(src_game
 	game/bg_misc.c
@@ -325,6 +338,7 @@ set(src_game
 	game/g_combat.c
 	game/g_items.c
 	game/g_main.c
+	game/g_local.h
 	game/g_mem.c
 	game/g_misc.c
 	game/g_missile.c
@@ -366,6 +380,10 @@ set(src_game
 	${src_shared}
 )
 
+if(BOTS)
+	set( src_game ${src_game} cg_omnibot.c cgame/Omnibot_Interprocess.cpp)
+endif(BOTS)
+
 set(src_ui
 	game/bg_misc.c
 	game/bg_q3f_info.c
@@ -374,29 +392,31 @@ set(src_ui
 	ui_new/ui_atoms.c
 	ui_new/ui_gameinfo.c
 	ui_new/ui_main.c
+	ui_new/ui_local.h
 	ui_new/ui_players.c
 	ui_new/ui_q3f_f2r.c
 	ui_new/ui_shared.c
+	ui_new/ui_shared.h
 	${CMAKE_SOURCE_DIR}/api/et/ui_syscalls.c
 	ui_new/ui_util.c
 	ui_new/ui.def
 )
 
 if(BOTS)
-		set(CMAKE_BOT_INCLUDE "E:/omnibot_g/Omnibot")
-
-		#include_directories(${CMAKE_SOURCE_DIR}/bot) #FIXME WRONG
-		include_directories(${CMAKE_BOT_INCLUDE}/Common)
-		include_directories(${CMAKE_BOT_INCLUDE}/TeamFortressLib)
-		include_directories(${CMAKE_BOT_INCLUDE}/ETF)
-	if(GAME)
-		set(src_bot
-			game/g_bot_interface.cpp
-			${CMAKE_BOT_INCLUDE}/Common/BotLoadLibrary.cpp
-		)
-		#add_definitions(-DDREVIL_BOT_SUPPORT)
-		add_definitions(-DBUILD_BOTS)
+	set(CMAKE_BOT_INCLUDE "" CACHE PATH "External Path for Omnibot" FORCE)
+	if(CGAME)
+		set( src_cgame ${src_cgame} cg_omnibot.c cgame/Omnibot_Interprocess.cpp)
 	endif()
+	if(GAME)
+		set( src_game ${src_game} game/g_bot_interface.cpp ${CMAKE_BOT_INCLUDE}/Common/BotLoadLibrary.cpp)
+	endif(GAME)
+
+	#include_directories(${CMAKE_SOURCE_DIR}/bot) #FIXME WRONG
+	include_directories(${CMAKE_BOT_INCLUDE}/Common)
+	include_directories(${CMAKE_BOT_INCLUDE}/TeamFortressLib)
+	include_directories(${CMAKE_BOT_INCLUDE}/ETF)
+
+	add_definitions(-DBUILD_BOTS)
 endif()
 
 #if(ETXREAL)
@@ -410,6 +430,13 @@ include_directories(${CMAKE_SOURCE_DIR}/api/et)
 #endif()
 include_directories(${CMAKE_SOURCE_DIR})
 
+if(CMAKE_BUILD_TYPE MATCHES "DEBUG" OR CMAKE_BUILD_TYPE MATCHES "Debug")
+	# CMake already defines _DEBUG for MSVC.
+	if (NOT MSVC)
+		add_definitions(-D_DEBUG)
+	endif()
+endif()
+
 if (CGAME)
 	add_library(cgame.mp.${Architecture} SHARED ${src_cgame})
 	set_target_properties(cgame.mp.${Architecture} PROPERTIES PREFIX "")
@@ -421,11 +448,7 @@ if (CGAME)
 endif()
 
 if (GAME)
-	if (BOTS)
-		add_library(qagame.mp.${Architecture} SHARED ${src_game} ${src_bot})
-	else()
-		add_library(qagame.mp.${Architecture} SHARED ${src_game})
-	endif()
+	add_library(qagame.mp.${Architecture} SHARED ${src_game})
 	set_target_properties(qagame.mp.${Architecture} PROPERTIES PREFIX "")
 	set_target_properties(qagame.mp.${Architecture} PROPERTIES COMPILE_DEFINITIONS "QAGAME")
 	set_target_properties(qagame.mp.${Architecture} PROPERTIES COMPILE_FLAGS "-I${CMAKE_SOURCE_DIR}/game")
@@ -442,4 +465,16 @@ if (UI)
 	set_target_properties(ui.mp.${Architecture} PROPERTIES LINK_FLAGS "${ldflags}")
 	set_target_properties(ui.mp.${Architecture} PROPERTIES INSTALL_NAME_DIR "@executable_path")
 	target_link_libraries(ui.mp.${Architecture} ${sys_libs})
+endif()
+
+set(etf_install_dir "${CMAKE_INSTALL_PREFIX}/etf")
+
+if(WIN32)
+install(TARGETS cgame.mp.${Architecture} RUNTIME DESTINATION "${etf_install_dir}")
+install(TARGETS qagame.mp.${Architecture} RUNTIME DESTINATION "${etf_install_dir}")
+install(TARGETS ui.mp.${Architecture} RUNTIME DESTINATION "${etf_install_dir}")
+else()
+install(TARGETS cgame.mp.${Architecture} LIBRARY DESTINATION "${etf_install_dir}")
+install(TARGETS qagame.mp.${Architecture} LIBRARY DESTINATION "${etf_install_dir}")
+install(TARGETS ui.mp.${Architecture} LIBRARY DESTINATION "${etf_install_dir}")
 endif()
