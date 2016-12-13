@@ -148,7 +148,7 @@ static qboolean CG_Q3F_ForceFieldAllowDirection( vec3_t direction, const vec3_t 
 	return( dot >= 0 );
 }
 
-void CG_SpectatorTrace( trace_t *result, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, 
+void CG_SpectatorTrace( trace_t *result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, 
 					   int skipNumber, int mask ) {
 	trace_t t;
 
@@ -159,7 +159,43 @@ void CG_SpectatorTrace( trace_t *result, const vec3_t start, vec3_t mins, vec3_t
 	*result = t;
 }
 
-void CG_Trace( trace_t *result, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, 
+#if 0
+// Activator is cgs.clientinfo[skipNumber]
+// Ent is the forcefield
+qboolean CG_Q3F_CheckCriteria( const centity_t *clAct, const clientInfo_t *activator, const centity_t *ent )
+{
+	// Return true if the activator passes the criteria on the specified entity.
+
+	qboolean passedCriteria;
+	int team, cls;
+
+	if( !clAct || !clAct->currentValid || !activator || !activator->infoValid || !ent || !ent->currentValid )
+		return( qtrue );
+
+	team	= activator->team;
+	cls		= activator->cls;
+	if( cls == Q3F_CLASS_AGENT && ent->currentState.eFlags & EF_Q3F_DISGUISECRITERIA )
+	{
+		if( activator->client->agentclass )
+			cls = activator->client->agentclass;
+		if( activator->client->agentteam )
+			team = activator->client->agentteam;
+	}
+
+	{
+		qboolean a1, b1;
+		a1 = !cent->currentState.otherEntityNum2 || (cent->currentState.otherEntityNum2 & (1 << team));
+		b1 = !cent->currentState.frame || (cent->currentState.frame & (1 << cls));
+
+		passedCriteria =(a1) &&								// In the correct team?
+						(b1)								// In required class?
+	}
+
+	return( (ent->currentState.eFlags & Q3F_FLAG_REVERSECRITERIA) ? !passedCriteria : passedCriteria );
+}
+#endif
+
+void CG_Trace( trace_t *result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, 
 					 int skipNumber, int mask ) {
 	// Golliwog: Updated version, attempts to predict forcefields.
 	trace_t	t;
@@ -178,7 +214,7 @@ void CG_Trace( trace_t *result, const vec3_t start, vec3_t mins, vec3_t maxs, co
 		(cent = &cg_entities[t.entityNum]) && cent->currentValid &&
 		(cent->currentState.eType == ET_Q3F_FORCEFIELD ))
 	{
-		// Ensiform: frame is now class instead of otherEntityNum2 else civs are unpredictable
+		// Ensiform: frame is now class instead of otherEntityNum else civs are unpredictable
 		if(	(cent->currentState.frame & (1 << cgs.clientinfo[skipNumber].cls)) &&
 			(cent->currentState.otherEntityNum2 & (1 << cgs.clientinfo[skipNumber].team)) )
 		{

@@ -922,7 +922,7 @@ gitem_t	*BG_FindItemForPowerup( powerup_t pw ) {
 		if ( (bg_itemlist[i].giType == IT_POWERUP || 
 //					bg_itemlist[i].giType == IT_TEAM ||
 					bg_itemlist[i].giType == IT_PERSISTANT_POWERUP) && 
-			bg_itemlist[i].giTag == pw ) {
+			bg_itemlist[i].giTag == (int)pw ) {
 			return &bg_itemlist[i];
 		}
 	}
@@ -940,7 +940,7 @@ gitem_t	*BG_FindItemForHoldable( holdable_t pw ) {
 	int		i;
 
 	for ( i = 0 ; i < bg_numItems ; i++ ) {
-		if ( bg_itemlist[i].giType == IT_HOLDABLE && bg_itemlist[i].giTag == pw ) {
+		if ( bg_itemlist[i].giType == IT_HOLDABLE && bg_itemlist[i].giTag == (int)pw ) {
 			return &bg_itemlist[i];
 		}
 	}
@@ -961,7 +961,7 @@ gitem_t	*BG_FindItemForWeapon( weapon_t weapon ) {
 	gitem_t	*it;
 	
 	for ( it = bg_itemlist + 1 ; it->classname ; it++) {
-		if ( it->giType == IT_WEAPON && it->giTag == weapon ) {
+		if ( it->giType == IT_WEAPON && it->giTag == (int)weapon ) {
 			return it;
 		}
 	}
@@ -1046,6 +1046,9 @@ qboolean	BG_CanItemBeGrabbed( int gametype, const entityState_t *ent, const play
 		return qtrue;
 
 	case IT_ARMOR:
+	case IT_GREEN_ARMOUR:
+	case IT_YELLOW_ARMOUR:
+	case IT_RED_ARMOUR:
 		// we also clamp armor to the maxhealth for handicapping
 		// Golliwog: No, we don't :)
 		if (ps->stats[STAT_ARMOR] >= cls->maxarmour) {
@@ -1081,6 +1084,10 @@ qboolean	BG_CanItemBeGrabbed( int gametype, const entityState_t *ent, const play
 			return qfalse;
 		}
 		return qtrue;
+
+	// TA powerups not valid in Q3F/ETF
+	case IT_PERSISTANT_POWERUP:
+		return qfalse;
 
 	case IT_Q3F_BACKPACK:
 	case IT_Q3F_AMMOBOX:
@@ -1740,7 +1747,7 @@ int BG_cleanName( const char *pszIn, char *pszOut, unsigned int dwMaxLength, qbo
 	const char *pInCopy = pszIn;
 	const char *pszOutStart = pszOut;
 
-	while( *pInCopy && ( pszOut - pszOutStart < dwMaxLength - 1 ) ) {
+	while( *pInCopy && ( pszOut - pszOutStart < (ptrdiff_t)dwMaxLength - 1 ) ) {
 		if( *pInCopy == '^' )
 			pInCopy += ((pInCopy[1] == 0) ? 1 : 2);
 		else if( (*pInCopy < 32 && (!fCRLF || *pInCopy != '\n')) || (*pInCopy > 126))

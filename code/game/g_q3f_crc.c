@@ -23,9 +23,12 @@ typedef struct patchBlock_s {
 	char * new_data;
 } patchBlock_t;
 
+#ifdef WIN32
 static patchBlock_t patches_win32[1] ={
 	{	0x0044115F, 1, "\x7e", "\x7c" }
 };
+
+#elif defined  __linux__
 
 static patchBlock_t patches_linux_et[1] ={
 	{	0x080f34f0, 1, "\x86", "\x82" }
@@ -34,6 +37,7 @@ static patchBlock_t patches_linux_et[1] ={
 static patchBlock_t patches_linux_etded[1] ={
 	{	0x08062f6c, 1, "\x86", "\x82" }
 };
+#endif
 
 
 static int UnprotectMemory(int address, int size, int * flags) {

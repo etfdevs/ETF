@@ -53,7 +53,7 @@ static void BG_Q3F_ControlWheelPosition( vec3_t center, vec3_t relPos, vec3_t ax
 ***** Movement control functions.
 ****/
 
-qboolean BG_Q3F_ControlWheeled( pmove_t *pm )
+qboolean BG_Q3F_ControlWheeled( pmove_t *pmove )
 {
 	int index;
 	vec3_t wheels[MAX_CONTROL_POINTS];
@@ -62,17 +62,17 @@ qboolean BG_Q3F_ControlWheeled( pmove_t *pm )
 	vec3_t axis[3];
 
 		// Work out our current positions and movements.
-	BG_EvaluateTrajectory(		&pm->cs->pos,	pm->cmd.serverTime,	pos			);
-	BG_EvaluateTrajectory(		&pm->cs->apos,	pm->cmd.serverTime,	angles		);
-	BG_EvaluateTrajectoryDelta(	&pm->cs->pos,	pm->cmd.serverTime,	vel			);
-	BG_EvaluateTrajectoryDelta(	&pm->cs->apos,	pm->cmd.serverTime,	angleVel	);
+	BG_EvaluateTrajectory(		&pmove->cs->pos,	pmove->cmd.serverTime,	pos			);
+	BG_EvaluateTrajectory(		&pmove->cs->apos,	pmove->cmd.serverTime,	angles		);
+	BG_EvaluateTrajectoryDelta(	&pmove->cs->pos,	pmove->cmd.serverTime,	vel			);
+	BG_EvaluateTrajectoryDelta(	&pmove->cs->apos,	pmove->cmd.serverTime,	angleVel	);
 	AngleVectors( angles, axis[FORWARD], axis[RIGHT], axis[UP] );
 
 
 		// Now calculate the position and direction of each wheel.
 	for( index = 0; index < MAX_CONTROL_POINTS; index++ )
 	{
-		BG_Q3F_ControlWheelPosition( pos, pm->cdata->controlPoints[index], axis, wheels[index] );
+		BG_Q3F_ControlWheelPosition( pos, pmove->cdata->controlPoints[index], axis, wheels[index] );
 	}
 
 		// Calculate player movements into wheel movements. Need to find which wheels are
@@ -89,17 +89,17 @@ qboolean BG_Q3F_ControlWheeled( pmove_t *pm )
 	return( qtrue );
 }
 
-qboolean BG_Q3F_ControlSubmersible( pmove_t *pm )
+qboolean BG_Q3F_ControlSubmersible( pmove_t *pmove )
 {
 	return( qfalse );
 }
 
-qboolean BG_Q3F_ControlFloating( pmove_t *pm )
+qboolean BG_Q3F_ControlFloating( pmove_t *pmove )
 {
 	return( qfalse );
 }
 
-qboolean BG_Q3F_ControlFlying( pmove_t *pm )
+qboolean BG_Q3F_ControlFlying( pmove_t *pmove )
 {
 	return( qfalse );
 }
@@ -109,57 +109,57 @@ qboolean BG_Q3F_ControlFlying( pmove_t *pm )
 ***** The main entry point.
 ****/
 
-static qboolean BG_Q3F_ControlMoveSingle( pmove_t *pm )
+static qboolean BG_Q3F_ControlMoveSingle( pmove_t *pmove )
 {
 	// Run the object for a frame.
 
-	switch( pm->cdata->type )
+	switch( pmove->cdata->type )
 	{
-		case CONTROLLABLETYPE_WHEELED:		return( BG_Q3F_ControlWheeled( pm ) );
-		case CONTROLLABLETYPE_SUBMERSIBLE:	return( BG_Q3F_ControlSubmersible( pm ) );
-		case CONTROLLABLETYPE_FLOATING:		return( BG_Q3F_ControlFloating( pm ) );
-		case CONTROLLABLETYPE_FLYING:		return( BG_Q3F_ControlFlying( pm ) );
+		case CONTROLLABLETYPE_WHEELED:		return( BG_Q3F_ControlWheeled( pmove ) );
+		case CONTROLLABLETYPE_SUBMERSIBLE:	return( BG_Q3F_ControlSubmersible( pmove ) );
+		case CONTROLLABLETYPE_FLOATING:		return( BG_Q3F_ControlFloating( pmove ) );
+		case CONTROLLABLETYPE_FLYING:		return( BG_Q3F_ControlFlying( pmove ) );
 		default:							return( qfalse );
 	}
 }
 
-qboolean BG_Q3F_ControlMove( pmove_t *pm )
+qboolean BG_Q3F_ControlMove( pmove_t *pmove )
 {
 	// Perform the appropriate movement code based on the type of controlled object.
 
 	int index, finalTime, msec;
 
-	if( !pm->cdata )
+	if( !pmove->cdata )
 	{
 		// We need to obtain the correct controldata.
 
-		for( index = 0; index < CONTROLLABLETABLESIZE; index++ )
+		for( index = 0; index < (int)CONTROLLABLETABLESIZE; index++ )
 		{
-			pm->cdata = &controllables[index];
-			if( pm->cs->otherEntityNum2 == pm->cdata->id )
+			pmove->cdata = &controllables[index];
+			if( pmove->cs->otherEntityNum2 == pmove->cdata->id )
 				break;
 		}
-		if( index >= CONTROLLABLETABLESIZE )
+		if( index >= (int)CONTROLLABLETABLESIZE )
 			return( qfalse );	// This deserves an error.
 	}
 
-	finalTime = pm->cmd.serverTime;
-	if( finalTime < pm->ps->commandTime )
+	finalTime = pmove->cmd.serverTime;
+	if( finalTime < pmove->ps->commandTime )
 		return( qfalse );	// should not happen
-	if( finalTime > pm->ps->commandTime + 1000 )
-		pm->ps->commandTime = finalTime - 1000;
-	pm->ps->pmove_framecount = (pm->ps->pmove_framecount+1) & ((1<<PS_PMOVEFRAMECOUNTBITS)-1);
+	if( finalTime > pmove->ps->commandTime + 1000 )
+		pmove->ps->commandTime = finalTime - 1000;
+	pmove->ps->pmove_framecount = (pmove->ps->pmove_framecount+1) & ((1<<PS_PMOVEFRAMECOUNTBITS)-1);
 
 		// chop the move up if it is too long, to prevent framerate dependent behavior
-	while ( pm->ps->commandTime != finalTime )
+	while ( pmove->ps->commandTime != finalTime )
 	{
-		msec = finalTime - pm->ps->commandTime;
-		index = pm->pmove_fixed ? pm->pmove_msec : 66;
+		msec = finalTime - pmove->ps->commandTime;
+		index = pmove->pmove_fixed ? pmove->pmove_msec : 66;
 		if( msec > index )
 			msec = index;
-		pm->cmd.serverTime = pm->ps->commandTime + msec;
+		pmove->cmd.serverTime = pmove->ps->commandTime + msec;
 		
-		if( !BG_Q3F_ControlMoveSingle( pm ) )
+		if( !BG_Q3F_ControlMoveSingle( pmove ) )
 			return( qfalse );	// Something nasty happened this frame, kick them out
 		// (Do we want to ensure that if they lost control the commandTime is updated for the normal movement code)
 	}

@@ -301,7 +301,7 @@ void Svcmd_GameMem_f( void )
 
 	G_Printf( "Game memory status: %i out of %i bytes allocated\n", POOLSIZE - freemem, POOLSIZE );
 
-	for( fmn = freehead; fmn;  ) {
+	for( fmn = freehead; fmn; fmn = fmn->next ) {
 		G_Printf( "  %p: %d bytes free.\n", fmn, fmn->size );
 	}
 	G_Printf( "Status complete.\n" );

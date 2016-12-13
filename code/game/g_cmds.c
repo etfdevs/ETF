@@ -769,6 +769,8 @@ void StopFollowing( gentity_t *ent, qboolean resetclient ) {
 	ent->client->ps.persistant[ PERS_CURRCLASS ] = Q3F_CLASS_NULL; // We are a null spectator again
 	switch ( ent->client->sess.spectatorState )
 	{
+	default:
+		break;
 	case SPECTATOR_FOLLOW:
 		ent->client->ps.pm_flags &= ~PMF_FOLLOW;
 		break;
@@ -882,7 +884,7 @@ void Cmd_Follow_f( gentity_t *ent, spectatorState_t state ) {
 			// Ensiform: Check all forms of spectator with the uniform function instead
 
 			if(	&level.clients[i] != ent->client &&
-				level.clients[i].sess.sessionTeam == ent->client->spectatorTeam &&
+				level.clients[i].sess.sessionTeam == (q3f_team_t)ent->client->spectatorTeam &&
 				!Q3F_IsSpectator( &level.clients[i] ) )
 			{
 				ent->client->sess.spectatorState = state;
@@ -997,7 +999,7 @@ void Cmd_FollowCycle_f( gentity_t *ent, int dir, spectatorState_t state  ) {
 		}
 
 		// Golliwog: Can't spectate a different team
-		if( ent->client->spectatorTeam != level.clients[clientnum].sess.sessionTeam )
+		if( ent->client->spectatorTeam != (int)level.clients[clientnum].sess.sessionTeam )
 			continue;
 		// Golliwog.
 
@@ -1600,40 +1602,6 @@ static void Cmd_Tell_f( gentity_t *ent ) {
 	}
 }
 
-static char	*gc_orders[] = {
-	"hold your position",
-	"hold this position",
-	"come here",
-	"cover me",
-	"guard location",
-	"search and destroy",
-	"report"
-};
-
-void Cmd_GameCommand_f( gentity_t *ent ) {
-	int		player;
-	int		order;
-	char	str[MAX_TOKEN_CHARS];
-
-	trap_Argv( 1, str, sizeof( str ) );
-	player = atoi( str );
-	trap_Argv( 2, str, sizeof( str ) );
-	order = atoi( str );
-
-	if ( player < 0 || player >= MAX_CLIENTS ) {
-		return;
-	}
-	if ( order < 0 || order > sizeof(gc_orders)/sizeof(char *) ) {
-		return;
-	}
-
-	if( !G_Q3F_CheckFlood( ent ) )
-	{
-		G_Say( ent, &g_entities[player], SAY_TELL, gc_orders[order], 0 );
-		G_Say( ent, ent, SAY_TELL, gc_orders[order], 0 );
-	}
-}
-
 /*
 ==================
 Cmd_Where_f
@@ -1749,7 +1717,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 		char	s[MAX_STRING_CHARS];
 		char	name[MAX_STRING_CHARS];
 		int		gi = 0;
-		q3f_keypairarray_t *mapInfo;		// Golliwog: The loaded .mpi/.mapinfo data (only during init).
+		q3f_keypairarray_t *_mapinfo;		// Golliwog: The loaded .mpi/.mapinfo data (only during init).
 		char *ptr;
 
 		char *p = strchr(arg2, '+');
@@ -1764,12 +1732,12 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 		}
 
 		name[0] = 0;
-		mapInfo = G_Q3F_LoadMapInfo( arg2 );								// Load associated map information file.
-		if(mapInfo) {
-			ptr = G_Q3F_GetMapInfoEntry( mapInfo, "longname", gi ? gi : 1, "<unknown>" );
+		_mapinfo = G_Q3F_LoadMapInfo( arg2 );								// Load associated map information file.
+		if(_mapinfo) {
+			ptr = G_Q3F_GetMapInfoEntry( _mapinfo, "longname", gi ? gi : 1, "<unknown>" );
 			if(ptr)
 				Q_strncpyz(name, ptr, MAX_STRING_CHARS);
-			G_Q3F_KeyPairArrayDestroy( mapInfo );
+			G_Q3F_KeyPairArrayDestroy( _mapinfo );
 		}
 
 		trap_Cvar_VariableStringBuffer( "nextmap", s, sizeof(s) );
@@ -3692,9 +3660,10 @@ void ClientCommand( int clientNum ) {
 	//	Cmd_LevelShot_f (ent);
 	else if (Q_stricmp (cmd, "followmode") == 0) {
 		if ( ent->client->sess.adminLevel >= ADMIN_MATCH || g_spectatorMode.value == 0 )
-			;
+		{
 			//Cmd_FollowMode_f (ent);
 			//StopFollowing(ent, qfalse);
+		}
 	}
 	else if (Q_stricmp (cmd, "stopfollow") == 0) {
 		if ( ent->client->sess.adminLevel >= ADMIN_MATCH || g_spectatorMode.value == 0 )
@@ -3732,8 +3701,6 @@ void ClientCommand( int clientNum ) {
 		Cmd_CallVote_f (ent);
 	else if (Q_stricmp (cmd, "vote") == 0)
 		Cmd_Vote_f (ent);
-//	else if (Q_stricmp (cmd, "gc") == 0)
-//		Cmd_GameCommand_f( ent );
 	else if (Q_stricmp (cmd, "setviewpos") == 0)
 		Cmd_SetViewpos_f( ent );
 	else if (Q_stricmp (cmd, "charge") == 0 && (ent->client->sess.sessionTeam != Q3F_TEAM_SPECTATOR) )

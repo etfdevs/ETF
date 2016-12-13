@@ -844,7 +844,7 @@ static void CG_Q3F_OffsetFlyBy ( void ) {
 			vec3_t vec_angle;
 
 			if ( cgs.campaths[cgs.flybyPathIndex].currtrajindex >= 0 )
-				trap_SendClientCommand( va( "flyby nexttraj %i", cg.time + cl_timeNudge.value - 2 * cg.frametime )  );
+				trap_SendClientCommand( va( "flyby nexttraj %i", cg.time + (int)cl_timeNudge.value - 2 * cg.frametime )  );
 
 			cgs.campaths[cgs.flybyPathIndex].currtrajindex++;
 			if ( cgs.campaths[cgs.flybyPathIndex].currtrajindex >= cgs.campaths[cgs.flybyPathIndex].numsplines )
@@ -1302,9 +1302,11 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 		CG_Q3F_RenderWater();
 		DEBUGTIME
 #endif // Q3F_WATER
+#ifdef BUILD_BOTS
 		if ( cgs.localServer ) { 
 			OmnibotRenderDebugLines();
 		}
+#endif
 	}
 
 	DEBUGTIME

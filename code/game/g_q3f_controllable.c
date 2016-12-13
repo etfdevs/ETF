@@ -58,7 +58,7 @@ void G_Q3F_ControlStart( gentity_t *player, gentity_t *controllable )
 	controllable->s.otherEntityNum = player->s.number;
 }
 
-extern qboolean BG_Q3F_ControlMove( pmove_t *pm );
+extern qboolean BG_Q3F_ControlMove( pmove_t *pmove );
 
 qboolean G_Q3F_Control( gentity_t *ent )
 {

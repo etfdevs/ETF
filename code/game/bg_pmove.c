@@ -52,7 +52,7 @@ int		c_pmove = 0;
 
 #ifdef CGAME
 			#define BOX_PRINT_MODE_CHAT			0
-			void QDECL CG_Printf( int mode, const char *msg, ... );\
+			void QDECL CG_Printf( int mode, const char *msg, ... );
 			void	trap_Cvar_Set( const char *var_name, const char *value );
 #endif 
 

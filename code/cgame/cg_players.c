@@ -823,8 +823,7 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 	static	int	movementOffsets[8] = { 0, 22, 45, -22, 0, 22, -45, -22 };
 	vec3_t		velocity;
 	float		speed;
-	int			dir, clientNum;
-	clientInfo_t	*ci;
+	int			dir;
 
 
 	VectorCopy( cent->lerpAngles, headAngles );
@@ -874,12 +873,6 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 	CG_SwingAngles( dest, 15, 30, 0.1f, &cent->pe.torso.pitchAngle, &cent->pe.torso.pitching );
 	torsoAngles[PITCH] = cent->pe.torso.pitchAngle;
 
-	//
-	clientNum = cent->currentState.clientNum;
-	if ( clientNum >= 0 && clientNum < MAX_CLIENTS ) {
-		ci = &cgs.clientinfo[ clientNum ];
-	}
-
 	// --------- roll -------------
 
 
@@ -899,12 +892,6 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 		side = speed * DotProduct( velocity, axis[0] );
 		legsAngles[PITCH] += side;
 	}
-
-	//
-	clientNum = cent->currentState.clientNum;
-	if ( clientNum >= 0 && clientNum < MAX_CLIENTS ) {
-		ci = &cgs.clientinfo[ clientNum ];
- 	}
 
 	// pain twitch
 	CG_AddPainTwitch( cent, torsoAngles );
@@ -955,9 +942,9 @@ CG_TrailItem
 */
 void CG_TrailItem( centity_t *cent, qhandle_t hModel ) {
 	refEntity_t		ent;
-	clientInfo_t	*ci;
+//	clientInfo_t	*ci;
 
-	ci = &cgs.clientinfo[ cent->currentState.number ];
+//	ci = &cgs.clientinfo[ cent->currentState.number ];
 	if( cent->currentState.number == cg.predictedPlayerEntity.currentState.clientNum )
 		cent = &cg.predictedPlayerEntity;
 
@@ -980,7 +967,7 @@ void CG_TrailItem( centity_t *cent, qhandle_t hModel ) {
 		VectorCopy( ent.origin, ent.oldorigin );
 
 		ent.hModel = hModel;
-		trap_R_AddRefEntityToScene( &ent, cent );		
+		trap_R_AddRefEntityToScene( &ent, cent );
 	}
 }
 
@@ -991,7 +978,6 @@ CG_PlayerPowerups
 */
 static void CG_PlayerPowerups( centity_t *cent, refEntity_t *torso ) {
 	int		powerups;
-	clientInfo_t	*ci;
 
 	powerups = cent->currentState.powerups;
 	if ( !powerups ) {
@@ -1017,8 +1003,6 @@ static void CG_PlayerPowerups( centity_t *cent, refEntity_t *torso ) {
 	if ( powerups & ( 1 << PW_FLIGHT ) ) {
 		trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flightSound, 255, 0 );
 	}
-
-	ci = &cgs.clientinfo[ cent->currentState.clientNum ];
 
 	// haste leaves smoke trails
 	if ( powerups & ( 1 << PW_HASTE ) ) {
@@ -1116,7 +1100,7 @@ CG_PlayerSprites
 Float sprites over the player's head
 ===============
 */
-static void CG_PlayerSprites( centity_t *cent, centity_t *agentdata ) {
+static void CG_PlayerSprites( centity_t *cent, centity_t *_agentdata ) {
 	int		team;
 
 	// Lagged icon should always show up :/
@@ -2182,4 +2166,3 @@ void CG_ResetPlayerEntity( centity_t *cent ) {
 		CG_Printf(BOX_PRINT_MODE_CHAT, "%i ResetPlayerEntity yaw=%i\n", cent->currentState.number, cent->pe.torso.yawAngle );
 	}
 }
-

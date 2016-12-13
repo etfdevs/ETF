@@ -534,7 +534,7 @@ void	G_ETF_KickAll( void ) {
 			G_Q3F_DropClient(player, "Kicked");
 			count++;
 		}
-		else if(player->client && player->client->pers.connected == CON_CONNECTING) {
+		else if(player->client && player->client->pers.connected >= CON_CONNECTING) {
 			if(player->client->pers.localClient && !(player->r.svFlags & SVF_BOT)) {
 				continue;
 			}
@@ -564,7 +564,7 @@ void	G_ETF_KickBots( void ) {
 			G_Q3F_DropClient(player, "Kicked");
 			count++;
 		}
-		else if(player->client && player->client->pers.connected == CON_CONNECTING) {
+		else if(player->client && player->client->pers.connected >= CON_CONNECTING) {
 			if(!(player->r.svFlags & SVF_BOT)) {
 				continue;
 			}
@@ -606,7 +606,7 @@ void	G_ETF_ClientKick( void ) {
 				G_Q3F_DropClient(player, "Kicked");
 				return;
 			}
-			else if(player->client && player->client->pers.connected == CON_CONNECTING && i == num) {
+			else if(player->client && player->client->pers.connected >= CON_CONNECTING && i == num) {
 				if(player->client->pers.localClient && !(player->r.svFlags & SVF_BOT))
 				{
 					G_Printf("Cannot kick host player\n");

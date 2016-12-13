@@ -142,7 +142,6 @@ qboolean CG_Q3F_MenuChoice( int choice )
 		CG_EventHandling(CGAME_EVENT_NONE, qfalse);
 	}
 
-
 	if( !Q_stricmp( "cancel", menucommands[menuchoice] ) ) {
 		CG_Q3F_MenuCancel( qfalse );
 	} else if ( !Q_stricmp( "spectate", menucommands[menuchoice] ) ) {

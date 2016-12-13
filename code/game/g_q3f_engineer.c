@@ -281,7 +281,7 @@ void G_Q3F_SentryDie( gentity_t *sentry, gentity_t *inflictor, gentity_t *attack
 	realdamage = sentry->s.otherEntityNum + sentry->s.otherEntityNum2 * 3;
 	if( realdamage > 200 )
 		realdamage = 200;
-	/*temp = */G_TempEntity( sentry->r.currentOrigin, EV_SENTRY_EXPLOSION );
+	/*temp = */(void)G_TempEntity( sentry->r.currentOrigin, EV_SENTRY_EXPLOSION );
 
 	sentry->takedamage = qfalse;		// Stop infinite damage loops against other sentries :)
 	G_RadiusDamage(	sentry->r.currentOrigin, sentry, sentry->parent, realdamage, sentry, MOD_AUTOSENTRY_EXPLODE, 0 );
@@ -341,9 +341,9 @@ void G_Q3F_SentryPain( gentity_t *ent, gentity_t *attacker, int damage )
 	G_Q3F_UpdateEngineerStats( ent->parent );
 }
 
-int G_Q3F_SentryMaxHealth( int level )
+int G_Q3F_SentryMaxHealth( int sentlevel )
 {
-	switch( level )
+	switch( sentlevel )
 	{
 		case 1:		return( 150 );
 		case 2:		return( 180 );
@@ -353,9 +353,9 @@ int G_Q3F_SentryMaxHealth( int level )
 	}
 }
 
-int G_Q3F_SentryMaxShells( int level )
+int G_Q3F_SentryMaxShells( int sentlevel )
 {
-	switch( level )
+	switch( sentlevel )
 	{
 		case 1:		return( 100 );
 		case 2:		return( 120 );
@@ -1369,7 +1369,7 @@ void G_Q3F_SupplyStationDie( gentity_t *supplystation, gentity_t *inflictor, gen
 {
 	// Blow it up (handy as a booby trap)
 
-	gentity_t *parent, *temp;
+	gentity_t *parent;//, *temp;
 	float explosion;
 	char *attackerName;
 
@@ -1431,7 +1431,7 @@ void G_Q3F_SupplyStationDie( gentity_t *supplystation, gentity_t *inflictor, gen
 	/*if( explosion > g_supplyStationMaxDamage.value )
 		explosion = g_supplyStationMaxDamage.value;*/
 
-	temp = G_TempEntity( supplystation->r.currentOrigin, EV_ETF_SUPPLYSTATION_EXPLOSION );
+	/*temp = */(void)G_TempEntity( supplystation->r.currentOrigin, EV_ETF_SUPPLYSTATION_EXPLOSION );
 	supplystation->takedamage = qfalse;		// Stop infinite damage loops against other supplystations :)
 	G_RadiusDamage(	supplystation->r.currentOrigin, supplystation, supplystation->parent,
 					explosion, supplystation, MOD_SUPPLYSTATION_EXPLODE, 0 );

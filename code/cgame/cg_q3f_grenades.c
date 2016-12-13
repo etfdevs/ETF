@@ -642,61 +642,73 @@ extern bg_q3f_grenade_t bg_q3f_grenade_charge;
 cg_q3f_grenade_t cg_q3f_grenade_none = {
 	&bg_q3f_grenade_none,
 	0,
+	NULL_HANDLE, NULL_HANDLE
 };
 
 cg_q3f_grenade_t cg_q3f_grenade_normal = {
 	&bg_q3f_grenade_normal,
 	0,
+	NULL_HANDLE, NULL_HANDLE
 };
 
 cg_q3f_grenade_t cg_q3f_grenade_concuss = {
 	&bg_q3f_grenade_concuss,
 	0,
+	NULL_HANDLE, NULL_HANDLE
 };
 
 cg_q3f_grenade_t cg_q3f_grenade_flash = {
 	&bg_q3f_grenade_flash,
 	0,
+	NULL_HANDLE, NULL_HANDLE
 };
 
 cg_q3f_grenade_t cg_q3f_grenade_flare = {
 	&bg_q3f_grenade_flare,
 	&FlareRender,
+	NULL_HANDLE, NULL_HANDLE
 };
 
 cg_q3f_grenade_t cg_q3f_grenade_nail = {
 	&bg_q3f_grenade_nail,
 	&NailRender,
+	NULL_HANDLE, NULL_HANDLE
 };
 
 cg_q3f_grenade_t cg_q3f_grenade_cluster = {
 	&bg_q3f_grenade_cluster,
 	0,
+	NULL_HANDLE, NULL_HANDLE
 };
 
 cg_q3f_grenade_t cg_q3f_grenade_clustersection = {
 	&bg_q3f_grenade_clustersection,
 	0,
+	NULL_HANDLE, NULL_HANDLE
 };
 
 cg_q3f_grenade_t cg_q3f_grenade_napalm = {
 	&bg_q3f_grenade_napalm,
 	&NapalmRender,
+	NULL_HANDLE, NULL_HANDLE
 };
 
 cg_q3f_grenade_t cg_q3f_grenade_gas = {
 	&bg_q3f_grenade_gas,
 	&HallucinogenicRender,
+	NULL_HANDLE, NULL_HANDLE
 };
 
 cg_q3f_grenade_t cg_q3f_grenade_emp = {
 	&bg_q3f_grenade_emp,
 	&PulseRender,
+	NULL_HANDLE, NULL_HANDLE
 };
 
 cg_q3f_grenade_t cg_q3f_grenade_charge = {
 	&bg_q3f_grenade_charge,
-	NULL
+	NULL,
+	NULL_HANDLE, NULL_HANDLE
 };
 
 cg_q3f_grenade_t *cg_q3f_grenades[Q3F_NUM_GRENADES] = {

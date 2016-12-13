@@ -1222,11 +1222,11 @@ static qboolean SpiritParse_spawnrange( SpiritSystem_t *SpiritSystem, int handle
 }
 
 static qboolean SpiritParse_spawnrate( SpiritSystem_t *SpiritSystem, int handle ) {
-	float rate;
-	if ( !PC_Float_Parse( handle, &rate ) ) {
+	float spawnrate;
+	if ( !PC_Float_Parse( handle, &spawnrate ) ) {
 		return( qfalse );
 	}
-	SpiritSystem->spawndelay = 1000 / rate;
+	SpiritSystem->spawndelay = 1000 / spawnrate;
 	return( qtrue );
 }
 

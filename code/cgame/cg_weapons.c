@@ -1430,7 +1430,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 				CG_FireFlameChunks( cent, flash.origin, cent->lerpAngles, qtrue );
 		} else {
 			if ( weaponNum == WP_FLAMETHROWER ) {
-				vec3_t angles;
+				//vec3_t angles;
 				AxisToAngles( flash.axis, angles );
 				angles[0]=angles[0]+180;		//canabis, rotate this, model tag is wrong direction
 // JPW NERVE

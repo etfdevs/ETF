@@ -3193,11 +3193,11 @@ static qboolean UI_Crosshair_HandleKey(int flags, float *special, int key) {
 
 //slothy
 static qboolean UI_PBStatus_HandleKey(int flags, float *special, int key) {
-int pbstatus;
+//int pbstatus;
 
   if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) 
   {
-	pbstatus = (int)trap_Cvar_VariableValue("cl_punkbuster");
+//	pbstatus = (int)trap_Cvar_VariableValue("cl_punkbuster");
 //	pbstatus ? trap_SetPbClStatus(0) : trap_SetPbClStatus(1);
 	return qtrue;
   }
@@ -4148,16 +4148,16 @@ static void UI_RunMenuScript(char **args) {
 			}
 		} else if (Q_stricmp(name, "addFavorite") == 0) {
 			if (ui_netSource.integer != AS_FAVORITES) {
-				char name[MAX_NAME_LENGTH];
+				char sv_name[MAX_NAME_LENGTH];
 				char addr[MAX_NAME_LENGTH];
 				int res;
 
 				trap_LAN_GetServerInfo(ui_netSource.integer, uiInfo.serverStatus.displayServers[uiInfo.serverStatus.currentServer], buff, MAX_STRING_CHARS);
-				name[0] = addr[0] = '\0';
-				Q_strncpyz(name, 	Info_ValueForKey(buff, "hostname"), MAX_NAME_LENGTH);
+				sv_name[0] = addr[0] = '\0';
+				Q_strncpyz(sv_name, 	Info_ValueForKey(buff, "hostname"), MAX_NAME_LENGTH);
 				Q_strncpyz(addr, 	Info_ValueForKey(buff, "addr"), MAX_NAME_LENGTH);
-				if (strlen(name) > 0 && strlen(addr) > 0) {
-					res = trap_LAN_AddServer(AS_FAVORITES, name, addr);
+				if (strlen(sv_name) > 0 && strlen(addr) > 0) {
+					res = trap_LAN_AddServer(AS_FAVORITES, sv_name, addr);
 					if (res == 0) {
 						// server already in the list
 						Com_Printf("Favorite already in list\n");
@@ -4184,15 +4184,15 @@ static void UI_RunMenuScript(char **args) {
 			}
 		} else if (Q_stricmp(name, "createFavorite") == 0) {
 			if (ui_netSource.integer == AS_FAVORITES) {
-				char name[MAX_NAME_LENGTH];
+				char sv_name[MAX_NAME_LENGTH];
 				char addr[MAX_NAME_LENGTH];
 				int res;
 
-				name[0] = addr[0] = '\0';
-				Q_strncpyz(name, 	UI_Cvar_VariableString("ui_favoriteName"), MAX_NAME_LENGTH);
+				sv_name[0] = addr[0] = '\0';
+				Q_strncpyz(sv_name, 	UI_Cvar_VariableString("ui_favoriteName"), MAX_NAME_LENGTH);
 				Q_strncpyz(addr, 	UI_Cvar_VariableString("ui_favoriteAddress"), MAX_NAME_LENGTH);
-				if (strlen(name) > 0 && strlen(addr) > 0) {
-					res = trap_LAN_AddServer(AS_FAVORITES, name, addr);
+				if (strlen(sv_name) > 0 && strlen(addr) > 0) {
+					res = trap_LAN_AddServer(AS_FAVORITES, sv_name, addr);
 					if (res == 0) {
 						// server already in the list
 						Com_Printf("Favorite already in list\n");
@@ -4508,8 +4508,8 @@ static void UI_RunMenuScript(char **args) {
 		} else if (Q_stricmp(name, "removeFavServer" ) == 0 ) {
 			if(uiInfo.Q3F_CurrentFavServer_Pos >= 0 && uiInfo.Q3F_CurrentFavServer_Pos < trap_LAN_GetServerCount( AS_FAVORITES )) {
 				char addr[MAX_NAME_LENGTH];
-				char buff[MAX_STRING_CHARS];
-				trap_LAN_GetServerInfo( AS_FAVORITES, uiInfo.Q3F_CurrentFavServer_Pos, buff, MAX_STRING_CHARS);
+				//char buff[MAX_STRING_CHARS];
+				trap_LAN_GetServerInfo( AS_FAVORITES, uiInfo.Q3F_CurrentFavServer_Pos, buff, sizeof(buff));
 
 				addr[0] = '\0';
 				Q_strncpyz(addr, 	Info_ValueForKey(buff, "addr"), MAX_NAME_LENGTH);
@@ -4518,15 +4518,15 @@ static void UI_RunMenuScript(char **args) {
 				}
 			}
 		} else if (Q_stricmp(name, "addFavServer" ) == 0 ) {
-			char name[MAX_NAME_LENGTH];
+			char sv_name[MAX_NAME_LENGTH];
 			char addr[MAX_NAME_LENGTH];
 			int res;
 
-			name[0] = addr[0] = '\0';
-			Q_strncpyz(name, 	UI_Cvar_VariableString("ui_favServerName"), MAX_NAME_LENGTH);
+			sv_name[0] = addr[0] = '\0';
+			Q_strncpyz(sv_name, 	UI_Cvar_VariableString("ui_favServerName"), MAX_NAME_LENGTH);
 			Q_strncpyz(addr, 	UI_Cvar_VariableString("ui_favServerAddress"), MAX_NAME_LENGTH);
-			if (*name && *addr) {
-				res = trap_LAN_AddServer(AS_FAVORITES, name, addr);
+			if (*sv_name && *addr) {
+				res = trap_LAN_AddServer(AS_FAVORITES, sv_name, addr);
 				if (res == 0) {
 					// server already in the list
 					Com_Printf("Favorite already in list\n");
@@ -4614,20 +4614,20 @@ static void UI_RunMenuScript(char **args) {
 			// slothy
 			// check for save-as-favourites check
 			if(ui_addSpecifyFavorites.integer) {
-				char name[MAX_NAME_LENGTH];
+				char sv_name[MAX_NAME_LENGTH];
 				char addr[MAX_NAME_LENGTH];
 				int res;
 
-				Q_strncpyz(name, UI_Cvar_VariableString("ui_favServerName"), MAX_NAME_LENGTH);
-				if(!strlen(name)) {
-					Q_strncpyz(name, "QuickConnect", MAX_NAME_LENGTH);
+				Q_strncpyz(sv_name, UI_Cvar_VariableString("ui_favServerName"), MAX_NAME_LENGTH);
+				if(!strlen(sv_name)) {
+					Q_strncpyz(sv_name, "QuickConnect", MAX_NAME_LENGTH);
 				}
 				Q_strncpyz(addr, ui_specifyServer.string, MAX_NAME_LENGTH);
 				if(strlen(ui_specifyPort.string)) {
 					Q_strcat(addr, MAX_NAME_LENGTH, ":");
 					Q_strcat(addr, MAX_NAME_LENGTH, ui_specifyPort.string);
 				}
-				res = trap_LAN_AddServer(AS_FAVORITES, name, addr);
+				res = trap_LAN_AddServer(AS_FAVORITES, sv_name, addr);
 				if (res == 0) {
 					// server already in the list
 					Com_Printf("Favorite already in list\n");
@@ -5921,27 +5921,27 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 		}
 	} else if (feederID == FEEDER_FAVSERVERS) {
 		if(index >= 0 && index < trap_LAN_GetServerCount( AS_FAVORITES )) {
-			static char info[MAX_NAME_LENGTH];
+			static char favinfo[MAX_NAME_LENGTH];
 			char buff[MAX_STRING_CHARS];
 
 			trap_LAN_GetServerInfo( AS_FAVORITES, index, buff, MAX_STRING_CHARS );
 
-			info[0] = '\0';
+			favinfo[0] = '\0';
 
 			switch(column) {
 			case 0:
-				Q_strncpyz(info, 	Info_ValueForKey(buff, "addr"), MAX_NAME_LENGTH);
+				Q_strncpyz(favinfo, 	Info_ValueForKey(buff, "addr"), MAX_NAME_LENGTH);
 				break;
 			case 1:
-				Q_strncpyz(info, 	Info_ValueForKey(buff, "hostname"), MAX_NAME_LENGTH);
+				Q_strncpyz(favinfo, 	Info_ValueForKey(buff, "hostname"), MAX_NAME_LENGTH);
 				break;
 			}
 
-			if(!*info) {
+			if(!*favinfo) {
 				return "";
 			}
 
-			return info;
+			return favinfo;
 		}
 	} else if (feederID == FEEDER_CLASSINFO) {
 		listBoxDef_t *listPtr = (listBoxDef_t*)item->typeData;
@@ -6792,6 +6792,8 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu ) {
 		menuDef_t* menubar;
 
 		switch ( menu ) {
+			default:
+				return;
 			case UIMENU_NONE:
 				UI_SetEventHandling(UI_EVENT_NONE);
 				trap_Key_SetCatcher( trap_Key_GetCatcher() & ~KEYCATCH_UI );

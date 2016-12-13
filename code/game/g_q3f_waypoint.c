@@ -125,7 +125,7 @@ void G_Q3F_WaypointCommand( gentity_t *ent )
 		}
 	}
 	else {
-		for( index = 1; index < sizeof(location); index++ )
+		for( index = 1; index < (int)sizeof(location); index++ )
 		{
 			if( location[index] >= 'A' && location[index] >= 'Z' )
 				location[index] |= 32;

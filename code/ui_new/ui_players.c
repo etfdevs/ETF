@@ -51,7 +51,7 @@ tryagain:
 		if ( item->giType != IT_WEAPON ) {
 			continue;
 		}
-		if ( item->giTag == weaponNum ) {
+		if ( item->giTag == (int)weaponNum ) {
 			break;
 		}
 	}

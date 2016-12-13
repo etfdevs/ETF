@@ -111,7 +111,7 @@ static void CG_Q3F_AddEntityData( void *data, int datasize, int alignment )
 
 	void *allocated;
 
-	if( cgs.numEntityData >= sizeof(cgs.entityIndex) / sizeof(int) )
+	if( cgs.numEntityData >= (int)sizeof(cgs.entityIndex) / sizeof(int) )
 		CG_Error( "Out of entity data space" );
 
 	allocated = CG_Q3F_AddBlock( datasize, alignment );
@@ -154,7 +154,7 @@ static void SP_Target_Location()
 	vec3_t loc;
 	char *s;
 
-	if( cgs.numLocations >= (sizeof(cgs.locations) / sizeof(cg_q3f_location_t)) )
+	if( cgs.numLocations >= (int)(sizeof(cgs.locations) / sizeof(cg_q3f_location_t)) )
 		return;
 
 	if(	!CG_Q3F_SpawnVector( "origin", "0 0 0", loc ) ||
@@ -225,7 +225,7 @@ static void SP_Misc_Flare() {
 	char *s;
 	int spawnflags;
 
-	if( cgs.numFlares >= (sizeof(cgs.flares) / sizeof(cg_q3f_flare_t)) )
+	if( cgs.numFlares >= (int)(sizeof(cgs.flares) / sizeof(cg_q3f_flare_t)) )
 		return;
 
 	memset( &flare, 0, sizeof(cg_q3f_flare_t) );
@@ -283,7 +283,7 @@ static void SP_Misc_SunFlare() {
 	char *s;
 	int spawnflags;
 
-	if( cgs.numSunFlares >= (sizeof(cgs.sunFlares) / sizeof(cg_q3f_flare_t)) )
+	if( cgs.numSunFlares >= (int)(sizeof(cgs.sunFlares) / sizeof(cg_q3f_flare_t)) )
 		return;
 
 	memset( &flare, 0, sizeof(cg_q3f_flare_t) );
@@ -590,7 +590,7 @@ void CG_Q3F_ParseEntities()
 	{
 		if( ( classname = CG_Q3F_GetEntValue( "classname" ) ) != NULL )
 		{
-			for( index = 0; index < NUMPROCESSORS; index++ )
+			for( index = 0; index < (int)NUMPROCESSORS; index++ )
 			{
 				if( !Q_stricmp( processors[index].classname, classname ) )
 				{

@@ -133,7 +133,8 @@ void UI_Q3F_LoadFontFile( const char *fontName, int pointSize, fontInfo_t *font 
 //#endif
 
 static char		memoryPool[MEM_POOL_SIZE];
-static int		allocPoint, outOfMemory;
+static int		allocPoint;
+static qboolean	outOfMemory;
 
 
 /*
@@ -149,7 +150,6 @@ void *UI_Alloc( int size ) {
 		if (DC->Print) {
 			DC->Print("UI_Alloc: Failure. Out of memory!\n");
 		}
-    //DC->trap_Print(S_COLOR_YELLOW"WARNING: UI Out of Memory!\n");
 		return NULL;
 	}
 
@@ -174,26 +174,22 @@ qboolean UI_OutOfMemory() {
 	return outOfMemory;
 }
 
-
-
-
-
 #define HASH_TABLE_SIZE 2048
 /*
 ================
 return a hash value for the string
 ================
 */
-static long hashForString(const char *str) {
-	int		i;
-	long	hash;
-	char	letter;
+static unsigned hashForString(const char *str) {
+	int			i;
+	unsigned	hash;
+	char		letter;
 
 	hash = 0;
 	i = 0;
 	while (str[i] != '\0') {
 		letter = tolower(str[i]);
-		hash+=(long)(letter)*(i+119);
+		hash+=(unsigned)(letter)*(i+119);
 		i++;
 	}
 	hash &= (HASH_TABLE_SIZE-1);
@@ -211,10 +207,9 @@ static char strPool[STRING_POOL_SIZE];
 static int strHandleCount = 0;
 static stringDef_t *strHandle[HASH_TABLE_SIZE];
 
-
 const char *String_Alloc(const char *p) {
 	int len;
-	long hash;
+	unsigned hash;
 	stringDef_t *str, *last;
 	static const char *staticNULL = "";
 
@@ -251,7 +246,7 @@ const char *String_Alloc(const char *p) {
 
 		str  = UI_Alloc(sizeof(stringDef_t));
 		if(str == NULL) {
-			Com_Printf("UI_Alloc out of memory\n");
+			Com_Printf( S_COLOR_RED "String_Alloc (%s) Failed! UI_Alloc out of memory" S_COLOR_WHITE "\n", p );
 			return NULL;
 		}
 			
@@ -264,6 +259,9 @@ const char *String_Alloc(const char *p) {
 		}
 		return &strPool[ph];
 	}
+
+	//Increase STRING_POOL_SIZE.
+	Com_Printf( S_COLOR_RED "String_Alloc (%s) Failed! String pool has been exhausted." S_COLOR_WHITE "\n", p );
 	return NULL;
 }
 
@@ -6835,7 +6833,7 @@ keywordHash_t menuParseKeywords[] = {
 	{"onOOBClick", MenuParse_onOOBClick, NULL},
 // RR2DO2
 // djbob
-	{"loadborderbitmap", &MenuParse_LoadBorderBitmap},	// border bitmaps
+	{"loadborderbitmap", &MenuParse_LoadBorderBitmap, NULL},	// border bitmaps
 	{"nonSticky", MenuParse_nonSticky, NULL},
 	{"onKey", MenuParse_onKey, NULL},
 // djbob

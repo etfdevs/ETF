@@ -1514,6 +1514,7 @@ void SpectatorClientEndFrame( gentity_t *ent ) {
 				ent->client->ps = cl->ps;
 				switch ( ent->client->sess.spectatorState )
 				{
+				default: break;
 				case SPECTATOR_FOLLOW:	ent->client->ps.pm_flags |= PMF_FOLLOW; break;
 				case SPECTATOR_CHASE:	ent->client->ps.pm_flags |= PMF_CHASE; break;
 				}

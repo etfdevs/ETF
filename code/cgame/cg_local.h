@@ -1945,7 +1945,7 @@ extern char	*cg_customSoundPaths_Heavy[MAX_CUSTOM_SOUNDS];
 //
 void CG_BuildSolidList( void );
 int	CG_PointContents( const vec3_t point, int passEntityNum );
-void CG_Trace( trace_t *result, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, 
+void CG_Trace( trace_t *result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, 
 				int skipNumber, int mask );
 void CG_PredictPlayerState( void );
 

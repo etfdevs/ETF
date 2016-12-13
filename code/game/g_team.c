@@ -43,7 +43,7 @@ void QDECL PrintMsg( gentity_t *ent, const char *fmt, ... ) {
 	char		*p;
 	
 	va_start (argptr,fmt);
-	if (Q_vsnprintf (msg, sizeof(msg), fmt, argptr) > sizeof(msg)) {
+	if (Q_vsnprintf (msg, sizeof(msg), fmt, argptr) > (int)sizeof(msg)) {
 		G_Error ( "PrintMsg overrun" );
 	}
 	va_end (argptr);
@@ -313,7 +313,7 @@ void TeamplayInfoMessage( q3f_team_t team ) {
 
 			Com_sprintf (entry, sizeof(entry), " %i %i %i", i, h, a);
 			j = strlen(entry);
-			if (stringlength + j >= sizeof(string))
+			if (stringlength + j >= (int)sizeof(string))
 				break;
 			strcpy (string + stringlength, entry);
 			stringlength += j;
