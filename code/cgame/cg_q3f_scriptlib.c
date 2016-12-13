@@ -22,7 +22,7 @@ static int currentMemoryIndex;
 // Memory Pool
 #define F2R_MP_SIZE		32*1024
 #define SPIRIT_MP_SIZE	64*1024
-#define CGAME_MP_SIZE	384*1024
+#define CGAME_MP_SIZE	4096*1024
 
 static int memPoolSizes[] = {
 	F2R_MP_SIZE,
@@ -44,7 +44,7 @@ static char *memPools[] = {
 // String Pool
 #define F2R_SP_SIZE		64*1024
 #define SPIRIT_SP_SIZE	64*1024
-#define CGAME_SP_SIZE	64*1024
+#define CGAME_SP_SIZE	2048*1024
 
 static int stringPoolSizes[] = {
 	F2R_SP_SIZE,

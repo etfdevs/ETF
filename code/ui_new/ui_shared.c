@@ -129,7 +129,7 @@ void UI_Q3F_LoadFontFile( const char *fontName, int pointSize, fontInfo_t *font 
 #ifndef CGAME
 //#define MEM_POOL_SIZE  128 * 1024
 //#else
-#define MEM_POOL_SIZE  2048 * 1024
+#define MEM_POOL_SIZE  4096 * 1024
 //#endif
 
 static char		memoryPool[MEM_POOL_SIZE];
