@@ -397,7 +397,11 @@ void Cmd_Give_f (gentity_t *ent)
 		VectorCopy( ent->r.currentOrigin, it_ent->s.origin );
 		it_ent->classname = it->classname;
 		G_SpawnItem (it_ent, it);
+		if ( !it_ent || !it_ent->inuse )
+			return;
 		FinishSpawningItem(it_ent );
+		if ( !it_ent || !it_ent->inuse )
+			return;
 		memset( &trace, 0, sizeof( trace ) );
 		Touch_Item (it_ent, ent, &trace);
 		if (it_ent->inuse) {
