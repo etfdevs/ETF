@@ -1116,15 +1116,16 @@ static void CG_PlayerSprites( centity_t *cent, centity_t *_agentdata ) {
 	team = cgs.clientinfo[ cent->currentState.number ].team;
  
 	if (!CG_AlliedTeam( cg.snap->ps.persistant[PERS_TEAM], team )) {
-		if (agentdata && agentdata->currentState.weapon) {
-			if (!CG_AlliedTeam( cg.snap->ps.persistant[PERS_TEAM], agentdata->currentState.weapon ))
+		if (_agentdata && _agentdata->currentState.weapon) {
+			if (!CG_AlliedTeam( cg.snap->ps.persistant[PERS_TEAM], _agentdata->currentState.weapon ))
 				return;
-			team = agentdata->currentState.weapon;
+			team = _agentdata->currentState.weapon;
 		} else
 			return;
 	}
 
-	if( (cent->currentState.eFlags & EF_Q3F_INVISIBLE) && (cgs.clientinfo[ cent->currentState.number ].team != cgs.clientinfo[cg.clientNum].team) ) {
+	if( (cent->currentState.eFlags & EF_Q3F_INVISIBLE) && !CG_AlliedTeam( cg.snap->ps.persistant[PERS_TEAM], cgs.clientinfo[ cent->currentState.number ].team ) ) {
+	//if( (cent->currentState.eFlags & EF_Q3F_INVISIBLE) && (cgs.clientinfo[ cent->currentState.number ].team != cgs.clientinfo[cg.clientNum].team) ) {
 		return;
 	}
 
