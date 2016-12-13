@@ -316,6 +316,10 @@ void Cmd_Give_f (gentity_t *ent)
 
 	if (give_all || Q_stricmp(name, "ammo") == 0)
 	{
+		// Civilians don't get ammo
+		if(ent->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_CIVILIAN)
+			return;
+
 		for ( i = 0; i < AMMO_CLIP1; i++ ) {
 			if ( i == AMMO_GRENADES ) 
 				ent->client->ps.ammo[i] = 99 + (99 << 8);
