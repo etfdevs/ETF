@@ -1283,7 +1283,6 @@ void G_Q3F_SendAgentClassMenu( gentity_t *player, int teamnum ) {
 	//qboolean unlimited;
 
 	buff[0] = 0;
-	Q_strcat( buff, sizeof(buff), "\"\" ");
 
 	for( index = 1; index < Q3F_CLASS_MAX; index++ ) {
 		if( !g_q3f_teamlist[teamnum].classmaximums[index] ) {

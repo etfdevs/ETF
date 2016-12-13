@@ -592,21 +592,22 @@ static void DisguiseClassMenu()
 	int index, count;
 	char buffer[128];
 
-	count = trap_Argc() - 3;
+	count = trap_Argc() - 2;
 	if( count <= 0 )
 		return;			// No class menu
 
 	CG_Q3F_MenuInit();
 
-	for( index = 2; index <= count; index++ ) {
-		trap_Argv( index + 1, buffer, 128 );
+	for( index = 0; index < count; index++ ) {
+		trap_Argv( index + 2, buffer, 128 );
 		if( *buffer ) {
-			CG_Q3F_MenuAddOption( index-2, buffer, NULL, va( "disguise class %s\n", bg_q3f_classlist[index-1]->commandstring) );
+			CG_Q3F_MenuAddOption( index, buffer, NULL, va( "disguise class %s\n", bg_q3f_classlist[index+1]->commandstring) );
 		} else {
-			CG_Q3F_MenuSetDisabled( index-2 );
+			CG_Q3F_MenuSetDisabled( index );
 		}
 	}
 
+	// If we don't have a Civilian listed, allow us to Cancel
 	if( !*menustrings[9] ) {
 		CG_Q3F_MenuAddOption( 9, "Cancel", NULL, "cancel" );
 	}
