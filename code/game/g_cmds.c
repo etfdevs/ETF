@@ -582,6 +582,9 @@ qboolean SetTeam( gentity_t *ent, char *s ) {
 	int					specClient;
 	g_q3f_playerclass_t	*cls;
 
+	if (!ent->inuse)
+		return qfalse;
+
 	//
 	// see what change is requested
 	//
