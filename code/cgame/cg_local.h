@@ -684,12 +684,12 @@ typedef struct {
 	int			crosshairSentryRockets;
 	int			crosshairSentryBored;
 	int			crosshairSupplyLevel;
-	float		crosshairSupplyHealthPC;
-	float		crosshairSupplyShellsPC;
-	float		crosshairSupplyNailsPC;
-	float		crosshairSupplyCellsPC;
-	float		crosshairSupplyRocketsPC;
-	float		crosshairSupplyArmorPC;
+	int			crosshairSupplyHealth;
+	int			crosshairSupplyShells;
+	int			crosshairSupplyNails;
+	int			crosshairSupplyCells;
+	int			crosshairSupplyRockets;
+	int			crosshairSupplyArmor;
 	int			lastCrosshairCheck;			// digibob: caching this now for a little bit
 
 	// powerup active flashing

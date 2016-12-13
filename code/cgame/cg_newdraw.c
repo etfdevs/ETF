@@ -2406,7 +2406,7 @@ qboolean CG_GetExpandingTextBox_Text( int ownerdraw, char* out, float* alpha, qb
 				*p++ = '\n';
 			}
 		}
-		else if( cg.crosshairSupplyLevel == 1 && cg.crosshairSupplyLevel != 99 )
+		else if( cg.crosshairSupplyLevel /*== 1*/ && cg.crosshairSupplyLevel != 99 )
 		{
 			// Supply Station ID
 
@@ -2417,8 +2417,8 @@ qboolean CG_GetExpandingTextBox_Text( int ownerdraw, char* out, float* alpha, qb
 			if(cg.snap->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_ENGINEER)
 			{
 				strcpy(p,
-						va("Health: %.2f%%\n^8Shells: %.2f%% ^2Nails: %.2f%% ^1Rockets: %.2f%% ^6Cells: %.2f%%\n^5Armor: %.2f%%", cg.crosshairSupplyHealthPC,
-							cg.crosshairSupplyShellsPC, cg.crosshairSupplyNailsPC, cg.crosshairSupplyRocketsPC, cg.crosshairSupplyCellsPC, cg.crosshairSupplyArmorPC));
+						va("Health: %d\n^8Shells: %d ^2Nails: %d ^1Rockets: %d ^6Cells: %d\n^5Armor: %d", cg.crosshairSupplyHealth,
+							cg.crosshairSupplyShells, cg.crosshairSupplyNails, cg.crosshairSupplyRockets, cg.crosshairSupplyCells, cg.crosshairSupplyArmor));
 				p += strlen(p);
 				*p++ = '\n';
 			}

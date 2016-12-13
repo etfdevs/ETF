@@ -1156,12 +1156,12 @@ void CG_ScanForCrosshairEntity( void ) {
 			// Only on same team
 
 			cg.crosshairSupplyLevel = cent->currentState.legsAnim;
-			cg.crosshairSupplyHealthPC = 100.f * ( (float)cent->currentState.torsoAnim / 150.f );
-			cg.crosshairSupplyShellsPC = 100.f * ( (float)cent->currentState.origin2[0] / 400.f );
-			cg.crosshairSupplyNailsPC = 100.f * ( (float)cent->currentState.origin2[1] / 600.f );
-			cg.crosshairSupplyRocketsPC = 100.f * ( (float)cent->currentState.origin2[2] / 300.f );
-			cg.crosshairSupplyCellsPC = 100.f * ( (float)cent->currentState.angles2[0] / 400.f );
-			cg.crosshairSupplyArmorPC = 100.f * ( (float)cent->currentState.angles2[1] / 500.f );
+			cg.crosshairSupplyHealth = cent->currentState.torsoAnim;
+			cg.crosshairSupplyShells = (int)cent->currentState.origin2[0];
+			cg.crosshairSupplyNails = (int)cent->currentState.origin2[1];
+			cg.crosshairSupplyRockets = (int)cent->currentState.origin2[2];
+			cg.crosshairSupplyCells = (int)cent->currentState.angles2[0];
+			cg.crosshairSupplyArmor = (int)cent->currentState.angles2[1];
 			cg.crosshairClientNum = cent->currentState.clientNum;
 			cg.crosshairClientTime = cg.time;
 			cg.crosshairSentryLevel = 0;
