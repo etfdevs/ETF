@@ -1553,6 +1553,7 @@ BeginIntermission
 void BeginIntermission( void ) {
 	int			i;
 	gentity_t	*client;
+	g_q3f_playerclass_t *cls;
 
 	if ( level.intermissiontime ) {
 		return;		// already active
@@ -1577,6 +1578,12 @@ void BeginIntermission( void ) {
 			respawn(client);
 		}
 		G_Q3F_DropAllFlags( client, qtrue, qtrue );	// Golliwog: Drop any flags carried.
+		cls = G_Q3F_GetClass( &client->client->ps );
+		if( cls->DeathCleanup )
+			cls->DeathCleanup( client );
+		if( cls->EndClass )
+			cls->EndClass( client );		// Perform class term stuff (e.g. destroy sentries)
+		G_Q3F_GenericEndCleanup( client );
 		MoveClientToIntermission( client );
 	}
 
