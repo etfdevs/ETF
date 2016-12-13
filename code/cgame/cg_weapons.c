@@ -343,7 +343,7 @@ static void CG_WeaponSmokeTrail( centity_t *ent, const weaponInfo_t *wi ) {
 
 	parent = es->otherEntityNum;
 	if(parent >= 0 && parent < MAX_CLIENTS) {
-		if(cg.gasEndTime && cg.gasPlayerClass[parent] != 0xFF && cg.gasPlayerTeam[parent] != 0xFF)
+		if(cg.gasEndTime && cg.gasPlayerTeam[parent] != 0xFF)
 			team = cg.gasPlayerTeam[parent];
 		else
 			team = cgs.clientinfo[parent].team;
