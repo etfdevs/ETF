@@ -1661,7 +1661,9 @@ void G_Q3F_Supply_Command( gentity_t *player )
 	int suppnum, count;
 	gentity_t *supplystation;
 	bg_q3f_playerclass_t *cls;
+#ifdef BUILD_BOTS
 	qboolean gotammo = qfalse;
+#endif
 
 	trap_Argv( 2, buff, sizeof(buff) );
 	suppnum = atoi( buff );
@@ -1675,37 +1677,69 @@ void G_Q3F_Supply_Command( gentity_t *player )
 	cls = BG_Q3F_GetClass( &player->client->ps );
 	if( !Q_stricmp( buff, "ammo" ) )
 	{
-		count = cls->maxammo_shells - player->client->ps.ammo[AMMO_SHELLS];
-		if( count > supplystation->s.origin2[0] )
-			count = (int) supplystation->s.origin2[0];
-		player->client->ps.ammo[AMMO_SHELLS] += count;
-		supplystation->s.origin2[0] -= count;
-		if( count > 0 )
-			gotammo = qtrue;
+		if ( player->client->ps.ammo[AMMO_SHELLS] < cls->maxammo_shells)
+		{
+			count = cls->maxammo_shells - player->client->ps.ammo[AMMO_SHELLS];
+			if( count > supplystation->s.origin2[0] )
+				count = (int) supplystation->s.origin2[0];
+			player->client->ps.ammo[AMMO_SHELLS] += count;
+			supplystation->s.origin2[0] -= count;
+		}
+		else
+			count = 0;
 
-		count = cls->maxammo_nails - player->client->ps.ammo[AMMO_NAILS];
-		if( count > supplystation->s.origin2[1] )
-			count = (int) supplystation->s.origin2[1];
-		player->client->ps.ammo[AMMO_NAILS] += count;
-		supplystation->s.origin2[1] -= count;
+#ifdef BUILD_BOTS
 		if( count > 0 )
 			gotammo = qtrue;
-		
-		count = cls->maxammo_rockets - player->client->ps.ammo[AMMO_ROCKETS];
-		if( count > supplystation->s.origin2[2] )
-			count = (int) supplystation->s.origin2[2];
-		player->client->ps.ammo[AMMO_ROCKETS] += count;
-		supplystation->s.origin2[2] -= count;
-		if( count > 0 )
-			gotammo = qtrue;
+#endif
 
-		count = cls->maxammo_cells - player->client->ps.ammo[AMMO_CELLS];
-		if( count > supplystation->s.angles2[0] )
-			count = (int) supplystation->s.angles2[0];
-		player->client->ps.ammo[AMMO_CELLS] += count;
-		supplystation->s.angles2[0] -= count;
+		if ( player->client->ps.ammo[AMMO_NAILS] < cls->maxammo_nails)
+		{
+			count = cls->maxammo_nails - player->client->ps.ammo[AMMO_NAILS];
+			if( count > supplystation->s.origin2[1] )
+				count = (int) supplystation->s.origin2[1];
+			player->client->ps.ammo[AMMO_NAILS] += count;
+			supplystation->s.origin2[1] -= count;
+		}
+		else
+			count = 0;
+
+#ifdef BUILD_BOTS
 		if( count > 0 )
 			gotammo = qtrue;
+#endif
+
+		if ( player->client->ps.ammo[AMMO_ROCKETS] < cls->maxammo_rockets)
+		{
+			count = cls->maxammo_rockets - player->client->ps.ammo[AMMO_ROCKETS];
+			if( count > supplystation->s.origin2[2] )
+				count = (int) supplystation->s.origin2[2];
+			player->client->ps.ammo[AMMO_ROCKETS] += count;
+			supplystation->s.origin2[2] -= count;
+		}
+		else
+			count = 0;
+
+#ifdef BUILD_BOTS
+		if( count > 0 )
+			gotammo = qtrue;
+#endif
+
+		if ( player->client->ps.ammo[AMMO_CELLS] < cls->maxammo_cells)
+		{
+			count = cls->maxammo_cells - player->client->ps.ammo[AMMO_CELLS];
+			if( count > supplystation->s.angles2[0] )
+				count = (int) supplystation->s.angles2[0];
+			player->client->ps.ammo[AMMO_CELLS] += count;
+			supplystation->s.angles2[0] -= count;
+		}
+		else
+			count = 0;
+
+#ifdef BUILD_BOTS
+		if( count > 0 )
+			gotammo = qtrue;
+#endif
 
 		player->client->repairEnt = NULL;
 
@@ -1716,13 +1750,21 @@ void G_Q3F_Supply_Command( gentity_t *player )
 	}
 	else if( !Q_stricmp( buff, "armor" ) )
 	{
-		count = cls->maxarmour - player->client->ps.stats[STAT_ARMOR];
-		if( count > supplystation->s.angles2[1] )
-			count = (int) supplystation->s.angles2[1];
-		player->client->ps.stats[STAT_ARMOR] += count;
-		supplystation->s.angles2[1] -= count;
+		if ( player->client->ps.ammo[STAT_ARMOR] < cls->maxarmour)
+		{
+			count = cls->maxarmour - player->client->ps.ammo[STAT_ARMOR];
+			if( count > supplystation->s.angles2[1] )
+				count = (int) supplystation->s.angles2[1];
+			player->client->ps.stats[STAT_ARMOR] += count;
+			supplystation->s.angles2[1] -= count;
+		}
+		else
+			count = 0;
+
+#ifdef BUILD_BOTS
 		if( count > 0 )
 			gotammo = qtrue;
+#endif
 
 		player->client->repairEnt = NULL;
 
