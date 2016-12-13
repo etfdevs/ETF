@@ -598,6 +598,12 @@ void CG_Q3F_Supplystation_Explode( centity_t *cent ) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Supplystation
 
+#define Q3F_SUPPLYSTATION_SHELLS		400	
+#define Q3F_SUPPLYSTATION_NAILS			600
+#define Q3F_SUPPLYSTATION_ROCKETS		300
+#define Q3F_SUPPLYSTATION_CELLS			400
+#define Q3F_SUPPLYSTATION_ARMOUR		500
+
 static int CG_Q3F_SupplystationPanel()
 {
 	centity_t *cent = (centity_t *) panel.data;
@@ -646,11 +652,11 @@ static int CG_Q3F_SupplystationPanel()
 			cells = cent->currentState.angles2[0];
 			armour = cent->currentState.angles2[1];
 
-			CG_Q3F_PanelDrawString( va( "Shells:  %d", shells ), 0, 2*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Nails:   %d", nails ), 0, 3*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Rockets: %d", rockets ), 0, 4*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Cells:   %d", cells ), 0, 5*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Armor:  %d", armour ), 0, 6*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Shells:  %03d/%d", shells, Q3F_SUPPLYSTATION_SHELLS ), 0, 2*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Nails:   %03d/%d", nails, Q3F_SUPPLYSTATION_NAILS ), 0, 3*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Rockets: %03d/%d", rockets, Q3F_SUPPLYSTATION_ROCKETS ), 0, 4*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Cells:   %03d/%d", cells, Q3F_SUPPLYSTATION_CELLS ), 0, 5*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Armour:  %03d/%d", armour, Q3F_SUPPLYSTATION_ARMOUR ), 0, 6*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
 			CG_Q3F_PanelDrawString( "^31^7 Supply Ammo", 0, 8*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
 			CG_Q3F_PanelDrawString( "^32^7 Supply Armor", 0, 9*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
 			break;
@@ -693,12 +699,12 @@ static int CG_Q3F_SupplystationPanel()
 			cells = cent->currentState.angles2[0];
 			armour = cent->currentState.angles2[1];
 
-			CG_Q3F_PanelDrawString( va( "Health:  %d", health ), 0, 2*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Shells:  %d", shells ), 0, 4*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Nails:   %d", nails ), 0, 5*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Rockets: %d", rockets ), 0, 6*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Cells:   %d", cells ), 0, 7*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Armor:  %d", armour ), 0, 8*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Health:  %03d/150", health ), 0, 2*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Shells:  %03d/%d", shells, Q3F_SUPPLYSTATION_SHELLS ), 0, 4*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Nails:   %03d/%d", nails, Q3F_SUPPLYSTATION_NAILS ), 0, 5*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Rockets: %03d/%d", rockets, Q3F_SUPPLYSTATION_ROCKETS ), 0, 6*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Cells:   %03d/%d", cells, Q3F_SUPPLYSTATION_CELLS ), 0, 7*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Armour:  %03d/%d", armour, Q3F_SUPPLYSTATION_ARMOUR ), 0, 8*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
 //			CG_Q3F_PanelDrawString( "^31.^7 Repair Supply Station", 0, 10*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
 //			CG_Q3F_PanelDrawString( "^32.^7 Refill Supply Station", 0, 11*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
 			CG_Q3F_PanelDrawString( "^31^7 Dismantle Supply Station", 0, 12*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
