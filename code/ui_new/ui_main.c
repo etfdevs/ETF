@@ -3224,6 +3224,22 @@ static qboolean UI_ClassConfig_Active_HandleKey(int flags, float *special, int k
 	return qfalse;
 }
 
+static qboolean UI_CheckFavServerVersion( const char *info )
+{
+	char *val = NULL;
+	int pure = 0;
+
+	val = Info_ValueForKey(info, "balancedteams");
+	pure = atoi(Info_ValueForKey(info, "maxlives")) != 0;
+	if( strcmp(val, FORTS_SHORTVERSION) != 0 && pure )
+	{
+		Com_Error(ERR_DROP, "This server is NOT running " FORTS_VERSION "!\nJoining this server will not function properly with this version." );
+		return qfalse;
+	}
+
+	return qtrue;
+}
+
 static qboolean	UI_FavouriteServer_HandleKey(int flags, float *special, int key, int number) {
 	char addr[MAX_NAME_LENGTH];
 	char buff[MAX_STRING_CHARS];
@@ -3241,6 +3257,9 @@ static qboolean	UI_FavouriteServer_HandleKey(int flags, float *special, int key,
 		if(!*addr) {
 			return qfalse;
 		}
+
+		if ( !UI_CheckFavServerVersion( buff ) )
+			return qfalse;
 
 		uiInfo.uiDC.executeText( EXEC_APPEND, va( "connect %s\n", addr ) );
 
@@ -3884,6 +3903,41 @@ static const char * keyStr[] = {
 	"MWHEELUP"
 };
 
+static qboolean UI_CheckVersion( void )
+{
+	static char info[MAX_STRING_CHARS];
+	char *val = NULL;
+	int pure = 0;
+
+	int index = uiInfo.serverStatus.currentServer;
+	if( (index < 0) || (index >= uiInfo.serverStatus.numDisplayServers) )
+	{	// warning?
+		return qfalse;
+	}
+
+	trap_LAN_GetServerInfo(ui_netSource.integer, uiInfo.serverStatus.displayServers[index], info, MAX_STRING_CHARS);
+
+	val = Info_ValueForKey(info, "balancedteams");
+	pure = atoi(Info_ValueForKey(info, "maxlives")) != 0;
+	if( strcmp(val, FORTS_SHORTVERSION) != 0 && pure )
+	{
+		Com_Error(ERR_DROP, "This server is NOT running " FORTS_VERSION "!\nJoining this server will not function properly with this version." );
+		return qfalse;
+	}
+
+	return qtrue;
+}
+
+static void UI_JoinServer(void) {
+	char buff[MAX_STRING_CHARS] = {0};
+	trap_Cvar_Set("cg_thirdPerson", "0");
+	trap_Cvar_Set("cg_cameraOrbit", "0");
+	if (uiInfo.serverStatus.currentServer >= 0 && uiInfo.serverStatus.currentServer < uiInfo.serverStatus.numDisplayServers) {
+		trap_LAN_GetServerAddressString(ui_netSource.integer, uiInfo.serverStatus.displayServers[uiInfo.serverStatus.currentServer], buff, sizeof(buff));
+		trap_Cmd_ExecuteText( EXEC_APPEND, va( "connect %s\n", buff ) );
+	}
+}
+
 static void UI_RunMenuScript(char **args) {
 	const char *name;
 	char buff[1024];
@@ -4076,12 +4130,14 @@ static void UI_RunMenuScript(char **args) {
 			uiInfo.serverStatusInfo.numLines = 0;
 			Menu_SetFeederSelection(NULL, FEEDER_FINDPLAYER, 0, NULL);
 		} else if (Q_stricmp(name, "JoinServer") == 0) {
-			trap_Cvar_Set("cg_thirdPerson", "0");
+			if(UI_CheckVersion())
+				UI_JoinServer();
+			/*trap_Cvar_Set("cg_thirdPerson", "0");
 			trap_Cvar_Set("cg_cameraOrbit", "0");
 			if (uiInfo.serverStatus.currentServer >= 0 && uiInfo.serverStatus.currentServer < uiInfo.serverStatus.numDisplayServers) {
 				trap_LAN_GetServerAddressString(ui_netSource.integer, uiInfo.serverStatus.displayServers[uiInfo.serverStatus.currentServer], buff, 1024);
 				trap_Cmd_ExecuteText( EXEC_APPEND, va( "connect %s\n", buff ) );
-			}
+			}*/
 		} else if (Q_stricmp(name, "FoundPlayerJoinServer") == 0) {
 			if (uiInfo.currentFoundPlayerServer >= 0 && uiInfo.currentFoundPlayerServer < uiInfo.numFoundPlayerServers) {
 				trap_Cmd_ExecuteText( EXEC_APPEND, va( "connect %s\n", uiInfo.foundPlayerServerAddresses[uiInfo.currentFoundPlayerServer] ) );
