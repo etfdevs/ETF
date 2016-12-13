@@ -2242,13 +2242,14 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, im
 
 	//Force field still enabled, run some sparks
 	if( forcefield ) {
+		const centity_t *field = &cg_entities[tr.entityNum];
 		vec3_t axis[3];
 
 		VectorNormalize2( tr.plane.normal, axis[2] );
 		MakeNormalVectors( axis[2], axis[1], axis[0] );
 		/* Ensiform - We do a check here because some surfaces are forcefield'd but not necessarily func_forcefield */
-		if( !VectorCompare( cg_entities[tr.entityNum].currentState.angles2, vec3_origin ) )
-			Spirit_SetCustomColor( cg_entities[tr.entityNum].currentState.angles2 );
+		if( field->currentValid && field->currentState.eType == ET_Q3F_FORCEFIELD && !VectorCompare( field->currentState.angles2, vec3_origin ) )
+			Spirit_SetCustomColor( field->currentState.angles2 );
 		else
 			Spirit_SetCustomColor( colorWhite );
 		Spirit_RunScript( cgs.spirit.forcefieldspark, origin, origin, axis, 0 );
