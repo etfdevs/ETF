@@ -359,6 +359,9 @@ typedef enum {
 
 #define	EF_Q3F_FAILDIRECTION EF_Q3F_DISGUISE	// Forcefield direction applies to players failing the criteria.
 
+#define EF_Q3F_REVERSECRITERIA EF_Q3F_SAVEME	// Forcefield has criteriareversed
+#define EF_Q3F_DISGUISECRITERIA EF_Q3F_ARMORME	// Forcefield has disguisecriteria
+
 // The extFlags field is an 8-bit (presently) space for extra flags.
 // Ensiform: This is actually 32-bit in ETF.
 #define	EXTF_BURNING		0x04			// Player is burning

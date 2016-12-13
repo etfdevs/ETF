@@ -3069,6 +3069,10 @@ void SP_Q3F_func_forcefield( gentity_t *ent )
 			// Client-side flags.
 		if( ent->mapdata->flags & Q3F_FLAG_FAILDIRECTION )
 			ent->s.eFlags |= EF_Q3F_FAILDIRECTION;
+		if( ent->mapdata->flags & Q3F_FLAG_REVERSECRITERIA )
+			ent->s.eFlags |= EF_Q3F_REVERSECRITERIA;
+		if( ent->mapdata->flags & Q3F_FLAG_DISGUISECRITERIA )
+			ent->s.eFlags |= EF_Q3F_DISGUISECRITERIA;
 	}
 
 		// If no teams or classes were specified, anyone can go through.
@@ -3212,7 +3216,7 @@ static int G_Q3F_TargetAccumulatorStateThink( gentity_t *ent, gentity_t *activat
 		for ( j = 0; j < 8 ; j++ )
 		{
 			G_Q3F_RemString( &messagekeys[i][j] );
-		}		
+		}
 	}
 
 	key = va( "target_%d", ent->count );
