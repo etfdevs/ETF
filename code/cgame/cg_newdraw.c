@@ -1817,7 +1817,7 @@ static void CG_DrawClassIcon (rectDef_t* rect ) {
 		
 	cls = agentdata && agentdata->currentState.torsoAnim ? agentdata->currentState.torsoAnim : ci->cls;
 								
-	VectorCopy( CG_TeamColor( agentdata ? agentdata->currentState.weapon : ci->team ), colour );
+	VectorCopy( CG_TeamColor( agentdata && agentdata->currentState.weapon ? agentdata->currentState.weapon : ci->team ), colour );
 	colour[3] = .75f;
 	CG_FillRect( rect->x, rect->y, rect->w, rect->h, colour );
 	CG_DrawPic( rect->x + 1, rect->y + 1, rect->w - 2, rect->h - 2, *CG_Q3F_ModelIcon( cls ) );
@@ -1855,7 +1855,7 @@ static void CG_DrawAgentDisguiseFullInfo(rectDef_t *rect, float scale, vec4_t co
 
 	if(	agentdata) {
 		ci = &cgs.clientinfo[ cg.snap->ps.clientNum ];
-		switch(agentdata->currentState.weapon)
+		switch(agentdata->currentState.weapon ? agentdata->currentState.weapon : (int)ci->team)
 		{
 		case 1: strcpy(team, "^1red^7"); break;
 		case 2: strcpy(team, "^4blue^7"); break;

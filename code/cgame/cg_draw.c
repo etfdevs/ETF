@@ -493,7 +493,7 @@ void CG_DrawHead( float x, float y, float w, float h, int clientNum, vec3_t head
 	}
 
    cls = agentdata && agentdata->currentState.torsoAnim ? agentdata->currentState.torsoAnim : ci->cls;
-   tc = agentdata ? agentdata->currentState.weapon : ci->team;  //team color
+   tc = agentdata && agentdata->currentState.weapon ? agentdata->currentState.weapon : (int)ci->team;  //team color
 	
    if ( cg_draw3dIcons.integer ) {
 		cm = *CG_Q3F_HeadModel( cls );
@@ -518,8 +518,6 @@ void CG_DrawHead( float x, float y, float w, float h, int clientNum, vec3_t head
 	   CG_FillRect( x, y, w, h, colour );
 		CG_Draw3DModel( x, y, w, h, *CG_Q3F_HeadModel( cls ), 0/**CG_Q3F_HeadSkin( cls )*/, origin, headAngles ); // headskin was tc rather than cls
 	} else if ( cg_drawIcons.integer ) {
-		vec4_t colour;
-		
 		VectorCopy( CG_TeamColor( tc ), colour );
 		colour[3] = .75f;
 		CG_FillRect( x, y, w, h, colour );
@@ -1212,6 +1210,9 @@ void CG_ScanForCrosshairEntity( void ) {
 
 				if( !agentclass )
 					agentclass = Q3F_CLASS_AGENT;		// This is obvious, really.
+					
+				if( !agentteam )
+					agentteam = ci->team;
 
 				for( mode = 0; mode <= 2 && agentteam; mode++ )
 				{
