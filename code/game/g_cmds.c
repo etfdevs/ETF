@@ -811,8 +811,9 @@ void Cmd_Team_f( gentity_t *ent ) {
 	int			oldTeam;
 	char		s[MAX_TOKEN_CHARS];
 
+	oldTeam = ent->client->sess.sessionTeam;
+
 	if ( trap_Argc() != 2 ) {
-		oldTeam = ent->client->sess.sessionTeam;
 		switch ( oldTeam ) {
 		case Q3F_TEAM_BLUE:
 			trap_SendServerCommand( ent-g_entities, "print \"^4Blue team^7\n\"" );
@@ -853,7 +854,9 @@ void Cmd_Team_f( gentity_t *ent ) {
 	trap_Argv( 1, s, sizeof( s ) );
 	
 	if( SetTeam( ent, s ) ) {
-		ent->client->switchTeamTime = level.time + 5000;
+		if ( oldTeam != ent->client->sess.sessionTeam ) {
+			ent->client->switchTeamTime = level.time + 5000;
+		}
 	}
 	ent->client->ps.persistant[PERS_FLAGS] |= PF_JOINEDTEAM;
 }
