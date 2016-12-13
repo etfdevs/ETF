@@ -686,7 +686,7 @@ void G_Q3F_SentryUpgrade( gentity_t *player, int sentrynum )
 		trap_SendServerCommand( player->s.number, va( "print \"You have upgraded your autosentry to level %d\n\"", sentry->s.legsAnim ) );
 	else if( sentry->parent && sentry->parent->client )
 		trap_SendServerCommand( player->s.number, va( "print \"You have upgraded %s^7's autosentry to level %d\n\"", sentry->parent->client->pers.netname, sentry->s.legsAnim ) );
-	G_Q3F_UpdateEngineerStats( player );
+	G_Q3F_UpdateEngineerStats( sentry->parent );
 
 	player->client->repairEnt = NULL;
 }
