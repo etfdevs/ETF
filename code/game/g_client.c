@@ -1635,7 +1635,7 @@ qboolean ClientSpawn(gentity_t *ent) {
 	// clear entity values
 	client->ps.eFlags = flags;
 
-	ent->s.groundEntityNum = ENTITYNUM_NONE;
+	client->ps.groundEntityNum = ent->s.groundEntityNum = ENTITYNUM_NONE;
 	ent->client = &level.clients[index];
 	ent->takedamage = qtrue;
 	ent->inuse = qtrue;
