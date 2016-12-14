@@ -1729,6 +1729,17 @@ void CG_Q3F_AddBackPack( centity_t *cent, clientInfo_t *ci, int renderfx ) {
 
 	if( agentdata )
 	{
+		int agentclass = 0;
+		if( ( agentdata->currentState.modelindex2 & Q3F_AGENT_DISGUISE ) && ( agentdata->currentState.legsAnim ) ) {
+			agentclass = agentdata->currentState.legsAnim;
+		}
+		if( CG_Q3F_UseFakeAgentModel( 1 ) ) {
+			agentclass = agentdata->currentState.torsoAnim;
+		}
+
+		if( agentclass == Q3F_CLASS_CIVILIAN )
+			return;
+
 		CG_Q3F_CalcAgentVisibility(	&drawmodel, &shaderalpha, &newmodel,
 									1.0f/6.0f, 5.0f/6.0f, &agentdata->currentState );
 	}
