@@ -221,6 +221,12 @@ configure_file(
 message(STATUS "CMAKE_C_FLAGS_RELEASE is ${CMAKE_C_FLAGS_RELEASE}")
 message(STATUS "Building ${CMAKE_BUILD_TYPE} for ${os}-${Architecture}")
 
+set(src_cJSON
+	cJSON/cJSON.c
+	cJSON/cJSON.h
+)
+
+
 set(src_shared
 	${CMAKE_SOURCE_DIR}/api/shared/q_bit.c
 	${CMAKE_SOURCE_DIR}/api/shared/q_bit.h
@@ -234,6 +240,7 @@ set(src_shared
 	${CMAKE_SOURCE_DIR}/api/shared/q_string.h
 	${CMAKE_SOURCE_DIR}/api/et/q_shared.c
 	${CMAKE_SOURCE_DIR}/api/shared/q_platform.h
+	${src_cJSON}
 )
 
 set(src_cgame
@@ -428,7 +435,7 @@ include_directories(${CMAKE_SOURCE_DIR}/api/et)
 #if (NOT MSVC)
 	include_directories(${CMAKE_BINARY_DIR})
 #endif()
-include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/cJSON/)
 
 if(CMAKE_BUILD_TYPE MATCHES "DEBUG" OR CMAKE_BUILD_TYPE MATCHES "Debug")
 	# CMake already defines _DEBUG for MSVC.
