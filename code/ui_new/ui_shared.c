@@ -3548,17 +3548,22 @@ void Menu_HandleKey(menuDef_t *menu, int key, qboolean down) {
 						if(wheelitem && wheelitem->type == ITEM_TYPE_LISTBOX) {
 							listBoxDef_t *listPtr;
 							int max = Item_ListBox_MaxScroll(wheelitem);
+							int viewmax;
 
 							listPtr = (listBoxDef_t*)wheelitem->typeData;
 
+							viewmax = (wheelitem->window.rect.h / listPtr->elementHeight);
+
 							if(key == K_MWHEELUP) {
-								listPtr->startPos -= 3;
+								int scroll = viewmax < 6 ? 1 : 3;
+								listPtr->startPos -= scroll;
 								if (listPtr->startPos < 0) {
 									listPtr->startPos = 0;
 								}
 							}
 							else {
-								listPtr->startPos += 3;
+								int scroll = viewmax < 6 ? 1 : 3;
+								listPtr->startPos += scroll;
 								if (listPtr->startPos > max) {
 									listPtr->startPos = max;
 								}
@@ -3884,7 +3889,7 @@ void Item_MLText_Paint(itemDef_t *item) {
 	do {
 		p++;
 
-		/*if(Q_IsColorString(p)) {
+		/*if(Q_IsColorStringPtr(p)) {
 			clrCode = *(p+1);
 		}*/
 

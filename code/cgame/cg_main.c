@@ -139,6 +139,9 @@ vmCvar_t	cg_gun_z;
 vmCvar_t	cg_tracerChance;
 vmCvar_t	cg_simpleItems;
 vmCvar_t	cg_fov;
+vmCvar_t	cg_fovAspectAdjust;
+vmCvar_t	cg_fovViewmodel;
+vmCvar_t	cg_fovViewmodelAdjust;
 vmCvar_t	cg_zoomFov;
 vmCvar_t	cg_thirdPerson;
 vmCvar_t	cg_hideScope;
@@ -159,8 +162,6 @@ vmCvar_t	cg_drawFriend;
 vmCvar_t	cg_drawFriendSize;
 vmCvar_t	cg_debugTime;
 vmCvar_t	cg_teamChatsOnly;
-vmCvar_t	cg_noVoiceChats;
-vmCvar_t	cg_noVoiceText;
 vmCvar_t	cg_hudFiles;
 vmCvar_t 	cg_scorePlum;
 vmCvar_t	pmove_fixed;
@@ -369,6 +370,9 @@ static cvarTable_t		cvarTable[] = {
 	{ &cg_drawGun,					"cg_drawGun",				"1",								CVAR_ARCHIVE },
 	{ &cg_zoomFov,					"cg_zoomfov",				"22.5",								CVAR_ARCHIVE },
 	{ &cg_fov,						"cg_fov",					"90",								CVAR_ARCHIVE },
+	{ &cg_fovAspectAdjust,			"cg_fovAspectAdjust",		"0",								CVAR_ARCHIVE },
+	{ &cg_fovViewmodel,				"cg_fovViewmodel",			"0",								CVAR_ARCHIVE },
+	{ &cg_fovViewmodelAdjust,		"cg_fovViewmodelAdjust",	"1",								CVAR_ARCHIVE },
 	{ &cg_viewsize,					"cg_viewsize",				"100",								CVAR_ARCHIVE },
 	{ &cg_stereoSeparation,			"cg_stereoSeparation",		"0.4",								CVAR_ARCHIVE },
 	{ &cg_shadows,					"cg_shadows",				"1",								CVAR_ARCHIVE },
@@ -406,8 +410,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &cg_teamChatHeight,			"cg_teamChatHeight",		"0",								CVAR_ARCHIVE },
 	{ &cg_forceModel,				"cg_forceModel",			"0",								CVAR_ARCHIVE },
 	{ &cg_teamChatsOnly,			"cg_teamChatsOnly",			"0",								CVAR_ARCHIVE },
-	{ &cg_noVoiceChats,				"cg_noVoiceChats",			"0",								CVAR_ARCHIVE },
-	{ &cg_noVoiceText,				"cg_noVoiceText",			"0",								CVAR_ARCHIVE },
 	{ &cg_teamChatSounds,			"cg_teamChatSounds",		"1",								CVAR_ARCHIVE },
 	{ &cg_fallingBob,				"cg_fallingBob",			"1",								CVAR_ARCHIVE },
 	{ &cg_weaponBob,				"cg_weaponBob",				"1",								CVAR_ARCHIVE },
@@ -596,7 +598,7 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	{ &cg_hideScope,		"cg_hideScope",		0,		0,		0,		0,	0,	qfalse },
 
 	//slothy
-	{ &r_subdivisions,		"r_subdivisions",		4,		2,		150,	0,	0,	qfalse },
+	//{ &r_subdivisions,		"r_subdivisions",		4,		2,		150,	0,	0,	qfalse },
 	// slothy
 
 	// taken from ut
@@ -637,6 +639,15 @@ void CG_LimitCvars( void ) {
 
 	if ( developer.integer || cg.demoPlayback ) {
 		return;
+	}
+
+	if ( r_subdivisions.value < 0.5f ) {
+		trap_Cvar_Set( "r_subdivisions", "0.5" );
+		trap_Cvar_Update( &r_subdivisions );
+	}
+	else if ( r_subdivisions.integer > 150 ) {
+		trap_Cvar_Set( "r_subdivisions", "150" );
+		trap_Cvar_Update( &r_subdivisions );
 	}
 
 	for ( i = 0, cvl = cvarLimitTable; i < cvarLimitTableSize ; i++, cvl++ ) {
@@ -692,7 +703,8 @@ void CG_Q3F_UpdateCvarLimit( const char *cvarname, int *min, int *max ) {
 void CG_Q3F_UpdateCvarLimits( ) {
 	char *ptr;
 	char cvarname[64], buff[16];
-	int len, min, max;
+	int min, max;
+	size_t len;
 
 	ptr = (char *)CG_ConfigString( CS_Q3F_CVARLIMITS );
 
@@ -765,7 +777,7 @@ static qboolean CG_CheckExecKey( int key ) {
 	return qfalse;
 }
 
-/*																																			
+/*
 ===================
 CG_Q3F_RemapSkyShader
 ===================
@@ -1870,8 +1882,8 @@ void PaintScoreFeeder(itemDef_t* item, int teamnum) {
 	for (i = listPtr->startPos; i < count; i++) {
 		int j;
 		
-		if(sortedScores[i].client->team != teamnum) {
-			continue;					
+		if(sortedScores[i].client->team != (q3f_team_t)teamnum) {
+			continue;
 		}
 
 		if (cg.snap->ps.clientNum == sortedScores[i].score->client) {

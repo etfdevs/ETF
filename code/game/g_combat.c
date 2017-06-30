@@ -12,6 +12,9 @@
 #include "g_q3f_admin.h"
 
 #include "g_bot_interface.h"
+#ifdef BUILD_LUA
+#include "g_lua.h"
+#endif
 /*
 ============
 ScorePlum
@@ -324,6 +327,20 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		//Team_FragBonuses(self, inflictor, attacker);
 	}
 
+#ifdef BUILD_LUA
+	if (meansOfDeath != MOD_DISCONNECT)
+	{
+		// Ensiform: FIXME implement MOD_CUSTOM parsing
+		if (G_LuaHook_Obituary(self->s.number, killer, meansOfDeath))
+		{
+			if (self->s.number < 0 || self->s.number >= MAX_CLIENTS)
+			{
+				G_Error("G_LuaHook_Obituary: target out of range");
+			}
+		}
+	}
+#endif
+
 	// Ensiform: Disconnects and Team Switch shouldn't cause onkills
 	if( meansOfDeath != MOD_SWITCHTEAM && meansOfDeath != MOD_DISCONNECT )
 		G_Q3F_CheckOnKill( attacker, self );	// Golliwog: Run through any special death processing
@@ -390,9 +407,9 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		GibEntity( self, killer );
 	} else {
 		// normal death
-		static int i;
+		static int ani;
 
-		switch ( i ) {
+		switch ( ani ) {
 		case 0:
 			anim = ANI_DEATH_1;
 			break;
@@ -547,6 +564,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	float		damagescale, adamagescale, take, /*save,*/ asave, fdamage;
 	bg_q3f_playerclass_t *cls;
 	qboolean	isallied;
+	qboolean	pentagram = qfalse;
 #ifdef DEBUGLOG
 	int			origdamage, origtake, origarmour;
 #endif
@@ -820,6 +838,16 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		fdamage *= 0.5f;
 	}
 
+	// pentagram of protection protects from all radius damage (but takes knockback)
+	// and protects against all damage (but still takes armor)
+	if ( targ->client && targ->client->ps.powerups[PW_PENTAGRAM] ) {
+		G_AddEvent( targ, EV_POWERUP_PENTAGRAM, 0 );
+		//if ( ( dflags & DAMAGE_RADIUS ) || ( mod == MOD_FALLING ) ) {
+		//	return;
+		//}
+		pentagram = qtrue;
+	}
+
 	if(	targ->s.eType == ET_Q3F_SENTRY && (dflags & (DAMAGE_Q3F_SHELL|DAMAGE_Q3F_SHOCK|DAMAGE_Q3F_NAIL|DAMAGE_Q3F_EXPLOSION|DAMAGE_Q3F_FIRE)) ) {
 		// Sentry 40% resistant to non-shock direct damage below midline, or 10% otherwise.
 		// Vulnerable to shock damage, resistant to nails and fire.
@@ -886,6 +914,11 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	}
 	else asave = 0;
 
+	if ( pentagram && !( dflags & ( DAMAGE_NO_PROTECTION ) ) )
+	{
+		take = damagescale = 0;
+	}
+
 #ifdef DEBUGLOG
 	origtake = take;
 #endif
@@ -921,6 +954,13 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 			G_DebugLog(	"Post-modifier damage: %f, Post FF damage: %f\n", damage, take );
 			G_DebugLog(	"Final Health: %f\n", (float) (targ->health) - take );
 		}
+	}
+#endif
+
+#ifdef BUILD_LUA
+	if (G_LuaHook_Damage(targ->s.number, attacker->s.number, take, dflags, mod))
+	{
+		return;
 	}
 #endif
 

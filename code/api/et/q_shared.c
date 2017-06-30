@@ -901,4 +901,16 @@ void Info_SetValueForKey_Big( char *s, const char *key, const char *value ) {
 	strcat (s, newi);
 }
 
+void *Q_LinearSearch( const void *key, const void *ptr, size_t count,
+	size_t size, cmpFunc_t cmp )
+{
+	size_t i;
+	for ( i = 0; i < count; i++ )
+	{
+		if ( cmp( key, ptr ) == 0 ) return (void *)ptr;
+		ptr = (const char *)ptr + size;
+	}
+	return NULL;
+}
+
 //====================================================================

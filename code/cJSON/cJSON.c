@@ -249,7 +249,7 @@ static void cJSON_SB_AddStringN( cJSON_StringBuilder *sb, const char *str, size_
 }
 
 static void cJSON_SB_AddString( cJSON_StringBuilder *sb, const char *str ) {
-	int len = strlen( str );
+	size_t len = strlen( str );
 	cJSON_SB_AddStringN( sb, str, len );
 }
 
@@ -969,6 +969,24 @@ cJSON *cJSON_GetItemExt( cJSON *item, const char *extitem ) {
 		s++;
 	}
 	return c;
+}
+
+// Iterator functions
+
+cJSON *cJSON_GetFirstItem( cJSON *object ) {
+	if ( !object || (object->type != cJSON_Object && object->type != cJSON_Array) ) {
+		return 0;	// Not an object
+	}
+
+	return object->child;
+}
+
+cJSON *cJSON_GetNextItem( cJSON *item ) {
+	return item->next;
+}
+
+const char * cJSON_GetItemKey( cJSON *item ) {
+	return item->string;
 }
 
 // Add item to arry/object.

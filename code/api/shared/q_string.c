@@ -277,7 +277,7 @@ int Q_PrintStrlen( const char *string ) {
 	len = 0;
 	p = string;
 	while( *p ) {
-		if( Q_IsColorString( p ) ) {
+		if( Q_IsColorStringPtr( p ) ) {
 			p += 2;
 			continue;
 		}
@@ -297,7 +297,7 @@ char *Q_CleanStr( char *string ) {
 	s = string;
 	d = string;
 	while ((c = *s) != 0 ) {
-		if ( Q_IsColorString( s ) ) {
+		if ( Q_IsColorStringPtr( s ) ) {
 			s++;
 		}
 		else if ( c >= 0x20 && c <= 0x7E ) {
@@ -370,7 +370,7 @@ void Q_StripColor(char *text)
 		read = write = text;
 		while ( *read )
 		{
-			if ( Q_IsColorString(read) )
+			if ( Q_IsColorStringPtr(read) )
 			{
 				doPass = qtrue;
 				read += 2;

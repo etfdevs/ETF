@@ -1366,6 +1366,12 @@ void G_Q3F_Weapon_Wrench_Fire(struct gentity_s *ent)
 	}
 	else if( traceEnt->s.eType == ET_Q3F_SUPPLYSTATION && (ent == traceEnt->parent || G_Q3F_IsAllied( ent, traceEnt->parent )) )
 	{
+		// Only upgrade if an upgrade occurs, so as to avoid giving ammo when you mean to upgrade
+		// An upgrade instantly repairs to new max health
+		int oldlevel = traceEnt->s.legsAnim;
+		G_Q3F_SupplyStationUpgrade( ent, traceEnt->s.number );
+		if( traceEnt->s.legsAnim != oldlevel )
+			return;
 		G_Q3F_SupplyStationRepair( ent, traceEnt->s.number );
 		G_Q3F_SupplyStationRefill( ent, traceEnt->s.number );
 	}

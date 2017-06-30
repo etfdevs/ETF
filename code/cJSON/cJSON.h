@@ -83,6 +83,17 @@ extern "C"
 
 	extern cJSON *cJSON_GetItemExt( cJSON *item, const char *extitem );
 
+	// Iterator functions
+	// Example usage:
+	//
+	// for (item = cJSON_GetFirstItem(object); item; item = cJSON_GetNextItem(item)) { ... }
+	//
+	extern cJSON *cJSON_GetFirstItem(cJSON *object);
+	extern cJSON *cJSON_GetNextItem(cJSON *item);
+
+// Returns the key of an item (only valid for items that are part of an object)
+extern const char * cJSON_GetItemKey(cJSON *item);
+
 	// Duplicate a cJSON item and all subentities
 	extern cJSON *cJSON_DuplicateItem( cJSON *item );
 

@@ -111,7 +111,7 @@ static void CG_Q3F_AddEntityData( void *data, int datasize, int alignment )
 
 	void *allocated;
 
-	if( cgs.numEntityData >= (int)sizeof(cgs.entityIndex) / sizeof(int) )
+	if( cgs.numEntityData >= ARRAY_LEN(cgs.entityIndex) )
 		CG_Error( "Out of entity data space" );
 
 	allocated = CG_Q3F_AddBlock( datasize, alignment );

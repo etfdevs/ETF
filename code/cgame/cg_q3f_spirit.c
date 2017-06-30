@@ -21,7 +21,8 @@
 #define MAX_PARTICLES	2048
 #define MAX_GROUPS		256
 #define GROUP_HASHSIZE	256
-#define GROUP_HASH(_KEY,_SYSTEM) ((( _KEY >> 5 ) | ((int)_SYSTEM)) & GROUP_HASHSIZE-1)
+#define GROUP_HASHMASK	(GROUP_HASHSIZE-1)
+#define GROUP_HASH(_KEY,_SYSTEM) ((( _KEY >> 5 ) | ((int)_SYSTEM)) & GROUP_HASHMASK)
 
 #define SPIRIT_ACCEL				0x1
 #define	SPIRIT_ALIGN				0x2

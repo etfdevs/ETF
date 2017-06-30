@@ -78,9 +78,26 @@ static QINLINE int CG_Q3F_SentryNeedsShells(int level)
 	}
 }
 
+static QINLINE int CG_Q3F_SupplyStationMaxHealth( int supplevel )
+{
+	switch( supplevel )
+	{
+		case 1:		return( 150 );
+		case 2:		return( 180 );
+		case 3:		return( 220 );
+		case 4:		return( 250 );
+		default:	return( 0 );
+	}
+}
+
 static QINLINE qboolean CG_Q3F_CanUpgrade(void)
 {
 	return (cg.snap->ps.ammo[AMMO_CELLS] >= 130) ? qtrue : qfalse;
+}
+
+static QINLINE qboolean CG_Q3F_CanUpgradeSupply(void)
+{
+	return (cg.snap->ps.ammo[AMMO_CELLS] >= 100) ? qtrue : qfalse;
 }
 
 static QINLINE qboolean CG_Q3F_HasCells(void)
@@ -178,9 +195,19 @@ static void CG_Q3F_BuildableSprites(centity_t * cent)
 		}
 	}
 
-	if((cent->currentState.eType == ET_Q3F_SUPPLYSTATION && cent->currentState.legsAnim == 1) && CG_Q3F_HasCells() && cent->currentState.torsoAnim < 150)
+	if((cent->currentState.eType == ET_Q3F_SUPPLYSTATION && cent->currentState.legsAnim != 99))
 	{
-		CG_Q3F_BuildableFloatSprite(cent, cgs.media.repairmeShader, cent->currentState.frame || cg.rendering2ndRefDef ? 80 : 64, qtrue);
+		int level = cent->currentState.legsAnim;
+		if(CG_Q3F_HasCells() && cent->currentState.torsoAnim < CG_Q3F_SupplyStationMaxHealth(level))
+		{
+			CG_Q3F_BuildableFloatSprite(cent, cgs.media.repairmeShader, cent->currentState.frame || cg.rendering2ndRefDef ? 80 : 64, qtrue);
+			return;
+		}
+		if((level == 1 || level == 2) && CG_Q3F_CanUpgradeSupply())
+		{
+			CG_Q3F_BuildableFloatSprite(cent, cgs.media.upgrademeShader, cent->currentState.frame || cg.rendering2ndRefDef ? 80 : 64, qtrue);
+			return;
+		}
 		return;
 	}
 }
@@ -319,7 +346,7 @@ void CG_Q3F_Sentry( centity_t *cent )
 		}
 	} else {
 		cent->beamEnd[0] = cent->currentState.legsAnim + 1;
-	}	
+	}
 
 	if( cent->currentState.legsAnim == 1 || cent->currentState.legsAnim == 0 )
 	{
@@ -604,11 +631,14 @@ void CG_Q3F_Supplystation_Explode( centity_t *cent ) {
 #define Q3F_SUPPLYSTATION_CELLS			400
 #define Q3F_SUPPLYSTATION_ARMOUR		500
 
+#define Q3F_SUPPLYSTATION_MAXHEALTH CG_Q3F_SupplyStationMaxHealth(cent->currentState.legsAnim)
+
 static int CG_Q3F_SupplystationPanel()
 {
 	centity_t *cent = (centity_t *) panel.data;
-	int health, shells, nails, rockets, cells, armour/*, numLines*/;
+	int health, shells, nails, rockets, cells, armour, grenades/*, numLines*/;
 	//float charSize;
+	int level;
 
 	CG_Q3F_PanelPrepareCoords( PANEL_LAYER_MAIN );
 
@@ -646,19 +676,32 @@ static int CG_Q3F_SupplystationPanel()
 
 			CG_Q3F_PanelDrawString( "Use Supply Station", 0, 0, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
 
+			level = cent->currentState.legsAnim;
+
 			shells = cent->currentState.origin2[0];
 			nails = cent->currentState.origin2[1];
 			rockets = cent->currentState.origin2[2];
 			cells = cent->currentState.angles2[0];
 			armour = cent->currentState.angles2[1];
+			grenades = cent->currentState.angles2[2];
 
-			CG_Q3F_PanelDrawString( va( "Shells:  %03d/%d", shells, Q3F_SUPPLYSTATION_SHELLS ), 0, 2*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Nails:   %03d/%d", nails, Q3F_SUPPLYSTATION_NAILS ), 0, 3*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Rockets: %03d/%d", rockets, Q3F_SUPPLYSTATION_ROCKETS ), 0, 4*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Cells:   %03d/%d", cells, Q3F_SUPPLYSTATION_CELLS ), 0, 5*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Armour:  %03d/%d", armour, Q3F_SUPPLYSTATION_ARMOUR ), 0, 6*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( "^31^7 Supply Ammo", 0, 8*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( "^32^7 Supply Armor", 0, 9*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Shells:   %03d/%d", shells, Q3F_SUPPLYSTATION_SHELLS ), 0, 2*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Nails:    %03d/%d", nails, Q3F_SUPPLYSTATION_NAILS ), 0, 3*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Rockets:  %03d/%d", rockets, Q3F_SUPPLYSTATION_ROCKETS ), 0, 4*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Cells:    %03d/%d", cells, Q3F_SUPPLYSTATION_CELLS ), 0, 5*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Armour:   %03d/%d", armour, Q3F_SUPPLYSTATION_ARMOUR ), 0, 6*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			if(level == 3)
+			{
+				CG_Q3F_PanelDrawString( va( "^7Grenades: %03d/%03d^3  NEW!", grenades, 2 ), 0, 7*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
+				CG_Q3F_PanelDrawString( "^31^7 Supply Ammo", 0, 9*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
+				CG_Q3F_PanelDrawString( "^32^7 Supply Armor", 0, 10*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
+				CG_Q3F_PanelDrawString( "^33^7 Supply Grenade", 0, 11*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
+			}
+			else
+			{
+				CG_Q3F_PanelDrawString( "^31^7 Supply Ammo", 0, 8*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
+				CG_Q3F_PanelDrawString( "^32^7 Supply Armor", 0, 9*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
+			}
 			break;
 	// End use
 	case 2: //CG_Q3F_PanelFitString( &numLines, &charSize, "this Supply Station.", 0, 640, 480 );
@@ -693,21 +736,31 @@ static int CG_Q3F_SupplystationPanel()
 			CG_Q3F_PanelDrawString( "Maintain Supply Station", 0, 0, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
 
 			health = cent->currentState.otherEntityNum;
+			level = cent->currentState.legsAnim;
 			shells = cent->currentState.origin2[0];
 			nails = cent->currentState.origin2[1];
 			rockets = cent->currentState.origin2[2];
 			cells = cent->currentState.angles2[0];
 			armour = cent->currentState.angles2[1];
+			grenades = cent->currentState.angles2[2];
 
-			CG_Q3F_PanelDrawString( va( "Health:  %03d/150", health ), 0, 2*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Shells:  %03d/%d", shells, Q3F_SUPPLYSTATION_SHELLS ), 0, 4*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Nails:   %03d/%d", nails, Q3F_SUPPLYSTATION_NAILS ), 0, 5*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Rockets: %03d/%d", rockets, Q3F_SUPPLYSTATION_ROCKETS ), 0, 6*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Cells:   %03d/%d", cells, Q3F_SUPPLYSTATION_CELLS ), 0, 7*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( va( "Armour:  %03d/%d", armour, Q3F_SUPPLYSTATION_ARMOUR ), 0, 8*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
-//			CG_Q3F_PanelDrawString( "^31.^7 Repair Supply Station", 0, 10*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
-//			CG_Q3F_PanelDrawString( "^32.^7 Refill Supply Station", 0, 11*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
-			CG_Q3F_PanelDrawString( "^31^7 Dismantle Supply Station", 0, 12*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Health:   %03d/%d", health, Q3F_SUPPLYSTATION_MAXHEALTH ), 0, 2*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Shells:   %03d/%d", shells, Q3F_SUPPLYSTATION_SHELLS ), 0, 4*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Nails:    %03d/%d", nails, Q3F_SUPPLYSTATION_NAILS ), 0, 5*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Rockets:  %03d/%d", rockets, Q3F_SUPPLYSTATION_ROCKETS ), 0, 6*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Cells:    %03d/%d", cells, Q3F_SUPPLYSTATION_CELLS ), 0, 7*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			CG_Q3F_PanelDrawString( va( "Armour:   %03d/%d", armour, Q3F_SUPPLYSTATION_ARMOUR ), 0, 8*24, 24, 0, 0, PANEL_STR_LEFT, panel.transrgba );
+			if(level == 3)
+			{
+				CG_Q3F_PanelDrawString( va( "^7Grenades: %03d/%03d^3  NEW!", grenades, 2 ), 0, 9*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
+				CG_Q3F_PanelDrawString( "^31^7 Dismantle Supply Station", 0, 13*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
+			}
+			else
+			{
+//				CG_Q3F_PanelDrawString( "^31.^7 Repair Supply Station", 0, 10*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
+//				CG_Q3F_PanelDrawString( "^32.^7 Refill Supply Station", 0, 11*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
+				CG_Q3F_PanelDrawString( "^31^7 Dismantle Supply Station", 0, 12*24, 24, 0, 0, PANEL_STR_COLOUR|PANEL_STR_LEFT, panel.transrgba );
+			}
 			break;
 	}
 
@@ -746,6 +799,16 @@ void CG_Q3F_Supplystation( centity_t *cent ) {
 		base.shaderTime = shaderTime;
 	} else {
 		shaderTime = 0;
+	}
+
+	// play upgrade sound - +1 offset to take care of vid_restarts resetting it to 0
+	if( cent->currentState.legsAnim > 1 && cent->currentState.legsAnim <= 3 ) {
+		if( (cent->beamEnd[0] - 1) < cent->currentState.legsAnim ) {
+			cent->beamEnd[0] = cent->currentState.legsAnim + 1;
+			trap_S_StartSound( NULL, cent->currentState.number, CHAN_AUTO, cgs.media.supplyBuildSound );
+		}
+	} else {
+		cent->beamEnd[0] = cent->currentState.legsAnim + 1;
 	}
 
 	// convert angles to axis

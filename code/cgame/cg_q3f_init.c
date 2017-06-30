@@ -143,7 +143,7 @@ void CG_Q3F_RenderLoadingScreen(void) {
 
 typedef struct {
 	sfxHandle_t *storage;
-	char *name;
+	const char *name;
 } initSound_t;
 
 static initSound_t initSounds[] = {
@@ -223,7 +223,7 @@ static initSound_t initSounds[] = {
 
 typedef struct {
 	qhandle_t *storage;
-	char *name;
+	const char *name;
 	int type;
 } initGraphic_t;
 
@@ -403,7 +403,7 @@ static initGraphic_t initGraphics[] = {
 
 typedef struct {
 	SpiritScript_t **storage;
-	char * name;
+	const char * name;
 } initSpiritDef_t;
 
 

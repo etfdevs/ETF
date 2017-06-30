@@ -690,6 +690,7 @@ typedef struct {
 	int			crosshairSupplyCells;
 	int			crosshairSupplyRockets;
 	int			crosshairSupplyArmor;
+	int			crosshairSupplyGrenades;
 	int			lastCrosshairCheck;			// digibob: caching this now for a little bit
 
 	// powerup active flashing
@@ -712,11 +713,6 @@ typedef struct {
 	int			soundBufferOut;
 	int			soundTime;
 	qhandle_t	soundBuffer[MAX_SOUNDBUFFER];
-
-	// for voice chat buffer
-	int			voiceChatTime;
-	int			voiceChatBufferIn;
-	int			voiceChatBufferOut;
 
 	// warmup countdown
 	int			warmup;
@@ -1458,7 +1454,7 @@ typedef struct {
 	int					stringDataLen;
 
 	// Golliwog: Generic entity-associated data. Based on spawn index rather than entityState number.
-	int numEntityData;
+	size_t numEntityData;
 	int entityIndex[512];
 	void *entityData[512];
 
@@ -1568,6 +1564,9 @@ extern	vmCvar_t		cg_viewsize;
 extern	vmCvar_t		cg_tracerChance;
 extern	vmCvar_t		cg_simpleItems;
 extern	vmCvar_t		cg_fov;
+extern	vmCvar_t		cg_fovAspectAdjust;
+extern	vmCvar_t		cg_fovViewmodel;
+extern	vmCvar_t		cg_fovViewmodelAdjust;
 extern	vmCvar_t		cg_zoomFov;
 extern	vmCvar_t		cg_thirdPersonRange;
 extern	vmCvar_t		cg_thirdPersonAngle;
@@ -1588,8 +1587,6 @@ extern	vmCvar_t		cg_drawFriend;
 extern	vmCvar_t		cg_drawFriendSize;
 extern	vmCvar_t		cg_debugTime;
 extern	vmCvar_t		cg_teamChatsOnly;
-extern	vmCvar_t		cg_noVoiceChats;
-extern	vmCvar_t		cg_noVoiceText;
 extern  vmCvar_t		cg_scorePlum;
 extern	vmCvar_t		pmove_fixed;
 extern	vmCvar_t		pmove_msec;
@@ -2149,10 +2146,7 @@ void CG_keyOff_f( void );
 void CG_ExecuteNewServerCommands( int latestSequence );
 void CG_ParseServerinfo( void );
 void CG_SetConfigValues( void );
-void CG_LoadVoiceChats( void );
 void CG_ShaderStateChanged(void);
-void CG_VoiceChatLocal( int mode, qboolean voiceOnly, int clientNum, int color, const char *cmd );
-void CG_PlayBufferedVoiceChats( void );
 void CG_LoadHud_f( void );
 
 //
@@ -2791,6 +2785,6 @@ void		trap_SetUserCmdValue( int stateValue, int flags, float sensitivityScale, i
 
 void CG_Q3F_ConcussionEffect2( int* x, int* y );
 
-qboolean CG_CullPointAndRadius( const vec3_t pt, float radius );
+qboolean CG_CullPointAndRadius( const vec3_t pt, vec_t radius );
 
 #endif	//__CG_LOCAL_H

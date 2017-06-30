@@ -3,6 +3,8 @@
 #include "g_local.h"
 #include "g_q3f_playerclass.h" /* Ensiform - For Spectator Check and Q3F_CLASS_NULL */
 
+#include "cJSON.h"
+
 
 /*
 =======================================================================
@@ -14,6 +16,18 @@ and tournament restarts.
 =======================================================================
 */
 
+// serialise a JSON object and write it to the specified file
+static void Q_FSWriteJSON( void *root, fileHandle_t f ) {
+	const char *serialised = NULL;
+
+	serialised = cJSON_Serialize( (cJSON *)root, 1 );
+	trap_FS_Write( serialised, strlen( serialised ), f );
+	trap_FS_FCloseFile( f );
+
+	free( (void *)serialised );
+	cJSON_Delete( (cJSON *)root );
+}
+
 /*
 ================
 G_WriteClientSessionData
@@ -21,78 +35,137 @@ G_WriteClientSessionData
 Called on game shutdown
 ================
 */
-void G_WriteClientSessionData( gclient_t *client ) {
-	const char	*s;
-	const char	*var;
+static void G_WriteClientSessionData( const gclient_t *client ) {
+	const clientSession_t *sess = &client->sess;
+	cJSON *root;
+	fileHandle_t f;
+	char fileName[MAX_QPATH] = {0};
 
-	s = va("%i %i %i %i %i %i %i %i %i %i :%s", 
-		client->sess.spectatorTime,
-		client->sess.spectatorState,
-		client->sess.spectatorClient,
-		client->sess.sessionClass,
-		client->sess.sessionTeam,
-		client->sess.adminLevel,
-		client->sess.muted,
-		client->sess.shoutcaster,
-		client->sess.ignoreClients[0],
-		client->sess.ignoreClients[1],
-		(client->sess.ipStr ? client->sess.ipStr : "")
-		);
+	Com_sprintf( fileName, sizeof(fileName), "session/client%02i.json", (int)(client - level.clients) );
+	Com_Printf( "Writing session file %s\n", fileName );
 
-	var = va( "session%i", client - level.clients );
+	root = cJSON_CreateObject();
+	cJSON_AddIntegerToObject( root, "spectatorTime", sess->spectatorTime );
+	cJSON_AddIntegerToObject( root, "spectatorState", sess->spectatorState );
+	cJSON_AddIntegerToObject( root, "spectatorClient", sess->spectatorClient );
+	cJSON_AddIntegerToObject( root, "sessionClass", sess->sessionClass );
+	cJSON_AddIntegerToObject( root, "sessionTeam", (int)sess->sessionTeam );
+	cJSON_AddIntegerToObject( root, "adminLevel", sess->adminLevel );
+	cJSON_AddBooleanToObject( root, "muted", !!sess->muted );
+	cJSON_AddBooleanToObject( root, "shoutcaster", !!sess->shoutcaster );
+	cJSON_AddIntegerToObject( root, "ignoreClients0", client->sess.ignoreClients[0] );
+	cJSON_AddIntegerToObject( root, "ignoreClients1", client->sess.ignoreClients[1] );
+	cJSON_AddStringToObject( root, "ipStr", sess->ipStr ? sess->ipStr : "" );
+	cJSON_AddStringToObject( root, "guidStr", sess->guidStr ? sess->guidStr : "" );
 
-	trap_Cvar_Set( var, s );
+	trap_FS_FOpenFile( fileName, &f, FS_WRITE );
+
+	Q_FSWriteJSON( root, f );
 }
 
 /*
 ================
-G_ReadSessionData
+G_ReadClientSessionData
 
 Called on a reconnect
 ================
 */
-void G_ReadSessionData( gclient_t *client ) {
-	char	s[MAX_STRING_CHARS];
-	char *var, *ipstr;
+void G_ReadClientSessionData( gclient_t *client ) {
+	clientSession_t *sess = &client->sess;
+	cJSON *root = NULL, *object = NULL;
+	char fileName[MAX_QPATH] = {0};
+	char *buffer = NULL;
+	fileHandle_t f = NULL_FILE;
+	unsigned int len = 0;
+	const char *tmp = NULL;
 
-	var = va( "session%i", client - level.clients );
-	trap_Cvar_VariableStringBuffer( var, s, sizeof(s) );
+	Com_sprintf( fileName, sizeof(fileName), "session/client%02i.json", client - level.clients );
+	len = trap_FS_FOpenFile( fileName, &f, FS_READ );
 
-	sscanf( s, "%i %i %i %i %i %i %i %i %i %i", 
-		&client->sess.spectatorTime,
-		(int *)&client->sess.spectatorState,
-		&client->sess.spectatorClient,
-		&client->sess.sessionClass,
-		(int *)&client->sess.sessionTeam,
-		&client->sess.adminLevel,
-		(int *)&client->sess.muted,
-		(int *)&client->sess.shoutcaster,
-		&client->sess.ignoreClients[0],
-		&client->sess.ignoreClients[1]
-		);
+	// no file
+	if ( !f || !len || len == -1 ) {
+		trap_FS_FCloseFile( f );
+		return;
+	}
+
+	buffer = (char *)malloc( len + 1 );
+	if ( !buffer ) {
+		return;
+	}
+
+	trap_FS_Read( buffer, len, f );
+	trap_FS_FCloseFile( f );
+	buffer[len] = '\0';
+
+	// read buffer
+	root = cJSON_Parse( buffer );
+	free( buffer );
+
+	if ( !root ) {
+		Com_Printf( "G_ReadSessionData(%02i): could not parse session data\n", (int)(client - level.clients) );
+		return;
+	}
+
+	if ( (object = cJSON_GetObjectItem( root, "spectatorTime" )) ) {
+		sess->spectatorTime = cJSON_ToInteger( object );
+	}
+	if ( (object = cJSON_GetObjectItem( root, "spectatorState" )) ) {
+		sess->spectatorState = (spectatorState_t)cJSON_ToInteger( object );
+	}
+	if ( (object = cJSON_GetObjectItem( root, "spectatorClient" )) ) {
+		sess->spectatorClient = cJSON_ToInteger( object );
+	}
+	if ( (object = cJSON_GetObjectItem( root, "sessionClass" )) ) {
+		sess->sessionClass = cJSON_ToInteger( object );
+	}
+	if ( (object = cJSON_GetObjectItem( root, "sessionTeam" )) ) {
+		sess->sessionTeam = (q3f_team_t)cJSON_ToInteger( object );
+	}
+	if ( (object = cJSON_GetObjectItem( root, "adminLevel" )) ) {
+		sess->adminLevel = cJSON_ToInteger( object );
+	}
+	if ( (object = cJSON_GetObjectItem( root, "muted" )) ) {
+		sess->muted = cJSON_ToBoolean( object );
+	}
+	if ( (object = cJSON_GetObjectItem( root, "shoutcaster" )) ) {
+		sess->shoutcaster = cJSON_ToBoolean( object );
+	}
+	if ( (object = cJSON_GetObjectItem( root, "ignoreClients0" )) ) {
+		sess->ignoreClients[0] = cJSON_ToInteger( object );
+	}
+	if ( (object = cJSON_GetObjectItem( root, "ignoreClients1" )) ) {
+		sess->ignoreClients[1] = cJSON_ToInteger( object );
+	}
+	if ( (object = cJSON_GetObjectItem( root, "ipStr" )) ) {
+		// Golliwog: This is seriously nasty, but IP Addresses appear not to
+		// be preserved over map changes, so they're stored and extracted here.
+		char *ipstr;
+		if ( (tmp = cJSON_ToString( object )) ) {
+			G_Q3F_AddString( &ipstr, (char *)tmp );
+			G_Q3F_RemString( &sess->ipStr );
+			sess->ipStr = ipstr;
+		}
+		// Golliwog.
+	}
+	if ( (object = cJSON_GetObjectItem( root, "guidStr" )) ) {
+		if ( (tmp = cJSON_ToString( object )) ) {
+			Q_strncpyz( sess->guidStr, tmp, sizeof(sess->guidStr) );
+		}
+	}
 
 	if ( !g_matchState.integer ) 
-		client->sess.sessionTeam = Q3F_TEAM_SPECTATOR;
+		sess->sessionTeam = Q3F_TEAM_SPECTATOR;
 
 	if ( Q3F_IsSpectator( client ) )
 	{
 		/* Ensiform - Nuke the class if we're spectator */
 		client->ps.persistant[PERS_CURRCLASS] = Q3F_CLASS_NULL;
-		client->sess.sessionClass = Q3F_CLASS_NULL;
+		sess->sessionClass = Q3F_CLASS_NULL;
 	}
 
-	// Golliwog: This is seriously nasty, but IP Addresses appear not to
-	// be preserved over map changes, so they're stored and extracted here.
-	for( var = s; *var && *var != ':'; var++ );
-	if( *var++ == ':' && *var )
-	{
-		G_Q3F_AddString( &ipstr, var );
-		G_Q3F_RemString( &client->sess.ipStr );
-		client->sess.ipStr = ipstr;
-	}
-	// Golliwog.
+	cJSON_Delete( root );
+	root = NULL;
 }
-
 
 /*
 ================
@@ -101,18 +174,15 @@ G_InitSessionData
 Called on a first-time connect
 ================
 */
-void G_InitSessionData( gclient_t *client, char *userinfo ) {
-	clientSession_t	*sess;
-//	const char		*value;
-
-	sess = &client->sess;
+void G_InitClientSessionData( gclient_t *client, char *userinfo ) {
+	clientSession_t	*sess = &client->sess;
 
 	// initial team determination
 	if ( g_teamAutoJoin.integer ) {
 		sess->sessionTeam = PickTeam( -1 );
 		BroadcastTeamChange( client, -1 );
 	} else {
-		// always spawn as spectator in team games unless bot
+		// always spawn as spectator in team games
 		sess->sessionTeam = Q3F_TEAM_SPECTATOR;
 	}
 
@@ -120,10 +190,12 @@ void G_InitSessionData( gclient_t *client, char *userinfo ) {
 	{
 		/* Ensiform - Nuke the class if we're spectator */
 		client->ps.persistant[PERS_CURRCLASS] = Q3F_CLASS_NULL;
-		client->sess.sessionClass = Q3F_CLASS_NULL;
+		sess->sessionClass = Q3F_CLASS_NULL;
+		sess->spectatorState = SPECTATOR_FREE;
 	}
+	else
+		sess->spectatorState = SPECTATOR_NOT;
 
-	sess->spectatorState = SPECTATOR_FREE;
 	sess->spectatorTime = level.time;
 
 	memset( sess->ignoreClients, 0, sizeof( sess->ignoreClients ) );
@@ -132,6 +204,7 @@ void G_InitSessionData( gclient_t *client, char *userinfo ) {
 	G_WriteClientSessionData( client );
 }
 
+static const char *metaFileName = "session/meta.json";
 
 /*
 ==================
@@ -139,19 +212,48 @@ G_InitWorldSession
 
 ==================
 */
-void G_InitWorldSession( void ) {
-	char	s[MAX_STRING_CHARS];
-	int			gt;
+void G_ReadSessionData( void ) {
+	char *buffer = NULL;
+	fileHandle_t f = NULL_FILE;
+	unsigned int len = 0u;
+	cJSON *root;
 
-	trap_Cvar_VariableStringBuffer( "session", s, sizeof(s) );
-	gt = atoi( s );
-	
-	// if the gametype changed since the last session, don't use any
-	// client sessions
-	if ( g_gametype.integer != gt ) {
+	Com_Printf( "G_ReadSessionData: reading %s...", metaFileName );
+	len = trap_FS_FOpenFile( metaFileName, &f, FS_READ );
+
+	// no file
+	if ( !f || !len || len == -1 ) {
+		Com_Printf( "failed to open file, clearing session data...\n" );
 		level.newSession = qtrue;
-		G_Printf( "Gametype changed, clearing session data.\n" );
+		if(f)
+			trap_FS_FCloseFile( f );
+		return;
 	}
+
+	buffer = (char *)malloc( len + 1 );
+	if ( !buffer ) {
+		Com_Printf( "failed to allocate buffer, clearing session data...\n" );
+		level.newSession = qtrue;
+		return;
+	}
+
+	trap_FS_Read( buffer, len, f );
+	trap_FS_FCloseFile( f );
+	buffer[len] = '\0';
+
+	// read buffer
+	root = cJSON_Parse( buffer );
+
+	// if the gametype changed since the last session, don't use any client sessions
+	if ( g_gametype.integer != cJSON_ToInteger( cJSON_GetObjectItem( root, "gametype" ) ) ) {
+		level.newSession = qtrue;
+		Com_Printf( "gametype changed, clearing session data..." );
+	}
+
+	free( buffer );
+	cJSON_Delete( root );
+	root = NULL;
+	Com_Printf( "done\n" );
 }
 
 /*
@@ -161,13 +263,24 @@ G_WriteSessionData
 ==================
 */
 void G_WriteSessionData( void ) {
-	int		i;
+	int i;
+	fileHandle_t f = NULL_FILE;
+	const gclient_t *client = NULL;
+	cJSON *root = cJSON_CreateObject();
 
-	trap_Cvar_Set( "session", va("%i", g_gametype.integer) );
+	cJSON_AddIntegerToObject( root, "gametype", g_gametype.integer );
 
-	for ( i = 0 ; i < level.maxclients ; i++ ) {
-		if ( level.clients[i].pers.connected == CON_CONNECTED ) {
-			G_WriteClientSessionData( &level.clients[i] );
+	Com_Printf( "G_WriteSessionData: writing %s...", metaFileName );
+	trap_FS_FOpenFile( metaFileName, &f, FS_WRITE );
+
+	Q_FSWriteJSON( root, f );
+	// the above function closes the file and cleans up mem for us
+
+	for ( i = 0, client = level.clients; i < level.maxclients; i++, client++ ) {
+		if ( client->pers.connected == CON_CONNECTED ) {
+			G_WriteClientSessionData( client );
 		}
 	}
+
+	Com_Printf( "done\n" );
 }

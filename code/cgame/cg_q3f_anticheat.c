@@ -1,8 +1,11 @@
+#if USE_BAD_Q3F_ANTICHEAT
+
 #include "cg_local.h"
 
 //#define OGCSHIFT
 #define CG_OGC_SHIFT 22
-#define CG_OGC_NAME "}yu"
+#define CG_OGC_NAME "
+}yu"
 
 #define CG_OGCCVARS_SEED 92374
 
@@ -29,7 +32,8 @@ static char *evilghettos[] = {
 	"}uqm{}rs",
 	"yuq{ywv{u",
 	"}uqm|o{s",
-	"wsor~~",
+	"wsor
+~~",
 	"rjfbqdphohqjwk",
 	"vnjfuvm",
 	"zrnjlww",
@@ -181,3 +185,4 @@ void CG_CanGhettoSpankMe( void ) {
 		}
 	}
 }
+#endif

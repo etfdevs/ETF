@@ -593,7 +593,7 @@ static void CG_TellTeamTarget_f( void ) {
 		return;
 	}
 
-	if ( cg.snap->ps.persistant[PERS_TEAM] != cgs.clientinfo[clientNum].team ) {
+	if ( cg.snap->ps.persistant[PERS_TEAM] != (int)cgs.clientinfo[clientNum].team ) {
 		CG_Printf(BOX_PRINT_MODE_CHAT, "Nobody heard message.\n" );
 		return;
 	}
@@ -1464,6 +1464,9 @@ static consoleCommand_t	commands[] = {
 	{ "showspecs",			CG_ShowSpecs_f				},
 
 };
+
+static const size_t numCG_Commands = ARRAY_LEN(commands);
+
 /*
 =================
 CG_ConsoleCommand
@@ -1474,7 +1477,7 @@ Cmd_Argc() / Cmd_Argv()
 */
 qboolean CG_ConsoleCommand( void ) {
 	const char	*cmd;
-	int		i;
+	size_t i;
 
 	// Golliwog: Don't allow any commands if initializing
 	if( cgs.initPhase )
@@ -1487,7 +1490,7 @@ qboolean CG_ConsoleCommand( void ) {
 	if( !Q_stricmp( cmd, "special" ) )
 		return( CG_Q3F_Special() );
 
-	for ( i = 0 ; i < sizeof( commands ) / sizeof( commands[0] ) ; i++ ) {
+	for ( i = 0 ; i < numCG_Commands; i++ ) {
 		if ( !Q_stricmp( cmd, commands[i].cmd ) ) {
 			commands[i].function();
 			return qtrue;
@@ -1515,10 +1518,10 @@ so it can perform tab completion
 =================
 */
 void CG_InitConsoleCommands( void ) {
-	int		i;
+	size_t i;
 	char *str;
 
-	for ( i = 0 ; i < sizeof( commands ) / sizeof( commands[0] ) ; i++ ) {
+	for ( i = 0 ; i < numCG_Commands; i++ ) {
 		trap_AddCommand( commands[i].cmd );
 	}
 

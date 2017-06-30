@@ -86,7 +86,7 @@ void CG_Q3F_DrawScoreboardTeamScores(rectDef_t *rect, float scale, vec4_t color,
 
 	s = p = teamposbuff;
 	while(*p) {
-		if(Q_IsColorString(p)) {
+		if(Q_IsColorStringPtr(p)) {
 			clrCode = *(p+1);
 			p++;
 		} else if(*p == '\n') {

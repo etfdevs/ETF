@@ -869,6 +869,7 @@ static void SupplyStationMenu()
 
 	Q_strncpyz( menucommands[0], va( "supply ammo %d", id ), 128 );
 	Q_strncpyz( menucommands[1], va( "supply armor %d", id ), 128 );
+	Q_strncpyz( menucommands[2], va( "supply grenade %d", id ), 128 );
 
 	// Start using supplystation
 	cg.usingSupplystation = 1;

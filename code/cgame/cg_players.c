@@ -1378,6 +1378,10 @@ void CG_AddRefEntityWithPowerups( refEntity_t *ent, entityState_t *state, int te
 			ent->customShader = cgs.media.battleSuitShader;
 			trap_R_AddRefEntityToScene( ent, NULL );
 		}
+		if ( state->powerups & ( 1 << PW_PENTAGRAM ) ) {
+			ent->customShader = cgs.media.battleSuitShader;
+			trap_R_AddRefEntityToScene( ent, NULL );
+		}
 		if ( state->extFlags & EXTF_BURNING ) {
 			ent->customShader = cgs.media.onFireShader0;
 			trap_R_AddRefEntityToScene( ent, NULL );

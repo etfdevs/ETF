@@ -102,7 +102,7 @@ int Pickup_Powerup( gentity_t *ent, gentity_t *other ) {
 		client->ps.persistant[PERS_PLAYEREVENTS] ^= PLAYEREVENT_DENIEDREWARD;
 	}
 
-	return RESPAWN_POWERUP;
+	return ent->item->giTag == PW_PENTAGRAM ? 500 : RESPAWN_POWERUP;
 }
 
 //======================================================================

@@ -32,9 +32,9 @@
 #define FORTS_SUB_VERSION	""
 //Keeg change game version and name info
 #define	GAME_VERSION		"etf"	// RR2DO2: LOWERCASE!!
-#define	FORTS_VERSION		"ETF 1.7" FORTS_SUB_VERSION
-#define FORTS_SHORTVERSION	"17"	// Slothy: used to version-match in server browser (can't do decimals, whole numbers only)
-#define FORTS_VERSIONINT	17		// Ensiform: used to version-match in server browser info for sorting
+#define	FORTS_VERSION		"ETF 2.0" FORTS_SUB_VERSION
+#define FORTS_SHORTVERSION	"20"	// Slothy: used to version-match in server browser (can't do decimals, whole numbers only)
+#define FORTS_VERSIONINT	20		// Ensiform: used to version-match in server browser info for sorting
 #define	MAPINFO_TYPE		"etf"  //keeger:  type inside mapinfo file
 #define GAME_NAME_CAP		"ETF"  //for where game name should be capitalized
 
@@ -294,6 +294,7 @@ typedef enum {
 	FL_Q3F_TRANQ,					// Tranqued? (slows fire reload rates)
 	FL_Q3F_AIMING,
 	FL_Q3F_STARTING,
+	FL_Q3F_MOVING,
 } stat_q3f_flags_t;
 
 // player_state->persistant[] indexes
@@ -385,6 +386,7 @@ typedef enum {
 	PW_INVIS,
 	PW_REGEN,
 	PW_FLIGHT,
+	PW_PENTAGRAM,
 
 	PW_Q3F_CONCUSS,
 	PW_Q3F_FLASH,
@@ -407,7 +409,8 @@ typedef enum {
 } holdable_t;
 
 typedef enum {
-	WP_NONE,
+	WP_INVALID=-1,
+	WP_NONE=0,
 
 	WP_AXE,
 	WP_SHOTGUN,
@@ -650,7 +653,9 @@ typedef enum {
 
 	EV_ETF_FLAMETHROWER_EFFECT,
 
-	EV_SUPPLY_BUILD
+	EV_SUPPLY_BUILD,
+	EV_PLACE_BUILDING,
+	EV_POWERUP_PENTAGRAM
 } entity_event_t;
 
 typedef struct animation_s {

@@ -85,7 +85,7 @@ int CG_Text_Width(const char *text, float scale, int limit, fontStruct_t *parent
 
 		while (s && *s && count < len) {
 			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
-				if ( Q_IsColorString(s) ) {
+				if ( Q_IsColorStringPtr(s) ) {
 					s += 2;
 					continue;
 				} else {
@@ -138,7 +138,7 @@ void CG_Text_Width_To_Max(char *text, float scale, int max, fontStruct_t *parent
 		}
 		while (s && *s) {
 			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
-				if ( Q_IsColorString(s) ) {
+				if ( Q_IsColorStringPtr(s) ) {
 					s += 2;
 					continue;
 				} else {
@@ -198,7 +198,7 @@ int CG_Text_Height(const char *text, float scale, int limit, fontStruct_t *paren
 
 		while (s && *s && count < len) {
 			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
-				if ( Q_IsColorString(s) ) {
+				if ( Q_IsColorStringPtr(s) ) {
 					s += 2;
 					continue;
 				} else {
@@ -299,7 +299,7 @@ void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text
 			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
 				glyph = &font->glyphs[(unsigned char)*s];
 
-				if ( Q_IsColorString( s ) ) {
+				if ( Q_IsColorStringPtr( s ) ) {
 					memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
 					newColor[3] = color[3];
 					trap_R_SetColor( newColor );
@@ -1162,6 +1162,7 @@ void CG_ScanForCrosshairEntity( void ) {
 			cg.crosshairSupplyRockets = (int)cent->currentState.origin2[2];
 			cg.crosshairSupplyCells = (int)cent->currentState.angles2[0];
 			cg.crosshairSupplyArmor = (int)cent->currentState.angles2[1];
+			cg.crosshairSupplyGrenades = (int)cent->currentState.angles2[2];
 			cg.crosshairClientNum = cent->currentState.clientNum;
 			cg.crosshairClientTime = cg.time;
 			cg.crosshairSentryLevel = 0;
@@ -1223,7 +1224,7 @@ void CG_ScanForCrosshairEntity( void ) {
 							continue;	// Not valid, or ourself
 						if( cg_entities[content].currentState.otherEntityNum2 != agentclass && mode < 1 )
 							continue;	// Not the same class
-						if( cgs.clientinfo[content].team != agentteam && mode < 2 )
+						if( cgs.clientinfo[content].team != (q3f_team_t)agentteam && mode < 2 )
 							continue;	// Not the same team
 						break;
 					}

@@ -2186,6 +2186,11 @@ static void PM_Weapon( void ) {
 		return;		// Golliwog: Laying a charge, can't fire
 	if( pm->ps->stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING) )
 		return;		// Golliwog: Building something
+	if( pm->ps->stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_MOVING) )
+	{
+		PM_AddEvent( EV_PLACE_BUILDING );
+		return;		// Ensiform: Moving something
+	}
 	if( pm->ps->pm_flags & PMF_CEASEFIRE )
 		return;		// No weapons activity if in ceasefire mode.
 	if((pm->cmd.buttons & BUTTON_ATTACK) && wp->fire_on_release && pm->ps->ammo[q3f_ammo_type] >= wp->numammo)		// JT - Don't do it if we're out of ammo.

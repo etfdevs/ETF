@@ -508,7 +508,7 @@ void CG_Q3F_MessageString( char *srcptr, clientInfo_t *activator, clientInfo_t *
 		}
 		else {
 			*buffptr++ = *srcptr++;
-			if( Q_IsColorString( srcptr - 1 ) )
+			if( Q_IsColorStringPtr( srcptr - 1 ) )
 			{
 				if( *srcptr < '0' || *srcptr > 'O' )
 				{
@@ -943,7 +943,8 @@ static int CG_Q3F_PanelFuncMessage()
 	// Attempts to find the state message, fills in parameters, and centers on the panel.
 
 	centity_t *cent = (centity_t *) panel.data;
-	int index, numLines;
+	size_t index;
+	int numLines;
 	float size, yoff;
 	char buff[2048];
 	char **statemessages;

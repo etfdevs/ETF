@@ -13,6 +13,10 @@
 
 #include "g_bot_interface.h"
 
+#ifdef BUILD_LUA
+#include "g_lua.h"
+#endif
+
 level_locals_t	level;
 
 typedef struct {
@@ -171,6 +175,13 @@ vmCvar_t	sv_maxConnectionBan;
 vmCvar_t	sv_maxConnectionKick;
 
 vmCvar_t	g_shoutcastPassword;
+
+#ifdef BUILD_LUA
+vmCvar_t	lua_modules;
+vmCvar_t	lua_allowedModules;
+#endif
+
+vmCvar_t	g_spawnFullStats;
 
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
@@ -371,6 +382,12 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &sv_maxConnectionKick, "sv_maxConnectionKick", "1", CVAR_ARCHIVE, 0, qfalse },
 
 	{ &g_shoutcastPassword, "g_shoutcastPassword", "", 0, 0, qfalse },
+#ifdef BUILD_LUA
+	{ &lua_modules, "lua_modules", "", 0 },
+	{ &lua_allowedModules, "lua_allowedModules", "", 0 },
+#endif
+
+	{ &g_spawnFullStats, "g_spawnFullStats", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
 	
 };
 
@@ -410,7 +427,7 @@ Q_EXPORT intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t ar
 			G_Printf(S_COLOR_RED "Unable to Initialize Omni-Bot.\n");
 #endif
 #if id386 > 0
-		G_PatchEngine();
+		//G_PatchEngine();
 #endif
 		return 0;
 	case GAME_SHUTDOWN:
@@ -468,6 +485,10 @@ void QDECL G_Printf( const char *fmt, ... ) {
 	Q_vsnprintf (text, sizeof(text), fmt, argptr);
 	va_end (argptr);
 
+#ifdef BUILD_LUA
+	G_LuaHook_Print(GPRINT_TEXT, text);
+#endif
+
 	trap_Printf( text );
 }
 //bani
@@ -480,6 +501,10 @@ void QDECL G_Error( const char *fmt, ... ) {
 	va_start (argptr, fmt);
 	Q_vsnprintf (text, sizeof(text), fmt, argptr);
 	va_end (argptr);
+
+#ifdef BUILD_LUA
+	G_LuaHook_Print(GPRINT_ERROR, text);
+#endif
 
 	trap_Error( text );
 }
@@ -675,6 +700,12 @@ void G_UpdateCvars( void ) {
 					trap_SendServerCommand( -1, va("print \"Server: %s changed to %s\n\"", 
 						cv->cvarName, cv->vmCvar->string ) );
 				}
+				
+#ifdef BUILD_LUA
+				if( cv->vmCvar == &lua_modules || cv->vmCvar == &lua_allowedModules ) {
+					G_LuaShutdown();
+				}
+#endif
 			}
 		}
 	}
@@ -991,7 +1022,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 
 	G_VersionCheck_Init();
 
-	G_InitWorldSession();
+	G_ReadSessionData();
 
 	// Load Camera Data
 	trap_Cvar_VariableStringBuffer( "mapname", buff, sizeof(buff)  );
@@ -1035,6 +1066,10 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 
 	// Setup the team data before parsing worldspawn.
 	G_Q3F_InitTeams();
+
+#ifdef BUILD_LUA
+	G_LuaInit();
+#endif // BUILD_LUA
 
 	// parse the key/value pairs and spawn gentities
 	level.ctfcompat = qfalse;
@@ -1097,6 +1132,11 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_DebugLog( "Started map.\n" );
 #endif
 
+#ifdef BUILD_LUA
+	G_LuaHook_InitGame( levelTime, randomSeed, restart );
+#endif // BUILD_LUA
+
+
 #ifdef PERFLOG
 	BG_Q3F_PerformanceMonitor_LogFunctionStop();
 #endif
@@ -1109,6 +1149,11 @@ G_ShutdownGame
 */
 void G_ShutdownGame( int restart ) 
 {
+#ifdef BUILD_LUA
+	G_LuaHook_ShutdownGame( restart );
+	G_LuaShutdown();
+#endif // BUILD_LUA
+
 #ifdef DEBUG_MEM
 	G_MemDebug_Close();
 #endif
@@ -2586,6 +2631,12 @@ void G_RunFrame( int levelTime ) {
 #ifdef PERFLOG
 	BG_Q3F_PerformanceMonitor_LogFunctionStop();
 #endif
+
+#ifdef BUILD_LUA
+	G_LuaHook_RunFrame( levelTime );
+#endif // BUILD_LUA
+
+
 	// record the time at the end of this frame - it should be about
 	// the time the next frame begins - when the server starts
 	// accepting commands from connected clients

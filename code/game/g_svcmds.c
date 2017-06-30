@@ -9,6 +9,11 @@
 
 #include "g_bot_interface.h"
 
+#ifdef BUILD_LUA
+#include "g_lua.h"  
+#endif // BUILD_LUA
+
+
 /*
 ==============================================================================
 
@@ -912,6 +917,29 @@ qboolean	ConsoleCommand( void ) {
 	char	cmd[MAX_TOKEN_CHARS];
 
 	trap_Argv( 0, cmd, sizeof( cmd ) );
+
+#ifdef BUILD_LUA
+	if (Q_stricmp (cmd, "lua_status") == 0 ) {
+		G_LuaStatus(NULL);
+		return qtrue;
+	}
+
+	if (Q_stricmp (cmd, "lua_restart") == 0 ) {
+		G_LuaShutdown();
+		G_LuaInit();
+		return qtrue;
+	}
+
+	if (Q_stricmp (cmd, "lua_api") == 0 ) {
+		G_LuaStackDump();
+		return qtrue;
+	}
+
+	// *LUA* API callbacks
+	if (G_LuaHook_ConsoleCommand (cmd) ) {
+		return qtrue;
+	}
+#endif
 
 	if ( Q_stricmp (cmd, "entitylist") == 0 ) {
 		Svcmd_EntityList_f();

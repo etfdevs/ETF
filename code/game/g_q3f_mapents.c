@@ -1533,13 +1533,13 @@ qboolean G_Q3F_CheckStates( q3f_keypairarray_t *array )
 	return( qtrue );		// Everything matched.
 }
 
-#define NUM_CLIENTSTATSSTRINGS 27
+#define NUM_CLIENTSTATSSTRINGS 28
 //renamed haste to speed
 static char *clientstatsstrings[NUM_CLIENTSTATSSTRINGS] = {
 	"health", "armor", "armour", "ammo_shells", "ammo_nails", "ammo_rockets", "ammo_cells",
 	"score", "gren1", "gren2", "quad", "regen", "flight", "battlesuit", "invis", "speed",
 	"ammo_medikit", "ammo_charge", "invuln", "aqualung", "gas", "stun", "flash", "tranq",
-	"fire", "ceasefire", "disease"
+	"fire", "ceasefire", "disease", "pentagram"
 };
 static char *clientstatsstringptrs[NUM_CLIENTSTATSSTRINGS];
 static qboolean hasclientstatsstrings;
@@ -1664,6 +1664,8 @@ qboolean G_Q3F_CheckClientStats( gentity_t *activator, q3f_keypairarray_t *array
 			EVALCLIENTSTAT( activator->client->ps.powerups[PW_Q3F_CEASEFIRE], eval, data->value.d.intdata, or );
 		} else if( data->key == clientstatsstringptrs[26] ) {	// disease
 			EVALCLIENTSTAT( activator->client->diseaseTime, eval, (data->value.flags & Q3F_VFLAG_CLSTAT_CM ? Q3F_DISEASE_DAMAGE_EVERY : data->value.d.intdata), or );
+		} else if ( data->key == clientstatsstringptrs[27] ) {	// pentagram of protection
+			EVALCLIENTSTAT( activator->client->ps.powerups[PW_PENTAGRAM], eval, data->value.d.intdata, or );
 		}
 	}
 
@@ -1709,14 +1711,15 @@ static int _CalcPowerupValue( int srcvalue, qboolean add, qboolean force, float 
 	return( level.time + value );
 }
 
-#define NUMGIVESTRINGS 36
+#define NUMGIVESTRINGS 37
 //keeg renamed haste to speed
 static char *givestrings[NUMGIVESTRINGS] = {
 	"health", "armor", "ammo_shells", "ammo_nails", "ammo_rockets", "ammo_cells",
 	"score", "gren1", "gren2", "quad", "regen", "flight", "battlesuit", "invis", "speed",
 	"armortype", "aclass_shell", "aclass_nail", "aclass_explosive", "aclass_shock",
 	"aclass_fire", "aclass_all", "ammo_medikit", "ammo_charge", "invuln", "aqualung", "ceasefire",
-	"aclass_bullet", "ammo_bullets", "damage", "gas", "stun", "flash", "tranq", "fire", "disease"
+	"aclass_bullet", "ammo_bullets", "damage", "gas", "stun", "flash", "tranq", "fire", "disease",
+	"pentagram"
 };
 
 static char *givestringptrs[NUMGIVESTRINGS];
@@ -2041,6 +2044,12 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 					// Give Non-Client Attacker Disease
 					G_Q3F_Disease2_Person(current, other, qfalse);
 				}
+			}
+
+			else if( data->key == givestringptrs[12] )	// Alter player pentagram of protection time
+			{
+				current->client->ps.powerups[PW_PENTAGRAM] =
+					_CalcPowerupValue( current->client->ps.powerups[PW_PENTAGRAM], add, force, effectfactor, data->value.d.intdata );
 			}
 
 			else if( data->key == givestringptrs[15] )	// Alter player armourtype
@@ -2509,7 +2518,7 @@ char *G_Q3F_MessageString( char *srcptr, gentity_t *activator, gentity_t *querye
 		}
 		else {
 			*buffptr++ = *srcptr++;
-			if( Q_IsColorString( srcptr - 1 ) )
+			if( Q_IsColorStringPtr( srcptr - 1 ) )
 			{
 				if( *srcptr < '0' || toupper(*srcptr) > 'O' )
 				{

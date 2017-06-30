@@ -9,6 +9,7 @@
 #include "cg_q3f_sounddict.h"
 #include "cg_q3f_mapselect.h"
 #include "cg_q3f_grenades.h"
+#include "../game/bg_q3f_weapon.h"
 #include "../game/bg_q3f_tea.h"
 #include "../../ui/menudef.h"
 
@@ -278,6 +279,129 @@ void CG_ShaderStateChanged(void) {
 	}
 }
 
+void CG_ETF_RegisterClass( int classNum ) {
+	int i;
+	bg_q3f_playerclass_t *cls;
+
+	// Not enabled
+	if ( !( cgs.classes & ( 1 << classNum ) ) ) {
+		return;
+	}
+
+	// Already registered
+	if ( cgs.media.modelcache[classNum][0] && cgs.media.f2rcache[classNum][0] ) {
+		return;
+	}
+
+	cls = bg_q3f_classlist[classNum];
+
+	// Register the class's model
+	if ( !CG_Q3F_RegisterClassModels( classNum ) ) {
+	}
+
+	// Register the class's weapons
+	for ( i = 0; i < Q3F_NUM_WEAPONSLOTS; i++ ) {
+		if ( !cls->weaponslot[i] )
+			continue;
+
+		if ( cls->weaponslot[i] >= WP_NUM_WEAPONS )
+			continue;
+
+		if ( cls->weaponslot[i] == WP_AXE ) {
+			switch ( classNum ) {
+			case Q3F_CLASS_PARAMEDIC:
+				CG_RegisterExtendedWeapon( Q3F_WP_BIOAXE );
+				break;
+			case Q3F_CLASS_AGENT:
+				CG_RegisterExtendedWeapon( Q3F_WP_KNIFE );
+				break;
+			case Q3F_CLASS_ENGINEER:
+				CG_RegisterExtendedWeapon( Q3F_WP_WRENCH );
+				break;
+			}
+		} else {
+			CG_RegisterWeapon( cls->weaponslot[i] );
+		}
+	}
+
+	if ( !CG_Q3F_RegisterClassSounds( classNum ) ) {
+	}
+	// Register special media for classes
+	// FIXME - make this a bit nicer
+	switch ( classNum ) {
+	case Q3F_CLASS_RECON:
+		break;
+	case Q3F_CLASS_SNIPER:
+		break;
+	case Q3F_CLASS_ENGINEER:
+		//Always load the rocket launcher for sentries too
+		CG_RegisterWeapon( WP_ROCKET_LAUNCHER );
+
+		cgs.media.sentryBase = trap_R_RegisterModel( "models/objects/sentry/sentry_base.md3" );
+		cgs.media.sentryTurret1 = trap_R_RegisterModel( "models/objects/sentry/sentry_turret.md3" );
+		cgs.media.sentryTurret2 = trap_R_RegisterModel( "models/objects/sentry/sentry_turret_l2.md3" );
+		cgs.media.sentryTurret3 = trap_R_RegisterModel( "models/objects/sentry/sentry_turret_l3.md3" );
+		cgs.media.sentryCannon1 = trap_R_RegisterModel( "models/objects/sentry/sentry_turret_inner.md3" );
+		cgs.media.sentryCannon2 = trap_R_RegisterModel( "models/objects/sentry/sentry_turret_inner_l2.md3" );
+		cgs.media.sentryCannon3 = trap_R_RegisterModel( "models/objects/sentry/sentry_turret_inner_l3.md3" );
+		cgs.media.sentryBarrel = trap_R_RegisterModel( "models/objects/sentry/sentry_minigun.md3" );
+		cgs.media.sentryRocketLauncher = trap_R_RegisterModel( "models/objects/sentry/sentry_rocketl.md3" );
+		cgs.media.sentryFlash = trap_R_RegisterModel( "models/objects/sentry/sentry_flash.md3" );
+		cgs.media.sentryBits[0] = trap_R_RegisterModel( "models/objects/sentry/sentry_bit1.md3" );
+		cgs.media.sentryBits[1] = trap_R_RegisterModel( "models/objects/sentry/sentry_bit2.md3" );
+		cgs.media.sentryBits[2] = trap_R_RegisterModel( "models/objects/sentry/sentry_bit3.md3" );
+		cgs.media.sentryBits[3] = trap_R_RegisterModel( "models/objects/sentry/sentry_bit4.md3" );
+		cgs.media.supplystationBase = trap_R_RegisterModel( "models/objects/supplystation/supply.md3" );
+		cgs.media.supplystationHUD = trap_R_RegisterModel( "models/objects/supplystation/supply_hud.md3" );
+		cgs.media.supplystationBits[0] = trap_R_RegisterModel( "models/objects/supplystation/supplystation_bit1.md3" );
+		cgs.media.supplystationBits[1] = trap_R_RegisterModel( "models/objects/supplystation/supplystation_bit2.md3" );
+		cgs.media.supplystationBits[2] = trap_R_RegisterModel( "models/objects/supplystation/supplystation_bit3.md3" );
+		cgs.media.sentrySpinupSound = trap_S_RegisterSound( "sound/movers/motors/motor_start_01.wav", qfalse );
+		cgs.media.sentryFireSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_fire.wav", qfalse );
+		cgs.media.sentryStartSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_seek.wav", qfalse );
+		cgs.media.sentryStopSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_reset.wav", qfalse );
+		cgs.media.sentryBuildSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_build.wav", qtrue );
+		cgs.media.sentryUpgradeSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_upgrade.wav", qtrue );
+		cgs.media.sentryExplodeSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_explode.wav", qtrue );
+		cgs.media.supplyBuildSound = trap_S_RegisterSound( "sound/weapons/deploy/supply_build.wav", qtrue );
+		cgs.media.supplyPopup = trap_S_RegisterSound( "sound/weapons/deploy/supply_out.wav", qfalse );
+		cgs.media.supplyRetract = trap_S_RegisterSound( "sound/weapons/deploy/supply_in.wav", qfalse );
+		cgs.media.supplyExplodeSound = trap_S_RegisterSound( "sound/weapons/deploy/supply_explode.wav", qtrue );
+		// start hack of the year!
+		if ( r_vertexLight.integer )
+			trap_Cvar_Set( "r_vertexlight", "0" );
+		cgs.media.sentryConstruct_Base = trap_R_RegisterShader( "models/objects/sentry/texture_sentry_base_construct" );
+		cgs.media.sentryConstructShader_1 = trap_R_RegisterShader( "models/objects/sentry/texture_sentry_level1_construct" );
+		cgs.media.sentryConstructShader_2 = trap_R_RegisterShader( "models/objects/sentry/texture_sentry_level2_construct" );
+		cgs.media.supplystationConstruct_Base = trap_R_RegisterShader( "models/objects/supplystation/base_construct" );
+		cgs.media.supplystationConstruct_Screen = trap_R_RegisterShader( "models/objects/supplystation/screen_construct" );
+		cgs.media.sentryTvFx = trap_R_RegisterShader( "gfx/sfx/sentryCamTvBlur" );
+		// exit hack of the year!
+		if ( r_vertexLight.integer )
+			trap_Cvar_Set( "r_vertexlight", "1" );
+		break;
+	case Q3F_CLASS_CIVILIAN:
+		break;
+	case Q3F_CLASS_GRENADIER:
+		break;
+	case Q3F_CLASS_PARAMEDIC:
+		break;
+	case Q3F_CLASS_FLAMETROOPER:
+		cgs.media.sfx_napalmExplode = trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_start.wav", qfalse );
+		cgs.media.sfx_napalmBurn = trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_loop.wav", qfalse );
+		cgs.media.sfx_napalmWater = trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_water.wav", qfalse );
+		break;
+	case Q3F_CLASS_AGENT:
+		break;
+	case Q3F_CLASS_SOLDIER:
+		//Always load the nailgun for soldier's too because of nail model so we dont hitch on nailgren
+		CG_RegisterWeapon( WP_NAILGUN );
+		break;
+	case Q3F_CLASS_MINIGUNNER:
+		break;
+	}
+}
+
 /*
 ================
 CG_ConfigStringModified
@@ -374,84 +498,17 @@ static void CG_ConfigStringModified( void ) {
 		sscanf(	str, "%i %i %i %i",
 			&cg.teamAllies[0], &cg.teamAllies[1],
 			&cg.teamAllies[2], &cg.teamAllies[3] );
-	}
-}
-
-
-/*
-=======================
-CG_AddToTeamChat
-
-=======================
-*/
-static void CG_AddToTeamChat( const char *str ) {
-	int len;
-	char *p, *ls;
-	int lastcolor;
-	int chatHeight;
-
-	if (cg_teamChatHeight.integer < TEAMCHAT_HEIGHT) {
-		chatHeight = cg_teamChatHeight.integer;
-	} else {
-		chatHeight = TEAMCHAT_HEIGHT;
-	}
-
-	if (chatHeight <= 0 || cg_teamChatTime.integer <= 0) {
-		// team chat disabled, dump into normal chat
-		cgs.teamChatPos = cgs.teamLastChatPos = 0;
-		return;
-	}
-
-	len = 0;
-
-	p = cgs.teamChatMsgs[cgs.teamChatPos % chatHeight];
-	*p = 0;
-
-	lastcolor = '7';
-
-	ls = NULL;
-	while (*str) {
-		if (len > TEAMCHAT_WIDTH - 1) {
-			if (ls) {
-				str -= (p - ls);
-				str++;
-				p -= (p - ls);
+	} else if ( num == CS_CLASSMASK && !cgs.initing ) {
+		int oldClasses = cgs.classes;
+		cgs.classes = atoi( CG_ConfigString( CS_CLASSMASK ) );
+		if ( oldClasses != cgs.classes ) {
+			int i;
+			for ( i = Q3F_CLASS_RECON; i < Q3F_CLASS_MAX; i++ ) {
+				CG_ETF_RegisterClass( i );
 			}
-			*p = 0;
-
-			cgs.teamChatMsgTimes[cgs.teamChatPos % chatHeight] = cg.time;
-
-			cgs.teamChatPos++;
-			p = cgs.teamChatMsgs[cgs.teamChatPos % chatHeight];
-			*p = 0;
-			*p++ = Q_COLOR_ESCAPE;
-			*p++ = lastcolor;
-			len = 0;
-			ls = NULL;
 		}
-
-		if ( Q_IsColorString( str ) ) {
-			*p++ = *str++;
-			lastcolor = *str;
-			*p++ = *str++;
-			continue;
-		}
-		if (*str == ' ') {
-			ls = p;
-		}
-		*p++ = *str++;
-		len++;
 	}
-	*p = 0;
-
-	cgs.teamChatMsgTimes[cgs.teamChatPos % chatHeight] = cg.time;
-	cgs.teamChatPos++;
-
-	if (cgs.teamChatPos - cgs.teamLastChatPos > chatHeight)
-		cgs.teamLastChatPos = cgs.teamChatPos - chatHeight;
 }
-
-
 
 /*
 ===============
@@ -500,417 +557,6 @@ static void CG_MapRestart( void ) {
 	CG_LoadHud_f();
 
 	CG_EventHandling(CGAME_EVENT_NONE, qtrue);
-}
-
-#define MAX_VOICEFILESIZE	16384
-#define MAX_VOICEFILES		8
-#define MAX_VOICECHATS		64
-#define MAX_VOICESOUNDS		64
-#define MAX_CHATSIZE		64
-#define MAX_HEADMODELS		64
-
-typedef struct voiceChat_s
-{
-	char id[64];
-	int numSounds;
-	sfxHandle_t sounds[MAX_VOICESOUNDS];
-	char chats[MAX_VOICESOUNDS][MAX_CHATSIZE];
-} voiceChat_t;
-
-typedef struct voiceChatList_s
-{
-	char name[64];
-	int gender;
-	int numVoiceChats;
-	voiceChat_t voiceChats[MAX_VOICECHATS];
-} voiceChatList_t;
-
-typedef struct headModelVoiceChat_s
-{
-	char headmodel[64];
-	int voiceChatNum;
-} headModelVoiceChat_t;
-
-voiceChatList_t voiceChatLists[MAX_VOICEFILES];
-headModelVoiceChat_t headModelVoiceChat[MAX_HEADMODELS];
-
-/*
-=================
-CG_ParseVoiceChats
-=================
-*/
-int CG_ParseVoiceChats( const char *filename, voiceChatList_t *voiceChatList, int maxVoiceChats ) {
-	int	len, i;
-	fileHandle_t f;
-	char buf[MAX_VOICEFILESIZE];
-	char **p, *ptr;
-	char *token;
-	voiceChat_t *voiceChats;
-	qboolean compress;
-
-	compress = qtrue;
-	if (cg_buildScript.integer) {
-		compress = qfalse;
-	}
-
-	len = trap_FS_FOpenFile( filename, &f, FS_READ );
-	if ( !f ) {
-		CG_Printf(BOX_PRINT_MODE_CHAT, va( S_COLOR_RED "voice chat file not found: %s\n", filename ) );
-		return qfalse;
-	}
-	if ( len >= MAX_VOICEFILESIZE ) {
-		CG_Printf(BOX_PRINT_MODE_CHAT, va( S_COLOR_RED "voice chat file too large: %s is %i, max allowed is %i", filename, len, MAX_VOICEFILESIZE ) );
-		trap_FS_FCloseFile( f );
-		return qfalse;
-	}
-
-	trap_FS_Read( buf, len, f );
-	buf[len] = 0;
-	trap_FS_FCloseFile( f );
-
-	ptr = buf;
-	p = &ptr;
-
-	Com_sprintf(voiceChatList->name, sizeof(voiceChatList->name), "%s", filename);
-	voiceChats = voiceChatList->voiceChats;
-	for ( i = 0; i < maxVoiceChats; i++ ) {
-		voiceChats[i].id[0] = 0;
-	}
-	token = COM_ParseExt(p, qtrue);
-	if (!token || token[0] == 0) {
-		return qtrue;
-	}
-	if (!Q_stricmp(token, "female")) {
-		voiceChatList->gender = GENDER_FEMALE;
-	}
-	else if (!Q_stricmp(token, "male")) {
-		voiceChatList->gender = GENDER_MALE;
-	}
-	else if (!Q_stricmp(token, "neuter")) {
-		voiceChatList->gender = GENDER_NEUTER;
-	}
-	else {
-		CG_Printf(BOX_PRINT_MODE_CHAT, va( S_COLOR_RED "expected gender not found in voice chat file: %s\n", filename ) );
-		return qfalse;
-	}
-
-	voiceChatList->numVoiceChats = 0;
-	while ( 1 ) {
-		token = COM_ParseExt(p, qtrue);
-		if (!token || token[0] == 0) {
-			return qtrue;
-		}
-		Com_sprintf(voiceChats[voiceChatList->numVoiceChats].id, sizeof( voiceChats[voiceChatList->numVoiceChats].id ), "%s", token);
-		token = COM_ParseExt(p, qtrue);
-		if (Q_stricmp(token, "{")) {
-			CG_Printf(BOX_PRINT_MODE_CHAT, va( S_COLOR_RED "expected { found %s in voice chat file: %s\n", token, filename ) );
-			return qfalse;
-		}
-		voiceChats[voiceChatList->numVoiceChats].numSounds = 0;
-		while(1) {
-			token = COM_ParseExt(p, qtrue);
-			if (!token || token[0] == 0) {
-				return qtrue;
-			}
-			if (!Q_stricmp(token, "}"))
-				break;
-			voiceChats[voiceChatList->numVoiceChats].sounds[voiceChats[voiceChatList->numVoiceChats].numSounds] = trap_S_RegisterSound( token , compress );
-
-			token = COM_ParseExt(p, qtrue);
-			if (!token || token[0] == 0) {
-				return qtrue;
-			}
-			Com_sprintf(voiceChats[voiceChatList->numVoiceChats].chats[
-							voiceChats[voiceChatList->numVoiceChats].numSounds], MAX_CHATSIZE, "%s", token);
-			voiceChats[voiceChatList->numVoiceChats].numSounds++;
-			if (voiceChats[voiceChatList->numVoiceChats].numSounds >= MAX_VOICESOUNDS)
-				break;
-		}
-		voiceChatList->numVoiceChats++;
-		if (voiceChatList->numVoiceChats >= maxVoiceChats)
-			return qtrue;
-	}
-	return qtrue;
-}
-
-/*
-=================
-CG_LoadVoiceChats
-=================
-*/
-void CG_LoadVoiceChats( void ) {
-	int size;
-
-	size = trap_MemoryRemaining();
-	CG_ParseVoiceChats( "scripts/female1.voice", &voiceChatLists[0], MAX_VOICECHATS );
-	CG_ParseVoiceChats( "scripts/female2.voice", &voiceChatLists[1], MAX_VOICECHATS );
-	CG_ParseVoiceChats( "scripts/female3.voice", &voiceChatLists[2], MAX_VOICECHATS );
-	CG_ParseVoiceChats( "scripts/male1.voice", &voiceChatLists[3], MAX_VOICECHATS );
-	CG_ParseVoiceChats( "scripts/male2.voice", &voiceChatLists[4], MAX_VOICECHATS );
-	CG_ParseVoiceChats( "scripts/male3.voice", &voiceChatLists[5], MAX_VOICECHATS );
-	CG_ParseVoiceChats( "scripts/male4.voice", &voiceChatLists[6], MAX_VOICECHATS );
-	CG_ParseVoiceChats( "scripts/male5.voice", &voiceChatLists[7], MAX_VOICECHATS );
-	CG_Printf(BOX_PRINT_MODE_CHAT, "voice chat memory size = %d\n", size - trap_MemoryRemaining());
-}
-
-/*
-=================
-CG_HeadModelVoiceChats
-=================
-*/
-/*int CG_HeadModelVoiceChats( char *filename ) {
-	int	len, i;
-	fileHandle_t f;
-	char buf[MAX_VOICEFILESIZE];
-	char **p, *ptr;
-	char *token;
-
-	len = trap_FS_FOpenFile( filename, &f, FS_READ );
-	if ( !f ) {
-		//CG_Printf(BOX_PRINT_MODE_CHAT, va( "voice chat file not found: %s\n", filename ) );
-		return -1;
-	}
-	if ( len >= MAX_VOICEFILESIZE ) {
-		CG_Printf(BOX_PRINT_MODE_CHAT, va( S_COLOR_RED "voice chat file too large: %s is %i, max allowed is %i", filename, len, MAX_VOICEFILESIZE ) );
-		trap_FS_FCloseFile( f );
-		return -1;
-	}
-
-	trap_FS_Read( buf, len, f );
-	buf[len] = 0;
-	trap_FS_FCloseFile( f );
-
-	ptr = buf;
-	p = &ptr;
-
-	token = COM_ParseExt(p, qtrue);
-	if (!token || token[0] == 0) {
-		return -1;
-	}
-
-	for ( i = 0; i < MAX_VOICEFILES; i++ ) {
-		if ( !Q_stricmp(token, voiceChatLists[i].name) ) {
-			return i;
-		}
-	}
-
-	//FIXME: maybe try to load the .voice file which name is stored in token?
-
-	return -1;
-}*/
-
-
-/*
-=================
-CG_GetVoiceChat
-=================
-*/
-int CG_GetVoiceChat( voiceChatList_t *voiceChatList, const char *id, sfxHandle_t *snd, char **chat) {
-	int i, rnd;
-
-	for ( i = 0; i < voiceChatList->numVoiceChats; i++ ) {
-		if ( !Q_stricmp( id, voiceChatList->voiceChats[i].id ) ) {
-			rnd = Q_flrand(0.0f, 1.0f) * voiceChatList->voiceChats[i].numSounds;
-			*snd = voiceChatList->voiceChats[i].sounds[rnd];
-			*chat = voiceChatList->voiceChats[i].chats[rnd];
-			return qtrue;
-		}
-	}
-	return qfalse;
-}
-
-/*
-=================
-CG_VoiceChatListForClient
-=================
-*/
-voiceChatList_t *CG_VoiceChatListForClient( int UNUSED_VAR clientNum ) {
-	//clientInfo_t *ci;
-	int /*voiceChatNum, j,*/ i, k, gender;
-	//char filename[MAX_QPATH], headModelName[MAX_QPATH];
-
-	/*if ( clientNum < 0 || clientNum >= MAX_CLIENTS ) {
-		clientNum = 0;
-	}
-	ci = &cgs.clientinfo[ clientNum ];*/
-
-/*	headModelName = ci->headModelName;
-	if (headModelName[0] == '*')
-		headModelName++;
-	// find the voice file for the head model the client uses
-	for ( i = 0; i < MAX_HEADMODELS; i++ ) {
-		if (!Q_stricmp(headModelVoiceChat[i].headmodel, headModelName)) {
-			break;
-		}
-	}
-	if (i < MAX_HEADMODELS) {
-		return &voiceChatLists[headModelVoiceChat[i].voiceChatNum];
-	}
-	// find a <headmodelname>.vc file
-	for ( i = 0; i < MAX_HEADMODELS; i++ ) {
-		if (!strlen(headModelVoiceChat[i].headmodel)) {
-			Com_sprintf(filename, sizeof(filename), "scripts/%s.vc", headModelName);
-			voiceChatNum = CG_HeadModelVoiceChats(filename);
-			if (voiceChatNum == -1)
-				break;
-			Com_sprintf(headModelVoiceChat[i].headmodel, sizeof ( headModelVoiceChat[i].headmodel ),
-						"%s", headModelName);
-			headModelVoiceChat[i].voiceChatNum = voiceChatNum;
-			return &voiceChatLists[headModelVoiceChat[i].voiceChatNum];
-		}
-	}*/
-	gender = GENDER_MALE;//ci->gender;
-	for (k = 0; k < 2; k++) {
-		// just pick the first with the right gender
-		for ( i = 0; i < MAX_VOICEFILES; i++ ) {
-			if (strlen(voiceChatLists[i].name)) {
-				if (voiceChatLists[i].gender == gender) {
-					// store this head model with voice chat for future reference
-					/*for ( j = 0; j < MAX_HEADMODELS; j++ ) {
-						if (!strlen(headModelVoiceChat[j].headmodel)) {
-							Com_sprintf(headModelVoiceChat[j].headmodel, sizeof ( headModelVoiceChat[j].headmodel ),
-									"%s", headModelName);
-							headModelVoiceChat[j].voiceChatNum = i;
-							break;
-						}
-					}*/
-					return &voiceChatLists[i];
-				}
-			}
-		}
-		// fall back to male gender because we don't have neuter in the mission pack
-		if (gender == GENDER_MALE)
-			break;
-		gender = GENDER_MALE;
-	}
-	// store this head model with voice chat for future reference
-	/*for ( j = 0; j < MAX_HEADMODELS; j++ ) {
-		if (!strlen(headModelVoiceChat[j].headmodel)) {
-			Com_sprintf(headModelVoiceChat[j].headmodel, sizeof ( headModelVoiceChat[j].headmodel ),
-					"%s", headModelName);
-			headModelVoiceChat[j].voiceChatNum = 0;
-			break;
-		}
-	}*/
-	// just return the first voice chat list
-	return &voiceChatLists[0];
-}
-
-#define MAX_VOICECHATBUFFER		32
-
-typedef struct bufferedVoiceChat_s
-{
-	int clientNum;
-	sfxHandle_t snd;
-	int voiceOnly;
-	char cmd[MAX_SAY_TEXT];
-	char message[MAX_SAY_TEXT];
-} bufferedVoiceChat_t;
-
-bufferedVoiceChat_t voiceChatBuffer[MAX_VOICECHATBUFFER];
-
-/*
-=================
-CG_PlayVoiceChat
-=================
-*/
-void CG_PlayVoiceChat( bufferedVoiceChat_t *vchat ) {
-	// if we are going into the intermission, don't start any voices
-	if ( cg.intermissionStarted ) {
-		return;
-	}
-
-	if ( !cg_noVoiceChats.integer ) {
-		trap_S_StartLocalSound( vchat->snd, CHAN_VOICE);
-	}
-	if (!vchat->voiceOnly && !cg_noVoiceText.integer) {
-		CG_AddToTeamChat( vchat->message );
-		CG_Printf( BOX_PRINT_MODE_CHAT, "%s\n", vchat->message );
-	}
-	voiceChatBuffer[cg.voiceChatBufferOut].snd = 0;
-}
-
-/*
-=====================
-CG_PlayBufferedVoieChats
-=====================
-*/
-void CG_PlayBufferedVoiceChats( void ) {
-	if ( cg.voiceChatTime < cg.time ) {
-		if (cg.voiceChatBufferOut != cg.voiceChatBufferIn && voiceChatBuffer[cg.voiceChatBufferOut].snd) {
-			//
-			CG_PlayVoiceChat(&voiceChatBuffer[cg.voiceChatBufferOut]);
-			//
-			cg.voiceChatBufferOut = (cg.voiceChatBufferOut + 1) % MAX_VOICECHATBUFFER;
-			cg.voiceChatTime = cg.time + 1000;
-		}
-	}
-}
-
-/*
-=====================
-CG_AddBufferedVoiceChat
-=====================
-*/
-void CG_AddBufferedVoiceChat( bufferedVoiceChat_t *vchat ) {
-	// if we are going into the intermission, don't start any voices
-	if ( cg.intermissionStarted ) {
-		return;
-	}
-
-	memcpy(&voiceChatBuffer[cg.voiceChatBufferIn], vchat, sizeof(bufferedVoiceChat_t));
-	cg.voiceChatBufferIn = (cg.voiceChatBufferIn + 1) % MAX_VOICECHATBUFFER;
-	if (cg.voiceChatBufferIn == cg.voiceChatBufferOut) {
-		CG_PlayVoiceChat( &voiceChatBuffer[cg.voiceChatBufferOut] );
-		cg.voiceChatBufferOut++;
-	}
-}
-
-/*
-=================
-CG_VoiceChatLocal
-=================
-*/
-void CG_VoiceChatLocal( int mode, qboolean voiceOnly, int clientNum, int color, const char *cmd ) {
-	char *chat;
-	voiceChatList_t *voiceChatList;
-	clientInfo_t *ci;
-	sfxHandle_t snd;
-	bufferedVoiceChat_t vchat;
-
-	// if we are going into the intermission, don't start any voices
-	if ( cg.intermissionStarted ) {
-		return;
-	}
-
-	if ( clientNum < 0 || clientNum >= MAX_CLIENTS ) {
-		clientNum = 0;
-	}
-	ci = &cgs.clientinfo[ clientNum ];
-
-	cgs.currentVoiceClient = clientNum;
-
-	voiceChatList = CG_VoiceChatListForClient( clientNum );
-
-	if ( CG_GetVoiceChat( voiceChatList, cmd, &snd, &chat ) ) {
-		//
-		if ( mode == SAY_TEAM || !cg_teamChatsOnly.integer ) {
-			vchat.clientNum = clientNum;
-			vchat.snd = snd;
-			vchat.voiceOnly = voiceOnly;
-			Q_strncpyz(vchat.cmd, cmd, sizeof(vchat.cmd));
-			if ( mode == SAY_TELL ) {
-				Com_sprintf(vchat.message, sizeof(vchat.message), "[%s]: %c%c%s", ci->name, Q_COLOR_ESCAPE, color, chat);
-			}
-			else if ( mode == SAY_TEAM ) {
-				Com_sprintf(vchat.message, sizeof(vchat.message), "(%s): %c%c%s", ci->name, Q_COLOR_ESCAPE, color, chat);
-			}
-			else {
-				Com_sprintf(vchat.message, sizeof(vchat.message), "%s: %c%c%s", ci->name, Q_COLOR_ESCAPE, color, chat);
-			}
-			CG_AddBufferedVoiceChat(&vchat);
-		}
-	}
 }
 
 /*

@@ -101,7 +101,7 @@ void G_Q3F_CommandPointThink( gentity_t *ent )
 		}
 	}
 	// Decrease our pulse counter
-	if( !activator || ent->count && !--ent->count )
+	if( !activator || (ent->count && !--ent->count) )
 	{
 		// We've expired.
 
@@ -3061,7 +3061,7 @@ void SP_Q3F_func_forcefield( gentity_t *ent )
 		// if the holding/notholding/clientstats/checkstate/reversecriteria fields are in use).
 		// Spectators are always allowed through.
 
-		ent->mapdata->team |= 1 << Q3F_TEAM_SPECTATOR;
+		ent->mapdata->team |= (1 << Q3F_TEAM_SPECTATOR);
 
 		ent->s.frame			= ent->mapdata->classes; // Ensiform: This did overflow with civilians (changed from otherEntityNum to frame)
 		ent->s.otherEntityNum2	= ent->mapdata->team;

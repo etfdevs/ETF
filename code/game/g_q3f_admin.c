@@ -53,7 +53,7 @@ q3f_array_t *ipMutes;
 int g_q3f_muteCheckTime;
 #endif
 
-static void G_Q3F_AdminPrint( gentity_t *admin, char *fmt, ... )
+/*static*/ void G_Q3F_AdminPrint( gentity_t *admin, char *fmt, ... )
 {
 	// Print to the admin, or the console (if done as an RCON command)
 

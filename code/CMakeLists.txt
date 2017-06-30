@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
-project(etf VERSION 1.7 LANGUAGES C CXX)
+project(etf VERSION 2.0 LANGUAGES C CXX)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
@@ -25,6 +25,7 @@ Include(CheckTypeSize)
 check_type_size("void*" CMAKE_SIZEOF_VOID_P)
 
 if(WIN32)
+	set(LIB_SUFFIX "_mp_")
 	set(X86 ON)
 	if(CMAKE_SIZEOF_VOID_P MATCHES "8")
 		set(Architecture "x86_64")
@@ -34,6 +35,12 @@ if(WIN32)
 		set(WIN64 FALSE)
 	endif()
 else()
+	if(APPLE)
+		set(LIB_SUFFIX "_mac")
+	else()
+		set(LIB_SUFFIX ".mp.")
+	endif()
+
 	set(X86 OFF)
 	if(CMAKE_SYSTEM_PROCESSOR MATCHES "^arm")
 		set(Architecture "arm")
@@ -96,7 +103,7 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	add_definitions(-Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-old-style-declaration -Wno-missing-field-initializers)
 
 	if (NOT APPLE AND Architecture STREQUAL "x86")
-		add_definitions(-march=pentium -mcpu=pentiumpro)
+		add_definitions(-march=pentium -mtune=pentiumpro)
 	elseif (NOT CMAKE_CROSSCOMPILING AND ONATIVE)
 		add_definitions(-march=native)
 	endif()
@@ -135,10 +142,11 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 
 		add_definitions(-DMACOS_X=1)
 
-		if (Architecture STREQUAL "x86_64")
-			add_definitions(-arch x86_64 -mmacosx-version-min=10.6)
-			set(ldflags "${ldflags} -arch x86_64 -mmacosx-version-min=10.6")
-		elseif (Architecture STREQUAL "x86")
+		#if (Architecture STREQUAL "x86_64")
+		#	add_definitions(-arch x86_64 -mmacosx-version-min=10.6)
+		#	set(ldflags "${ldflags} -arch x86_64 -mmacosx-version-min=10.6")
+		#elseif (Architecture STREQUAL "x86")
+		if (Architecture STREQUAL "x86")
 			CHECK_CXX_COMPILER_FLAG("-arch i386" cxx_has_arch_i386)
 			if (cxx_has_arch_i386)
 				add_definitions(-arch i386)
@@ -221,11 +229,12 @@ configure_file(
 message(STATUS "CMAKE_C_FLAGS_RELEASE is ${CMAKE_C_FLAGS_RELEASE}")
 message(STATUS "Building ${CMAKE_BUILD_TYPE} for ${os}-${Architecture}")
 
+find_package(Lua)
+
 set(src_cJSON
 	cJSON/cJSON.c
 	cJSON/cJSON.h
 )
-
 
 set(src_shared
 	${CMAKE_SOURCE_DIR}/api/shared/q_bit.c
@@ -278,7 +287,7 @@ set(src_cgame
 	cgame/cg_playerstate.c
 	cgame/cg_polybus.c
 	cgame/cg_predict.c
-	cgame/cg_q3f_anticheat.c
+	#cgame/cg_q3f_anticheat.c
 	cgame/cg_q3f_classutil.c
 	cgame/cg_q3f_controllable.c
 	cgame/cg_q3f_crc.c
@@ -319,8 +328,14 @@ set(src_cgame
 )
 
 if(BOTS)
-	set( src_cgame ${src_cgame} cg_omnibot.c cgame/Omnibot_Interprocess.cpp )
+	set( src_cgame ${src_cgame} cgame/cg_omnibot.c cgame/Omnibot_Interprocess.cpp )
 endif(BOTS)
+
+
+set(src_crypto
+    crypto/sha-1/sha1.c
+    crypto/sha-1/sha1.h
+)
 
 set(src_game
 	game/bg_misc.c
@@ -384,12 +399,22 @@ set(src_game
 	game/g_utils.c
 	game/g_weapon.c
 	game/game.def
+    game/g_sha1.c
 	${src_shared}
+    ${src_crypto}
 )
 
-if(BOTS)
-	set( src_game ${src_game} cg_omnibot.c cgame/Omnibot_Interprocess.cpp)
-endif(BOTS)
+if(LUA_FOUND)
+	message(STATUS, "Found LUA version ${LUA_VERSION_STRING}")
+	#set( src_game ${src_game} game/g_lua.c game/g_lua.h game/lsqlite3.c game/sqlite3.c game/sqlite3.h )
+    set( src_game ${src_game} game/g_lua.c game/g_lua.h )
+else()
+	message(STATUS, "LUA not found, skipping")
+endif()
+
+#if(BOTS)
+#	set( src_game ${src_game} game/g_bot_interface.cpp cgame/Omnibot_Interprocess.cpp)
+#endif(BOTS)
 
 set(src_ui
 	game/bg_misc.c
@@ -411,9 +436,9 @@ set(src_ui
 
 if(BOTS)
 	set(CMAKE_BOT_INCLUDE "" CACHE PATH "External Path for Omnibot" FORCE)
-	if(CGAME)
-		set( src_cgame ${src_cgame} cg_omnibot.c cgame/Omnibot_Interprocess.cpp)
-	endif()
+	#if(CGAME)
+	#	set( src_cgame ${src_cgame} cg_omnibot.c cgame/Omnibot_Interprocess.cpp)
+	#endif()
 	if(GAME)
 		set( src_game ${src_game} game/g_bot_interface.cpp ${CMAKE_BOT_INCLUDE}/Common/BotLoadLibrary.cpp)
 	endif(GAME)
@@ -445,43 +470,49 @@ if(CMAKE_BUILD_TYPE MATCHES "DEBUG" OR CMAKE_BUILD_TYPE MATCHES "Debug")
 endif()
 
 if (CGAME)
-	add_library(cgame.mp.${Architecture} SHARED ${src_cgame})
-	set_target_properties(cgame.mp.${Architecture} PROPERTIES PREFIX "")
-	set_target_properties(cgame.mp.${Architecture} PROPERTIES COMPILE_DEFINITIONS "CGAME;CGAMEDLL;WOLF_FLAME") #FIXME WRONG
-	set_target_properties(cgame.mp.${Architecture} PROPERTIES COMPILE_FLAGS "-I${CMAKE_SOURCE_DIR}/cgame")
-	set_target_properties(cgame.mp.${Architecture} PROPERTIES LINK_FLAGS "${ldflags}")
-	set_target_properties(cgame.mp.${Architecture} PROPERTIES INSTALL_NAME_DIR "@executable_path")
-	target_link_libraries(cgame.mp.${Architecture} ${sys_libs})
+	add_library(cgame${LIB_SUFFIX}${Architecture} SHARED ${src_cgame})
+	set_target_properties(cgame${LIB_SUFFIX}${Architecture} PROPERTIES PREFIX "")
+	set_target_properties(cgame${LIB_SUFFIX}${Architecture} PROPERTIES COMPILE_DEFINITIONS "CGAME;CGAMEDLL;WOLF_FLAME") #FIXME WRONG
+	set_target_properties(cgame${LIB_SUFFIX}${Architecture} PROPERTIES COMPILE_FLAGS "-I${CMAKE_SOURCE_DIR}/cgame")
+	set_target_properties(cgame${LIB_SUFFIX}${Architecture} PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(cgame${LIB_SUFFIX}${Architecture} PROPERTIES INSTALL_NAME_DIR "@executable_path")
+	target_link_libraries(cgame${LIB_SUFFIX}${Architecture} ${sys_libs})
 endif()
 
 if (GAME)
-	add_library(qagame.mp.${Architecture} SHARED ${src_game})
-	set_target_properties(qagame.mp.${Architecture} PROPERTIES PREFIX "")
-	set_target_properties(qagame.mp.${Architecture} PROPERTIES COMPILE_DEFINITIONS "QAGAME")
-	set_target_properties(qagame.mp.${Architecture} PROPERTIES COMPILE_FLAGS "-I${CMAKE_SOURCE_DIR}/game")
-	set_target_properties(qagame.mp.${Architecture} PROPERTIES LINK_FLAGS "${ldflags}")
-	set_target_properties(qagame.mp.${Architecture} PROPERTIES INSTALL_NAME_DIR "@executable_path")
-	target_link_libraries(qagame.mp.${Architecture} ${sys_libs})
+	add_library(qagame${LIB_SUFFIX}${Architecture} SHARED ${src_game})
+	set_target_properties(qagame${LIB_SUFFIX}${Architecture} PROPERTIES PREFIX "")
+	set_target_properties(qagame${LIB_SUFFIX}${Architecture} PROPERTIES COMPILE_DEFINITIONS "QAGAME")
+	set_target_properties(qagame${LIB_SUFFIX}${Architecture} PROPERTIES COMPILE_FLAGS "-I${CMAKE_SOURCE_DIR}/game")
+	set_target_properties(qagame${LIB_SUFFIX}${Architecture} PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(qagame${LIB_SUFFIX}${Architecture} PROPERTIES INSTALL_NAME_DIR "@executable_path")
+	target_link_libraries(qagame${LIB_SUFFIX}${Architecture} ${sys_libs})
+	if(LUA_FOUND)
+		target_include_directories(qagame${LIB_SUFFIX}${Architecture} PRIVATE ${LUA_INCLUDE_DIR})
+		target_link_libraries(qagame${LIB_SUFFIX}${Architecture} ${LUA_LIBRARIES})
+		target_compile_definitions(qagame${LIB_SUFFIX}${Architecture} PUBLIC BUILD_LUA=1 )
+		#target_compile_definitions(qagame${LIB_SUFFIX}${Architecture} PRIVATE LSQLITE_VERSION="0.9.4")
+	endif()
 endif()
 
 if (UI)
-	add_library(ui.mp.${Architecture} SHARED ${src_ui})
-	set_target_properties(ui.mp.${Architecture} PROPERTIES PREFIX "")
-	set_target_properties(ui.mp.${Architecture} PROPERTIES COMPILE_DEFINITIONS "UI_EXPORTS")
-	set_target_properties(ui.mp.${Architecture} PROPERTIES COMPILE_FLAGS "-I${CMAKE_SOURCE_DIR}/ui_new")
-	set_target_properties(ui.mp.${Architecture} PROPERTIES LINK_FLAGS "${ldflags}")
-	set_target_properties(ui.mp.${Architecture} PROPERTIES INSTALL_NAME_DIR "@executable_path")
-	target_link_libraries(ui.mp.${Architecture} ${sys_libs})
+	add_library(ui${LIB_SUFFIX}${Architecture} SHARED ${src_ui})
+	set_target_properties(ui${LIB_SUFFIX}${Architecture} PROPERTIES PREFIX "")
+	set_target_properties(ui${LIB_SUFFIX}${Architecture} PROPERTIES COMPILE_DEFINITIONS "UI_EXPORTS")
+	set_target_properties(ui${LIB_SUFFIX}${Architecture} PROPERTIES COMPILE_FLAGS "-I${CMAKE_SOURCE_DIR}/ui_new")
+	set_target_properties(ui${LIB_SUFFIX}${Architecture} PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(ui${LIB_SUFFIX}${Architecture} PROPERTIES INSTALL_NAME_DIR "@executable_path")
+	target_link_libraries(ui${LIB_SUFFIX}${Architecture} ${sys_libs})
 endif()
 
 set(etf_install_dir "${CMAKE_INSTALL_PREFIX}/etf")
 
 if(WIN32)
-install(TARGETS cgame.mp.${Architecture} RUNTIME DESTINATION "${etf_install_dir}")
-install(TARGETS qagame.mp.${Architecture} RUNTIME DESTINATION "${etf_install_dir}")
-install(TARGETS ui.mp.${Architecture} RUNTIME DESTINATION "${etf_install_dir}")
+install(TARGETS cgame${LIB_SUFFIX}${Architecture} RUNTIME DESTINATION "${etf_install_dir}")
+install(TARGETS qagame${LIB_SUFFIX}${Architecture} RUNTIME DESTINATION "${etf_install_dir}")
+install(TARGETS ui${LIB_SUFFIX}${Architecture} RUNTIME DESTINATION "${etf_install_dir}")
 else()
-install(TARGETS cgame.mp.${Architecture} LIBRARY DESTINATION "${etf_install_dir}")
-install(TARGETS qagame.mp.${Architecture} LIBRARY DESTINATION "${etf_install_dir}")
-install(TARGETS ui.mp.${Architecture} LIBRARY DESTINATION "${etf_install_dir}")
+install(TARGETS cgame${LIB_SUFFIX}${Architecture} LIBRARY DESTINATION "${etf_install_dir}")
+install(TARGETS qagame${LIB_SUFFIX}${Architecture} LIBRARY DESTINATION "${etf_install_dir}")
+install(TARGETS ui${LIB_SUFFIX}${Architecture} LIBRARY DESTINATION "${etf_install_dir}")
 endif()

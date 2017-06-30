@@ -6,6 +6,11 @@
 #include "g_q3f_playerclass.h"
 #include "g_q3f_flag.h"
 #include "g_q3f_team.h"
+
+#ifdef BUILD_LUA
+#include "g_lua.h"  
+#endif // BUILD_LUA
+
 /*
 qboolean	G_SpawnString( const char *key, const char *defaultString, char **out ) {
 	int		i;
@@ -171,32 +176,6 @@ qboolean	G_Q3F_SpawnVectorOverride( const char *key, const char *defaultString, 
 }
 // Golliwog.
 
-
-
-//
-// fields are needed for spawning from the entity string
-//
-typedef enum {
-	F_INT, 
-	F_FLOAT,
-	F_LSTRING,			// string on disk, pointer in memory, TAG_LEVEL
-	F_GSTRING,			// string on disk, pointer in memory, TAG_GAME
-	F_VECTOR,
-	F_ANGLEHACK,
-	F_ENTITY,			// index on disk, pointer in memory
-	F_ITEM,				// index on disk, pointer in memory
-	F_CLIENT,			// index on disk, pointer in memory
-	F_IGNORE
-} fieldtype_t;
-
-typedef struct
-{
-	const char *name;
-	size_t		ofs;
-	fieldtype_t	type;
-	//int		flags;
-} field_t;
-
 field_t fields[] = {
 	{"classname", FOFS(classname), F_LSTRING},
 	{"origin", FOFS(s.origin), F_VECTOR},
@@ -230,6 +209,7 @@ field_t fields[] = {
 	{NULL}
 };
 
+const size_t numFields = ARRAY_LEN(fields);
 
 typedef struct {
 	const char	*name;
@@ -1113,7 +1093,12 @@ void G_SpawnEntitiesFromString( void ) {
 	while( G_ParseSpawnVars() ) {
 		G_SpawnGEntityFromSpawnVars( qtrue, NULL );
 		level.spawnIndex++;
-	}	
+	}
+
+#ifdef BUILD_LUA
+	G_LuaHook_SpawnEntitiesFromString();
+#endif // BUILD_LUA
+
 
 	level.spawning = qfalse;			// any future calls to G_Spawn*() will be errors
 }

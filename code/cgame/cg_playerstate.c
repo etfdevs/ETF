@@ -40,6 +40,14 @@ void CG_CheckAmmo( void ) {
 		cg.lowAmmoWarning = 1;
 	}
 
+	if(cg.snap->ps.weapon == WP_NAPALMCANNON)
+	{
+		if(ammo < 15) // Ammo of 12 == 4 shots +3 = 15
+		{
+			cg.lowAmmoWarning = 1;
+		}
+	}
+
 	if(ammo < wp->numammo )
 	{
 		cg.lowAmmoWarning = 2;				// Can't shoot

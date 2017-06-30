@@ -726,7 +726,10 @@ void Q3F_SetupClass(struct gentity_s *ent)
 	ent->health = ent->client->ps.stats[STAT_HEALTH] = cls->maxhealth;
 
 	// Sort out initial armour
-	ent->client->ps.stats[STAT_ARMOR] = cls->initarmour;
+	if(g_spawnFullStats.integer)
+		ent->client->ps.stats[STAT_ARMOR] = cls->maxarmour;
+	else
+		ent->client->ps.stats[STAT_ARMOR] = cls->initarmour;
 
 	// Sort out initial armour type and class
 	ent->client->ps.stats[STAT_ARMORTYPE] = cls->initarmourtype;
@@ -736,16 +739,30 @@ void Q3F_SetupClass(struct gentity_s *ent)
 
 	ent->client->ps.stats[STAT_WEAPONS] = (1 << WP_AXE);
 	
-	ent->client->ps.ammo[AMMO_SHELLS]	= cls->initammo_shells;
-	ent->client->ps.ammo[AMMO_NAILS]	= cls->initammo_nails;
-	ent->client->ps.ammo[AMMO_ROCKETS]  = cls->initammo_rockets;
-	ent->client->ps.ammo[AMMO_CELLS]	= cls->initammo_cells;
-	ent->client->ps.ammo[AMMO_MEDIKIT]	= cls->initammo_medikit;
-	ent->client->ps.ammo[AMMO_CHARGE]	= cls->initammo_charge;
-	ent->client->ps.ammo[AMMO_NONE] = -1;				// JT - Don't ask.
-	
+	if(g_spawnFullStats.integer)
+	{
+		ent->client->ps.ammo[AMMO_SHELLS]	= cls->maxammo_shells;
+		ent->client->ps.ammo[AMMO_NAILS]	= cls->maxammo_nails;
+		ent->client->ps.ammo[AMMO_ROCKETS]  = cls->maxammo_rockets;
+		ent->client->ps.ammo[AMMO_CELLS]	= cls->maxammo_cells;
+		ent->client->ps.ammo[AMMO_MEDIKIT]	= cls->maxammo_medikit;
+		ent->client->ps.ammo[AMMO_CHARGE]	= cls->maxammo_charge;
+		ent->client->ps.ammo[AMMO_NONE]		= -1;				// JT - Don't ask.
 
-	ent->client->ps.ammo[AMMO_GRENADES]	= cls->gren1init + (cls->gren2init << 8);
+		ent->client->ps.ammo[AMMO_GRENADES]	= cls->gren1max + (cls->gren2init << 8);
+	}
+	else
+	{
+		ent->client->ps.ammo[AMMO_SHELLS]	= cls->initammo_shells;
+		ent->client->ps.ammo[AMMO_NAILS]	= cls->initammo_nails;
+		ent->client->ps.ammo[AMMO_ROCKETS]  = cls->initammo_rockets;
+		ent->client->ps.ammo[AMMO_CELLS]	= cls->initammo_cells;
+		ent->client->ps.ammo[AMMO_MEDIKIT]	= cls->initammo_medikit;
+		ent->client->ps.ammo[AMMO_CHARGE]	= cls->initammo_charge;
+		ent->client->ps.ammo[AMMO_NONE]		= -1;				// JT - Don't ask.
+
+		ent->client->ps.ammo[AMMO_GRENADES]	= cls->gren1init + (cls->gren2init << 8);
+	}
 
 	for(i =0; i < Q3F_NUM_WEAPONSLOTS; i ++)
 	{

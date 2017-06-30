@@ -262,9 +262,10 @@ void G_Q3F_SentryDie( gentity_t *sentry, gentity_t *inflictor, gentity_t *attack
 		attackerName = parent->client->pers.netname;
 		trap_SendServerCommand(	-1, va( "print \"%s^7's autosentry has blown itself up.\n\"", attackerName ) );
 	} else if( attacker ) {
+		qboolean isally = G_Q3F_IsAllied( attacker, parent ) ? qtrue : qfalse;
 		attackerName = attacker->client ? attacker->client->pers.netname : "somebody";
-		trap_SendServerCommand(	-1, va( "print \"%s^7's autosentry has been destroyed by %s^7!\n\"",
-								parent->client->pers.netname, attackerName ) );
+		trap_SendServerCommand(	-1, va( "print \"%s^7's autosentry has been destroyed by %s%s^7!\n\"",
+								parent->client->pers.netname, (isally ? "^sally^7 " : ""), attackerName ) );
 	} else {
 		attackerName = "Unknown";
 		trap_SendServerCommand(	-1, va( "print \"%s^7's autosentry has been destroyed by an unknown entity!\n\"",
@@ -769,6 +770,213 @@ void G_Q3F_SentryRotate( gentity_t *player, int sentrynum, int angle )
 	player->client->repairEnt = NULL;
 }
 
+void G_Q3F_SentryPlrMove( gentity_t *player, int sentrynum )
+{
+	// Repair the specified sentry (or else pick one in range)
+
+	gentity_t *sentry;
+	vec3_t sentrymin, origin;
+
+	sentry = G_Q3F_CheckSentryUpgradeable( player, sentrynum, qtrue );
+	if( !sentry || !sentry->s.legsAnim /*|| sentry->sound2to1 || player != sentry->parent*/ )
+		return;
+
+	// RR2DO2: kill sentrycam
+	G_FreeEntity( sentry->target_ent );
+
+	player->client->ps.stats[STAT_Q3F_FLAGS] |= (1 << FL_Q3F_MOVING);
+	sentry->takedamage = qfalse;
+	sentry->clipmask = 0;//CONTENTS_SOLID | CONTENTS_PLAYERCLIP;
+	sentry->r.contents = 0;//CONTENTS_BODY | CONTENTS_PLAYERCLIP;
+	
+	sentry->sound2to1 = 1;
+	
+	// Set the angles.
+	sentry->s.angles[YAW]	= AngleNormalize360( player->client->ps.viewangles[YAW] );
+	sentry->s.angles[PITCH]	= 0;
+	sentry->s.angles[ROLL]	= 0;
+	SnapVector( sentry->s.angles );
+	// And the current angles.
+	VectorCopy( sentry->s.angles, sentry->s.apos.trBase );
+	sentry->s.apos.trType = TR_INTERPOLATE;
+	
+	// Get the sentry origin
+	VectorClear( sentrymin );
+	sentrymin[YAW] = player->client->ps.viewangles[YAW];
+	AngleVectors( sentrymin, origin, NULL, NULL );
+	VectorScale( origin, Q3F_SENTRY_BUILD_DISTANCE, origin );
+	VectorAdd( player->r.currentOrigin, origin, origin );
+	//origin[2] += Q3F_SENTRY_AIM_HEIGHT + bg_q3f_classlist[Q3F_CLASS_ENGINEER]->mins[2];
+
+	// And position it
+	//VectorCopy( trace.endpos, origin );
+	//origin[2] -= q3f_sentry_min[2];
+	G_SetOrigin( sentry, origin );
+	trap_LinkEntity(sentry);
+
+	/*sentry->s.angles[YAW] = AngleNormalize360( sentry->s.angles[YAW] + angle );
+#ifdef BUILD_BOTS
+	Bot_Event_SentryAimed( sentry->parent, sentry, sentry->s.angles );
+#endif
+	//Give it slightly longer timestamp so it doesn't go idle around too fast
+	sentry->timestamp = level.time + Q3F_SENTRY_IDLE_TIME*2;
+	VectorCopy( sentry->s.angles, sentry->movedir );
+	sentry->damage = 0;
+
+	player->client->repairEnt = NULL;*/
+}
+
+#if 0
+void G_Q3F_SentryAttemptPlace( gentity_t *player )
+{
+	// Get the sentry origin
+	VectorClear( sentrymin );
+	sentrymin[YAW] = ent->client->ps.viewangles[YAW];
+	AngleVectors( sentrymin, origin, NULL, NULL );
+	VectorScale( origin, Q3F_SENTRY_BUILD_DISTANCE, origin );
+	VectorAdd( ent->r.currentOrigin, origin, origin );
+	origin[2] += Q3F_SENTRY_AIM_HEIGHT + bg_q3f_classlist[Q3F_CLASS_ENGINEER]->mins[2];
+
+	// Try to check the engineer can actually 'reach' that area.
+	G_Q3F_ForceFieldTrace( &trace, ent->r.currentOrigin, NULL, NULL, origin, ent->s.number, MASK_PLAYERSOLID );
+	if( trace.startsolid || trace.fraction < 1 )
+	{
+		trap_SendServerCommand( ent->s.number, "print \"You cannot place an autosentry here.\n\"" );
+		#ifdef BUILD_BOTS
+		Bot_Event_Build_CantBuild( ent, ET_Q3F_SENTRY );
+		#endif
+		return;						// Something got in the way
+	}
+	origin[2] -= Q3F_SENTRY_AIM_HEIGHT + bg_q3f_classlist[Q3F_CLASS_ENGINEER]->mins[2];
+
+		// Work out the start and end points (so we can set the sentry on the ground)
+	for( index = 0; index < 3; index++ )
+	{
+		switch( index )
+		{
+			case 0: traceoffset = 32;	break;
+			case 1: traceoffset = 0.25;	break;
+			case 2:	traceoffset	= 48;	break;
+		}
+		VectorCopy( origin, tracestart );
+		tracestart[2] += traceoffset + q3f_sentry_min[2];
+		VectorCopy( origin, traceend );
+		traceend[2] += traceoffset - 64 + q3f_sentry_min[2];
+
+		G_Q3F_ForceFieldTrace( &trace, tracestart, q3f_sentry_min, q3f_sentry_max, traceend, ent->s.number, MASK_PLAYERSOLID );
+		if( trace.fraction == 1 || /*trace.startsolid ||*/ trace.entityNum < MAX_CLIENTS )//|| trace.startsolid )	// We never hit land, got wedged into something, or landed on a player
+			continue;
+
+		VectorCopy( trace.endpos, origin );
+		G_Q3F_ForceFieldExtTrace( &trace, origin, q3f_sentry_min, q3f_sentry_max, origin, ENTITYNUM_NONE, ent->s.number, MASK_PLAYERSOLID );
+		if( trace.startsolid )				// We're embedded in something
+			continue;
+
+		VectorCopy( trace.endpos, origin );
+		G_Q3F_ForceFieldTrace( &trace, ent->r.currentOrigin, NULL, NULL, origin, ent->s.number, MASK_PLAYERSOLID );
+		if( trace.startsolid || trace.fraction < 1 )				// We're no longer visible to the engineer
+			continue;
+
+		break;
+	}
+	if( index >= 3 )
+	{
+		// We failed. Give up.
+		trap_SendServerCommand( ent->s.number, "print \"You cannot build an autosentry here.\n\"" );
+		#ifdef BUILD_BOTS
+		Bot_Event_Build_CantBuild( ent, ET_Q3F_SENTRY );
+		#endif
+		return;
+	}
+
+	VectorAdd( trace.endpos, q3f_sentry_min, tracestart );
+	VectorAdd( trace.endpos, q3f_sentry_max, traceend );
+	if( G_Q3F_NoBuildCheck( tracestart, traceend, ent->client->sess.sessionTeam, Q3F_NOBUILD_AUTOSENTRY ) )
+	{
+		trap_SendServerCommand( ent->s.number, "print \"You cannot build an autosentry here.\n\"" );
+		#ifdef BUILD_BOTS
+		Bot_Event_Build_CantBuild( ent, ET_Q3F_SENTRY );
+		#endif
+		return;
+	}
+
+	if( G_Q3F_NoAnnoyCheck( tracestart, traceend, ent->client->sess.sessionTeam, Q3F_NOANNOY_BUILDING ) )
+	{
+		trap_SendServerCommand( ent->s.number, "print \"You cannot build an autosentry here.\n\"" );
+		#ifdef BUILD_BOTS
+		Bot_Event_Build_CantBuild( ent, ET_Q3F_SENTRY );
+		#endif
+		return;
+	}
+
+	// Now we have a position, initialise it.
+	sentry = G_Spawn();
+	sentry->classname	= "autosentry";
+	sentry->s.eType		= ET_Q3F_SENTRY;		// Sentry has custom rendering
+	sentry->s.legsAnim	= 0;					// Sentry level (0 means building)
+	sentry->s.time		= level.time;			// Time building started.
+	// Set the angles.
+	sentry->s.angles[YAW]	= AngleNormalize360( ent->client->ps.viewangles[YAW] - 180 );
+	sentry->s.angles[PITCH]	= 0;
+	sentry->s.angles[ROLL]	= 0;
+	SnapVector( sentry->s.angles );
+	// And the current angles.
+	VectorCopy( sentry->s.angles, sentry->s.apos.trBase );
+	sentry->s.apos.trType = TR_INTERPOLATE;
+	// And the think.
+	sentry->die			= G_Q3F_SentryDie;
+	sentry->pain		= G_Q3F_SentryPain;
+	sentry->think		= G_Q3F_SentryFinishBuild;
+	sentry->nextthink	= level.time + Q3F_SENTRY_BUILD_TIME;
+	sentry->last_move_time = level.time;
+
+	// And position it
+	VectorCopy( trace.endpos, origin );
+	origin[2] -= q3f_sentry_min[2];
+	G_SetOrigin( sentry, origin );
+	sentry->s.pos.trType = TR_GRAVITY;
+	sentry->s.pos.trTime = level.time;
+	sentry->s.groundEntityNum = ENTITYNUM_NONE;
+
+	sentry->parent = ent;
+	sentry->r.ownerNum = ENTITYNUM_NONE;	// Nobody 'owns' this as far as physics are concerned
+	sentry->s.clientNum = ent->s.number;	// But we still need to know for ID purposes
+	VectorCopy( q3f_sentry_min, sentry->r.mins );
+	VectorCopy( q3f_sentry_max, sentry->r.maxs );
+	sentry->clipmask = CONTENTS_SOLID | CONTENTS_PLAYERCLIP;
+	sentry->r.contents = CONTENTS_BODY | CONTENTS_PLAYERCLIP;
+	sentry->physicsObject = qtrue;
+	trap_LinkEntity( sentry );
+
+	ent->client->sentry = sentry;
+	ent->client->ps.stats[STAT_Q3F_FLAGS] |= (1 << FL_Q3F_BUILDING);
+	ent->client->buildTime = level.time + Q3F_SENTRY_BUILD_TIME;
+
+	// We set these NOW so that ID can't come up wrong when a sentry is first build
+	sentry->s.otherEntityNum = 50;				// Initial shell count
+	sentry->s.otherEntityNum2 = 0;				// Inital rocket count
+	sentry->health = G_Q3F_SentryMaxHealth( 1 );
+	sentry->sound1to2 = -1;						// Engineers wishing to dismantle
+
+	G_AddEvent( sentry, EV_SENTRY_BUILD, 0);
+
+/*#ifdef BUILD_BOTS
+	Bot_Event_SentryBuilding( ent, sentry );
+#endif
+
+#ifdef DREVIL_BOT_SUPPORT
+	{
+		BotUserData data;
+		data.m_DataType = dtEntity;
+		data.udata.m_Entity = sentry;
+		Bot_Interface_SendEvent(ETF_MESSAGE_SENTRY_BUILDING, ent->s.number, 0, 0, &data);
+	}
+#endif*/
+
+	trap_SendServerCommand( ent->s.number, "print \"Placing autosentry...\n\"" );
+}
+#endif
+
 void G_Q3F_SentryDismantle( gentity_t *player, int sentrynum )
 {
 	// Dismantle the specified sentry and reclaim cells
@@ -1148,6 +1356,33 @@ void G_Q3F_RunSentry( gentity_t *ent )
 	AimBlock_t aim;
 	int activegun, spinleft;
 	
+	if(ent->sound2to1 && ent->parent)
+	{
+		vec3_t sentrymin, origin;
+		// Set the angles.
+		ent->s.angles[YAW]	= AngleNormalize360( ent->parent->client->ps.viewangles[YAW] );
+		ent->s.angles[PITCH]	= 0;
+		ent->s.angles[ROLL]	= 0;
+		SnapVector( ent->s.angles );
+		// And the current angles.
+		VectorCopy( ent->s.angles, ent->s.apos.trBase );
+		ent->s.apos.trType = TR_INTERPOLATE;
+
+		// Get the sentry origin
+		VectorClear( sentrymin );
+		sentrymin[YAW] = ent->parent->client->ps.viewangles[YAW];
+		AngleVectors( sentrymin, origin, NULL, NULL );
+		VectorScale( origin, Q3F_SENTRY_BUILD_DISTANCE, origin );
+		VectorAdd( ent->parent->r.currentOrigin, origin, origin );
+		//origin[2] += Q3F_SENTRY_AIM_HEIGHT + bg_q3f_classlist[Q3F_CLASS_ENGINEER]->mins[2];
+
+		// And position it
+		//VectorCopy( trace.endpos, origin );
+		//origin[2] -= q3f_sentry_min[2];
+		G_SetOrigin( ent, origin );
+		trap_LinkEntity( ent );
+		return;
+	}
 	// If we have an enemy, and we want to fire, fire off the correct weapon.
 	G_Q3F_SentryMove( ent);
 
@@ -1353,6 +1588,18 @@ ceasefire_target:
 **	SupplyStation handling
 */
 
+int G_Q3F_SupplyStationMaxHealth( int supplevel )
+{
+	switch( supplevel )
+	{
+		case 1:		return( 150 );
+		case 2:		return( 180 );
+		case 3:		return( 220 );
+		case 4:		return( 250 );
+		default:	return( 0 );
+	}
+}
+
 void G_Q3F_RunSupplystation( gentity_t *ent )
 {
 	G_Q3F_SentryMove( ent );
@@ -1407,8 +1654,9 @@ void G_Q3F_SupplyStationDie( gentity_t *supplystation, gentity_t *inflictor, gen
 																						"print \"%s ^7has destroyed her supply station.\n\"", attackerName ) );
 	}
 	else if( attacker ) {
+		qboolean isally = G_Q3F_IsAllied( attacker, parent ) ? qtrue : qfalse;
 		attackerName = attacker->client ? attacker->client->pers.netname : "somebody";
-		trap_SendServerCommand(	-1, va( "print \"%s^7's supply station has been destroyed by %s^7!\n\"", parent->client->pers.netname, attackerName ) );
+		trap_SendServerCommand(	-1, va( "print \"%s^7's supply station has been destroyed by %s%s^7!\n\"", parent->client->pers.netname, (isally ? "^sally^7 " : ""), attackerName ) );
 	} else {
 		attackerName = "Unknown";
 		trap_SendServerCommand(	-1, va( "print \"%s^7's supply station has been destroyed by an unknown entity!\n\"",
@@ -1508,6 +1756,64 @@ void G_Q3F_SupplyStationTouch( gentity_t *supplystation, gentity_t *other, trace
 	}
 }
 
+static QINLINE int G_Q3F_SupplyRegenDivisor(int supplevel)
+{
+	return (supplevel != 99 && supplevel >= 2) ? 10 : 20;
+}
+
+static QINLINE int G_Q3F_SupplyRegenTime(int supplevel)
+{
+	return supplevel == 3 ? 6000 : Q3F_SUPPLYSTATION_REGEN_TIME;
+}
+
+void G_Q3F_SupplyStationRegen( gentity_t *supplystation )
+{
+	// Time to increase ammo?
+	if( supplystation->timestamp < level.time ) {
+
+		// Increase the amount of ammo inside
+		int divisor = G_Q3F_SupplyRegenDivisor(supplystation->s.legsAnim);
+
+		supplystation->s.origin2[0]	+= Q3F_SUPPLYSTATION_SHELLS / divisor;
+		supplystation->s.origin2[1]	+= Q3F_SUPPLYSTATION_NAILS / divisor;
+		supplystation->s.origin2[2]	+= Q3F_SUPPLYSTATION_ROCKETS / divisor;
+		supplystation->s.angles2[0]	+= Q3F_SUPPLYSTATION_CELLS / divisor;
+		supplystation->s.angles2[1]	+= Q3F_SUPPLYSTATION_ARMOUR / divisor;
+
+		if( supplystation->s.origin2[0] > Q3F_SUPPLYSTATION_SHELLS )
+			supplystation->s.origin2[0] = Q3F_SUPPLYSTATION_SHELLS;
+		if( supplystation->s.origin2[1] > Q3F_SUPPLYSTATION_NAILS )
+			supplystation->s.origin2[1] = Q3F_SUPPLYSTATION_NAILS;
+		if( supplystation->s.origin2[2] > Q3F_SUPPLYSTATION_ROCKETS )
+			supplystation->s.origin2[2] = Q3F_SUPPLYSTATION_ROCKETS;
+		if( supplystation->s.angles2[0] > Q3F_SUPPLYSTATION_CELLS )
+			supplystation->s.angles2[0] = Q3F_SUPPLYSTATION_CELLS;
+		if( supplystation->s.angles2[1] > Q3F_SUPPLYSTATION_ARMOUR )
+			supplystation->s.angles2[1] = Q3F_SUPPLYSTATION_ARMOUR;
+
+		supplystation->timestamp = level.time + G_Q3F_SupplyRegenTime(supplystation->s.legsAnim); //Q3F_SUPPLYSTATION_REGEN_TIME;
+
+#ifdef BUILD_BOTS
+		Bot_Event_SendSupplyStatsToBot( supplystation );
+#endif
+#ifdef DREVIL_BOT_SUPPORT
+		BotSendDispenserStatus(supplystation);
+#endif
+	}
+
+	if( supplystation->s.legsAnim != 3)
+		return;
+
+	if( supplystation->timestamp2 < level.time ) {
+		supplystation->s.angles2[2] += 1;
+
+		if( supplystation->s.angles2[2] > 2 )
+			supplystation->s.angles2[2] = 2;
+
+		supplystation->timestamp2 = level.time + (60000); // 1 minute
+	}
+}
+
 void G_Q3F_SupplyStationThink( gentity_t *supplystation )
 {
 	// see if we should retract our screen
@@ -1543,7 +1849,7 @@ void G_Q3F_SupplyStationThink( gentity_t *supplystation )
 	if( !supplystation->s.legsAnim )
 	{
 		supplystation->s.legsAnim	= 1;
-		supplystation->health		= 150;
+		supplystation->health		= G_Q3F_SupplyStationMaxHealth( 1 );
 		supplystation->touch		= G_Q3F_SupplyStationTouch;
 		supplystation->takedamage	= qtrue;
 		G_Q3F_UpdateEngineerStats( supplystation->parent );
@@ -1570,39 +1876,9 @@ void G_Q3F_SupplyStationThink( gentity_t *supplystation )
 #endif
 	}
 
-	// Time to increase ammo?
-	if( supplystation->timestamp < level.time ) {
+	G_Q3F_SupplyStationRegen( supplystation );
 
-		// Increase the amount of ammo inside
-
-		supplystation->s.origin2[0]	+= Q3F_SUPPLYSTATION_SHELLS / 20;
-		supplystation->s.origin2[1]	+= Q3F_SUPPLYSTATION_NAILS / 20;
-		supplystation->s.origin2[2]	+= Q3F_SUPPLYSTATION_ROCKETS / 20;
-		supplystation->s.angles2[0]	+= Q3F_SUPPLYSTATION_CELLS / 20;
-		supplystation->s.angles2[1]	+= Q3F_SUPPLYSTATION_ARMOUR / 20;
-
-		if( supplystation->s.origin2[0] > Q3F_SUPPLYSTATION_SHELLS )
-			supplystation->s.origin2[0] = Q3F_SUPPLYSTATION_SHELLS;
-		if( supplystation->s.origin2[1] > Q3F_SUPPLYSTATION_NAILS )
-			supplystation->s.origin2[1] = Q3F_SUPPLYSTATION_NAILS;
-		if( supplystation->s.origin2[2] > Q3F_SUPPLYSTATION_ROCKETS )
-			supplystation->s.origin2[2] = Q3F_SUPPLYSTATION_ROCKETS;
-		if( supplystation->s.angles2[0] > Q3F_SUPPLYSTATION_CELLS )
-			supplystation->s.angles2[0] = Q3F_SUPPLYSTATION_CELLS;
-		if( supplystation->s.angles2[1] > Q3F_SUPPLYSTATION_ARMOUR )
-			supplystation->s.angles2[1] = Q3F_SUPPLYSTATION_ARMOUR;
-
-		supplystation->timestamp	= level.time + Q3F_SUPPLYSTATION_REGEN_TIME;
-
-#ifdef BUILD_BOTS
-		Bot_Event_SendSupplyStatsToBot( supplystation );
-#endif
-#ifdef DREVIL_BOT_SUPPORT
-		BotSendDispenserStatus(supplystation);
-#endif
-	}
-
-	supplystation->nextthink	= level.time + FRAMETIME;
+	supplystation->nextthink = level.time + FRAMETIME;
 }
 
 gentity_t *G_Q3F_CheckSupplyStation( gentity_t *player, int suppnum )
@@ -1750,9 +2026,9 @@ void G_Q3F_Supply_Command( gentity_t *player )
 	}
 	else if( !Q_stricmp( buff, "armor" ) )
 	{
-		if ( player->client->ps.ammo[STAT_ARMOR] < cls->maxarmour)
+		if ( player->client->ps.stats[STAT_ARMOR] < cls->maxarmour)
 		{
-			count = cls->maxarmour - player->client->ps.ammo[STAT_ARMOR];
+			count = cls->maxarmour - player->client->ps.stats[STAT_ARMOR];
 			if( count > supplystation->s.angles2[1] )
 				count = (int) supplystation->s.angles2[1];
 			player->client->ps.stats[STAT_ARMOR] += count;
@@ -1773,9 +2049,77 @@ void G_Q3F_Supply_Command( gentity_t *player )
 			Bot_Event_GotDispenserAmmo( player );
 #endif
 	}
-	else {
-		trap_SendServerCommand( player->s.number, "print \"Usage: supply ammo|armor\n\"" );
+	else if( !Q_stricmp( buff, "grenade" ) )
+	{
+		if ( (player->client->ps.ammo[AMMO_GRENADES] & 0xFF) < cls->gren1max)
+		{
+			count = 1;
+			if( count > supplystation->s.angles2[2] )
+				count = (int) supplystation->s.angles2[2];
+			player->client->ps.ammo[AMMO_GRENADES] = 
+				(player->client->ps.ammo[AMMO_GRENADES] & 0xFF00) + 
+				(player->client->ps.ammo[AMMO_GRENADES] & 0xFF) + count;
+			//player->client->ps.stats[STAT_ARMOR] += count;
+			supplystation->s.angles2[2] -= count;
+		}
+		else
+			count = 0;
+
+#ifdef BUILD_BOTS
+		if( count > 0 )
+			gotammo = qtrue;
+#endif
+
+		player->client->repairEnt = NULL;
+
+#ifdef BUILD_BOTS
+		if(gotammo)
+			Bot_Event_GotDispenserAmmo( player );
+#endif
 	}
+	else {
+		trap_SendServerCommand( player->s.number, "print \"Usage: supply ammo|armor|grenade\n\"" );
+	}
+}
+
+void G_Q3F_SupplyStationUpgrade( gentity_t *player, int suppnum )
+{
+	// Upgrade the specified supplystation (or else pick one in range)
+
+	gentity_t *supplystation;
+
+	supplystation = G_Q3F_CheckSupplyStation( player, suppnum );
+	if( !supplystation || !supplystation->s.legsAnim || supplystation->s.legsAnim >= 3 )
+		return;
+
+	if( player->client->ps.ammo[AMMO_CELLS] < Q3F_SUPPLYSTATION_BUILD_CELLS )
+	{
+		trap_SendServerCommand( player->s.number, va( "print \"You need %d cells to upgrade your supply station.\n\"", Q3F_SUPPLYSTATION_BUILD_CELLS ) );
+		return;
+	}
+
+	supplystation->s.legsAnim++;
+	supplystation->timestamp = level.time + G_Q3F_SupplyRegenTime(supplystation->s.legsAnim);
+	if(supplystation->s.legsAnim == 3)
+		supplystation->timestamp2 = level.time + 60000;
+	player->client->ps.ammo[AMMO_CELLS] -= Q3F_SUPPLYSTATION_BUILD_CELLS;
+	
+	supplystation->health = G_Q3F_SupplyStationMaxHealth( supplystation->s.legsAnim );
+
+#ifdef BUILD_BOTS
+	Bot_Event_SendSupplyStatsToBot( supplystation );
+	//Bot_Event_SupplyStationUpgraded( sentry->parent, sentry->s.legsAnim );
+#endif
+
+	//G_AddEvent( sentry, EV_GENERAL_SOUND, sentry->soundPos2 );
+
+	if( supplystation->parent == player )
+		trap_SendServerCommand( player->s.number, va( "print \"You have upgraded your supply station to level %d\n\"", supplystation->s.legsAnim ) );
+	else if( supplystation->parent && supplystation->parent->client )
+		trap_SendServerCommand( player->s.number, va( "print \"You have upgraded %s^7's supply station to level %d\n\"", supplystation->parent->client->pers.netname, supplystation->s.legsAnim ) );
+	G_Q3F_UpdateEngineerStats( supplystation->parent );
+
+	player->client->repairEnt = NULL;
 }
 
 void G_Q3F_SupplyStationRepair( gentity_t *player, int suppnum )
@@ -1786,16 +2130,16 @@ void G_Q3F_SupplyStationRepair( gentity_t *player, int suppnum )
 	int cells;
 
 	supplystation = G_Q3F_CheckSupplyStation( player, suppnum );
-	if( !supplystation )
+	if( !supplystation || !supplystation->s.legsAnim )
 		return;
 
-	cells = (154 - supplystation->health) / 5;
+	cells = (G_Q3F_SupplyStationMaxHealth( supplystation->s.legsAnim ) + 4 - supplystation->health) / 5;
 	if( cells > player->client->ps.ammo[AMMO_CELLS] )
 		cells = player->client->ps.ammo[AMMO_CELLS];
 	player->client->ps.ammo[AMMO_CELLS] -= cells;
 	supplystation->health += cells * 5;
-	if( supplystation->health > 150 )
-		supplystation->health = 150;
+	if( supplystation->health > G_Q3F_SupplyStationMaxHealth( supplystation->s.legsAnim ) )
+		supplystation->health = G_Q3F_SupplyStationMaxHealth( supplystation->s.legsAnim );
 
 	G_Q3F_UpdateEngineerStats( supplystation->parent );
 	player->client->repairEnt = NULL;
@@ -1823,7 +2167,7 @@ void G_Q3F_SupplyStationRefill( gentity_t *player, int suppnum )
 	int ammo, available;
 
 	supplystation = G_Q3F_CheckSupplyStation( player, suppnum );
-	if( !supplystation )
+	if( !supplystation || !supplystation->s.legsAnim )
 		return;
 
 	ammo = Q3F_SUPPLYSTATION_SHELLS - supplystation->s.origin2[0];
@@ -2025,7 +2369,8 @@ void G_Q3F_SupplyStationBuild( gentity_t *ent )
 	supplystation->pain			= G_Q3F_SupplyStationPain;
 	supplystation->think		= G_Q3F_SupplyStationThink;
 	supplystation->nextthink	= level.time + Q3F_SUPPLYSTATION_BUILD_TIME;
-	supplystation->timestamp	= level.time + Q3F_SUPPLYSTATION_REGEN_TIME;
+	supplystation->timestamp	= level.time + G_Q3F_SupplyRegenTime(1);
+	supplystation->timestamp2	= level.time + 60000;
 
 	// And position it
 	VectorCopy( trace.endpos, origin );
@@ -2106,7 +2451,7 @@ void G_Q3F_SupplyStationDismantle( gentity_t *player, int suppnum )
 	bg_q3f_playerclass_t *cls;
 
 	supplystation = G_Q3F_CheckSupplyStation( player, suppnum );
-	if( !supplystation )
+	if( !supplystation || !supplystation->s.legsAnim )
 		return;
 	if( !G_Q3F_AttemptDismantle( player, supplystation ) )
 	{
@@ -2237,6 +2582,14 @@ void G_Q3F_EngineerBuild_Command( gentity_t *ent )
 		id = atoi( cmdbuff );
 		G_Q3F_SentryDismantle( ent, id );
 		G_Q3F_SupplyStationDismantle( ent, id );
+		return;
+	}
+	if( !Q_stricmp( "move", cmdbuff ) )
+	{
+		trap_Argv( 2, cmdbuff, sizeof(cmdbuff) );
+		id = atoi( cmdbuff );
+		G_Q3F_SentryPlrMove( ent, id );
+		//G_Q3F_SupplyStationDismantle( ent, id );
 		return;
 	}
 

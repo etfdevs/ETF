@@ -10,6 +10,9 @@
 #include "bg_q3f_tea.h"
 
 #include "g_bot_interface.h"
+#ifdef BUILD_LUA
+#include "g_lua.h"
+#endif
 // g_client.c -- client functions that don't happen every frame
 
 vec3_t	playerMins = {-15, -15, -24};
@@ -683,7 +686,7 @@ Returns number of players on a team
 ================
 */
 //team_t TeamCount( int ignoreClientNum, int team ) {
-q3f_team_t TeamCount( int ignoreClientNum, int team ) {	//RR2DO2
+int TeamCount( int ignoreClientNum, q3f_team_t team ) {	//RR2DO2
 	int		i;
 	int		count = 0;
 
@@ -1070,7 +1073,19 @@ void ClientUserinfoChanged( int clientNum, char * reason ) {
 	// print scoreboards, display models, and play custom sounds
 	s = va("n\\%s\\t\\%i\\cls\\%i\\g\\%i\\sc\\%i", client->pers.netname, client->sess.sessionTeam, client->ps.persistant[PERS_CURRCLASS], client->pers.gender, client->sess.shoutcaster );
 
+	trap_GetConfigstring( CS_PLAYERS+clientNum, oldname, sizeof(oldname) );
 	trap_SetConfigstring( CS_PLAYERS+clientNum, s );
+
+	// not changed
+	if (Q_stricmp (oldname, s) == 0 ) {
+		return;
+	}
+
+#ifdef BUILD_LUA
+	// *LUA* API callbacks
+	// This only gets called when the ClientUserinfo is changed, replicating ETPro's behaviour.
+	G_LuaHook_ClientUserinfoChanged(clientNum, reason);
+#endif
 
 	G_LogPrintf( "ClientUserinfoChanged (%s): %i %s\n", reason, clientNum, s );
 }
@@ -1149,11 +1164,15 @@ restarts.
 */
 char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 {
-	char		*value, *reason, *name, *ip;
+	char		*value, *reason, *name, *ip;// , *guid;
 	gclient_t	*client;
 	char		userinfo[MAX_INFO_STRING];
 	char		con_name[MAX_NETNAME];
 	char		con_ip[MAX_IP_LENGTH];
+	char		guid_str[33] = { 0 };
+#ifdef BUILD_LUA
+	char		lua_reason[MAX_STRING_CHARS] = "";
+#endif
 	gentity_t	*ent;
 
 	int i;
@@ -1183,6 +1202,11 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 	//value = Info_ValueForKey (userinfo, "cl_anonymous");
 	name = Info_ValueForKey (userinfo, "name");
 	ip = Info_ValueForKey (userinfo, "ip");
+	Q_strncpyz( guid_str, Info_ValueForKey( userinfo, "cl_guid" ), sizeof( guid_str ) );
+	if ( isBot )
+		Q_strncpyz( guid_str, "BOT", sizeof( guid_str ) );
+	else if ( !*guid_str || !Q_stricmp( guid_str, "unknown") )
+		Q_strncpyz( guid_str, "NOGUID", sizeof( guid_str ) );
 	ClientCleanName( clientNum, name, con_name, sizeof(con_name) );
 	G_StripPort( ip, con_ip, sizeof(con_ip) );
 	/*if ( *value && strcmp(value, "0" ) ) {
@@ -1311,14 +1335,25 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 
 	// read or initialize the session data
 	if ( firstTime || level.newSession ) {
-		G_InitSessionData( client, userinfo );
+		G_InitClientSessionData( client, userinfo );
 	}
-	G_ReadSessionData( client );
+	G_ReadClientSessionData( client );
 
 	if(isBot) 
 	{
 		client->sess.versionOK = qtrue;
 	}
+
+#ifdef BUILD_LUA
+	// LUA API callbacks (check with Lua scripts)
+	if (G_LuaHook_ClientConnect(clientNum, firstTime, isBot, lua_reason))
+	{
+		if (!isBot && !(ent->r.svFlags & SVF_BOT))
+		{
+			return va("You are excluded from this server. %s\n", lua_reason);
+		}
+	}
+#endif
 
 	// get and distribute relevent paramters
 	G_LogPrintf( "ClientConnect: %i\n", clientNum );
@@ -1360,6 +1395,11 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 	}
 	// Golliwog.
 
+	if( /*guid &&*/ *guid_str && (!client->sess.guidStr || Q_stricmp( client->sess.guidStr, guid_str )) )
+	{
+		Q_strncpyz( client->sess.guidStr, guid_str, sizeof(client->sess.guidStr) );
+	}
+
 	if ( g_unlagged.integer ) {
 		trap_SendServerCommand( clientNum, "print \"This server is Unlagged: full lag compensation is ON!\n\"" );
 	} else {
@@ -1386,9 +1426,17 @@ void ClientBegin( int clientNum ) {
 	int i;	// RR2DO2
 	int spawn_count; // Ensiform, from ET so that CG_Respawn still happens
 
+	// call LUA clientBegin only once when player connects
+	qboolean firsttime = qfalse;
+
 	ent = g_entities + clientNum;
 
 	client = level.clients + clientNum;
+
+	if (client->pers.connected == CON_CONNECTING)
+	{
+		firsttime = qtrue;
+	}
 
 	if ( ent->r.linked ) {
 		trap_UnlinkEntity( ent );
@@ -1440,6 +1488,15 @@ void ClientBegin( int clientNum ) {
 
 	// count current clients and rank for scoreboard
 	CalculateRanks();
+
+#ifdef BUILD_LUA
+	// call LUA clientBegin only once
+	if (firsttime == qtrue)
+	{
+		// LUA API callbacks
+		G_LuaHook_ClientBegin(clientNum);
+	}
+#endif
 }
 
 // Golliwog: Need a touch function to reveal enemy agents etc.
@@ -1696,6 +1753,14 @@ qboolean ClientSpawn(gentity_t *ent) {
 	else if( spawnPoint && !Q3F_IsSpectator( client ) )
 		G_Q3F_TriggerEntity( spawnPoint, ent, Q3F_STATE_ACTIVE, NULL, qfalse );
 
+#ifdef BUILD_LUA
+	// *LUA* API callbacks
+	// FIXME should only call if real class maybe?
+	// IE: Skip the team-but-no-class initial spawn
+	// And what about no room to spawn cases?
+	G_LuaHook_ClientSpawn(ent - g_entities);
+#endif
+
 	// run a client frame to drop exactly to the floor,
 	// initialize animations and other things
 	client->ps.commandTime = level.time - 100;
@@ -1765,6 +1830,11 @@ void ClientDisconnect( int clientNum ) {
 	if ( !ent->client ) {
 		return;
 	}
+
+#ifdef BUILD_LUA
+	// LUA API callbacks
+	G_LuaHook_ClientDisconnect(clientNum);
+#endif
 
 #ifdef BUILD_BOTS
 	Bot_Event_ClientDisConnected( ent );

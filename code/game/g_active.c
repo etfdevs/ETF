@@ -101,7 +101,7 @@ Check for lava / slime contents and drowning
 =============
 */
 void P_WorldEffects( gentity_t *ent ) {
-	qboolean	envirosuit, aqualung;
+	qboolean	envirosuit, aqualung, pentagram;
 	int			waterlevel;
 
 	if ( ent->client->noclip ) {
@@ -112,6 +112,7 @@ void P_WorldEffects( gentity_t *ent ) {
 	waterlevel = ent->waterlevel;
 
 	envirosuit	= ent->client->ps.powerups[PW_BATTLESUIT] > level.time;
+	pentagram	= ent->client->ps.powerups[PW_PENTAGRAM] > level.time;
 	aqualung	= ent->client->ps.powerups[PW_Q3F_AQUALUNG] > level.time;
 
 	//
@@ -119,7 +120,7 @@ void P_WorldEffects( gentity_t *ent ) {
 	//
 	if ( waterlevel == 3 ) {
 		// envirosuit give air
-		if ( envirosuit || aqualung ) {
+		if ( envirosuit || pentagram || aqualung ) {
 			ent->client->airOutTime = level.time + 10000;
 		}
 
@@ -163,6 +164,8 @@ void P_WorldEffects( gentity_t *ent ) {
 
 			if ( envirosuit ) {
 				G_AddEvent( ent, EV_POWERUP_BATTLESUIT, 0 );
+			} else if ( pentagram ) {
+				G_AddEvent( ent, EV_POWERUP_PENTAGRAM, 0 );
 			} else {
 				if (ent->watertype & CONTENTS_LAVA) {
 					G_Damage (ent, NULL, NULL, NULL, NULL, 
@@ -730,6 +733,15 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 			FireWeapon( ent );
 			break;
 
+		case EV_PLACE_BUILDING:
+			{
+				if(ent->client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_MOVING))
+				{
+					
+				}
+			}
+			break;
+
 		case EV_CHANGE_WEAPON:
 			ent->flags &= ~FL_NO_KNOCKBACK;
 			ent->client->ps.eFlags &= ~ EF_Q3F_AIMING;
@@ -766,8 +778,6 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 	}
 
 }
-
-void BotTestSolid(vec3_t origin);
 
 /*
 ==============
@@ -1065,76 +1075,77 @@ void ClientThink_real( gentity_t *ent ) {
 	// Agent invisible
 	if( client->ps.eFlags & EF_Q3F_INVISIBLE )
 		client->ps.speed = 0;		// Can't move if invisible.
-		// Laying a charge.
-		if( client->chargeTime ) {
-			if( client->chargeTime <= level.time ) {
-				client->ps.ammoclip[3] = client->chargeEntity->soundPos1;
-				trap_SendServerCommand( ent->s.number, "print \"Charge set.\n\"" );
-				if( client->ps.ammo[AMMO_CHARGE] > 0 )
-					client->ps.ammo[AMMO_CHARGE]--;
-				client->chargeTime = 0;		// Allow movement again
+
+	// Laying a charge.
+	if( client->chargeTime ) {
+		if( client->chargeTime <= level.time ) {
+			client->ps.ammoclip[3] = client->chargeEntity->soundPos1;
+			trap_SendServerCommand( ent->s.number, "print \"Charge set.\n\"" );
+			if( client->ps.ammo[AMMO_CHARGE] > 0 )
+				client->ps.ammo[AMMO_CHARGE]--;
+			client->chargeTime = 0;		// Allow movement again
+			client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_LAYCHARGE);
+			client->chargeEntity->s.legsAnim = 1;
+			#ifdef BUILD_BOTS
+			Bot_Event_DetpackBuilt(ent, client->chargeEntity);
+			#endif
+			ent->client->pers.stats.data[STATS_GREN + Q3F_GREN_CHARGE].shots++;
+		} else {
+			other = client->chargeEntity;
+			if( Distance( other->r.currentOrigin, ent->r.currentOrigin ) > 100 ) {
+				// They've moved too far, cancel the lay.
+				if( other->inuse &&	(other->s.eType == ET_Q3F_GRENADE && other->s.weapon == Q3F_GREN_CHARGE))
+					G_FreeEntity( other );
+				else G_Printf( "Attempted to free '%s' as charge.\n", other->classname );
+				client->chargeEntity = NULL;
+				client->chargeTime = 0;
 				client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_LAYCHARGE);
-				client->chargeEntity->s.legsAnim = 1;
-				#ifdef BUILD_BOTS
-				Bot_Event_DetpackBuilt(ent, client->chargeEntity);
-				#endif
-				ent->client->pers.stats.data[STATS_GREN + Q3F_GREN_CHARGE].shots++;
-			} else {
-				other = client->chargeEntity;
-				if( Distance( other->r.currentOrigin, ent->r.currentOrigin ) > 100 ) {
-					// They've moved too far, cancel the lay.
-					if( other->inuse &&	(other->s.eType == ET_Q3F_GRENADE && other->s.weapon == Q3F_GREN_CHARGE))
-						G_FreeEntity( other );
-					else G_Printf( "Attempted to free '%s' as charge.\n", other->classname );
-					client->chargeEntity = NULL;
-					client->chargeTime = 0;
-					client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_LAYCHARGE);
-				}
-				else client->ps.speed = 0;		// Stop all movement.
 			}
+			else client->ps.speed = 0;		// Stop all movement.
 		}
-		// Disarming a charge
-		if( client->chargeDisarmTime )
+	}
+	// Disarming a charge
+	if( client->chargeDisarmTime )
+	{
+		if( !client->chargeDisarmEnt || !client->chargeDisarmEnt->inuse )
 		{
-			if( !client->chargeDisarmEnt || !client->chargeDisarmEnt->inuse )
-			{
-				// Lost our disarm ent?
+			// Lost our disarm ent?
 
-				client->chargeDisarmEnt = NULL;
-				client->chargeDisarmTime = 0;
-			}
-			else if(	!(client->ps.pm_flags & PMF_DUCKED) ||
-						!trap_EntityContact( ent->r.absmin, ent->r.absmax, client->chargeDisarmEnt ) )
-			{
-				// We've lost contact.
-
-				if( client->chargeDisarmEnt->count >= 5 && !(rand() % 10) )
-				{
-					// They've flumped the disarming process :)
-
-					trap_SendServerCommand( ent->s.number, "print \"HE Charge Triggered! RUN!\n\"" );
-					client->chargeDisarmEnt->count = 5;
-					client->chargeDisarmEnt->nextthink = level.time;
-				}
-				client->chargeDisarmEnt = NULL;
-				client->chargeDisarmTime = 0;
-			}
-			else if( client->chargeDisarmTime <= level.time )
-			{
-				// We've finished, clean this ent up.
-
-				trap_SendServerCommand( ent->s.number, "print \"HE Charge Disarmed.\n\"" );
-				if( client->chargeDisarmEnt->activator && client->chargeDisarmEnt->activator->inuse )
-				{
-					client->chargeDisarmEnt->activator->client->chargeEntity = NULL;
-					client->chargeDisarmEnt->activator->client->chargeTime = 0;
-					client->chargeDisarmEnt->activator->client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_LAYCHARGE);
-				}
-				G_FreeEntity( client->chargeDisarmEnt );
-				client->chargeDisarmEnt = NULL;
-				client->chargeDisarmTime = 0;
-			} else client->ps.speed = 0;		// Stop all movement.
+			client->chargeDisarmEnt = NULL;
+			client->chargeDisarmTime = 0;
 		}
+		else if(	!(client->ps.pm_flags & PMF_DUCKED) ||
+					!trap_EntityContact( ent->r.absmin, ent->r.absmax, client->chargeDisarmEnt ) )
+		{
+			// We've lost contact.
+
+			if( client->chargeDisarmEnt->count >= 5 && !(rand() % 10) )
+			{
+				// They've flumped the disarming process :)
+
+				trap_SendServerCommand( ent->s.number, "print \"HE Charge Triggered! RUN!\n\"" );
+				client->chargeDisarmEnt->count = 5;
+				client->chargeDisarmEnt->nextthink = level.time;
+			}
+			client->chargeDisarmEnt = NULL;
+			client->chargeDisarmTime = 0;
+		}
+		else if( client->chargeDisarmTime <= level.time )
+		{
+			// We've finished, clean this ent up.
+
+			trap_SendServerCommand( ent->s.number, "print \"HE Charge Disarmed.\n\"" );
+			if( client->chargeDisarmEnt->activator && client->chargeDisarmEnt->activator->inuse )
+			{
+				client->chargeDisarmEnt->activator->client->chargeEntity = NULL;
+				client->chargeDisarmEnt->activator->client->chargeTime = 0;
+				client->chargeDisarmEnt->activator->client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_LAYCHARGE);
+			}
+			G_FreeEntity( client->chargeDisarmEnt );
+			client->chargeDisarmEnt = NULL;
+			client->chargeDisarmTime = 0;
+		} else client->ps.speed = 0;		// Stop all movement.
+	}
 
 	if( client->buildTime ) {
 		if( client->buildTime <= level.time ) {
@@ -1178,6 +1189,9 @@ void ClientThink_real( gentity_t *ent ) {
 	}
 	if ( client->ps.powerups[PW_HASTE] ) {
 		client->ps.speed *= 1.3;
+	}
+	if ( client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_MOVING)) {
+		client->ps.speed *= 0.5;
 	}
 	// Sniper shots to legs.
 	if(client->legwounds) {

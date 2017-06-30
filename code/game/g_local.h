@@ -118,6 +118,7 @@ struct gentity_s {
 
 	int			timestamp;		// body queue sinking, etc
 								// slothy: timestamp used for visual aid in mover
+	int			timestamp2;
 
 	float		angle;			// set in editor, -1 = up, -2 = down
 	char		*target;
@@ -272,6 +273,7 @@ typedef struct {
 	// and the like - mostly, cheat tracking.
 	qboolean	versionOK;		// We've version checked them successfully
 	char		*ipStr;
+	char		guidStr[33];
 	int			adminAttempts;
 	int			adminLevel;
 	int			lastTeamChangeTime;
@@ -678,6 +680,31 @@ typedef struct {
 //
 // g_spawn.c
 //
+
+//
+// fields are needed for spawning from the entity string
+//
+typedef enum {
+	F_INT, 
+	F_FLOAT,
+	F_LSTRING,			// string on disk, pointer in memory, TAG_LEVEL
+	F_GSTRING,			// string on disk, pointer in memory, TAG_GAME
+	F_VECTOR,
+	F_ANGLEHACK,
+	F_ENTITY,			// index on disk, pointer in memory
+	F_ITEM,				// index on disk, pointer in memory
+	F_CLIENT,			// index on disk, pointer in memory
+	F_IGNORE
+} fieldtype_t;
+
+typedef struct
+{
+	const char *name;
+	size_t		ofs;
+	fieldtype_t	type;
+	//int		flags;
+} field_t;
+
 //keeg for tracemap support -- could technically change this to older style, but the FILE, LINE is nice
 #define		G_SpawnString(		key, def, out ) G_SpawnStringExt	( key, def, out, __FILE__, __LINE__ )
 #define		G_SpawnVector2D(	key, def, out ) G_SpawnVector2DExt	( key, def, out, __FILE__, __LINE__ )
@@ -741,10 +768,15 @@ void G_Q3F_FreeAmmoBox( gentity_t *ent ); // RR2DO2
 //
 // g_utils.c
 //
-int G_ModelIndex( char *name );
-int	G_SoundIndex( char *name );
-int	G_ShaderIndex( char *name );		// Much like modelindex
-int G_SpiritScriptIndex( char *name );
+
+void AddRemap(const char *oldShader, const char *newShader, float timeOffset);
+void G_ResetRemappedShaders();
+const char *BuildShaderStateConfig();
+
+int G_ModelIndex( const char *name );
+int	G_SoundIndex( const char *name );
+int	G_ShaderIndex( const char *name );		// Much like modelindex
+int G_SpiritScriptIndex( const char *name );
 
 void	G_TeamCommand( q3f_team_t team, char *cmd );	//RR2DO2
 void	G_KillBox (gentity_t *ent);
@@ -867,7 +899,7 @@ void G_UnlaggedTrace( gentity_t *ent, trace_t *results, const vec3_t start,
 							const vec3_t end, int passEntityNum, int contentmask );
 
 // g_client.c
-q3f_team_t TeamCount( int ignoreClientNum, int team );	// RR2DO2
+int TeamCount( int ignoreClientNum, q3f_team_t team );	// RR2DO2
 #if 0
 int TeamLeader( int team );
 #endif
@@ -1029,6 +1061,7 @@ gentity_t *G_Q3F_CheckSupplyStation( gentity_t *player, int suppnum );
 void G_Q3F_SentryUpgrade( gentity_t *player, int sentrynum );
 void G_Q3F_SentryRepair( gentity_t *player, int sentrynum );
 void G_Q3F_SentryRefill( gentity_t *player, int sentrynum );
+void G_Q3F_SupplyStationUpgrade( gentity_t *player, int suppnum );
 void G_Q3F_SupplyStationRepair( gentity_t *player, int suppnum );
 void G_Q3F_SupplyStationRefill( gentity_t *player, int suppnum );
 // Golliwog.
@@ -1075,10 +1108,10 @@ void G_Q3F_WaypointCommand( gentity_t *ent );
 //
 // g_session.c
 //
-void G_ReadSessionData( gclient_t *client );
-void G_InitSessionData( gclient_t *client, char *userinfo );
+void G_ReadClientSessionData( gclient_t *client );
+void G_InitClientSessionData( gclient_t *client, char *userinfo );
 
-void G_InitWorldSession( void );
+void G_ReadSessionData( void );
 void G_WriteSessionData( void );
 
 //
@@ -1274,6 +1307,13 @@ extern	vmCvar_t	sv_maxConnectionBan;
 extern	vmCvar_t	sv_maxConnectionKick;
 
 extern	vmCvar_t	g_shoutcastPassword;
+
+#ifdef BUILD_LUA
+extern	vmCvar_t	lua_modules;
+extern	vmCvar_t	lua_allowedModules;
+#endif
+
+extern	vmCvar_t	g_spawnFullStats;
 
 #ifdef API_Q3
 void	trap_Printf( const char *fmt );

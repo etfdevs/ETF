@@ -14,6 +14,7 @@
 static char *q3f_flaginfokeys[Q3F_NUM_STATES][Q3F_TEAM_SPECTATOR];	// Keep the strings for a little extra speed
 static char *q3f_teamflaginfokeys[Q3F_NUM_STATES];
 static char *q3f_nonteamflaginfokeys[Q3F_NUM_STATES];
+
 void G_Q3F_FlagInfo( gentity_t *queryent )
 {
 	// Player wants to know about status of assorted flags. So, we tell him.
@@ -24,6 +25,9 @@ void G_Q3F_FlagInfo( gentity_t *queryent )
 	char **keyptr;
 	char fihud[MAX_STRING_CHARS];
 	char *tempbuf;
+
+	const size_t lengthOfCenter = 6;// strlen( "cp \"\"\n" );
+	const size_t lengthOfPrint = 9;// strlen( "print \"\"\n" );
 
 	fihud[0] = 0;
 

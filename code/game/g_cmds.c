@@ -15,6 +15,9 @@
 #include "../../ui/menudef.h"			// for the voice chats
 
 #include "g_bot_interface.h"
+#ifdef BUILD_LUA
+#include "g_lua.h"
+#endif
 
 /*
 ==================
@@ -138,7 +141,7 @@ void Cmd_Stats_f( gentity_t *ent ) {
 			ent->client->pers.stats.data[i].deaths
 			);
 		j = strlen(entry);
-		if (stringlength + j > 1024)
+		if (stringlength + j >= sizeof(string))
 			break;
 		strcpy (string + stringlength, entry);
 		stringlength += j;
@@ -370,6 +373,12 @@ void Cmd_Give_f (gentity_t *ent)
 
 	if (Q_stricmp(name, "suit") == 0) {
 		ent->client->ps.powerups[PW_BATTLESUIT] = level.time + 100*1000;
+		if (!give_all)
+			return;
+	}
+
+	if (Q_stricmp(name, "pent") == 0 || Q_stricmp(name, "pentagram") == 0) {
+		ent->client->ps.powerups[PW_PENTAGRAM] = level.time + 100*1000;
 		if (!give_all)
 			return;
 	}
@@ -1125,7 +1134,7 @@ static char *G_Q3F_ParseSayString( const char *srcptr, gentity_t *activator, gen
 		if( curr != '%' && curr != '$' ) {
 canthandle:
 			*buffptr++ = curr;
-			if( Q_IsColorString( srcptr - 1 ) )
+			if( Q_IsColorStringPtr( srcptr - 1 ) )
 			{
 				if( *srcptr < '0' || toupper(*srcptr) > 'O' )
 				{
@@ -1639,7 +1648,7 @@ static qboolean CheckValidMap(const char *mapname)
 			p = s+len;
 			if (*p == '+' || *p == ';' || !(*p)) return qtrue;
 		}
-		p = strchr(s, ';');		
+		p = strchr(s, ';');
 		if (!p)
 			break;
 		s = p+1;
@@ -3517,11 +3526,11 @@ void ClientCommand( int clientNum ) {
 #ifdef _DEBUG
 	int index;
 
-	G_Printf( va( "%d %d: ", clientNum, trap_Argc() ) );
+	G_Printf( "%d %d: ", clientNum, trap_Argc() );
 	for( index = 0; index < trap_Argc(); index++ )
 	{
 		trap_Argv( index, cmd, sizeof( cmd ) );
-		G_Printf( va( "'%s' ", cmd ) );
+		G_Printf( "'%s' ", cmd);
 	}
 	G_Printf( "\n" );
 #endif
@@ -3532,6 +3541,20 @@ void ClientCommand( int clientNum ) {
 	}
 
 	trap_Argv( 0, cmd, sizeof( cmd ) );
+
+#ifdef BUILD_LUA
+	// LUA API callbacks
+	if (G_LuaHook_ClientCommand(clientNum, cmd))
+	{
+		return;
+	}
+
+	if (Q_stricmp(cmd, "lua_status") == 0)
+	{
+		G_LuaStatus(ent);
+		return;
+	}
+#endif
 
 	if (Q_stricmp (cmd, "say") == 0) {
 		if ( !ent->client->sess.muted || level.ceaseFire ) {

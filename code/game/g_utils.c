@@ -40,6 +40,11 @@ void AddRemap(const char *oldShader, const char *newShader, float timeOffset) {
 	}
 }
 
+void G_ResetRemappedShaders() {
+	memset( &remappedShaders, 0, sizeof(remappedShaders) );
+	remapCount = 0;
+}
+
 const char *BuildShaderStateConfig() {
 	static char	buff[MAX_STRING_CHARS*4];
 	char out[(MAX_QPATH * 2) + 5];
@@ -68,7 +73,7 @@ G_FindConfigstringIndex
 
 ================
 */
-int G_FindConfigstringIndex( char *name, int start, int max, qboolean create ) {
+int G_FindConfigstringIndex( const char *name, int start, int max, qboolean create ) {
 	int		i;
 	char	s[MAX_STRING_CHARS];
 
@@ -100,19 +105,19 @@ int G_FindConfigstringIndex( char *name, int start, int max, qboolean create ) {
 }
 
 
-int G_ModelIndex( char *name ) {
+int G_ModelIndex( const char *name ) {
 	return G_FindConfigstringIndex (name, CS_MODELS, MAX_MODELS, qtrue);
 }
 
-int G_SoundIndex( char *name ) {
+int G_SoundIndex( const char *name ) {
 	return G_FindConfigstringIndex (name, CS_SOUNDS, MAX_SOUNDS, qtrue);
 }
 
-int G_ShaderIndex( char *name ) {
+int G_ShaderIndex( const char *name ) {
 	return G_FindConfigstringIndex (name, CS_SHADERS, MAX_SHADERS, qtrue);
 }
 
-int G_SpiritScriptIndex( char *name ) {
+int G_SpiritScriptIndex( const char *name ) {
 	return G_FindConfigstringIndex (name, CS_SPIRITSCRIPTS, MAX_SPIRITSCRIPTS, qtrue);
 }
 

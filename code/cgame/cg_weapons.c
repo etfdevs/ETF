@@ -1059,6 +1059,10 @@ void CG_AddWeaponWithPowerups( refEntity_t *gun, entityState_t *state, int team 
 			gun->customShader = cgs.media.battleWeaponShader;
 			trap_R_AddRefEntityToScene( gun, NULL );
 		}
+		if ( state->powerups & ( 1 << PW_PENTAGRAM ) ) {
+			gun->customShader = cgs.media.battleWeaponShader;
+			trap_R_AddRefEntityToScene( gun, NULL );
+		}
 		if ( state->extFlags & EXTF_BURNING ) {
 			gun->customShader = cgs.media.onFireShader0;
 			trap_R_AddRefEntityToScene( gun, NULL );
@@ -1314,8 +1318,6 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		CG_Q3F_ShaderBeam( laserbeam.origin, laserbeam.oldorigin, 0.5, cgs.media.sniperLaser, color );
 	}
 
-
-
 	// RR2DO2: moved to here to allow for positioning on tags
 	// do brass ejection
 	if( !ps && !cg.rendering2ndRefDef ) {
@@ -1441,7 +1443,28 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 				else CG_FireFlameChunks( cent, flash.origin, angles, qfalse);
 // jpw
 			}
-		} 
+		}
+
+		// use our own muzzle point as dlight origin 
+		// and put it a bit closer to vieworigin to avoid bad normals near walls
+		if ( ps && cent->currentState.number == cg.predictedPlayerState.clientNum && !cg.renderingFlyBy && !cg.rendering2ndRefDef ) {
+			vec3_t	start, end, muzzle, forward, up;
+			trace_t	tr;
+			AngleVectors( cg.refdefViewAngles, forward, NULL, up );
+			VectorMA( cg.refdef.vieworg, 14, forward, muzzle );
+			//if ( weaponNum == WP_LIGHTNING )
+			//	VectorMA( muzzle, -8, up, muzzle );
+			//else
+				VectorMA( muzzle, -6, up, muzzle );
+			VectorMA( cg.refdef.vieworg, 14, forward, start );
+			VectorMA( cg.refdef.vieworg, 28, forward, end );
+			CG_Trace( &tr, start, NULL, NULL, end, cent->currentState.number, MASK_SHOT | CONTENTS_TRANSLUCENT );
+			if ( tr.fraction != 1.0 ) {
+				VectorMA( muzzle, -13.0 * ( 1.0 - tr.fraction ), forward, flash.origin );
+			} else {
+				VectorCopy( muzzle, flash.origin );
+			}
+		}
 
 		if ( weapon->flashDlightColor[0] || weapon->flashDlightColor[1] || weapon->flashDlightColor[2] ) {
 			trap_R_AddLightToScene( flash.origin, 300, 1.25 + (rand() & 31) / 128, weapon->flashDlightColor[0],
@@ -1464,7 +1487,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 	float			fovOffset;
 	vec3_t			angles;
 	weaponInfo_t	*weapon;
-	weapon_t		weaponNum;	
+	weapon_t		weaponNum;
 	//bg_q3f_playerclass_t *cls;
 	//int starttime, endtime;
 	int agentclass;
@@ -1472,6 +1495,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 	float			shaderalpha;
 	F2RDef_t		*F2RScript;
 	int				animNumber;
+	float			weapFov = cg_fovViewmodel.integer ? cg_fovViewmodel.value : cg_fov.value;
 
 	// RR2DO2: added players without a class
 	if ( ps->persistant[PERS_TEAM] == Q3F_TEAM_SPECTATOR 
@@ -1513,8 +1537,8 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 	}
 
 	// drop gun lower at higher fov
-	if ( cg_fov.integer > 90 ) {
-		fovOffset = -0.2 * ( cg_fov.integer - 90 );
+	if ( cg_fovViewmodelAdjust.integer && weapFov > 90 ) {
+		fovOffset = -0.2f * ( weapFov - 90 );
 	} else {
 		fovOffset = 0;
 	}
@@ -1533,6 +1557,13 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 	VectorMA( hand.origin, (cg_gun_z.value+fovOffset), cg.refdef.viewaxis[2], hand.origin );
 
 	AnglesToAxis( angles, hand.axis );
+
+	if ( cg_fovViewmodel.integer )
+	{
+		float fracDistFOV = tanf( cg.refdef.fov_x * ( M_PI/180 ) * 0.5f );
+		float fracWeapFOV = ( 1.0f / fracDistFOV ) * tanf( weapFov * ( M_PI/180 ) * 0.5f );
+		VectorScale( hand.axis[0], fracWeapFOV, hand.axis[0] );
+	}
 
 	// map torso animations to weapon animations
 	/*if ( cg_gun_frame.integer ) {

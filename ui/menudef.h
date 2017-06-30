@@ -16,6 +16,8 @@
 #define ITEM_TYPE_LED					16			// little light
 #define ITEM_TYPE_TRICHECKBOX			17			// tri-state check box -- slothy
 
+#define ITEM_TYPE_PASSWORDFIELD			99
+
 #define ITEM_ALIGN_LEFT					0			// left alignment
 #define ITEM_ALIGN_CENTER				1			// center alignment
 #define ITEM_ALIGN_RIGHT				2			// right alignment

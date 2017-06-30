@@ -2043,6 +2043,14 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 		trap_S_StartSound (NULL, es->number, CHAN_ITEM, cgs.media.protectSound );
 		break;
+	case EV_POWERUP_PENTAGRAM:
+		DEBUGNAME("EV_POWERUP_PENTAGRAM");
+		if ( es->number == cg.snap->ps.clientNum ) {
+			cg.powerupActive = PW_PENTAGRAM;
+			cg.powerupTime = cg.time;
+		}
+		//trap_S_StartSound (NULL, es->number, CHAN_ITEM, cgs.media.protectEvilSound );
+		break;
 	case EV_POWERUP_REGEN:
 		DEBUGNAME("EV_POWERUP_REGEN");
 		if ( es->number == cg.snap->ps.clientNum ) {
@@ -2092,6 +2100,9 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_SUPPLY_BUILD:
 		CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_BUILD);
 		trap_S_StartSound( NULL, cent->currentState.number, CHAN_AUTO, cgs.media.supplyBuildSound );
+		break;
+
+	case EV_PLACE_BUILDING:
 		break;
 
 

@@ -530,7 +530,7 @@ int Text_Width(const char *text, float scale, int limit, fontStruct_t *parentfon
 		count = 0;
 		while (s && *s && count < len) {
 			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2)) || (*s == '\n')) {
-				if ( Q_IsColorString(s) ) {
+				if ( Q_IsColorStringPtr(s) ) {
 					s += 2;
 					continue;
 				} else if( *s == '\n' ) {
@@ -586,7 +586,7 @@ int Text_Height(const char *text, float scale, int limit, fontStruct_t *parentfo
 		while (s && *s && count < len) {
 			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2)) || (*s == '\n')) {
 			//if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
-				if ( Q_IsColorString(s) ) {
+				if ( Q_IsColorStringPtr(s) ) {
 					s += 2;
 					continue;
 				} else if( *s == '\n' ) {
@@ -681,7 +681,7 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, f
 				//int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
 				//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
 
-				if ( Q_IsColorString( s ) ) {
+				if ( Q_IsColorStringPtr( s ) ) {
 					memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
 					newColor[3] = color[3];
 					trap_R_SetColor( newColor );
@@ -763,7 +763,7 @@ void Text_Width_To_Max(char *text, float scale, int max, fontStruct_t *parentfon
 				return;
 			}
 			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
-				if ( Q_IsColorString(s) ) {
+				if ( Q_IsColorStringPtr(s) ) {
 					s += 2;
 					continue;
 				} else {
@@ -832,7 +832,7 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 				glyph = &font->glyphs[(unsigned char)*s];
 		//int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
 		//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
-				if ( Q_IsColorString( s ) ) {
+				if ( Q_IsColorStringPtr( s ) ) {
 					memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
 					newColor[3] = color[3];
 					trap_R_SetColor( newColor );
@@ -949,7 +949,7 @@ static void Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4_t 
 		while (s && *s && count < len) {
 			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
 				glyph = &font->glyphs[(unsigned char)*s];
-				if ( Q_IsColorString( s ) ) {
+				if ( Q_IsColorStringPtr( s ) ) {
 					memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
 					newColor[3] = color[3];
 					trap_R_SetColor( newColor );
@@ -2078,7 +2078,7 @@ void UI_Q3F_SetVersion(void) {
 
 	compileyear = atoi(buf);
 
-	trap_Cvar_Set( "ui_builddate", va("ETF 1.7 Pre-Release [%02i/%02i/%i] (c)2003-%i, ETF Development Team.  All Rights Reserved", compilemonth, compileday, compileyear, compileyear) );
+	trap_Cvar_Set( "ui_builddate", va("ETF 2.0 Pre-Release [%02i/%02i/%i] (c)2003-%i, ETF Development Team.  All Rights Reserved", compilemonth, compileday, compileyear, compileyear) );
 }
 
 static void UI_DrawGLInfo(rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font) {
@@ -3226,7 +3226,8 @@ static qboolean UI_ClassConfig_Active_HandleKey(int flags, float *special, int k
 
 static qboolean UI_CheckFavServerVersion( const char *info )
 {
-	char *val = NULL;
+	const char *mapname = NULL;
+	const char *val = NULL;
 	int pure = 0;
 
 	val = Info_ValueForKey(info, "balancedteams");
@@ -3235,6 +3236,20 @@ static qboolean UI_CheckFavServerVersion( const char *info )
 	{
 		Com_Error(ERR_DROP, "This server is NOT running " FORTS_VERSION "!\nJoining this server will not function properly with this version." );
 		return qfalse;
+	}
+
+	mapname = Info_ValueForKey( info, "mapname");
+	if(mapname && *mapname)
+	{
+		char bspName[MAX_QPATH] = { 0 };
+		fileHandle_t fp = NULL_FILE;
+		Com_sprintf( bspName, sizeof(bspName), "maps/%s.bsp", mapname );
+		if ( trap_FS_FOpenFile( bspName, &fp, FS_READ ) <= 0 ) {
+			if( fp != NULL_FILE )
+				trap_FS_FCloseFile( fp );
+			Com_Error( ERR_DROP, "You don't have the map running on this server: \"%s\"\nCheck with the community to find proper version!", mapname );
+			return qfalse;
+		}
 	}
 
 	return qtrue;
@@ -3345,6 +3360,9 @@ void UI_ServersSort(int column, qboolean force) {
 
 	uiInfo.serverStatus.sortKey = column;
 	qsort( &uiInfo.serverStatus.displayServers[0], uiInfo.serverStatus.numDisplayServers, sizeof(int), UI_ServersQsortCompare);
+
+	// update displayed levelshot
+	UI_FeederSelection( FEEDER_SERVERS, uiInfo.serverStatus.currentServer );
 }
 
 /*
@@ -3906,7 +3924,8 @@ static const char * keyStr[] = {
 static qboolean UI_CheckVersion( void )
 {
 	static char info[MAX_STRING_CHARS];
-	char *val = NULL;
+	const char *mapname = NULL;
+	const char *val = NULL;
 	int pure = 0;
 
 	int index = uiInfo.serverStatus.currentServer;
@@ -3923,6 +3942,20 @@ static qboolean UI_CheckVersion( void )
 	{
 		Com_Error(ERR_DROP, "This server is NOT running " FORTS_VERSION "!\nJoining this server will not function properly with this version." );
 		return qfalse;
+	}
+
+	mapname = Info_ValueForKey( info, "mapname");
+	if(mapname && *mapname)
+	{
+		char bspName[MAX_QPATH] = { 0 };
+		fileHandle_t fp = NULL_FILE;
+		Com_sprintf( bspName, sizeof(bspName), "maps/%s.bsp", mapname );
+		if ( trap_FS_FOpenFile( bspName, &fp, FS_READ ) <= 0 ) {
+			if( fp != NULL_FILE )
+				trap_FS_FCloseFile( fp );
+			Com_Error( ERR_DROP, "You don't have the map running on this server: \"%s\"\nCheck with the community to find proper version!", mapname );
+			return qfalse;
+		}
 	}
 
 	return qtrue;
@@ -4960,6 +4993,11 @@ static void UI_InsertServerIntoDisplayList(int num, int position) {
 		uiInfo.serverStatus.displayServers[i] = uiInfo.serverStatus.displayServers[i-1];
 	}
 	uiInfo.serverStatus.displayServers[position] = num;
+
+	// update displayed levelshot
+	if ( position == uiInfo.serverStatus.currentServer ) {
+		UI_FeederSelection( FEEDER_SERVERS, uiInfo.serverStatus.currentServer );
+	}
 }
 
 /*
@@ -5194,12 +5232,12 @@ static void UI_BuildServerDisplayList(qboolean force) {
 				UI_RemoveServerFromDisplayList(i);
 			}
 
-			uiInfo.serverStatus.numPlayersOnServers += clients;
 			// insert the server into the list
 			UI_BinaryServerInsertion(i);
 			// done with this server
 			if ( ping > 0 ) {
 				trap_LAN_MarkServerVisible(ui_netSource.integer, i, qfalse);
+				uiInfo.serverStatus.numPlayersOnServers += clients;
 				numinvisible++;
 			}
 		}
@@ -5274,11 +5312,21 @@ static int UI_GetServerStatusInfo( const char *serverAddress, serverStatusInfo_t
 	char *p, *score, *ping, *name;
 	int i, len;
 
+	if (info) {
+		memset(info, 0, sizeof(*info));
+	}
+
+	// ignore initial unset addresses
+	if (serverAddress && *serverAddress == '\0') {
+		return qfalse;
+	}
+
+	// reset server status request for this address
 	if (!info) {
 		trap_LAN_ServerStatus( serverAddress, NULL, 0);
 		return qfalse;
 	}
-	memset(info, 0, sizeof(*info));
+
 	if ( trap_LAN_ServerStatus( serverAddress, info->text, sizeof(info->text)) ) {
 		Q_strncpyz(info->address, serverAddress, sizeof(info->address));
 		p = info->text;
@@ -6230,7 +6278,7 @@ static qboolean UI_FeederPaintSpecial(itemDef_t* item) {
 			backClr[3] *= 0.3f;
 
 			for (j = 0; j < listPtr->numColumns; j++) {
-				int x2 = x;
+				/*int */x2 = x;
 
 				x2 = x + listPtr->columnInfo[j].pos + (listPtr->columnInfo[j].width*0.5);
 
@@ -7458,7 +7506,7 @@ static cvarTable_t		cvarTable[] = {
 	{ NULL,						"allowRedirect",			"0",								CVAR_ARCHIVE },
 	{ &ui_checkversion,			"ui_checkversion",			"0",								CVAR_ARCHIVE },
 
-	{ NULL,						"ui_builddate",				"ETF 1.7 Pre-Release [12/12/12] (c)2003-2012, ETF Development Team.  All Rights Reserved", CVAR_ROM | CVAR_TEMP },
+	{ NULL,						"ui_builddate",				"ETF 2.0 Pre-Release [12/12/12] (c)2003-2012, ETF Development Team.  All Rights Reserved", CVAR_ROM | CVAR_TEMP },
 };
 
 static int		cvarTableSize = sizeof(cvarTable) / sizeof(cvarTable[0]);
@@ -8155,7 +8203,7 @@ void HUD_DrawClassStat(rectDef_t *rect, vec4_t color1, vec4_t color2, float pos,
 	_UI_DrawRect(rect->x, rect->y, rect->w, rect->h, 1, colorBlack);
 }
 
-char *class_choosetext[] = {
+const char *class_choosetext[] = {
 	"1. Recon",
 	"2. Sniper",
 	"3. Soldier",
@@ -8940,7 +8988,7 @@ void HUD_DrawChatBox (rectDef_t *rect, float scale, vec4_t color, int textStyle,
 	
 	s = p = buffer;
 	while(*p) {
-		if(Q_IsColorString(p)) {
+		if(Q_IsColorStringPtr(p)) {
 			clrCode = *(p+1);
 			p++;
 		} else if(*p == '\n') {

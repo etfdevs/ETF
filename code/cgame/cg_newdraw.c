@@ -82,6 +82,7 @@ static void CG_DrawAttacker( rectDef_t* rect, float scale, int style, fontStruct
 }
 
 static void CG_DrawPlayerArmorIcon( rectDef_t *rect ) {
+	// ENSI PENTAGRAM LOGO if PW_PENTAGRAM
 	CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cgs.media.hud_armourShader );	// RR2DO2: another id bug
 }
 
@@ -92,7 +93,10 @@ static void CG_DrawPlayerArmorValue(rectDef_t *rect, float scale, vec4_t color, 
 
 	ps = &cg.snap->ps;
 
-	value = ps->stats[STAT_ARMOR];
+	if ( ps->powerups[PW_PENTAGRAM] )
+		value = 666;
+	else
+		value = ps->stats[STAT_ARMOR];
 
 	if (shader) {
 		trap_R_SetColor( color );
@@ -108,23 +112,32 @@ static void CG_DrawPlayerArmorValue(rectDef_t *rect, float scale, vec4_t color, 
 static void CG_DrawPlayerArmorBar(rectDef_t *rect) {
 	vec4_t			hcolor;
 	playerState_t	*ps;
+	qboolean		pentagram;
 
 	ps = &cg.snap->ps;
+
+	pentagram = (ps->powerups[PW_PENTAGRAM] > 0) ? qtrue : qfalse;
 
 	// get the armour colour
 	hcolor[0] = hcolor[1] = hcolor[2] = 0.0f;
 	hcolor[3] = 1.0f;
-	if(ps->stats[STAT_ARMORTYPE] < Q3F_ARMOUR_YELLOW)
-		hcolor[1] = 1.0f;
-	else if((ps->stats[STAT_ARMORTYPE] >= Q3F_ARMOUR_YELLOW) && (ps->stats[STAT_ARMORTYPE] < Q3F_ARMOUR_RED))
-		hcolor[0] = hcolor[1] = 1.0f;
-	else if(ps->stats[STAT_ARMORTYPE] >= Q3F_ARMOUR_RED)
+	if ( pentagram ) {
 		hcolor[0] = 1.0f;
+	}
+	else {
+		if ( ps->stats[STAT_ARMORTYPE] < Q3F_ARMOUR_YELLOW )
+			hcolor[1] = 1.0f;
+		else if ( ( ps->stats[STAT_ARMORTYPE] >= Q3F_ARMOUR_YELLOW ) && ( ps->stats[STAT_ARMORTYPE] < Q3F_ARMOUR_RED ) )
+			hcolor[0] = hcolor[1] = 1.0f;
+		else if ( ps->stats[STAT_ARMORTYPE] >= Q3F_ARMOUR_RED )
+			hcolor[0] = 1.0f;
+	}
 	CG_Q3F_DrawProgress( rect->x, rect->y, rect->w, rect->h, 
 						 bg_q3f_classlist[cg.predictedPlayerState.persistant[PERS_CURRCLASS]]->maxarmour,
 						 bg_q3f_classlist[cg.predictedPlayerState.persistant[PERS_CURRCLASS]]->maxarmour,
-						 ps->stats[STAT_ARMOR],
+						 pentagram ? 666 : ps->stats[STAT_ARMOR],
 						 cgs.media.hud_armourShader,
+						 //pentagram ? cgs.media.hud_armourShader : cgs.media.hud_armourShader,
 						 hcolor);
 }
 
@@ -1582,7 +1595,7 @@ static void CG_Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4
 		while (s && *s && count < len) {
 			glyph = &font->glyphs[(int)*s]; // TTimo: FIXME: getting nasty warnings without the cast, hopefully this doesn't break the VM build
 	
-			if ( Q_IsColorString( s ) ) {
+			if ( Q_IsColorStringPtr( s ) ) {
 				memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
 				newColor[3] = color[3];
 				trap_R_SetColor( newColor );
@@ -1818,7 +1831,7 @@ static void CG_DrawClassIcon (rectDef_t* rect ) {
 	ci = &cgs.clientinfo[ cg.snap->ps.clientNum ];
 		
 	cls = agentdata && agentdata->currentState.torsoAnim ? agentdata->currentState.torsoAnim : ci->cls;
-								
+
 	VectorCopy( CG_TeamColor( agentdata && agentdata->currentState.weapon ? agentdata->currentState.weapon : ci->team ), colour );
 	colour[3] = .75f;
 	CG_FillRect( rect->x, rect->y, rect->w, rect->h, colour );
@@ -1855,7 +1868,7 @@ static void CG_DrawAgentDisguiseFullInfo(rectDef_t *rect, float scale, vec4_t co
 			agentdata = NULL;	// We might not have the control ent yet, or it's finished
 	} 
 
-	if(	agentdata) {
+	if( agentdata ) {
 		ci = &cgs.clientinfo[ cg.snap->ps.clientNum ];
 		switch(agentdata->currentState.weapon ? agentdata->currentState.weapon : (int)ci->team)
 		{
@@ -2082,7 +2095,7 @@ void CG_ExpandingTextBox_AutoWrapHeight( char* instr, float scale, fontStruct_t*
 			lines[line++] = c;
 			*s++ = '\0';
 			c = s;
-		} else if(Q_IsColorString(s)) {
+		} else if(Q_IsColorStringPtr(s)) {
 /*			if(!clrcodes[line]) {
 				clrcodes[line] = *(s+1);
 			}*/
@@ -2419,8 +2432,9 @@ qboolean CG_GetExpandingTextBox_Text( int ownerdraw, char* out, float* alpha, qb
 			if(cg.snap->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_ENGINEER)
 			{
 				strcpy(p,
-						va("Health: %d\n^8Shells: %d ^2Nails: %d ^1Rockets: %d ^6Cells: %d\n^5Armor: %d", cg.crosshairSupplyHealth,
-							cg.crosshairSupplyShells, cg.crosshairSupplyNails, cg.crosshairSupplyRockets, cg.crosshairSupplyCells, cg.crosshairSupplyArmor));
+						va(	((cg.crosshairSupplyLevel >= 3) ? "L%d Health: %d\n^8Shells: %d ^2Nails: %d ^1Rockets: %d ^6Cells: %d\n^5Armor: %d ^dGrenades: %d" :
+																"L%d Health: %d\n^8Shells: %d ^2Nails: %d ^1Rockets: %d ^6Cells: %d\n^5Armor: %d"), cg.crosshairSupplyLevel, cg.crosshairSupplyHealth,
+							cg.crosshairSupplyShells, cg.crosshairSupplyNails, cg.crosshairSupplyRockets, cg.crosshairSupplyCells, cg.crosshairSupplyArmor, cg.crosshairSupplyGrenades));
 				p += strlen(p);
 				*p++ = '\n';
 			}
@@ -2514,7 +2528,7 @@ void CG_DrawExpandingTextBox (int ownerdraw, rectDef_t *rect, float scale, vec4_
 	
 	s = p = buffer;
 	while(*p) {
-		if(Q_IsColorString(p)) {
+		if(Q_IsColorStringPtr(p)) {
 			clrCode = *(p+1);
 			p++;
 		} else if(*p == '\n') {
