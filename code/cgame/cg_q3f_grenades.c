@@ -1,4 +1,36 @@
 /*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
+/*
 **	cg_q3f_grenades.c
 **
 **	Server-side functions for handling grenades
@@ -735,6 +767,39 @@ cg_q3f_grenade_t *CG_Q3F_GetGrenade( int index )
 		return( &cg_q3f_grenade_none );
 	gren = cg_q3f_grenades[index];
 	return( gren ? gren : &cg_q3f_grenade_none );
+}
+
+
+// TODO add more things here that get used by grenades
+void CG_Q3F_RegisterGrenade( int grenadeNum ) {
+	cg_q3f_grenade_t	*gren;
+
+	gren = CG_Q3F_GetGrenade(grenadeNum);
+
+	if ( grenadeNum == 0 || gren == &cg_q3f_grenade_none ) {
+		return;
+	}
+
+	if ( !gren->hModel )
+		gren->hModel = trap_R_RegisterModel( gren->g->model );
+	if ( !gren->hSkin && gren->g->skin && *gren->g->skin )
+		gren->hSkin = trap_R_RegisterSkin( gren->g->skin );
+
+	// Make sure nails are registered
+	if ( grenadeNum == Q3F_GREN_NAIL ) {
+		CG_RegisterWeapon( WP_NAILGUN );
+		nailmodel = trap_R_RegisterModel( "models/ammo/nail/nail.md3" );
+	}
+
+	if ( grenadeNum == Q3F_GREN_NAPALM ) {
+		cgs.media.sfx_napalmExplode = trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_start.wav", qfalse );
+		cgs.media.sfx_napalmBurn = trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_loop.wav", qfalse );
+		cgs.media.sfx_napalmWater = trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_water.wav", qfalse );
+	}
+
+	// Make sure the cluster child grenades get reg'd too
+	if ( grenadeNum == Q3F_GREN_CLUSTER )
+		CG_Q3F_RegisterGrenade( Q3F_GREN_CLUSTERSECTION );
 }
 
 

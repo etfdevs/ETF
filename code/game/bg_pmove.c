@@ -1,5 +1,35 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
 // bg_pmove.c -- both games player movement code
 // takes a playerstate and a usercmd as input and returns a modifed playerstate
 
@@ -2067,7 +2097,7 @@ static void PM_Weapon( void ) {
 	bg_q3f_weapon_t *wp, *wp2;
 	vec3_t testvel;
 	qboolean inwater;
-	vec3_t point;
+	//vec3_t point;
 
 	// don't allow attack until all buttons are up
 	if ( pm->ps->pm_flags & PMF_RESPAWNED ) {
@@ -2209,9 +2239,10 @@ static void PM_Weapon( void ) {
 	}
 
 	// RR2DO2: Check for water
-	VectorCopy( pm->ps->origin, point );
-	point[2] += 3;	// lift some up due to swimming bob up/down
-	inwater = ( pm->pointcontents( point, pm->ps->clientNum ) & MASK_WATER );
+	//VectorCopy( pm->ps->origin, point );
+	//point[2] += 3;	// lift some up due to swimming bob up/down
+	//inwater = ( pm->pointcontents( point, pm->ps->clientNum ) & MASK_WATER );
+	inwater = ( pm->waterlevel == 3 ) ? qtrue : qfalse;
 
 	// JT: WEAPON_STARTING/STARTED support for weapons
 	if((pm->cmd.buttons & BUTTON_ATTACK) && wp->inform_on_start && pm->ps->ammo[q3f_ammo_type] >= wp->numammo)	// JT - Don't do it if we're out of ammo

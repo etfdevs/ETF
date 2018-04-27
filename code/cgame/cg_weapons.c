@@ -1,5 +1,35 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
 // cg_weapons.c -- events and effects dealing with weapons
 #include "cg_local.h"
 #include "../game/bg_q3f_playerclass.h"
@@ -448,11 +478,11 @@ void CG_RegisterExtendedWeapon( int weaponNum ) {
 	vec3_t			mins, maxs;
 	int				i;
 
-	weaponInfo = &cg_extendedweapons[weaponNum];
-
-	if ( weaponNum == 0 ) {
+	if ( weaponNum <= 0 || weaponNum >= MAX_EXTENDED_WEAPONS ) {
 		return;
 	}
+
+	weaponInfo = &cg_extendedweapons[weaponNum];
 
 	if ( weaponInfo->registered ) {
 		return;
@@ -553,11 +583,11 @@ void CG_RegisterWeapon( int weaponNum ) {
 	vec3_t			mins, maxs;
 	int				i;
 
-	weaponInfo = &cg_weapons[weaponNum];
-
-	if ( weaponNum == 0 ) {
+	if ( weaponNum <= 0 || weaponNum >= WP_NUM_WEAPONS ) {
 		return;
 	}
+
+	weaponInfo = &cg_weapons[weaponNum];
 
 	if ( weaponInfo->registered ) {
 		return;
@@ -761,6 +791,7 @@ void CG_RegisterWeapon( int weaponNum ) {
 		break;
 
 	case WP_ASSAULTRIFLE:
+		MAKERGB( weaponInfo->flashDlightColor, 1, 1, 0 );
 		weaponInfo->flashSound[0] = trap_S_RegisterSound("sound/weapons/sniper/sniper_burst.wav", qfalse);
 		break;
 
@@ -782,6 +813,8 @@ void CG_RegisterWeapon( int weaponNum ) {
 	}
 }
 
+qboolean CG_FileExists( const char *filename );
+
 /*
 =================
 CG_RegisterItemVisuals
@@ -792,6 +825,7 @@ The server says this item is used on this level
 void CG_RegisterItemVisuals( int itemNum ) {
 	itemInfo_t		*itemInfo;
 	gitem_t			*item;
+	char			df_icon[MAX_QPATH] = { 0 };
 
 	if ( itemNum < 0 || itemNum >= bg_numItems ) {
 		CG_Error( "CG_RegisterItemVisuals: itemNum %d out of range [0-%d]", itemNum, bg_numItems-1 );
@@ -811,6 +845,15 @@ void CG_RegisterItemVisuals( int itemNum ) {
 
 	if( item->icon )
 		itemInfo->icon = trap_R_RegisterShader( item->icon );
+
+	Com_sprintf( df_icon, sizeof( df_icon ), "%s_df", item->icon );
+	// try to register depth-fragment shaders
+	if ( CG_FileExists( df_icon ) ) {
+		itemInfo->icon_df = trap_R_RegisterShader( df_icon );
+	}
+
+	if ( !itemInfo->icon_df )
+		itemInfo->icon_df = itemInfo->icon;
 
 	if ( item->giType == IT_WEAPON ) {
 		CG_RegisterWeapon( item->giTag );
@@ -1099,6 +1142,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	qboolean	scaleup, drawmodel, newmodel;
 	float		shaderalpha;
 	int			agentclass;
+	int			muzzlecontents = 0;
 	
 	ci = &cgs.clientinfo[ps ? ps->clientNum : cent->currentState.number];
 
@@ -1402,8 +1446,10 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	else
 		CG_PositionRotatedEntityOnTag( &flash, &gun, "tag_flash" );
 
-	if( weaponNum == WP_FLAMETHROWER /*&& ci->cls == Q3F_CLASS_AGENT*/ ) {
-		if( !( CG_PointContents( flash.origin, -1 ) & CONTENTS_WATER ) ) {
+	muzzlecontents = CG_PointContents( flash.origin, -1 );
+
+	if( weaponNum == WP_FLAMETHROWER ) {
+		if( !( muzzlecontents & MASK_WATER ) ) {
 			VectorCopy( flash.origin, flash.oldorigin );
 			trap_R_AddRefEntityToScene( &flash, cent );
 		}
@@ -1423,15 +1469,16 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	if ( ps || cg.renderingThirdPerson || cg.renderingFlyBy || cg.rendering2ndRefDef ||
 			cent->currentState.number != cg.predictedPlayerState.clientNum ) 
 	{
-	//Keeg copied in from ET's code for flamethrower
-		if( (cent->currentState.eFlags & EF_FIRING) && !(cent->currentState.eFlags & EF_DEAD) )
-		{
+		int radius;
+//Keeg copied in from ET's code for flamethrower
+		if( (cent->currentState.eFlags & EF_FIRING) && !(cent->currentState.eFlags & EF_DEAD) ) {
 			// Ridah, Flamethrower effect
 			// Ensiform: Added agent check
-			if ( weaponNum == WP_FLAMETHROWER /*&& ci->cls != Q3F_CLASS_AGENT*/ ) 
+			if ( weaponNum == WP_FLAMETHROWER && cent->currentState.otherEntityNum2 == Q3F_CLASS_FLAMETROOPER ) 
 				CG_FireFlameChunks( cent, flash.origin, cent->lerpAngles, qtrue );
-		} else {
-			if ( weaponNum == WP_FLAMETHROWER ) {
+		}
+		else {
+			if ( weaponNum == WP_FLAMETHROWER && !(muzzlecontents & MASK_WATER) ) {
 				//vec3_t angles;
 				AxisToAngles( flash.axis, angles );
 				angles[0]=angles[0]+180;		//canabis, rotate this, model tag is wrong direction
@@ -1466,11 +1513,21 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 			}
 		}
 
-		if ( weapon->flashDlightColor[0] || weapon->flashDlightColor[1] || weapon->flashDlightColor[2] ) {
-			trap_R_AddLightToScene( flash.origin, 300, 1.25 + (rand() & 31) / 128, weapon->flashDlightColor[0],
-				weapon->flashDlightColor[1], weapon->flashDlightColor[2], 0, 0 );
-	  }
-	}
+		if ( weaponNum == WP_NAILGUN || weaponNum == WP_SUPERNAILGUN ) // make it a bit less annoying
+			radius = NG_FLASH_RADIUS + (rand() & WEAPON_FLASH_RADIUS_MOD);
+		else if ( weaponNum == WP_MINIGUN )
+			radius = MINI_FLASH_RADIUS + (rand() & WEAPON_FLASH_RADIUS_MOD);
+		else if ( weaponNum == WP_ASSAULTRIFLE )
+			radius = AR_FLASH_RADIUS + (rand() & WEAPON_FLASH_RADIUS_MOD);
+		else
+			radius = WEAPON_FLASH_RADIUS + (rand() & WEAPON_FLASH_RADIUS_MOD);
+
+		if (weapon->flashDlightColor[0] || weapon->flashDlightColor[1] || weapon->flashDlightColor[2]) {
+			trap_R_AddLightToScene(flash.origin, radius, WEAPON_FLASH_INTENSITY,
+									weapon->flashDlightColor[0], weapon->flashDlightColor[1],
+									weapon->flashDlightColor[2], 0, 0);
+        }
+    }
 }
 
 /*

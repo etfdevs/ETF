@@ -1,4 +1,36 @@
 /*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
+/*
 **	cg_q3f_init.c
 **
 **	Replacement map initialization code.
@@ -7,6 +39,7 @@
 #include "cg_local.h"
 #include "../game/bg_q3f_weapon.h"
 #include "cg_q3f_scriptlib.h"
+#include "cg_q3f_grenades.h"
 
 //Keeg
 extern qboolean initTrails;
@@ -529,6 +562,110 @@ static void CG_Q3F_InitPhaseSoundStatic()
 	}
 }
 
+static const char *voiceSounds[] = {
+	"sound/voices/spencer/def_depdisp.wav",
+	"sound/voices/spencer/def_deppipe.wav",
+	"sound/voices/spencer/def_depsen.wav",
+	"sound/voices/spencer/def_dropflag.wav",
+	"sound/voices/spencer/def_fixsenty.wav",
+	"sound/voices/spencer/def_flag.wav",
+	"sound/voices/spencer/def_flagdanger.wav",
+	"sound/voices/spencer/def_flagprimexit.wav",
+	"sound/voices/spencer/def_flagsafe.wav",
+	"sound/voices/spencer/def_flagsecexit.wav",
+	"sound/voices/spencer/def_iam.wav",
+	"sound/voices/spencer/def_incflag1.wav",
+	"sound/voices/spencer/def_incflag2.wav",
+	"sound/voices/spencer/def_incprimrte.wav",
+	"sound/voices/spencer/def_incsecrte.wav",
+	"sound/voices/spencer/def_needsupp.wav",
+	"sound/voices/spencer/def_obj.wav",
+	"sound/voices/spencer/def_wpt.wav",
+	"sound/voices/spencer/gen_anytime.wav",
+	"sound/voices/spencer/gen_ceasefire.wav",
+	"sound/voices/spencer/gen_firehole.wav",
+	"sound/voices/spencer/gen_giveammo.wav",
+	"sound/voices/spencer/gen_gogogo.wav",
+	"sound/voices/spencer/gen_goodbye1.wav",
+	"sound/voices/spencer/gen_goodbye2.wav",
+	"sound/voices/spencer/gen_halt.wav",
+	"sound/voices/spencer/gen_hello1.wav",
+	"sound/voices/spencer/gen_hello2.wav",
+	"sound/voices/spencer/gen_inpos.wav",
+	"sound/voices/spencer/gen_isbasesec.wav",
+	"sound/voices/spencer/gen_moveout.wav",
+	"sound/voices/spencer/gen_movepls.wav",
+	"sound/voices/spencer/gen_no1.wav",
+	"sound/voices/spencer/gen_no2.wav",
+	"sound/voices/spencer/gen_noprob.wav",
+	"sound/voices/spencer/gen_objcplt.wav",
+	"sound/voices/spencer/gen_objfld.wav",
+	"sound/voices/spencer/gen_oops.wav",
+	"sound/voices/spencer/gen_pass.wav",
+	"sound/voices/spencer/gen_reportin.wav",
+	"sound/voices/spencer/gen_sorry.wav",
+	"sound/voices/spencer/gen_stop.wav",
+	"sound/voices/spencer/gen_unlucky.wav",
+	"sound/voices/spencer/gen_wait.wav",
+	"sound/voices/spencer/gen_waitord.wav",
+	"sound/voices/spencer/gen_watchfire.wav",
+	"sound/voices/spencer/gen_yes1.wav",
+	"sound/voices/spencer/gen_yes2.wav",
+	"sound/voices/spencer/off_attobj.wav",
+	"sound/voices/spencer/off_attsentry.wav",
+	"sound/voices/spencer/off_attwpt.wav",
+	"sound/voices/spencer/off_carrsupp.wav",
+	"sound/voices/spencer/off_coverme.wav",
+	"sound/voices/spencer/off_defhvy.wav",
+	"sound/voices/spencer/off_deflight.wav",
+	"sound/voices/spencer/off_dephe.wav",
+	"sound/voices/spencer/off_flagget.wav",
+	"sound/voices/spencer/off_flaggive.wav",
+	"sound/voices/spencer/off_flaghave.wav",
+	"sound/voices/spencer/off_flagtake.wav",
+	"sound/voices/spencer/off_imatt.wav",
+	"sound/voices/spencer/off_needsupp.wav",
+	"sound/voices/spencer/off_spotpipe.wav",
+	"sound/voices/spencer/off_spotsen.wav",
+	"sound/voices/spencer/tap_alright.wav",
+	"sound/voices/spencer/tap_aw.wav",
+	"sound/voices/spencer/tap_goaway.wav",
+	"sound/voices/spencer/tap_goodgame1.wav",
+	"sound/voices/spencer/tap_goodgame2.wav",
+	"sound/voices/spencer/tap_myflag1.wav",
+	"sound/voices/spencer/tap_myflag2.wav",
+	"sound/voices/spencer/tap_nicecapture1.wav",
+	"sound/voices/spencer/tap_nicecapture2.wav",
+	"sound/voices/spencer/tap_nicemove1.wav",
+	"sound/voices/spencer/tap_nicemove2.wav",
+	"sound/voices/spencer/tap_niceshot.wav",
+	"sound/voices/spencer/tap_sneakybastard.wav",
+	"sound/voices/spencer/tap_thatsucks1.wav",
+	"sound/voices/spencer/tap_thatsucks2.wav",
+	"sound/voices/spencer/tap_thegreatest.wav",
+	"sound/voices/spencer/tap_wellplayed1.wav",
+	"sound/voices/spencer/tap_wellplayed2.wav",
+	"sound/voices/spencer/tap_werock1.wav",
+	"sound/voices/spencer/tap_werock2.wav",
+	"sound/voices/spencer/tap_yourmine.wav",
+	"sound/voices/spencer/tap_yourock.wav"
+};
+
+static const size_t numVoiceSounds = ARRAY_LEN( voiceSounds );
+
+static void CG_Q3F_InitPhaseSoundVoiceComms(void)
+{
+	if( cgs.initIndex < numVoiceSounds )
+	{
+		CG_Q3F_InitLog( "VO Sound ", voiceSounds[cgs.initIndex], "..." );
+		CG_Q3F_RenderLoadingScreen();
+		if( !trap_S_RegisterSound( voiceSounds[cgs.initIndex], qfalse ) )
+			CG_Q3F_InitLog( "ERROR: ", voiceSounds[cgs.initIndex], " not loaded." );
+		cgs.initIndex++;
+	}
+	else CG_Q3F_SetInitPhase( cgs.initPhase + 1 );
+}
+
 static void CG_Q3F_InitPhaseSoundFootsteps()
 {
 	// Load footstep sounds
@@ -593,7 +730,7 @@ static void CG_Q3F_InitPhaseSoundDynamic()
 		{
 			CG_Q3F_InitLog( "Dynamic Sound ", soundName, "..." );
 			CG_Q3F_RenderLoadingScreen();
-			if( !(cgs.gameSounds[cgs.initIndex++] = trap_S_RegisterSound( soundName, qfalse )) )
+			if ( !( cgs.gameSounds[cgs.initIndex++] = trap_S_RegisterSound( soundName, qfalse ) ) )
 				CG_Q3F_InitLog( "ERROR: ", soundName, " not loaded." );
 			break;
 		}
@@ -823,6 +960,9 @@ static void CG_Q3F_InitPhaseClasses()
 
 			if( cls->weaponslot[i] == WP_AXE ) {
 				switch( cgs.initIndex ) {
+				default:
+					CG_RegisterWeapon( WP_AXE );
+					break;
 				case Q3F_CLASS_PARAMEDIC:
 					CG_RegisterExtendedWeapon( Q3F_WP_BIOAXE );
 					break;
@@ -838,82 +978,41 @@ static void CG_Q3F_InitPhaseClasses()
 			}
 		}
 
+		// Register Gren1 visuals
+		if ( cls->gren1type != Q3F_GREN_NONE )
+			CG_Q3F_RegisterGrenade( cls->gren1type );
+
+		// Register Gren2 visuals
+		if ( cls->gren2type != Q3F_GREN_NONE )
+			CG_Q3F_RegisterGrenade( cls->gren2type );
+
+		// Register HE charge visuals
+		if ( cgs.initIndex == Q3F_CLASS_GRENADIER )
+			CG_Q3F_RegisterGrenade( Q3F_GREN_CHARGE );
+
 		if( !CG_Q3F_RegisterClassSounds( cgs.initIndex ) ) {
 			CG_Q3F_InitLog( "ERROR: ", cls->title, " sounds not precached properly." );
 			CG_Q3F_RenderLoadingScreen();
 		}
 		// Register special media for classes
-		// FIXME - make this a bit nicer
-		switch( cgs.initIndex )	{
+		switch ( cgs.initIndex ) {
+		default:
 		case Q3F_CLASS_RECON:
-			break;
 		case Q3F_CLASS_SNIPER:
-			break;
-		case Q3F_CLASS_ENGINEER:
-			//Always load the rocket launcher for sentries too
-			CG_RegisterWeapon( WP_ROCKET_LAUNCHER );
-
-			cgs.media.sentryBase				= trap_R_RegisterModel( "models/objects/sentry/sentry_base.md3" );
-			cgs.media.sentryTurret1				= trap_R_RegisterModel( "models/objects/sentry/sentry_turret.md3" );
-			cgs.media.sentryTurret2				= trap_R_RegisterModel( "models/objects/sentry/sentry_turret_l2.md3" );
-			cgs.media.sentryTurret3				= trap_R_RegisterModel( "models/objects/sentry/sentry_turret_l3.md3" );
-			cgs.media.sentryCannon1				= trap_R_RegisterModel( "models/objects/sentry/sentry_turret_inner.md3" );
-			cgs.media.sentryCannon2				= trap_R_RegisterModel( "models/objects/sentry/sentry_turret_inner_l2.md3" );
-			cgs.media.sentryCannon3				= trap_R_RegisterModel( "models/objects/sentry/sentry_turret_inner_l3.md3" );
-			cgs.media.sentryBarrel				= trap_R_RegisterModel( "models/objects/sentry/sentry_minigun.md3" );
-			cgs.media.sentryRocketLauncher		= trap_R_RegisterModel( "models/objects/sentry/sentry_rocketl.md3" );
-			cgs.media.sentryFlash				= trap_R_RegisterModel( "models/objects/sentry/sentry_flash.md3" );
-			cgs.media.sentryBits[0]				= trap_R_RegisterModel( "models/objects/sentry/sentry_bit1.md3" );
-			cgs.media.sentryBits[1]				= trap_R_RegisterModel( "models/objects/sentry/sentry_bit2.md3" );
-			cgs.media.sentryBits[2]				= trap_R_RegisterModel( "models/objects/sentry/sentry_bit3.md3" );
-			cgs.media.sentryBits[3]				= trap_R_RegisterModel( "models/objects/sentry/sentry_bit4.md3" );
-			cgs.media.supplystationBase			= trap_R_RegisterModel( "models/objects/supplystation/supply.md3");
-			cgs.media.supplystationHUD			= trap_R_RegisterModel( "models/objects/supplystation/supply_hud.md3");
-			cgs.media.supplystationBits[0]		= trap_R_RegisterModel( "models/objects/supplystation/supplystation_bit1.md3");
-			cgs.media.supplystationBits[1]		= trap_R_RegisterModel( "models/objects/supplystation/supplystation_bit2.md3");
-			cgs.media.supplystationBits[2]		= trap_R_RegisterModel( "models/objects/supplystation/supplystation_bit3.md3");
-			cgs.media.sentrySpinupSound			= trap_S_RegisterSound( "sound/movers/motors/motor_start_01.wav", qfalse );
-			cgs.media.sentryFireSound			= trap_S_RegisterSound( "sound/weapons/deploy/sentry_fire.wav", qfalse );
-			cgs.media.sentryStartSound			= trap_S_RegisterSound( "sound/weapons/deploy/sentry_seek.wav", qfalse );
-			cgs.media.sentryStopSound			= trap_S_RegisterSound( "sound/weapons/deploy/sentry_reset.wav", qfalse );
-			cgs.media.sentryBuildSound			= trap_S_RegisterSound( "sound/weapons/deploy/sentry_build.wav", qtrue );
-			cgs.media.sentryUpgradeSound		= trap_S_RegisterSound( "sound/weapons/deploy/sentry_upgrade.wav", qtrue );
-			cgs.media.sentryExplodeSound		= trap_S_RegisterSound( "sound/weapons/deploy/sentry_explode.wav", qtrue );
-			cgs.media.supplyBuildSound			= trap_S_RegisterSound( "sound/weapons/deploy/supply_build.wav", qtrue );
-			cgs.media.supplyPopup				= trap_S_RegisterSound( "sound/weapons/deploy/supply_out.wav", qfalse );
-			cgs.media.supplyRetract				= trap_S_RegisterSound( "sound/weapons/deploy/supply_in.wav", qfalse );
-			cgs.media.supplyExplodeSound		= trap_S_RegisterSound( "sound/weapons/deploy/supply_explode.wav", qtrue );
-			// start hack of the year!
-			if( r_vertexLight.integer )
-				trap_Cvar_Set( "r_vertexlight", "0" );
-			cgs.media.sentryConstruct_Base		= trap_R_RegisterShader( "models/objects/sentry/texture_sentry_base_construct" );
-			cgs.media.sentryConstructShader_1	= trap_R_RegisterShader( "models/objects/sentry/texture_sentry_level1_construct" );
-			cgs.media.sentryConstructShader_2	= trap_R_RegisterShader( "models/objects/sentry/texture_sentry_level2_construct" );
-			cgs.media.supplystationConstruct_Base = trap_R_RegisterShader( "models/objects/supplystation/base_construct" );
-			cgs.media.supplystationConstruct_Screen = trap_R_RegisterShader( "models/objects/supplystation/screen_construct" );
-			cgs.media.sentryTvFx				= trap_R_RegisterShader( "gfx/sfx/sentryCamTvBlur" );
-			// exit hack of the year!
-			if( r_vertexLight.integer )
-				trap_Cvar_Set( "r_vertexlight", "1" );
-			break;
-		case Q3F_CLASS_CIVILIAN:
-			break;
+		case Q3F_CLASS_SOLDIER:
 		case Q3F_CLASS_GRENADIER:
-			break;
 		case Q3F_CLASS_PARAMEDIC:
-			break;
+		case Q3F_CLASS_MINIGUNNER:
 		case Q3F_CLASS_FLAMETROOPER:
-			cgs.media.sfx_napalmExplode			= trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_start.wav", qfalse );
-			cgs.media.sfx_napalmBurn			= trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_loop.wav", qfalse );
-			cgs.media.sfx_napalmWater			= trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_water.wav", qfalse );
 			break;
 		case Q3F_CLASS_AGENT:
+			cgs.media.agentShader = trap_R_RegisterShader( "gfx/agenteffect" );
 			break;
-		case Q3F_CLASS_SOLDIER:
-			//Always load the nailgun for soldier's too because of nail model so we dont hitch on nailgren
-			CG_RegisterWeapon(WP_NAILGUN);
+		case Q3F_CLASS_ENGINEER:
+			CG_Q3F_RegisterSentry();
+			CG_Q3F_RegisterSupplyStation();
 			break;
-		case Q3F_CLASS_MINIGUNNER:
+		case Q3F_CLASS_CIVILIAN:
 			break;
 		}
 		cgs.initIndex++;
@@ -1097,6 +1196,11 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 	cgs.media.flamethrowerFireStream = trap_R_RegisterShader( "flamethrowerFireStream" );
 	cgs.media.flamethrowerBlueStream = trap_R_RegisterShader( "gfx/flamethrower/nozzleflame" );
 
+	if ( !cgs.media.grenadePrimeSound &&
+		cg_grenadePrimeSound.string &&
+		*cg_grenadePrimeSound.string )
+		cgs.media.grenadePrimeSound = trap_S_RegisterSound( cg_grenadePrimeSound.string, qfalse );
+
 	//keeg 
 	CG_ClearTrails();
 	CG_InitSmokeSprites();
@@ -1143,6 +1247,7 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 	cgs.levelStartTime = atoi( s );
 
 	CG_ParseServerinfo();
+	CG_ParseSysteminfo();
 
 	cgs.teamChatPos = cgs.teamLastChatPos = 0;
 
@@ -1226,6 +1331,7 @@ void CG_Q3F_InitUpdate()
 			case INITPHASE_SOUND_FOOTSTEPS:		CG_Q3F_InitPhaseSoundFootsteps();		break;
 			case INITPHASE_SOUND_ITEMS:			CG_Q3F_InitPhaseSoundItems();			break;
 			case INITPHASE_SOUND_DYNAMIC:		CG_Q3F_InitPhaseSoundDynamic();			break;
+			case INITPHASE_SOUND_VOICECOMMS:	CG_Q3F_InitPhaseSoundVoiceComms();		break;
 			case INITPHASE_GRAPHIC_STATIC:		CG_Q3F_InitPhaseGraphicStatic();		break;
 			case INITPHASE_GRAPHIC_ITEMS:		CG_Q3F_InitPhaseGraphicItems();			break;
 			case INITPHASE_GRAPHIC_WORLD:		CG_Q3F_InitPhaseGraphicWorld();			break;

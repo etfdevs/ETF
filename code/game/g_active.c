@@ -1,5 +1,34 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
 
 #include "g_local.h"
 #include "bg_q3f_playerclass.h"
@@ -28,11 +57,16 @@ void P_DamageFeedback( gentity_t *player ) {
 	gclient_t	*client;
 	float	count;
 	vec3_t	angles;
+	qboolean pentagram = qfalse;
 
 	client = player->client;
 	if ( client->ps.pm_type == PM_DEAD ) {
 		return;
 	}
+
+	// player has pentagram, don't send damage effects
+	// even though armor still takes a hit
+	pentagram = client->ps.powerups[PW_PENTAGRAM] > level.time;
 
 	// total points of damage shot at the player this frame
 	count = client->damage_blood + client->damage_armor;
@@ -60,7 +94,7 @@ void P_DamageFeedback( gentity_t *player ) {
 	}
 
 	// play an apropriate pain sound
-	if ( (level.time > player->pain_debounce_time) && !(player->flags & FL_GODMODE) ) {
+	if ( (level.time > player->pain_debounce_time) && !(player->flags & FL_GODMODE) && !pentagram ) {
 		player->pain_debounce_time = level.time + 700;
 		// RR2DO2 - players found this too irritating, limit it quite a lot - to low health
 		if( client->damage_fromFire && player->health <= 25 )
@@ -705,7 +739,7 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 			if ( ent->s.eType != ET_PLAYER ) {
 				break;		// not in the player model
 			}
-			if ( g_dmflags.integer & DF_NO_FALLING || level.nofallingdmg ) {
+			if ( (g_dmflags.integer & DF_NO_FALLING) || level.nofallingdmg ) {
 				break;
 			}
 			switch ( event ) {

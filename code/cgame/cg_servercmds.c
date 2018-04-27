@@ -1,5 +1,35 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
 // cg_servercmds.c -- reliably sequenced text commands sent by the server
 // these are processed at snapshot transition time, so there will definately
 // be a valid snapshot this frame
@@ -175,6 +205,28 @@ void CG_ParseServerinfo( void ) {
 	cgs.unlagged = atoi( Info_ValueForKey( info, "g_unlagged" ) );
 }
 
+void CG_ParseSysteminfo( void ) {
+	const char	*info;
+
+	info = CG_ConfigString( CS_SYSTEMINFO );
+
+	cgs.pmove_fixed = ( atoi( Info_ValueForKey( info, "pmove_fixed" ) ) ) ? qtrue : qfalse;
+	cgs.pmove_msec = atoi( Info_ValueForKey( info, "pmove_msec" ) );
+	if ( cgs.pmove_msec < 8 ) {
+		cgs.pmove_msec = 8;
+	} else if ( cgs.pmove_msec > 33 ) {
+		cgs.pmove_msec = 33;
+	}
+
+	cgs.sv_fps = atoi( Info_ValueForKey( info, "sv_fps" ) );
+
+	cgs.sv_cheats = ( atoi( Info_ValueForKey( info, "sv_cheats" ) ) ) ? qtrue : qfalse;
+
+	cgs.synchronousClients = ( atoi( Info_ValueForKey( info, "g_synchronousClients" ) ) ) ? qtrue : qfalse;
+
+	bg_evaluategravity = atof( Info_ValueForKey( info, "g_gravity" ) );
+}
+
 
 
 static void CG_ParseMatchState( void ) {
@@ -309,6 +361,9 @@ void CG_ETF_RegisterClass( int classNum ) {
 
 		if ( cls->weaponslot[i] == WP_AXE ) {
 			switch ( classNum ) {
+			default:
+				CG_RegisterWeapon( WP_AXE );
+				break;
 			case Q3F_CLASS_PARAMEDIC:
 				CG_RegisterExtendedWeapon( Q3F_WP_BIOAXE );
 				break;
@@ -324,80 +379,39 @@ void CG_ETF_RegisterClass( int classNum ) {
 		}
 	}
 
+	// Register Gren1 visuals
+	if ( cls->gren1type != Q3F_GREN_NONE )
+		CG_Q3F_RegisterGrenade( cls->gren1type );
+
+	// Register Gren2 visuals
+	if ( cls->gren2type != Q3F_GREN_NONE )
+		CG_Q3F_RegisterGrenade( cls->gren2type );
+
+	// Register HE charge visuals
+	if ( classNum == Q3F_CLASS_GRENADIER )
+		CG_Q3F_RegisterGrenade( Q3F_GREN_CHARGE );
+
 	if ( !CG_Q3F_RegisterClassSounds( classNum ) ) {
 	}
 	// Register special media for classes
-	// FIXME - make this a bit nicer
 	switch ( classNum ) {
+	default:
 	case Q3F_CLASS_RECON:
-		break;
 	case Q3F_CLASS_SNIPER:
-		break;
-	case Q3F_CLASS_ENGINEER:
-		//Always load the rocket launcher for sentries too
-		CG_RegisterWeapon( WP_ROCKET_LAUNCHER );
-
-		cgs.media.sentryBase = trap_R_RegisterModel( "models/objects/sentry/sentry_base.md3" );
-		cgs.media.sentryTurret1 = trap_R_RegisterModel( "models/objects/sentry/sentry_turret.md3" );
-		cgs.media.sentryTurret2 = trap_R_RegisterModel( "models/objects/sentry/sentry_turret_l2.md3" );
-		cgs.media.sentryTurret3 = trap_R_RegisterModel( "models/objects/sentry/sentry_turret_l3.md3" );
-		cgs.media.sentryCannon1 = trap_R_RegisterModel( "models/objects/sentry/sentry_turret_inner.md3" );
-		cgs.media.sentryCannon2 = trap_R_RegisterModel( "models/objects/sentry/sentry_turret_inner_l2.md3" );
-		cgs.media.sentryCannon3 = trap_R_RegisterModel( "models/objects/sentry/sentry_turret_inner_l3.md3" );
-		cgs.media.sentryBarrel = trap_R_RegisterModel( "models/objects/sentry/sentry_minigun.md3" );
-		cgs.media.sentryRocketLauncher = trap_R_RegisterModel( "models/objects/sentry/sentry_rocketl.md3" );
-		cgs.media.sentryFlash = trap_R_RegisterModel( "models/objects/sentry/sentry_flash.md3" );
-		cgs.media.sentryBits[0] = trap_R_RegisterModel( "models/objects/sentry/sentry_bit1.md3" );
-		cgs.media.sentryBits[1] = trap_R_RegisterModel( "models/objects/sentry/sentry_bit2.md3" );
-		cgs.media.sentryBits[2] = trap_R_RegisterModel( "models/objects/sentry/sentry_bit3.md3" );
-		cgs.media.sentryBits[3] = trap_R_RegisterModel( "models/objects/sentry/sentry_bit4.md3" );
-		cgs.media.supplystationBase = trap_R_RegisterModel( "models/objects/supplystation/supply.md3" );
-		cgs.media.supplystationHUD = trap_R_RegisterModel( "models/objects/supplystation/supply_hud.md3" );
-		cgs.media.supplystationBits[0] = trap_R_RegisterModel( "models/objects/supplystation/supplystation_bit1.md3" );
-		cgs.media.supplystationBits[1] = trap_R_RegisterModel( "models/objects/supplystation/supplystation_bit2.md3" );
-		cgs.media.supplystationBits[2] = trap_R_RegisterModel( "models/objects/supplystation/supplystation_bit3.md3" );
-		cgs.media.sentrySpinupSound = trap_S_RegisterSound( "sound/movers/motors/motor_start_01.wav", qfalse );
-		cgs.media.sentryFireSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_fire.wav", qfalse );
-		cgs.media.sentryStartSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_seek.wav", qfalse );
-		cgs.media.sentryStopSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_reset.wav", qfalse );
-		cgs.media.sentryBuildSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_build.wav", qtrue );
-		cgs.media.sentryUpgradeSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_upgrade.wav", qtrue );
-		cgs.media.sentryExplodeSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_explode.wav", qtrue );
-		cgs.media.supplyBuildSound = trap_S_RegisterSound( "sound/weapons/deploy/supply_build.wav", qtrue );
-		cgs.media.supplyPopup = trap_S_RegisterSound( "sound/weapons/deploy/supply_out.wav", qfalse );
-		cgs.media.supplyRetract = trap_S_RegisterSound( "sound/weapons/deploy/supply_in.wav", qfalse );
-		cgs.media.supplyExplodeSound = trap_S_RegisterSound( "sound/weapons/deploy/supply_explode.wav", qtrue );
-		// start hack of the year!
-		if ( r_vertexLight.integer )
-			trap_Cvar_Set( "r_vertexlight", "0" );
-		cgs.media.sentryConstruct_Base = trap_R_RegisterShader( "models/objects/sentry/texture_sentry_base_construct" );
-		cgs.media.sentryConstructShader_1 = trap_R_RegisterShader( "models/objects/sentry/texture_sentry_level1_construct" );
-		cgs.media.sentryConstructShader_2 = trap_R_RegisterShader( "models/objects/sentry/texture_sentry_level2_construct" );
-		cgs.media.supplystationConstruct_Base = trap_R_RegisterShader( "models/objects/supplystation/base_construct" );
-		cgs.media.supplystationConstruct_Screen = trap_R_RegisterShader( "models/objects/supplystation/screen_construct" );
-		cgs.media.sentryTvFx = trap_R_RegisterShader( "gfx/sfx/sentryCamTvBlur" );
-		// exit hack of the year!
-		if ( r_vertexLight.integer )
-			trap_Cvar_Set( "r_vertexlight", "1" );
-		break;
-	case Q3F_CLASS_CIVILIAN:
-		break;
+	case Q3F_CLASS_SOLDIER:
 	case Q3F_CLASS_GRENADIER:
-		break;
 	case Q3F_CLASS_PARAMEDIC:
-		break;
+	case Q3F_CLASS_MINIGUNNER:
 	case Q3F_CLASS_FLAMETROOPER:
-		cgs.media.sfx_napalmExplode = trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_start.wav", qfalse );
-		cgs.media.sfx_napalmBurn = trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_loop.wav", qfalse );
-		cgs.media.sfx_napalmWater = trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_water.wav", qfalse );
 		break;
 	case Q3F_CLASS_AGENT:
+		cgs.media.agentShader = trap_R_RegisterShader( "gfx/agenteffect" );
 		break;
-	case Q3F_CLASS_SOLDIER:
-		//Always load the nailgun for soldier's too because of nail model so we dont hitch on nailgren
-		CG_RegisterWeapon( WP_NAILGUN );
+	case Q3F_CLASS_ENGINEER:
+		CG_Q3F_RegisterSentry();
+		CG_Q3F_RegisterSupplyStation();
 		break;
-	case Q3F_CLASS_MINIGUNNER:
+	case Q3F_CLASS_CIVILIAN:
 		break;
 	}
 }
@@ -424,6 +438,8 @@ static void CG_ConfigStringModified( void ) {
 	// do something with it if necessary
 	if ( num == CS_MUSIC ) {
 		CG_StartMusic();
+	} else if ( num == CS_SYSTEMINFO ) {
+		CG_ParseSysteminfo();
 	} else if ( num == CS_SERVERINFO ) {
 		CG_ParseServerinfo();
 	} else if ( num == CS_TEAMNAMES ) {

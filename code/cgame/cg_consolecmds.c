@@ -1,5 +1,35 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
 // cg_consolecmds.c -- text commands typed in at the local console, or
 // executed by a key binding
 
@@ -824,10 +854,7 @@ static void CG_StringReport( void ) {
 
 void CG_LoadF2R_f( void ) {
 	// Reloads all already loaded F2R Scripts
-	const char	*s;
-
-	s = Info_ValueForKey( CG_ConfigString( CS_SYSTEMINFO ), "sv_cheats" );
-	if ( s[0] != '1' ) {
+	if ( cgs.sv_cheats == qfalse ) {
 		CG_Printf( BOX_PRINT_MODE_CHAT, "loadf2r is cheat protected.\n" );
 		return;
 	}
@@ -836,10 +863,7 @@ void CG_LoadF2R_f( void ) {
 
 void CG_LoadSpirit_f( void ) {
 	// Reloads all already loaded Spirit Scripts
-	const char	*s;
-
-	s = Info_ValueForKey( CG_ConfigString( CS_SYSTEMINFO ), "sv_cheats" );
-	if ( s[0] != '1' ) {
+	if ( cgs.sv_cheats == qfalse ) {
 		CG_Printf( BOX_PRINT_MODE_CHAT, "loadspirit is cheat protected.\n" );
 		return;
 	}
@@ -862,14 +886,12 @@ void CG_ListF2R_f( void ) {
 static void CG_LoadTeamColours_f( void ) {
 	// Refreshes the teamcolours from the skin.colours files
 	int						classNum;
-	const char				*s;
 	qboolean				noErrors = qtrue;
 	bg_q3f_playerclass_t	*cls;
 	char					filename[MAX_QPATH];
 	int						skinColourHandle;
 
-	s = Info_ValueForKey( CG_ConfigString( CS_SYSTEMINFO ), "sv_cheats" );
-	if ( s[0] != '1' ) {
+	if ( cgs.sv_cheats == qfalse ) {
 		CG_Printf( BOX_PRINT_MODE_CHAT, "loadf2r is cheat protected.\n" );
 		return;
 	}
@@ -1295,10 +1317,8 @@ static void CG_Q3F_Discard_f( void ) {
 static void CG_Q3F_TraceSurface_f( void ) {
 	trace_t trace;
 	vec3_t forward;
-	char * s;
 
-	s = Info_ValueForKey( CG_ConfigString( CS_SYSTEMINFO ), "sv_cheats" );
-	if ( s[0] != '1' ) {
+	if ( cgs.sv_cheats == qfalse ) {
 		CG_Printf( BOX_PRINT_MODE_CHAT, "tracesurface is cheat protected.\n" );
 		return;
 	}

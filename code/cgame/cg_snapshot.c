@@ -1,11 +1,39 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
 // cg_snapshot.c -- things that happen on snapshot transition,
 // not necessarily every single rendered frame
 
 #include "cg_local.h"
-
-
 
 /*
 ==================
@@ -177,7 +205,7 @@ static void CG_TransitionSnapshot( void ) {
 		// if we are not doing client side movement prediction for any
 		// reason, then the client events and view changes will be issued now
 		if ( cg.demoPlayback || (cg.snap->ps.pm_flags & PMF_FOLLOW) || (cg.snap->ps.pm_flags & PMF_CHASE)
-			|| cg_nopredict.integer || cg_synchronousClients.integer ) {
+			|| cg_nopredict.integer || cgs.synchronousClients ) {
 			CG_TransitionPlayerState( ps, ops );
 		}
 	}
@@ -280,7 +308,7 @@ static snapshot_t *CG_ReadNextSnapshot( void ) {
 			int i = 0, time = dest->serverTime;
 
 			// keep grabbing one snapshot earlier until we get to the right time
-			while ( dest->serverTime > time - cg_latentSnaps.integer * (1000 / sv_fps.integer) ) {
+			while ( dest->serverTime > time - cg_latentSnaps.integer * (1000 / cgs.sv_fps) ) {
 				if ( !(r = trap_GetSnapshot( cgs.processedSnapshotNum - i, dest )) ) {
 					// the snapshot is not valid, so stop here
 					break;

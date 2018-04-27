@@ -1,4 +1,36 @@
 /*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
+/*
 **	g_q3f_mapents.c
 **
 **	Not to be confused with mapdata, this actually DOES stuff with the
@@ -2612,25 +2644,25 @@ void SP_Q3F_func_goalinfo( gentity_t *ent )
 		// Use a default shader if appropriate.
 
 		if( !Q_stricmp( ent->model,			"models/flags/r_flag.md3" ) )
-			shaderStr = "textures/etf_hud/red_safe.tga";
+			shaderStr = "textures/etf_hud/red_safe";
 		else if( !Q_stricmp( ent->model,	"models/flags/b_flag.md3" ) )
-			shaderStr = "textures/etf_hud/blue_safe.tga";
+			shaderStr = "textures/etf_hud/blue_safe";
 		else if( !Q_stricmp( ent->model,	"models/flags/g_flag.md3" ) )
-			shaderStr = "textures/etf_hud/green_safe.tga";
+			shaderStr = "textures/etf_hud/green_safe";
 		else if( !Q_stricmp( ent->model,	"models/flags/y_flag.md3" ) )
-			shaderStr = "textures/etf_hud/yellow_safe.tga";
+			shaderStr = "textures/etf_hud/yellow_safe";
 		else if( !Q_stricmp( ent->model,	"models/flags/jap_flag_red.md3" ) )
-			shaderStr = "textures/etf_hud/red_safe.tga";
+			shaderStr = "textures/etf_hud/red_safe";
 		else if( !Q_stricmp( ent->model,	"models/flags/jap_flag_blue.md3" ) )
-			shaderStr = "textures/etf_hud/blue_safe.tga";
+			shaderStr = "textures/etf_hud/blue_safe";
 		else if( !Q_stricmp( ent->model,	"models/flags/jap_flag_green.md3" ) )
-			shaderStr = "textures/etf_hud/green_safe.tga";
+			shaderStr = "textures/etf_hud/green_safe";
 		else if( !Q_stricmp( ent->model,	"models/flags/jap_flag_yellow.md3" ) )
-			shaderStr = "textures/etf_hud/yellow_safe.tga";
+			shaderStr = "textures/etf_hud/yellow_safe";
 		else if( !Q_stricmp( ent->model,	"models/mapobjects/keycard/keycard_red.md3" ) )
-			shaderStr = "textures/etf_hud/key_safe_red.tga";
+			shaderStr = "textures/etf_hud/key_safe_red";
 		else if( !Q_stricmp( ent->model,	"models/mapobjects/keycard/keycard_blue.md3" ) )
-			shaderStr = "textures/etf_hud/key_safe_blue.tga";
+			shaderStr = "textures/etf_hud/key_safe_blue";
 		else if( !Q_stricmp( ent->model,	"models/objects/backpack/backpack.md3" ) )
 			shaderStr = "icons/backpack";
 		else if( !Q_stricmp( ent->model,	"models/objects/backpack/backpack_small.md3" ) )

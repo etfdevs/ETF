@@ -229,7 +229,7 @@ configure_file(
 message(STATUS "CMAKE_C_FLAGS_RELEASE is ${CMAKE_C_FLAGS_RELEASE}")
 message(STATUS "Building ${CMAKE_BUILD_TYPE} for ${os}-${Architecture}")
 
-find_package(Lua)
+#find_package(Lua)
 
 set(src_cJSON
 	cJSON/cJSON.c
@@ -332,10 +332,10 @@ if(BOTS)
 endif(BOTS)
 
 
-set(src_crypto
-    crypto/sha-1/sha1.c
-    crypto/sha-1/sha1.h
-)
+#set(src_crypto
+#    crypto/sha-1/sha1.c
+#    crypto/sha-1/sha1.h
+#)
 
 set(src_game
 	game/bg_misc.c
@@ -399,9 +399,9 @@ set(src_game
 	game/g_utils.c
 	game/g_weapon.c
 	game/game.def
-    game/g_sha1.c
+    #game/g_sha1.c
 	${src_shared}
-    ${src_crypto}
+    #${src_crypto}
 )
 
 if(LUA_FOUND)

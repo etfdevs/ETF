@@ -1,5 +1,35 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
 // cg_main.c -- initialization and primary entry point for cgame
 #include "cg_local.h"
 #include "../game/bg_q3f_playerclass.h"
@@ -150,7 +180,6 @@ vmCvar_t	cg_thirdPersonAngle;
 vmCvar_t	cg_stereoSeparation;
 vmCvar_t	cg_lagometer;
 vmCvar_t	cg_drawAttacker;
-vmCvar_t	cg_synchronousClients;
 vmCvar_t 	cg_teamChatTime;
 vmCvar_t 	cg_teamChatHeight;
 vmCvar_t 	cg_stats;
@@ -164,9 +193,6 @@ vmCvar_t	cg_debugTime;
 vmCvar_t	cg_teamChatsOnly;
 vmCvar_t	cg_hudFiles;
 vmCvar_t 	cg_scorePlum;
-vmCvar_t	pmove_fixed;
-vmCvar_t	pmove_msec;
-vmCvar_t	cg_pmove_msec;
 vmCvar_t	cg_cameraMode;
 vmCvar_t	cg_cameraOrbit;
 vmCvar_t	cg_cameraOrbitDelay;
@@ -194,7 +220,6 @@ vmCvar_t	cg_sniperHistoricalSight;
 vmCvar_t	cg_grenadePrimeSound;
 //vmCvar_t	cg_teamChatBigFont;
 //vmCvar_t	cg_newFlamer;
-vmCvar_t	g_gravity;
 //vmCvar_t	cg_drawMem;
 vmCvar_t	cg_autoReload;
 vmCvar_t	g_spectatorMode; // RR2DO2
@@ -270,7 +295,6 @@ vmCvar_t	cg_predictItems;
 vmCvar_t	cg_predictWeapons;
 vmCvar_t	cg_drawBBox;
 vmCvar_t	cg_cmdTimeNudge;
-vmCvar_t	sv_fps;
 vmCvar_t	cg_projectileNudge;
 vmCvar_t	cg_optimizePrediction;
 vmCvar_t	cl_timeNudge;
@@ -429,7 +453,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &com_maxfps,					"com_maxfps",				"85",								CVAR_ARCHIVE },
 	{ &cg_blood,					"com_blood",				"1",								CVAR_ARCHIVE },
 	{ &cg_cameraOrbitDelay,			"cg_cameraOrbitDelay",		"50",								CVAR_ARCHIVE },
-	{ &cg_synchronousClients,		"g_synchronousClients",		"0",								0 },	// communicated by systeminfo
 	{ &cg_scorePlum,				"cg_scorePlums",			"1",								CVAR_ARCHIVE},
 
 	{ &cg_errorDecay,				"cg_errordecay",			"100",		0 },
@@ -441,8 +464,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &cg_timescaleFadeEnd,			"cg_timescaleFadeEnd",		"1",		0 },
 	{ &cg_timescaleFadeSpeed,		"cg_timescaleFadeSpeed",	"0",		0 },
 	{ &cg_timescale,				"timescale",				"1",		0 },
-	{ &pmove_fixed,					"pmove_fixed",				"0",		0 },
-	{ &pmove_msec,					"pmove_msec",				"8",		0 },
 	{ &r_clear,						"r_clear",					"0",		0 },
 
 
@@ -490,7 +511,6 @@ static cvarTable_t		cvarTable[] = {
     { &cg_etfVersion,				"cg_etfversion",			"0",		CVAR_USERINFO | CVAR_ROM },
 
 	{ &g_spectatorMode,				"g_spectatorMode",			"0",		CVAR_SYSTEMINFO },
-	{ &g_gravity,					"g_gravity",				"800",		CVAR_SYSTEMINFO | CVAR_ROM},
 
 	{ &cg_paused,					"cl_paused",				"0",		CVAR_ROM },
 
@@ -506,8 +526,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &cg_debugDelag,				"cg_debugDelag",			"0",		CVAR_USERINFO | CVAR_CHEAT },
 	{ &cg_drawBBox,					"cg_drawBBox",				"0",		CVAR_CHEAT },
 	{ &cg_cmdTimeNudge,				"cg_cmdTimeNudge",			"0",		CVAR_ARCHIVE | CVAR_USERINFO },
-	// this will be automagically copied from the server
-	{ &sv_fps,						"sv_fps",					"20",		0 },
 	{ &cg_projectileNudge,			"cg_projectileNudge",		"0",		CVAR_ARCHIVE },
 	{ &cg_optimizePrediction,		"cg_optimizePrediction",	"1",		CVAR_ARCHIVE },
 	{ &cl_timeNudge,				"cl_timeNudge",				"0",		CVAR_ARCHIVE },
@@ -582,7 +600,7 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	{ &r_fullBright,		"r_fullBright",			0,		0,		0,		0,	0,	qfalse },
 	{ &r_showTris,			"r_showTris",			0,		0,		0,		0,	0,	qfalse },
 	{ &r_showNormals,		"r_showNormals",		0,		0,		0,		0,	0,	qfalse },
-	{ &cg_shadows,			"cg_shadows",			1,		0,		1,		0,	0,	qfalse },
+	{ &cg_shadows,			"cg_shadows",			1,		0,		3,		0,	0,	qfalse },
 	{ &rate,				"rate",					3000,	2500,	-1,		0,	0,	qfalse },
 	{ &snaps,				"snaps",				20,		20,		-1,		0,	0,	qfalse },
 	{ &cl_maxpackets,		"cl_maxpackets",		40,		30,		-1,		0,	0,	qfalse },
@@ -824,12 +842,6 @@ void CG_UpdateCvars( void ) {
 
 	if( cg_grenadePrimeSound.modificationCount != cgs.grenadePrimeSoundModificationCount ) {
 		cgs.media.grenadePrimeSound = 0;
-	}
-
-	if( g_gravity.modificationCount != cgs.gravityModificationCount )
-	{
-		bg_evaluategravity = g_gravity.value;
-		cgs.gravityModificationCount = g_gravity.modificationCount;
 	}
 
 	// if cg_drawSkyPortal changed, update skybox shader remapping
@@ -2332,6 +2344,20 @@ static void CG_RunCinematicFrame(int handle) {
 
 static void CG_S_StartLocalSound( sfxHandle_t sfx, int channelNum ) {
 	trap_S_RealStartLocalSound(sfx, channelNum, __FILE__, __LINE__ );
+}
+
+qboolean CG_FileExists( const char *filename ) {
+	fileHandle_t f = NULL_FILE;
+	int len = 0;
+	if ( !filename || !*filename ) {
+		return qfalse;
+	}
+	len = trap_FS_FOpenFile( filename, &f, FS_READ );
+
+	if ( f != NULL_FILE )
+		trap_FS_FCloseFile( f );
+
+	return ( f != NULL_FILE && len > 0 ) ? qtrue : qfalse;
 }
 
 /*

@@ -1,5 +1,35 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
 // cg_predict.c -- this file generates cg.predictedPlayerState by either
 // interpolating between snapshots from the server or locally predicting
 // ahead the client's movement.
@@ -211,7 +241,7 @@ void CG_Trace( trace_t *result, const vec3_t start, const vec3_t mins, const vec
 		(t.startsolid || t.fraction < 1.0f) &&
 		(!t.contents || (t.contents & CONTENTS_FORCEFIELD)) &&
 		skipNumber >= 0 && skipNumber < MAX_CLIENTS &&
-		(cent = &cg_entities[t.entityNum]) && cent->currentValid &&
+		(cent = &cg_entities[t.entityNum]) != NULL && cent->currentValid &&
 		(cent->currentState.eType == ET_Q3F_FORCEFIELD ))
 	{
 		// Ensiform: frame is now class instead of otherEntityNum else civs are unpredictable
@@ -648,7 +678,7 @@ void CG_PredictPlayerState( void ) {
 	}
 
 	// non-predicting local movement will grab the latest angles
-	if ( cg_nopredict.integer || cg_synchronousClients.integer ) {
+	if ( cg_nopredict.integer || cgs.synchronousClients ) {
 		CG_InterpolatePlayerState( qtrue );
 		return;
 	}
@@ -705,15 +735,8 @@ void CG_PredictPlayerState( void ) {
 		cg.physicsTime = cg.snap->serverTime;
 	}
 
-	if ( pmove_msec.integer < 8 ) {
-		trap_Cvar_Set("pmove_msec", "8");
-	}
-	else if (pmove_msec.integer > 33) {
-		trap_Cvar_Set("pmove_msec", "33");
-	}
-
-	cg_pmove.pmove_fixed = pmove_fixed.integer;// | cg_pmove_fixed.integer;
-	cg_pmove.pmove_msec = pmove_msec.integer;
+	cg_pmove.pmove_fixed = (int)cgs.pmove_fixed;
+	cg_pmove.pmove_msec = cgs.pmove_msec;
 
 	// Like the comments described above, a player's state is entirely
 	// re-predicted from the last valid snapshot every client frame, which
@@ -896,7 +919,7 @@ void CG_PredictPlayerState( void ) {
 		}
 
 		if ( cg_pmove.pmove_fixed ) {
-			cg_pmove.cmd.serverTime = ((cg_pmove.cmd.serverTime + pmove_msec.integer-1) / pmove_msec.integer) * pmove_msec.integer;
+			cg_pmove.cmd.serverTime = ((cg_pmove.cmd.serverTime + cgs.pmove_msec-1) / cgs.pmove_msec) * cgs.pmove_msec;
 		}
 
 		// ydnar: if server respawning, freeze the player

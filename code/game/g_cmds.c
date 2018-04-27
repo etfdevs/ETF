@@ -1,5 +1,35 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
 #include "g_local.h"
 #include "g_q3f_playerclass.h"
 #include "g_q3f_grenades.h"
@@ -19,6 +49,25 @@
 #include "g_lua.h"
 #endif
 
+// 2147483647 10 digits int32
+
+// 2 digits cl num
+// 10 digits score
+// 3 digits ping
+// 10 digits time
+// 3 digits flags
+
+// 2 + 10 + 3 + 10 + 3 = 28
+
+// 28 * 32 clients = 896
+
+// strlen("scores") + 5 spaces = 11
+// 4 team scores
+// num clients sending max 2 characters
+// (4*10)=40 + 2=42
+
+// 42+11=53
+
 /*
 ==================
 DeathmatchScoreboardMessage
@@ -26,8 +75,8 @@ DeathmatchScoreboardMessage
 ==================
 */
 void DeathmatchScoreboardMessage( gentity_t *ent ) {
-	char		entry[1024];
-	char		string[1400];
+	char		entry[900];
+	char		string[1000];
 	int			stringlength;
 	int			i, j;
 	gclient_t	*cl;
@@ -546,6 +595,13 @@ void Cmd_Kill_f( gentity_t *ent ) {
 	}
 	// RR2DO2
 	player_die (ent, ent, ent, 100000, MOD_SUICIDE);
+
+	// no suicide delay in warmup
+	if ( g_matchState.integer > MATCH_STATE_PLAYING ) {
+		ent->client->killDelayTime = level.time;
+		return;
+	}
+
 	trap_SendServerCommand(ent->s.clientNum, va("print \"%d second delay...\n\"", g_suicideDelay.integer ));
 	ent->client->killDelayTime = level.time + 1000 * g_suicideDelay.integer;
 }

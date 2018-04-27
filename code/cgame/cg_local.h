@@ -1,5 +1,34 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
 
 #ifndef	__CG_LOCAL_H
 #define	__CG_LOCAL_H
@@ -114,6 +143,14 @@
 #define DEMO_THIRDPERSONUPDATE  0
 #define DEMO_RANGEDELTA         6
 #define DEMO_ANGLEDELTA         4
+
+// on-hand firing weapons
+#define NG_FLASH_RADIUS			200 // original: 300
+#define MINI_FLASH_RADIUS		200
+#define AR_FLASH_RADIUS			200
+#define WEAPON_FLASH_RADIUS		300
+#define WEAPON_FLASH_RADIUS_MOD	31
+#define WEAPON_FLASH_INTENSITY 1.0
 
 extern const char *teamnames[4];
 
@@ -421,7 +458,6 @@ typedef struct {
 	float			torso_backlerp;
 } clientInfo_t;
 
-
 // each WP_* weapon enum has an associated weaponInfo_t
 // that contains media references necessary to present the
 // weapon and its effects
@@ -473,6 +509,7 @@ typedef struct {
 	qboolean		registered;
 	qhandle_t		models[MAX_ITEM_MODELS];
 	qhandle_t		icon;
+	qhandle_t		icon_df;
 } itemInfo_t;
 
 
@@ -1503,6 +1540,15 @@ typedef struct {
 	int thirdpersonUpdate;
 	float oldtimescale;									// Timescale value prior to pausing
 
+	qboolean		pmove_fixed;
+	int				pmove_msec;
+
+	int				sv_fps;
+
+	qboolean		synchronousClients;
+
+	qboolean		sv_cheats;
+
 } cgs_t;
 
 //==============================================================================
@@ -1575,7 +1621,6 @@ extern	vmCvar_t		cg_hideScope;
 extern	vmCvar_t		cg_stereoSeparation;
 extern	vmCvar_t		cg_lagometer;
 extern	vmCvar_t		cg_drawAttacker;
-extern	vmCvar_t		cg_synchronousClients;
 extern	vmCvar_t		cg_teamChatTime;
 extern	vmCvar_t		cg_teamChatHeight;
 extern	vmCvar_t		cg_stats;
@@ -1588,8 +1633,6 @@ extern	vmCvar_t		cg_drawFriendSize;
 extern	vmCvar_t		cg_debugTime;
 extern	vmCvar_t		cg_teamChatsOnly;
 extern  vmCvar_t		cg_scorePlum;
-extern	vmCvar_t		pmove_fixed;
-extern	vmCvar_t		pmove_msec;
 extern	vmCvar_t		cg_cameraOrbit;
 extern	vmCvar_t		cg_cameraOrbitDelay;
 extern	vmCvar_t		cg_timescaleFadeEnd;
@@ -2145,6 +2188,7 @@ void CG_keyOff_f( void );
 //
 void CG_ExecuteNewServerCommands( int latestSequence );
 void CG_ParseServerinfo( void );
+void CG_ParseSysteminfo( void );
 void CG_SetConfigValues( void );
 void CG_ShaderStateChanged(void);
 void CG_LoadHud_f( void );
@@ -2176,6 +2220,8 @@ void CG_Q3F_PlayClassnameSound( int clsnum, qboolean xian );
 //
 // cg_q3f_sentry.c
 //
+void CG_Q3F_RegisterSentry( void );
+void CG_Q3F_RegisterSupplyStation( void );
 void CG_Q3F_Sentry( centity_t *cent );
 void CG_Q3F_Sentry_Explode( centity_t *cent );
 void CG_Q3F_Supplystation( centity_t *cent );
@@ -2184,6 +2230,7 @@ void CG_Q3F_Supplystation_Explode( centity_t *cent );
 //
 // cg_q3f_mapsentry.c
 //
+void CG_Q3F_RegisterMapSentry( qboolean rocket );
 void CG_Q3F_MapSentry( centity_t *cent );
 
 // Keeg  RR2 says i can remove q3f stuff, do it when other code works
@@ -2289,6 +2336,7 @@ typedef enum {
 	INITPHASE_SOUND_FOOTSTEPS,
 	INITPHASE_SOUND_ITEMS,
 	INITPHASE_SOUND_DYNAMIC,
+	INITPHASE_SOUND_VOICECOMMS,
 	INITPHASE_GRAPHIC_STATIC,
 	INITPHASE_GRAPHIC_ITEMS,
 	INITPHASE_GRAPHIC_WORLD,

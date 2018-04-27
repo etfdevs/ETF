@@ -1,3 +1,35 @@
+/*
+===========================================================================
+
+Wolfenstein: Enemy Territory GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+
+Enemy Territory Fortress
+Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
+Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+
+This file is part of Enemy Territory Fortress (ETF).
+
+ETF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ETF. If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Wolfenstein: Enemy Territory GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the ETF Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
 // 
 // string allocation/managment
 
@@ -1362,6 +1394,7 @@ void Script_ConditionalScript(itemDef_t *item, char **args) {
 					Item_RunScript( item, script1 );
 				}
 			}
+			break;
 		case 2:
 			// special tests
 			if( !Q_stricmp( cvar, "isconnected" ) ) {
@@ -1382,6 +1415,7 @@ void Script_ConditionalScript(itemDef_t *item, char **args) {
 					Item_RunScript( item, script2 );
 				}
 			}
+			break;
 		}
 	}
 }
@@ -2700,11 +2734,31 @@ qboolean Item_Multi_HandleKey(itemDef_t *item, int key) {
   return qfalse;
 }
 
-void Item_Action(itemDef_t *item) {
-  if (item) {
-    Item_RunScript(item, item->action);
-  }
+void Item_Action( itemDef_t *item ) {
+	if ( item ) {
+		Item_RunScript( item, item->action );
+	}
 }
+
+#ifdef UI_EXPORTS
+qboolean Item_TextField_HandleKey( itemDef_t *item, int key );
+void Item_TextField_Paste( itemDef_t *item ) {
+	int		pasteLen, i;
+	char	buff[2048] = { 0 };
+
+	trap_GetClipboardData( buff, sizeof( buff ) );
+
+	if ( !*buff ) {
+		return;
+	}
+
+	// send as if typed, so insert / overstrike works properly
+	pasteLen = strlen( buff );
+	for ( i = 0; i < pasteLen; i++ ) {
+		Item_TextField_HandleKey( item, buff[i] | K_CHAR_FLAG );
+	}
+}
+#endif
 
 qboolean Item_TextField_HandleKey(itemDef_t *item, int key) {
 	char buff[1024];
@@ -2728,6 +2782,13 @@ qboolean Item_TextField_HandleKey(itemDef_t *item, int key) {
 
 		if ( key & K_CHAR_FLAG ) {
 			key &= ~K_CHAR_FLAG;
+
+#ifdef UI_EXPORTS
+			if ( key == 'v' - 'a' + 1 ) {	// ctrl-v is paste
+				Item_TextField_Paste( item );
+				return qtrue;
+			}
+#endif
 
 
 			if (key == 'h' - 'a' + 1 )	{	// ctrl-h is backspace
@@ -2831,51 +2892,8 @@ qboolean Item_TextField_HandleKey(itemDef_t *item, int key) {
 
 			if ( key == K_INS || key == K_KP_INS ) {
 				if(DC->keyIsDown(K_SHIFT)) {
-#ifndef CGAME
-					char buffer [256];
-					trap_GetClipboardData(buffer, 256);
-					if(*buffer) {
-						char* p = buffer;
-
-						for(;*p;p++) {					
-							len = strlen(buff);
-
-							//
-							// ignore any non printable chars
-							//
-							if ( *p < 32 ) {
-								continue;
-							}
-						
-							if (item->type == ITEM_TYPE_NUMERICFIELD) {
-								if ((*p < '0' || *p > '9') && *p != '.') {
-									continue;
-								}
-							}
-
-							if (!DC->getOverstrikeMode()) {
-								if (( len == MAX_EDITFIELD - 1 ) || (editPtr->maxChars && len >= editPtr->maxChars)) {
-									return qtrue;
-								}
-								memmove( &buff[item->cursorPos + 1], &buff[item->cursorPos], len + 1 - item->cursorPos );
-							} else {
-								if (editPtr->maxChars && item->cursorPos >= editPtr->maxChars) {
-									return qtrue;
-								}
-							}
-
-							buff[item->cursorPos] = *p;
-
-							DC->setCVar(item->cvar, buff);
-
-							if (item->cursorPos < len + 1) {
-								item->cursorPos++;
-								if (editPtr->maxPaintChars && item->cursorPos > editPtr->maxPaintChars) {
-									editPtr->paintOffset++;
-								}
-							}
-						}
-					}
+#ifdef UI_EXPORTS
+					Item_TextField_Paste( item );
 #endif
 				} else {
 					DC->setOverstrikeMode(!DC->getOverstrikeMode());
