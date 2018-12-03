@@ -437,9 +437,10 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		GibEntity( self, killer );
 	} else {
 		// normal death
-		static int ani;
+		const int deathAnim = rand() % 2;
+		const int deathSound = rand() % 3;
 
-		switch ( ani ) {
+		switch ( deathAnim ) {
 		case 0:
 			anim = ANI_DEATH_1;
 			break;
@@ -467,14 +468,11 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 				   meansOfDeath == MOD_FLAME_SPLASH ) {
 			G_AddEvent( self, EV_BURNTODEATH, killer );
 		} else {
-			G_AddEvent( self, EV_DEATH1 + i, killer ); // RR2DO2 : this should be better, else only one of the deathsounds gets played
+			G_AddEvent( self, EV_DEATH1 + deathSound, killer );
 		}
 
 		// the body can still be gibbed
 		self->die = body_die;
-
-		// globally cycle through the different death animations
-		i = ( i + 1 ) % 2;
 	}
 
 	trap_LinkEntity (self);
