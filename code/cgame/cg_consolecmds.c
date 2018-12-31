@@ -285,7 +285,7 @@ Print off a quick inventory of current ammo values
 ===================
 */
 
-/*static void CG_Q3F_Inventory( void )
+static void CG_Q3F_Inventory( void )
 {
 	char ammobuff[8][128];
 	char messagebuff[1024];
@@ -356,7 +356,7 @@ Print off a quick inventory of current ammo values
 		buffcount--;
 	}
 	CG_Printf( BOX_PRINT_MODE_CHAT, "You have %s.\n", messagebuff );
-}*/
+}
 
 /*
 ===================
@@ -1418,7 +1418,7 @@ static consoleCommand_t	commands[] = {
 	// Golliwog.
 
 	// Golliwog: Inventory
-//	{ "inventory",	CG_Q3F_Inventory	},
+	{ "inventory",	CG_Q3F_Inventory	},
 	// Golliwog.
 
 	{ "playstring",		CG_Q3F_PlayString		},
