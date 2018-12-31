@@ -198,10 +198,10 @@ vmCvar_t	g_allowAllVersions;
 
 vmCvar_t	g_adminFloodImmunity;
 
-vmCvar_t	sv_maxConnections;
+/*vmCvar_t	sv_maxConnections;
 vmCvar_t	sv_maxConnectionTime;
 vmCvar_t	sv_maxConnectionBan;
-vmCvar_t	sv_maxConnectionKick;
+vmCvar_t	sv_maxConnectionKick;*/
 
 vmCvar_t	g_shoutcastPassword;
 
@@ -405,10 +405,10 @@ static cvarTable_t		gameCvarTable[] = {
 #endif
 
 	// Q3Fill Protection
-	{ &sv_maxConnections, "sv_maxConnections", "3", CVAR_ARCHIVE, 0, qfalse },
+	/*{ &sv_maxConnections, "sv_maxConnections", "3", CVAR_ARCHIVE, 0, qfalse },
 	{ &sv_maxConnectionTime, "sv_maxConnectionTime", "30", CVAR_ARCHIVE, 0, qfalse },
 	{ &sv_maxConnectionBan, "sv_maxConnectionBan", "1", CVAR_ARCHIVE, 0, qfalse },
-	{ &sv_maxConnectionKick, "sv_maxConnectionKick", "1", CVAR_ARCHIVE, 0, qfalse },
+	{ &sv_maxConnectionKick, "sv_maxConnectionKick", "1", CVAR_ARCHIVE, 0, qfalse },*/
 
 	{ &g_shoutcastPassword, "g_shoutcastPassword", "", 0, 0, qfalse },
 #ifdef BUILD_LUA

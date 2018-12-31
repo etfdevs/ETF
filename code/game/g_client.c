@@ -1146,6 +1146,7 @@ void G_Q3F_CheckClones( char *ipstr ) {
 // Barrowing this code from my jka mod
 #define MAX_IP_LENGTH	40
 
+#if 0
 typedef struct {
 	char	ip[MAX_IP_LENGTH];
 	char	name[MAX_NETNAME];
@@ -1154,6 +1155,7 @@ typedef struct {
 } plConnectInfo;
 
 plConnectInfo plConnectList[MAX_CLIENTS];
+#endif
 
 /*
 ============
@@ -1205,6 +1207,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 #endif
 	gentity_t	*ent;
 
+#if 0
 	int i;
 	qboolean	abuse;
 	static int	plIndex = 0;
@@ -1221,6 +1224,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 
 	if ( plIndex >= sv_maxConnections.integer )
 		plIndex = 0;
+#endif
 
 	ent = &g_entities[ clientNum ];
 
@@ -1259,6 +1263,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 		return va( "Banned: %s", reason );
 	}
 
+#if 0
 	/* if flood connect is activated and this is a first time and not a bot, proceed */
 	if (sv_maxConnections.integer > 0 && firstTime && !isBot && strcmp(con_ip, "localhost") != 0) {
 		i = plConnectList[plIndex].time;
@@ -1311,6 +1316,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 			}
 		}
 	}
+#endif
 
 	// Golliwog: If this is a reconnection, destroy any existing buildings.
 	// Mystery of the day: Why does it just pick client zero again for the 'new'
