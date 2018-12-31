@@ -412,7 +412,7 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 	}
 
 	// timelimit warnings
-	if ( cgs.timelimit > 0 ) {
+	if ( cgs.timelimit > 0 && cg.matchState <= MATCH_STATE_PLAYING ) {
 		int		msec;
 
 		msec = cg.time - cgs.levelStartTime;
@@ -566,4 +566,3 @@ void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops ) {
 		cg.duckTime = cg.time;
 	}
 }
-
