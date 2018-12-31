@@ -223,7 +223,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ NULL, "sv_mapname", "", CVAR_SERVERINFO | CVAR_ROM, 0, qfalse  },
 
 	// latched vars
-	{ &g_gametype, "g_gametype", "0", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH, 0, qfalse  },
+	{ &g_gametype, "g_gametype", "0", CVAR_SERVERINFO | CVAR_LATCH, 0, qfalse  },
 
 	{ &g_gameindex, "g_gameindex", "1", CVAR_SERVERINFO | CVAR_LATCH, 0, qfalse  },
 
