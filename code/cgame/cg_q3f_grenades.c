@@ -797,6 +797,11 @@ void CG_Q3F_RegisterGrenade( int grenadeNum ) {
 		cgs.media.sfx_napalmWater = trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_water.wav", qfalse );
 	}
 
+	// Also used by gas grenades if flames of any kind trigger a burnout
+	if ( grenadeNum == Q3F_GREN_GAS && cgs.media.sfx_napalmExplode == NULL_HANDLE ) {
+		cgs.media.sfx_napalmExplode = trap_S_RegisterSound( "sound/weapons/explosive/gren_napalm_start.wav", qfalse );
+	}
+
 	// Make sure the cluster child grenades get reg'd too
 	if ( grenadeNum == Q3F_GREN_CLUSTER )
 		CG_Q3F_RegisterGrenade( Q3F_GREN_CLUSTERSECTION );
