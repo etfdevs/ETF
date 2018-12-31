@@ -168,8 +168,27 @@ static void CG_EntityEffects( centity_t *cent ) {
 		g = ( ( cl >> 8 ) & 0xFF ) / 255.f;
 		b = ( ( cl >> 16 ) & 0xFF ) /  255.f;
 		i = ( ( cl >> 24 ) & 0xFF ) * 4;
-		trap_R_AddLightToScene( cent->lerpOrigin, i, 1.f, r, g, b, 0, 0 );
+
+		// Carried goals are special, use player origin intead to avoid lagged-behind light origin
+		if( cent->currentState.eType == ET_Q3F_GOAL && cent->currentState.otherEntityNum < MAX_CLIENTS) {
+			const centity_t *playerCent = &cg_entities[cent->currentState.otherEntityNum];
+			int clNum;
+
+			if ( !playerCent || !playerCent->currentValid )
+				return;
+
+			clNum = playerCent->currentState.clientNum;
+
+			if ( cgs.clientinfo[clNum].team == Q3F_TEAM_SPECTATOR || cgs.clientinfo[clNum].cls == Q3F_CLASS_NULL || (playerCent->currentState.eFlags & EF_Q3F_NOSPAWN))
+				return;
+
+			trap_R_AddLightToScene( playerCent->lerpOrigin, i, 1.f, r, g, b, 0, 0 );
+		} else {
+			trap_R_AddLightToScene( cent->lerpOrigin, i, 1.f, r, g, b, 0, 0 );
+		}
 	}
+
+}
 
 }
 
