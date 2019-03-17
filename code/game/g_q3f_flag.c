@@ -484,7 +484,6 @@ float G_Q3F_CalculateGoalItemSpeedScale( gentity_t *player )
 void G_Q3F_DropFlag( gentity_t *ent )
 {
 	// Drop the flag
-
 	trace_t trace;
 	vec3_t	velocity;
 	vec3_t	angles;
@@ -516,7 +515,7 @@ void G_Q3F_DropFlag( gentity_t *ent )
 	if( ent->r.mins[0] < activator->r.mins[0] )
 		isClipped = ent->r.mins[0] = activator->r.mins[0];
 	if( ent->r.mins[1] < activator->r.mins[1] )
-		isClipped = ent->r.mins[2] = activator->r.mins[1];
+		isClipped = ent->r.mins[1] = activator->r.mins[1];
 	if( ent->r.mins[2] < activator->r.mins[2] )
 		isClipped = ent->r.mins[2] = activator->r.mins[2];
 	if( ent->r.maxs[0] > activator->r.maxs[0] )
@@ -540,7 +539,6 @@ void G_Q3F_DropFlag( gentity_t *ent )
 	}
 
 	ent->r.contents		= CONTENTS_TRIGGER;
-	ent->physicsObject	= qtrue;
 	ent->s.eFlags		&= ~EF_Q3F_SHOWCARRY;
 	ent->physicsObject	= qtrue;		// Allow it to be stopped by brushes
 	data = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "bouncefactor" ) );

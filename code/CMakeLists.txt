@@ -110,10 +110,8 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 
 	add_definitions(-fPIC)
 
-	message(STATUS "CMAKE_C_FLAGS_RELEASE is ${CMAKE_C_FLAGS_RELEASE}")
-
-	#set(CMAKE_C_FLAGS_DEBUG "-g -ggdb -D_DEBUG")
-	#set(CMAKE_C_FLAGS_DEBUGALL "-g -ggdb -D_DEBUG")
+	set(CMAKE_C_FLAGS_DEBUG "-g -ggdb -D_DEBUG")
+	set(CMAKE_C_FLAGS_DEBUGALL "-g -ggdb -D_DEBUG")
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer -fstrength-reduce")
 	set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer -fstrength-reduce")
 	set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL} -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer -fstrength-reduce")
@@ -227,6 +225,7 @@ configure_file(
 )
 
 message(STATUS "CMAKE_C_FLAGS_RELEASE is ${CMAKE_C_FLAGS_RELEASE}")
+message(STATUS "CMAKE_C_FLAGS_DEBUG is ${CMAKE_C_FLAGS_DEBUG}")
 message(STATUS "Building ${CMAKE_BUILD_TYPE} for ${os}-${Architecture}")
 
 #find_package(Lua)

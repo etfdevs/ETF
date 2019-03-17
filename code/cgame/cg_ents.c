@@ -190,8 +190,6 @@ static void CG_EntityEffects( centity_t *cent ) {
 
 }
 
-}
-
 /*
 ==================
 CG_Q3F_Goal
