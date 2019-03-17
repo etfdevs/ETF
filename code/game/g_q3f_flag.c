@@ -512,18 +512,40 @@ void G_Q3F_DropFlag( gentity_t *ent )
 	isClipped = 0;
 	VectorCopy( ent->movedir, ent->r.mins);
 	VectorCopy( ent->pos2, ent->r.maxs);
-	if( ent->r.mins[0] < activator->r.mins[0] )
-		isClipped = ent->r.mins[0] = activator->r.mins[0];
-	if( ent->r.mins[1] < activator->r.mins[1] )
-		isClipped = ent->r.mins[1] = activator->r.mins[1];
-	if( ent->r.mins[2] < activator->r.mins[2] )
-		isClipped = ent->r.mins[2] = activator->r.mins[2];
-	if( ent->r.maxs[0] > activator->r.maxs[0] )
-		isClipped = ent->r.maxs[0] = activator->r.maxs[0];
-	if( ent->r.maxs[1] > activator->r.maxs[1] )
-		isClipped = ent->r.maxs[1] = activator->r.maxs[1];
-	if( ent->r.maxs[2] > activator->r.maxs[2] )
-		isClipped = ent->r.maxs[2] = activator->r.maxs[2];
+
+	if(activator->health > 0 && activator->client->noclip)
+	{
+		bg_q3f_playerclass_t *cls;
+		cls = BG_Q3F_GetClass(&(activator->client->ps));
+
+		if( ent->r.mins[0] < cls->mins[0] )
+			isClipped = ent->r.mins[0] = cls->mins[0];
+		if( ent->r.mins[1] < cls->mins[1] )
+			isClipped = ent->r.mins[1] = cls->mins[1];
+		if( ent->r.mins[2] < cls->mins[2] )
+			isClipped = ent->r.mins[2] = cls->mins[2];
+		if( ent->r.maxs[0] > cls->maxs[0] )
+			isClipped = ent->r.maxs[0] = cls->maxs[0];
+		if( ent->r.maxs[1] > cls->maxs[1] )
+			isClipped = ent->r.maxs[1] = cls->maxs[1];
+		if( ent->r.maxs[2] > cls->maxs[2] )
+			isClipped = ent->r.maxs[2] = cls->maxs[2];
+	}
+	else
+	{
+		if( ent->r.mins[0] < activator->r.mins[0] )
+			isClipped = ent->r.mins[0] = activator->r.mins[0];
+		if( ent->r.mins[1] < activator->r.mins[1] )
+			isClipped = ent->r.mins[1] = activator->r.mins[1];
+		if( ent->r.mins[2] < activator->r.mins[2] )
+			isClipped = ent->r.mins[2] = activator->r.mins[2];
+		if( ent->r.maxs[0] > activator->r.maxs[0] )
+			isClipped = ent->r.maxs[0] = activator->r.maxs[0];
+		if( ent->r.maxs[1] > activator->r.maxs[1] )
+			isClipped = ent->r.maxs[1] = activator->r.maxs[1];
+		if( ent->r.maxs[2] > activator->r.maxs[2] )
+			isClipped = ent->r.maxs[2] = activator->r.maxs[2];
+	}
 
 	ent->soundLoop = isClipped ? 1 : 0;
 
