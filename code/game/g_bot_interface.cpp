@@ -3304,9 +3304,9 @@ class           ETFInterface:public IEngineInterface
 				{
 					if(e->mapdata && e->mapdata->team)
 					{
-						if(e->mapdata->team == (1 << Q3F_TEAM_BLUE))
+						if(e->mapdata->team == (1 << Q3F_TEAM_RED))
 							_feature[iNumFeatures].m_Type = ENT_CLASS_GENERIC_PLAYERSTART_TEAM1;
-						else if(e->mapdata->team == (1 << Q3F_TEAM_RED))
+						else if(e->mapdata->team == (1 << Q3F_TEAM_BLUE))
 							_feature[iNumFeatures].m_Type = ENT_CLASS_GENERIC_PLAYERSTART_TEAM2;
 						else if(e->mapdata->team == (1 << Q3F_TEAM_YELLOW))
 							_feature[iNumFeatures].m_Type = ENT_CLASS_GENERIC_PLAYERSTART_TEAM3;
