@@ -23,7 +23,7 @@
 #define OMNIBOT_NAME "etf"
 
 #define OMNIBOT_MODNAME "etf"
-#define OMNIBOT_MODVERSION "1.7"
+#define OMNIBOT_MODVERSION "2.0"
 
 //////////////////////////////////////////////////////////////////////////
 // g_OmniBotFlags bits
