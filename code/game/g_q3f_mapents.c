@@ -1682,7 +1682,7 @@ qboolean G_Q3F_CheckClientStats( gentity_t *activator, q3f_keypairarray_t *array
 			EVALCLIENTSTAT( activator->client->ps.powerups[PW_Q3F_INVULN], eval, data->value.d.intdata, or );
 		} else if( data->key == clientstatsstringptrs[19] ) {	// aqualung
 			EVALCLIENTSTAT( activator->client->ps.powerups[PW_Q3F_AQUALUNG], eval, data->value.d.intdata, or );
-		} else if( data->key == clientstatsstringptrs[21] ) {	// gas
+		} else if( data->key == clientstatsstringptrs[20] ) {	// gas
 			EVALCLIENTSTAT( activator->client->ps.powerups[PW_Q3F_GAS], eval, data->value.d.intdata, or );
 		} else if( data->key == clientstatsstringptrs[21] ) {	// stun
 			EVALCLIENTSTAT( activator->client->ps.powerups[PW_Q3F_CONCUSS], eval, data->value.d.intdata, or );
