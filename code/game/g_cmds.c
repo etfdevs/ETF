@@ -933,7 +933,7 @@ Cmd_Follow_f
 =================
 */
 void Cmd_Follow_f( gentity_t *ent, spectatorState_t state ) {
-	int		i;
+	int		i, j;
 	char	arg[MAX_TOKEN_CHARS];
 
 	if ( trap_Argc() != 2 || ( Q3F_TEAM_RED <= ent->client->sess.sessionTeam && ent->client->sess.sessionTeam <= Q3F_TEAM_GREEN ) ) {
@@ -957,17 +957,17 @@ void Cmd_Follow_f( gentity_t *ent, spectatorState_t state ) {
 			return;			// We're already on this team, do nothing.*/
 
 		ent->client->spectatorTeam = i;
-		for( i = 0; i < MAX_CLIENTS; i++ )
+		for( j = 0; j < MAX_CLIENTS; j++ )
 		{
 			// Attempt to find a 'first' client to follow
 			// Ensiform: Check all forms of spectator with the uniform function instead
 
-			if(	&level.clients[i] != ent->client &&
-				level.clients[i].sess.sessionTeam == (q3f_team_t)ent->client->spectatorTeam &&
-				!Q3F_IsSpectator( &level.clients[i] ) )
+			if(	&level.clients[j] != ent->client &&
+				level.clients[j].sess.sessionTeam == (q3f_team_t)ent->client->spectatorTeam &&
+				!Q3F_IsSpectator( &level.clients[j] ) )
 			{
 				ent->client->sess.spectatorState = state;
-				ent->client->sess.spectatorClient = i;
+				ent->client->sess.spectatorClient = j;
 				trap_SendServerCommand( -1, va(	"print \"%s^7 is spectating the %s team.\n",
 												ent->client->pers.netname, g_q3f_teamlist[ent->client->spectatorTeam].name ) );
 				return;
@@ -978,7 +978,7 @@ void Cmd_Follow_f( gentity_t *ent, spectatorState_t state ) {
 //			G_SetOrigin( ent, level.intermission_origin );
 //			return;
 		}
-		if ( i == MAX_CLIENTS ) {
+		if ( j == MAX_CLIENTS ) {
 				// Failed to find someone, just go to intermission
 			StopFollowing( ent, qtrue );
 			G_SetOrigin( ent, level.intermission_origin );

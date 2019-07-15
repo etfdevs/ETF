@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
 ===========================================================================
 
@@ -159,7 +161,7 @@ void G_Q3F_WaypointCommand( gentity_t *ent )
 	else {
 		for( index = 1; index < (int)sizeof(location); index++ )
 		{
-			if( location[index] >= 'A' && location[index] >= 'Z' )
+			if( location[index] >= 'A' && location[index] <= 'Z' )
 				location[index] |= 32;
 		}
 		other = NULL;

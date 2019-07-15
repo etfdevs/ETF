@@ -226,10 +226,10 @@ static int SpiritRunTime = 0;
 ////////////////////////////////////////////////////////
 // Misc Functions
 
-static QINLINE float Spirit_Random( const rnd_val_t rnd ) {
-	if (!rnd.range) return rnd.base;
-	else if (rnd.range>0) return rnd.base + rnd.range*Q_flrand(0.0f, 1.0f);
-	else return ((int)((rand()&2)-1)) * (rnd.base - rnd.range*Q_flrand(0.0f, 1.0f));
+static QINLINE float Spirit_Random( const rnd_val_t *rnd ) {
+	if (!rnd->range) return rnd->base;
+	else if (rnd->range>0) return rnd->base + rnd->range*Q_flrand(0.0f, 1.0f);
+	else return ((int)((rand()&2)-1)) * (rnd->base - rnd->range*Q_flrand(0.0f, 1.0f));
 }
 
 static QINLINE float Spirit_GetWave(const SpiritWave_t * wave, const float fraction, const float index ) {
@@ -320,7 +320,7 @@ static void SpawnParticle( const SpiritSystem_t *SpiritSystem, pgroup_t *pgroup,
 
 	if( SpiritSystem->flags & SPIRIT_OFFSET ) {
 		for ( i = 0; i < 3; i++ ) {
-			float len = Spirit_Random( SpiritSystem->offset[i] );
+			float len = Spirit_Random( &SpiritSystem->offset[i] );
 			VectorMA( particle->pos, len, axis[i], particle->pos );
 		}
 	}
@@ -330,9 +330,9 @@ static void SpawnParticle( const SpiritSystem_t *SpiritSystem, pgroup_t *pgroup,
 	if (SpiritSystem->flags & SPIRIT_DIRECTION ) {
 		vec3_t direction;
 
-		direction[0] = Spirit_Random( SpiritSystem->direction[0] );
-		direction[1] = Spirit_Random( SpiritSystem->direction[1] );
-		direction[2] = Spirit_Random( SpiritSystem->direction[2] );
+		direction[0] = Spirit_Random( &SpiritSystem->direction[0] );
+		direction[1] = Spirit_Random( &SpiritSystem->direction[1] );
+		direction[2] = Spirit_Random( &SpiritSystem->direction[2] );
 
 		particle->delta[0] = axis[0][0]*direction[0] + axis[1][0]*direction[1] + axis[2][0]*direction[2];
 		particle->delta[1] = axis[0][1]*direction[0] + axis[1][1]*direction[1] + axis[2][1]*direction[2];
@@ -342,17 +342,17 @@ static void SpawnParticle( const SpiritSystem_t *SpiritSystem, pgroup_t *pgroup,
 		VectorCopy( axis[2], particle->delta );
 	}
 	if (SpiritSystem->flags & SPIRIT_DISTANCE) {
-		float distance = Spirit_Random( SpiritSystem->distance );
+		float distance = Spirit_Random( &SpiritSystem->distance );
 		VectorMA(particle->pos, distance, particle->delta, particle->pos );
 	}
 
-	velocity = Spirit_Random( SpiritSystem->velocity );
+	velocity = Spirit_Random( &SpiritSystem->velocity );
 	VectorScale( particle->delta, velocity , particle->delta );
 
 	// set angles
 	if( SpiritSystem->flags & SPIRIT_ANGLES ) {
 		for( i = 0; i < 3; i++ ) {
-			particle->angles[i] += Spirit_Random( SpiritSystem->angles[i] );
+			particle->angles[i] += Spirit_Random( &SpiritSystem->angles[i] );
 		}
 	// align particle along delta
 	} else if( SpiritSystem->flags & SPIRIT_ALIGN ) {
@@ -364,11 +364,11 @@ static void SpawnParticle( const SpiritSystem_t *SpiritSystem, pgroup_t *pgroup,
 	// set avelocity
 	if( SpiritSystem->flags & SPIRIT_AMOVE ) {
 		for( i = 0; i < 3; i++ ) {
-			particle->avelocity[i] = Spirit_Random( SpiritSystem->avelocity[i] );
+			particle->avelocity[i] = Spirit_Random( &SpiritSystem->avelocity[i] );
 		}
 	}
 
-	delay = Spirit_Random( SpiritSystem->delay );
+	delay = Spirit_Random( &SpiritSystem->delay );
 	attime += (int)(delay * 1000);
 
 	/* Life related init */
@@ -377,10 +377,10 @@ static void SpawnParticle( const SpiritSystem_t *SpiritSystem, pgroup_t *pgroup,
 	particle->endtime = attime + SpiritSystem->life;
 
 	// Radius related init
-	particle->radiusbase = Spirit_Random( SpiritSystem->radius[0] );
-	particle->radiusdelta = Spirit_Random( SpiritSystem->radius[1] );
+	particle->radiusbase = Spirit_Random( &SpiritSystem->radius[0] );
+	particle->radiusdelta = Spirit_Random( &SpiritSystem->radius[1] );
 	
-	particle->scalewave_index = Spirit_Random( SpiritSystem->scalewave.index);
+	particle->scalewave_index = Spirit_Random( &SpiritSystem->scalewave.index);
 
 }
 

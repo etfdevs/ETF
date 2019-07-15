@@ -86,7 +86,7 @@ static void G_WriteClientSessionData( const gclient_t *client ) {
 	cJSON_AddIntegerToObject( root, "ignoreClients0", client->sess.ignoreClients[0] );
 	cJSON_AddIntegerToObject( root, "ignoreClients1", client->sess.ignoreClients[1] );
 	cJSON_AddStringToObject( root, "ipStr", sess->ipStr ? sess->ipStr : "" );
-	cJSON_AddStringToObject( root, "guidStr", sess->guidStr ? sess->guidStr : "" );
+	cJSON_AddStringToObject( root, "guidStr", *sess->guidStr ? sess->guidStr : "" );
 
 	trap_FS_FOpenFile( fileName, &f, FS_WRITE );
 

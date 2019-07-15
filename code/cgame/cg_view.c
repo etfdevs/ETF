@@ -1327,7 +1327,7 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	DEBUGTIME
 
 	// decide on third person view
-	cg.renderingThirdPerson = (cg_thirdPerson.integer /*&& cg.concussTime < cg.time*/) /*|| cg.snap->ps.stats[STAT_HEALTH] <= 0*/ || cg.snap->ps.pm_flags & PMF_CHASE;// || (cg.snap->ps.eFlags & EF_Q3F_INVISIBLE);
+	cg.renderingThirdPerson = (cg_thirdPerson.integer /*&& cg.concussTime < cg.time*/) /*|| cg.snap->ps.stats[STAT_HEALTH] <= 0*/ || (cg.snap->ps.pm_flags & PMF_CHASE);// || (cg.snap->ps.eFlags & EF_Q3F_INVISIBLE);
 
 	// build cg.refdef
 	inwater = CG_CalcViewValues();

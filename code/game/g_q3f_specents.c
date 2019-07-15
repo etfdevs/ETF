@@ -4430,7 +4430,7 @@ void SP_Q3F_misc_flamethrower( gentity_t *ent ) {
 	if ( !( ent->wait ) ) {
 		ent->wait = 2000;
 	} else {
-		ent->speed *= 1000;
+		ent->wait *= 1000;
 	}
 
 /*

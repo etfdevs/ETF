@@ -580,7 +580,7 @@ static int CG_Q3F_TransitionFuncNone( int mode, int msec )
 	// Dummy function, performs no transitions.
 
 	panel.transrgba[0] = panel.transrgba[1] = panel.transrgba[2] = panel.transrgba[3] = 1.0f;
-	return( PTT_ONPRE ? 1 : 0 );
+	return( mode == PTT_ONPRE ? 1 : 0 );
 }
 
 static int CG_Q3F_TransitionFuncFade( int mode, int msec )
