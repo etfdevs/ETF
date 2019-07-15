@@ -1634,7 +1634,7 @@ qboolean G_Q3F_CheckClientStats( gentity_t *activator, q3f_keypairarray_t *array
 	{
 		if( data->value.flags & Q3F_VFLAG_CLSTAT_EQ && data->value.flags & Q3F_VFLAG_CLSTAT_LT )
 			eval = EVAL_LTEQ;
-		else if( data->value.flags & Q3F_VFLAG_CLSTAT_EQ && data->value.flags & Q3F_VFLAG_CLSTAT_LT )
+		else if( data->value.flags & Q3F_VFLAG_CLSTAT_EQ && data->value.flags & Q3F_VFLAG_CLSTAT_GT )
 			eval = EVAL_GTEQ;
 		else if( data->value.flags & Q3F_VFLAG_CLSTAT_EQ )
 			eval = EVAL_EQ;
