@@ -2078,7 +2078,7 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 				}
 			}
 
-			else if( data->key == givestringptrs[12] )	// Alter player pentagram of protection time
+			else if( data->key == givestringptrs[36] )	// Alter player pentagram of protection time
 			{
 				current->client->ps.powerups[PW_PENTAGRAM] =
 					_CalcPowerupValue( current->client->ps.powerups[PW_PENTAGRAM], add, force, effectfactor, data->value.d.intdata );
