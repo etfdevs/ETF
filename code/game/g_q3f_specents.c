@@ -2828,7 +2828,7 @@ void G_Q3F_MiscBeamThink (gentity_t *self) {
 							traceEnt->nextbeamhittime = level.time + Q3F_BEAM_INVULNERABILITYTIME;
 						}
 					}
-					else if( (traceEnt->s.eType == ET_Q3F_SENTRY || ET_Q3F_SUPPLYSTATION) && traceEnt->parent && traceEnt->parent->client ) {
+					else if( (traceEnt->s.eType == ET_Q3F_SENTRY || traceEnt->s.eType == ET_Q3F_SUPPLYSTATION) && traceEnt->parent && traceEnt->parent->client ) {
 							if ( G_Q3F_CheckCriteria( traceEnt->parent, self ) ) {
 								G_Damage ( traceEnt, self, self->activator, NULL, 
 									trace.endpos, self->damage, DAMAGE_NO_KNOCKBACK, MOD_BEAM);
