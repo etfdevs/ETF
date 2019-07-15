@@ -1384,12 +1384,25 @@ qboolean Load_Menu(int handle) {
 	return qfalse;
 }
 
+static qboolean engine_is_ETE = qfalse;
+const char *compiledate = __DATE__;
+int compileday, compilemonth, compileyear;
+
 void UI_LoadMenus(const char *menuFile, qboolean reset) {
 	pc_token_t token;
 	int handle;
 	int start;
 
 	start = trap_Milliseconds();
+
+	if ( engine_is_ETE ) {
+		trap_PC_AddGlobalDefine("ETE");
+		trap_PC_AddGlobalDefine("NO_PUNKBUSTER");
+	}
+
+	trap_PC_AddGlobalDefine(va("BUILD_YEAR \"%d\"", compileyear));
+	trap_PC_AddGlobalDefine(va("BUILD_MONTH \"%d\"", compilemonth));
+	trap_PC_AddGlobalDefine(va("BUILD_DAY \"%d\"", compileday));
 
 	handle = trap_PC_LoadSource( menuFile );
 	if (!handle) {
@@ -1435,7 +1448,6 @@ void UI_Load(void) {
 	char lastName[1024];
 	menuDef_t *menu = Menu_GetFocused();
 	char *menuSet;
-	menuDef_t *mainMenu;
 
 	String_Init();
 
@@ -1449,16 +1461,6 @@ void UI_Load(void) {
 	}
 
 	UI_LoadMenus(menuSet, qtrue);
-
-	mainMenu = Menus_FindByName("main");
-	if (mainMenu) {
-		itemDef_t* item = Menu_FindItemByName(mainMenu, "copyright");
-
-		if (item) {
-			item->text = String_Alloc(UI_Cvar_VariableString("ui_builddate"));
-			item->textRect.w = 0;	// force recalculation
-		}
-	}
 
 	menuSet = UI_Cvar_VariableString("ui_ingameMenuFiles");
 	if (menuSet == NULL || menuSet[0] == '\0') {
@@ -2075,9 +2077,6 @@ static void UI_Q3F_DrawCDKey_Ok(rectDef_t *rect, float scale, vec4_t color, int 
 }
 // djbob
 
-char *compiledate = __DATE__;
-int compileday, compilemonth, compileyear;
-
 void UI_Q3F_SetVersion(void) {
 	char buf[64];
 
@@ -2107,8 +2106,6 @@ void UI_Q3F_SetVersion(void) {
 	Q_strncpyz( buf, compiledate + 7, sizeof(buf) );
 
 	compileyear = atoi(buf);
-
-	trap_Cvar_Set( "ui_builddate", va("ETF 2.0 Pre-Release [%02i/%02i/%i] (c)2003-%i, ETF Development Team.  All Rights Reserved", compilemonth, compileday, compileyear, compileyear) );
 }
 
 static void UI_DrawGLInfo(rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font) {
@@ -6670,9 +6667,9 @@ UI_Init
 =================
 */
 void _UI_Init( qboolean inGameLoad ) {
+	char ver[MAX_CVAR_VALUE_STRING];
 	const char *menuSet;
 	//int start;
-	menuDef_t *mainMenu;
 
 	//uiInfo.inGameLoad = inGameLoad;
 
@@ -6680,6 +6677,13 @@ void _UI_Init( qboolean inGameLoad ) {
 
 	UI_RegisterCvars();
 	UI_InitMemory();
+	trap_PC_RemoveAllGlobalDefines();
+
+	trap_Cvar_VariableStringBuffer( "version", ver, sizeof( ver ) );
+	if ( !strcmp( ver, "ET 2.60e") )
+		engine_is_ETE = qtrue;
+	else
+		engine_is_ETE = qfalse;
 
 	// cache redundant calulations
 	trap_GetGlconfig( &uiInfo.uiDC.glconfig );
@@ -6793,16 +6797,6 @@ void _UI_Init( qboolean inGameLoad ) {
 
 	UI_LoadMenus(menuSet, qtrue);
 
-	mainMenu = Menus_FindByName("main");
-	if (mainMenu) {
-		itemDef_t* item = Menu_FindItemByName(mainMenu, "copyright");
-
-		if (item) {
-			item->text = String_Alloc(UI_Cvar_VariableString("ui_builddate"));
-			item->textRect.w = 0;	// force recalculation
-		}
-	}
-
 	menuSet = UI_Cvar_VariableString("ui_ingameMenuFiles");
 	if (menuSet == NULL || menuSet[0] == '\0') {
 		menuSet = "ui/ingame.txt";
@@ -6897,21 +6891,10 @@ void _UI_MouseEvent( int dx, int dy )
 
 void UI_LoadNonIngame() {
 	const char *menuSet = UI_Cvar_VariableString("ui_menuFiles");
-	menuDef_t *mainMenu;
 	if (menuSet == NULL || menuSet[0] == '\0') {
 		menuSet = "ui/menus.txt";
 	}
 	UI_LoadMenus(menuSet, qfalse);
-
-	mainMenu = Menus_FindByName("main");
-	if (mainMenu) {
-		itemDef_t* item = Menu_FindItemByName(mainMenu, "copyright");
-
-		if (item) {
-			item->text = String_Alloc(UI_Cvar_VariableString("ui_builddate"));
-			item->textRect.w = 0;	// force recalculation
-		}
-	}
 
 	uiInfo.inGameLoad = qfalse;
 }
@@ -7535,8 +7518,6 @@ static cvarTable_t		cvarTable[] = {
 	{ NULL,						"r_intensity",				"1",								CVAR_ARCHIVE },
 	{ NULL,						"allowRedirect",			"0",								CVAR_ARCHIVE },
 	{ &ui_checkversion,			"ui_checkversion",			"0",								CVAR_ARCHIVE },
-
-	{ NULL,						"ui_builddate",				"ETF 2.0 Pre-Release [12/12/12] (c)2003-2012, ETF Development Team.  All Rights Reserved", CVAR_ROM | CVAR_TEMP },
 };
 
 static int		cvarTableSize = sizeof(cvarTable) / sizeof(cvarTable[0]);

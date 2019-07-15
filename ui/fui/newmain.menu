@@ -72,9 +72,8 @@
             rect 0 465 640 30
             visible MENU_TRUE
             decoration
-            //text "ETF 1.7 Pre-Release [02/20/2012] (c)2003-2012, ETF Development Team.  All Rights Reserved"
-			cvar "ui_builddate"
-            textalign ITEM_ALIGN_CENTER         
+            text "ETF 2.0 Pre-Release [" BUILD_MONTH "/" BUILD_DAY "/" BUILD_YEAR "] (c)2003-" BUILD_YEAR ", ETF Development Team.  All Rights Reserved"
+            textalign ITEM_ALIGN_CENTER
             textalignx 320
             textaligny 8
             textscale .24
