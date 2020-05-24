@@ -1000,7 +1000,7 @@ void G_RunThink (gentity_t *ent);
 void QDECL G_LogPrintf( const char *fmt, ... ) _attribute( ( format( printf,1,2 ) ) );
 void SendScoreboardMessageToAllClients( void );
 void QDECL G_Printf( const char *fmt, ... ) _attribute( ( format( printf,1,2 ) ) );
-void QDECL G_Error( const char *fmt, ... ) _attribute( ( format( printf,1,2 ) ) );
+void NORETURN QDECL G_Error( const char *fmt, ... ) _attribute( ( format( printf,1,2 ) ) );
 void LogExit( const char *string );
 void G_Q3F_CeaseFire(qboolean state);
 void G_Q3F_RestartMap(void);

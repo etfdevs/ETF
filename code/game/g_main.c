@@ -523,7 +523,7 @@ void QDECL G_Printf( const char *fmt, ... ) {
 //bani
 void QDECL G_Printf( const char *fmt, ... ) __attribute__( ( format( printf,1,2 ) ) );
 
-void QDECL G_Error( const char *fmt, ... ) {
+void NORETURN QDECL G_Error( const char *fmt, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -538,7 +538,7 @@ void QDECL G_Error( const char *fmt, ... ) {
 	trap_Error( text );
 }
 //bani
-void QDECL G_Error( const char *fmt, ... ) __attribute__( ( format( printf,1,2 ) ) );
+void NORETURN QDECL G_Error( const char *fmt, ... ) __attribute__( ( format( printf,1,2 ) ) );
 
 /*
 ================

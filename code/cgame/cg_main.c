@@ -1152,7 +1152,7 @@ void QDECL CG_LowPriority_Printf( int mode, const char *msg, ... ) {
 }
 
 
-void QDECL CG_Error( const char *msg, ... ) {
+void NORETURN QDECL CG_Error( const char *msg, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -1166,7 +1166,7 @@ void QDECL CG_Error( const char *msg, ... ) {
 #ifndef CGAME_HARD_LINKED
 // this is only here so the functions in q_shared.c and bg_*.c can link (FIXME)
 
-void QDECL Com_Error( int level, const char *error, ... ) {
+void NORETURN QDECL Com_Error( int level, const char *error, ... ) {
 	va_list		argptr;
 	char		text[1024];
 

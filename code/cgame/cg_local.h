@@ -1797,7 +1797,7 @@ void CG_Q3F_RemapSkyShader( void );
 
 void QDECL CG_Printf( int mode, const char *msg, ... );
 void QDECL CG_LowPriority_Printf( int mode, const char *msg, ... );
-void QDECL CG_Error( const char *msg, ... );
+void NORETURN QDECL CG_Error( const char *msg, ... );
 
 void CG_StartMusic( void );
 
