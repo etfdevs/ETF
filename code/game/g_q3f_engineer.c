@@ -1721,6 +1721,15 @@ void G_Q3F_SupplyStationDie( gentity_t *supplystation, gentity_t *inflictor, gen
 				supplystation->s.angles2[0] / 3;
 	if( explosion > 260 )
 		explosion = 260; // was 300
+
+	// grenades give an extra 20 damage, maximum of 40
+	if (supplystation->s.angles2[2] > 0)
+		explosion += (20 * supplystation->s.angles2[2]);
+
+	// new maximum explosion damage with grenade total is 300
+	if( explosion > 300 )
+		explosion = 300;
+
 	/*if( explosion > g_supplyStationMaxDamage.value )
 		explosion = g_supplyStationMaxDamage.value;*/
 
