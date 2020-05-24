@@ -809,6 +809,7 @@ void G_Q3F_SentryRotate( gentity_t *player, int sentrynum, int angle )
 	player->client->repairEnt = NULL;
 }
 
+#ifdef SENTRY_MOVE
 void G_Q3F_SentryPlrMove( gentity_t *player, int sentrynum )
 {
 	// Repair the specified sentry (or else pick one in range)
@@ -864,6 +865,7 @@ void G_Q3F_SentryPlrMove( gentity_t *player, int sentrynum )
 
 	player->client->repairEnt = NULL;*/
 }
+#endif
 
 #if 0
 void G_Q3F_SentryAttemptPlace( gentity_t *player )
@@ -1395,6 +1397,7 @@ void G_Q3F_RunSentry( gentity_t *ent )
 	AimBlock_t aim;
 	int activegun, spinleft;
 	
+#ifdef SENTRY_MOVE
 	if(ent->sound2to1 && ent->parent)
 	{
 		vec3_t sentrymin, origin;
@@ -1422,6 +1425,7 @@ void G_Q3F_RunSentry( gentity_t *ent )
 		trap_LinkEntity( ent );
 		return;
 	}
+#endif
 	// If we have an enemy, and we want to fire, fire off the correct weapon.
 	G_Q3F_SentryMove( ent);
 
@@ -2638,6 +2642,7 @@ void G_Q3F_EngineerBuild_Command( gentity_t *ent )
 		G_Q3F_SupplyStationDismantle( ent, id );
 		return;
 	}
+#ifdef SENTRY_MOVE
 	if( !Q_stricmp( "move", cmdbuff ) )
 	{
 		trap_Argv( 2, cmdbuff, sizeof(cmdbuff) );
@@ -2646,6 +2651,7 @@ void G_Q3F_EngineerBuild_Command( gentity_t *ent )
 		//G_Q3F_SupplyStationDismantle( ent, id );
 		return;
 	}
+#endif
 
 	trap_SendServerCommand( ent->s.number, "print \"Usage: build autosentry|supplystation|cancel|menu\n\""); /// slothy |upgrade|repair|refill
 }
