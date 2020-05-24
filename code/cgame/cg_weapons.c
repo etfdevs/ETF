@@ -1135,7 +1135,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	refEntity_t	barrel;
 	refEntity_t	flash;
 	vec3_t		angles;
-	weapon_t	weaponNum;
+	weapon_t	weaponNum, realWeaponNum;
 	weaponInfo_t	*weapon;
 	centity_t	*nonPredictedCent;
 	clientInfo_t	*ci;
@@ -1165,7 +1165,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		cg.agentLastClass = agentclass = 0;
 	}
 
-	weaponNum = cent->currentState.weapon;
+	realWeaponNum = weaponNum = cent->currentState.weapon;
 	
 	// Golliwog: Agent weapon 'masquerades'
 	if(	agentclass )
@@ -1220,8 +1220,8 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		// add weapon ready sound
 		if ( ( cent->currentState.eFlags & EF_FIRING ) && weapon->firingSound ) {
 			trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, weapon->firingSound, 255, 0 );
-		} else if( ( cent->currentState.eFlags & EF_FIRING ) && weaponNum == WP_FLAMETHROWER ) {
-			if ( weaponNum == WP_FLAMETHROWER && CG_PointContents( cent->lerpOrigin, -1 ) & CONTENTS_WATER ) {
+		} else if( ( cent->currentState.eFlags & EF_FIRING ) && realWeaponNum == WP_FLAMETHROWER ) {
+			if ( realWeaponNum == WP_FLAMETHROWER && CG_PointContents( cent->lerpOrigin, -1 ) & CONTENTS_WATER ) {
 				trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.sfx_flamethrower_firewater, 255, 0 );
 			} else {
 				trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.sfx_flamethrower_fire, 255, 0 );
@@ -1230,14 +1230,14 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 			trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, weapon->readySound, 255, 0 );
 		}
 
-		if( weaponNum == WP_MINIGUN && cent->pe.minigunTime && (cent->pe.minigunTime + 700) < cg.time ) {
+		if( realWeaponNum == WP_MINIGUN && cent->pe.minigunTime && (cent->pe.minigunTime + 700) < cg.time ) {
 			trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.sfx_minigun_loop, 255, 0 );
 			CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_MINIGUN);
 		}
 	}
 
 	// RR2DO2: flamethrower windup/winddown sounds
-	if( weaponNum == WP_FLAMETHROWER ) {
+	if( realWeaponNum == WP_FLAMETHROWER ) {
 		if ( cent->pe.barrelSpinning == !(cent->currentState.eFlags & EF_FIRING) ) {
 			cent->pe.barrelSpinning = !!(cent->currentState.eFlags & EF_FIRING);
 
@@ -1286,9 +1286,9 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		angles[PITCH] = 0;
 
 		// grenade and pipe launcher have their own rendering
-		if( weaponNum == WP_GRENADE_LAUNCHER || weaponNum == WP_PIPELAUNCHER )
+		if( realWeaponNum == WP_GRENADE_LAUNCHER || realWeaponNum == WP_PIPELAUNCHER )
 			angles[ROLL] = CG_GrenadeLauncherSpinAngle( cent );
-		else if( weaponNum == WP_MINIGUN )
+		else if( realWeaponNum == WP_MINIGUN )
 			angles[ROLL] = CG_MinigunSpinAngle( cent );
 		else
 			angles[ROLL] = CG_MachinegunSpinAngle( cent );
