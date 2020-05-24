@@ -1443,7 +1443,7 @@ void G_Q3F_ValidateEntities()
 					other = ent->activator;
 					if( !other )
 					{
-						if( !strcmp( other->classname, "bodyque" ) )
+						if ( ent->neverFree )
 							break;
 						purge = qtrue;
 						G_Printf(	"G_ValidateEntities(): Agentdata %d attached to null entity.\n",
@@ -1451,7 +1451,8 @@ void G_Q3F_ValidateEntities()
 					}
 					else if( !other->inuse || !other->client )
 					{
-						if( !strcmp( other->classname, "bodyque" ) )
+						if ( other->neverFree )
+						//if( !strcmp( other->classname, "bodyque" ) )
 							break;
 						purge = qtrue;
 						G_Printf(	"G_ValidateEntities(): Agentdata %d attached to null client %d.\n",
@@ -1528,7 +1529,13 @@ void G_Q3F_ValidateEntities()
 
 			case ET_SNIPER_DOT:
 					other = ent->activator;
-					if( !other->inuse || !other->client )
+					if( !other )
+					{
+						purge = qtrue;
+						G_Printf(	"G_ValidateEntities(): Sniperdot %d attached to null entity.\n",
+									level.validatedEntityIndex );
+					}
+					else if( !other->inuse || !other->client )
 					{
 						purge = qtrue;
 						G_Printf(	"G_ValidateEntities(): Sniperdot %d attached to null client %d.\n",

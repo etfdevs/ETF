@@ -1192,8 +1192,8 @@ void G_Q3F_TargetCommandTouch( gentity_t *ent, gentity_t *other, trace_t *trace 
 	// Parse the message string, pull out 'magic' commands and process,
 	// and ignore any others
 
-	char cmdbuff[MAX_STRING_CHARS];
-	char databuff[MAX_STRING_CHARS];
+	char cmdbuff[MAX_STRING_CHARS] = { 0 };
+	char databuff[MAX_STRING_CHARS] = { 0 };
 	char *ptr, *endptr;
 	int index, spaceindex;
 
@@ -1693,6 +1693,10 @@ static void G_Q3F_TargetRespawnTouch( gentity_t *respawn, gentity_t *player, tra
 
 		// Work out what players are affected by this give
 	teams = 0;
+	distance = 0;
+	pointcontents = 0;
+	holding = notholding = NULL;
+	clientstats = NULL;
 	if( respawn->mapdata )
 	{
 		if( player )
@@ -1827,6 +1831,10 @@ static void G_Q3F_TargetMultiportTouch( gentity_t *respawn, gentity_t *player, t
 
 		// Work out what players are affected by this give
 	teams = 0;
+	distance = 0;
+	pointcontents = 0;
+	holding = notholding = NULL;
+	clientstats = NULL;
 	if( respawn->mapdata )
 	{
 		if( player )
@@ -2081,7 +2089,7 @@ static void G_Q3F_FuncDamageCalc( gentity_t *self, gentity_t *other, qboolean ch
 		char*	key;
 		char	buf[256];
 		int		j;
-		q3f_keypair_t* kp;
+		//q3f_keypair_t* kp;
 		q3f_keypairarray_t *kpa;
 		int given;
 
@@ -2449,7 +2457,7 @@ void G_Q3F_CheckOnKill( gentity_t *attacker, gentity_t *victim )
 	// Run through all the onkill entities in turn, check to see
 	// if attackertarget or victimtarget can be executed.
 
-	gentity_t *current, *scan, *killer, *killed, *other;
+	gentity_t *current, *scan, *killer, *killed = NULL, *other = NULL;
 	qboolean issameplayer, needrankcalculation;
 	trace_t tr;
 	g_q3f_onkill_t *killdata;
@@ -3984,7 +3992,10 @@ static void G_Q3F_MiscDisableWeaponsTouch( gentity_t *disabler, gentity_t *playe
 	teams = 0;
 	weapons = 0;
 	classes = 0;
+	distance = 0;
 	pointcontents = 0;
+	holding = notholding = NULL;
+	clientstats = NULL;
 	if( disabler->mapdata )
 	{
 		if( player )

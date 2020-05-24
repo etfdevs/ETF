@@ -8516,7 +8516,7 @@ void HUD_DrawClassInfo( rectDef_t* rect, float scale, vec4_t color, int textStyl
 }
 
 int HUD_ClassUnavailable (int cls) {
-	char out[6];
+	//char out[6];
 	char buf[2][3];
 	int max, current;
 //	int cls = HUD_Q3F_GetChosenClass();
@@ -8525,7 +8525,7 @@ int HUD_ClassUnavailable (int cls) {
 		return 1;
 	}
 
-	memset(out, 0, sizeof(out));
+	//memset(out, 0, sizeof(out));
 
 	buf[0][0] = hud_currentClasses.string[(cls * 2)];
 	buf[0][1] = hud_currentClasses.string[(cls * 2)+1];

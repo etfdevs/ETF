@@ -129,7 +129,7 @@ void CG_Q3F_PanelDrawPoly(	float x, float y, float w, float h,
 	// Draw a panel-mapped polygon.
 
 	float w2, h2;
-	polyVert_t verts[5];
+	polyVert_t verts[5] = { 0 };
 	unsigned char crgba[4];
 
 	if( clip )
@@ -242,7 +242,7 @@ void CG_Q3F_PanelDrawString( char *str, float x, float y, float size, float maxx
 	char *wordendptr;
 	float width;
 	vec4_t realrgba;
-	vec_t *colour;
+	//vec_t *colour;
 	qboolean broken;
 
 	if( maxx <= x )
@@ -321,8 +321,8 @@ void CG_Q3F_PanelDrawString( char *str, float x, float y, float size, float maxx
 			{
 				if( !(flags & PANEL_STR_COLOUR) )
 					continue;
-				colour = g_color_table[ColorIndex( panel.buff[index] )];
-				VectorCopy( colour, realrgba );
+				//colour = g_color_table[ColorIndex( panel.buff[index] )];
+				VectorCopy(g_color_table[ColorIndex(panel.buff[index])], realrgba );
 			}
 			else {
 				CG_Q3F_PanelDrawChar( currx, curry, size, size, panel.buff[index], realrgba, (curry + size > maxy) || (currx + size > maxx) );

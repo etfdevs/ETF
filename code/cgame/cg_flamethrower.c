@@ -82,8 +82,6 @@ typedef struct flameChunk_s
 static flameChunk_t	flameChunks[MAX_FLAME_CHUNKS];
 static flameChunk_t	*freeFlameChunks, *activeFlameChunks, *headFlameChunks;
 
-static qboolean initFlameChunks = qfalse;
-
 static int numFlameChunksInuse;
 
 // this structure stores information relevant to each cent in the game, this way we keep
@@ -392,20 +390,17 @@ void CG_ClearFlameChunks (void)
 	activeFlameChunks = NULL;
 	headFlameChunks = NULL;
 
-	for (i=0 ;i<MAX_FLAME_CHUNKS ; i++)
+    flameChunks[0].nextGlobal = &flameChunks[1];
+
+	for (i=1 ;i<MAX_FLAME_CHUNKS-1 ; i++)
 	{
 		flameChunks[i].nextGlobal = &flameChunks[i+1];
-
-		if (i>0)
-			flameChunks[i].prevGlobal = &flameChunks[i-1];
-		else
-			flameChunks[i].prevGlobal = NULL;
-
+		flameChunks[i].prevGlobal = &flameChunks[i-1];
 		flameChunks[i].inuse = qfalse;
 	}
-	flameChunks[MAX_FLAME_CHUNKS-1].nextGlobal = NULL;
 
-	initFlameChunks = qtrue;
+	flameChunks[i].prevGlobal = &flameChunks[i - 1];
+
 	numFlameChunksInuse = 0;
 }
 
@@ -657,15 +652,10 @@ static vec3_t	rright, rup;
 #define	NUM_NOZZLE_SPRITES	8
 
 static qhandle_t nozzleShaders[NUM_NOZZLE_SPRITES];
-static qboolean initFlameShaders = qtrue;
+//static qboolean initFlameShaders = qtrue;
 
-#define	MAX_CLIPPED_FLAMES	8		// dont draw more than this many per frame
-static int numClippedFlames;
-
-void CG_FlameDamage( int owner, vec3_t org, float radius )
-{
-		return;
-}
+//#define	MAX_CLIPPED_FLAMES	8		// dont draw more than this many per frame
+//static int numClippedFlames;
 
 void CG_AddFlameSpriteToScene( flameChunk_t *f, float lifeFrac, float alpha )
 {
@@ -1023,6 +1013,7 @@ void CG_AddFlameToScene( flameChunk_t *fHead ) {
 	}
 }
 
+#ifdef GEN_FLAME_SHADER
 /*
 =============
 CG_GenerateShaders
@@ -1055,6 +1046,7 @@ void CG_GenerateShaders( char *filename, char *shaderName, char *dir, int numFra
 	}
 	trap_FS_FCloseFile( f );
 }	
+#endif
 
 /*
 ===============
@@ -1159,7 +1151,7 @@ void CG_InitFlameChunks(void)
 		Com_sprintf( filename, MAX_QPATH, "nozzleFlame%i", i+1 );
 		nozzleShaders[i] = trap_R_RegisterShader( filename );
 	}
-	initFlameShaders = qfalse;
+	//initFlameShaders = qfalse;
 }
 
 /*
@@ -1178,7 +1170,7 @@ void CG_AddFlameChunks(void)
 	// clear out the volumes so we can rebuild them
 	memset( centFlameStatus, 0, sizeof(centFlameStatus) );
 
-	numClippedFlames = 0;
+	//numClippedFlames = 0;
 
 	// age them
 	f = activeFlameChunks;

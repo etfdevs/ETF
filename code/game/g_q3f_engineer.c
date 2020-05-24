@@ -275,30 +275,37 @@ void G_Q3F_SentryDie( gentity_t *sentry, gentity_t *inflictor, gentity_t *attack
 {
 	gentity_t *parent/*, *temp*/;
 	float realdamage;
-	char *attackerName;
+	const char *attackerName;
+	int attackerNum;
 
 	parent = sentry->parent;
 
 	if( meansOfDeath == MOD_LAVA ) {
+		attackerNum = ENTITYNUM_WORLD;
 		attackerName = "MOD_LAVA";
 		trap_SendServerCommand(	-1, va( parent->client->pers.gender == GENDER_MALE ?	"print \"%s ^7sacrificed his autosentry to the mighty lavagod.\n\"" : 
 																						"print \"%s ^7sacrificed her autosentry to the mighty lavagod.\n\"", parent->client->pers.netname ) );
 	} else if( meansOfDeath == MOD_SLIME ) {
+		attackerNum = ENTITYNUM_WORLD;
 		attackerName = "MOD_SLIME";
 		trap_SendServerCommand(	-1, va( "print \"%s^7's autosentry got an acid dip.\n\"", parent->client->pers.netname ) );
 	} else if( parent == attacker ) {
+		attackerNum = parent->s.number;
 		attackerName = parent->client->pers.netname;
 		trap_SendServerCommand(	-1, va( parent->client->pers.gender == GENDER_MALE ?	"print \"%s ^7has destroyed his autosentry.\n\"" :
 																						"print \"%s ^7has destroyed her autosentry.\n\"", attackerName ) );
 	} else if( sentry == attacker ) {
+		attackerNum = attacker->s.number;
 		attackerName = parent->client->pers.netname;
 		trap_SendServerCommand(	-1, va( "print \"%s^7's autosentry has blown itself up.\n\"", attackerName ) );
 	} else if( attacker ) {
 		qboolean isally = G_Q3F_IsAllied( attacker, parent ) ? qtrue : qfalse;
+		attackerNum = attacker->s.number;
 		attackerName = attacker->client ? attacker->client->pers.netname : "somebody";
 		trap_SendServerCommand(	-1, va( "print \"%s^7's autosentry has been destroyed by %s%s^7!\n\"",
 								parent->client->pers.netname, (isally ? "^sally^7 " : ""), attackerName ) );
 	} else {
+		attackerNum = ENTITYNUM_WORLD;
 		attackerName = "Unknown";
 		trap_SendServerCommand(	-1, va( "print \"%s^7's autosentry has been destroyed by an unknown entity!\n\"",
 								parent->client->pers.netname ) );
@@ -309,7 +316,7 @@ void G_Q3F_SentryDie( gentity_t *sentry, gentity_t *inflictor, gentity_t *attack
 #endif
 
 	G_LogPrintf(	"Destroy: autosentry %i %i: %s^7destroyed %s^7's autosentry.\n", 
-					attacker->s.number, parent->s.number, attackerName, parent->client->pers.netname );
+					attackerNum, parent->s.number, attackerName, parent->client->pers.netname );
 
 	realdamage = sentry->s.otherEntityNum + sentry->s.otherEntityNum2 * 3;
 	if( realdamage > 200 )
@@ -1650,7 +1657,8 @@ void G_Q3F_SupplyStationDie( gentity_t *supplystation, gentity_t *inflictor, gen
 
 	gentity_t *parent;//, *temp;
 	float explosion;
-	char *attackerName;
+	const char *attackerName;
+	int attackerNum;
 
 	if( !supplystation )
 		return;
@@ -1673,23 +1681,28 @@ void G_Q3F_SupplyStationDie( gentity_t *supplystation, gentity_t *inflictor, gen
 	}
 
 	if( meansOfDeath == MOD_LAVA ) {
+		attackerNum = ENTITYNUM_WORLD;
 		attackerName = "MOD_LAVA";
 		trap_SendServerCommand(	-1, va( parent->client->pers.gender == GENDER_MALE ?	"print \"%s ^7sacrificed his supply station to the mighty lavagod.\n\"" : 
 																						"print \"%s ^7sacrificed her supply station to the mighty lavagod.\n\"", parent->client->pers.netname ) );
 	} else if( meansOfDeath == MOD_SLIME ) {
+		attackerNum = ENTITYNUM_WORLD;
 		attackerName = "MOD_SLIME";
 		trap_SendServerCommand(	-1, va( "print \"%s^7's supply station got an acid dip.\n\"", parent->client->pers.netname ) );
 	}
 	else if( parent == attacker ) {
+		attackerNum = parent->s.number;
 		attackerName = parent->client->pers.netname;
 		trap_SendServerCommand(	-1, va( parent->client->pers.gender == GENDER_MALE ?	"print \"%s ^7has destroyed his supply station.\n\"" :
 																						"print \"%s ^7has destroyed her supply station.\n\"", attackerName ) );
 	}
 	else if( attacker ) {
 		qboolean isally = G_Q3F_IsAllied( attacker, parent ) ? qtrue : qfalse;
+		attackerNum = attacker->s.number;
 		attackerName = attacker->client ? attacker->client->pers.netname : "somebody";
 		trap_SendServerCommand(	-1, va( "print \"%s^7's supply station has been destroyed by %s%s^7!\n\"", parent->client->pers.netname, (isally ? "^sally^7 " : ""), attackerName ) );
 	} else {
+		attackerNum = ENTITYNUM_WORLD;
 		attackerName = "Unknown";
 		trap_SendServerCommand(	-1, va( "print \"%s^7's supply station has been destroyed by an unknown entity!\n\"",
 								parent->client->pers.netname ) );
@@ -1700,7 +1713,7 @@ void G_Q3F_SupplyStationDie( gentity_t *supplystation, gentity_t *inflictor, gen
 #endif
 
 	G_LogPrintf(	"Destroy: supplystation %i %i: %s^7 destroyed %s^7's supplystation.\n", 
-					attacker->s.number, parent->s.number, attackerName, parent->client->pers.netname );
+					attackerNum, parent->s.number, attackerName, parent->client->pers.netname );
 
 	explosion =	supplystation->s.origin2[0] / 2 + 
 				supplystation->s.origin2[1] / 3 +

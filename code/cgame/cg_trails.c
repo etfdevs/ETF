@@ -404,7 +404,7 @@ void CG_KillTrail( trailJunc_t *t )
 	next = NULL;
     }
     t->nextJunc = NULL;
-    if (next->nextJunc && next->nextJunc == t) {
+    if (next && next->nextJunc && next->nextJunc == t) {
 	next->nextJunc = NULL;
     }
     if (next) {

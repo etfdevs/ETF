@@ -1702,7 +1702,9 @@ void G_Q3F_Heal_Person(struct gentity_s *target, struct gentity_s *attacker)
 
 	if(target->client->ps.stats[STAT_HEALTH] < maxhealth)
 	{
+		#ifdef BUILD_BOTS
 		int before = target->client->ps.stats[STAT_HEALTH];
+		#endif
 		G_Q3F_Heal(target,10000, qfalse);
 		#ifdef BUILD_BOTS
 		Bot_Event_GaveMedicHealth( attacker, target, before, target->client->ps.stats[STAT_HEALTH] );
@@ -1713,7 +1715,9 @@ void G_Q3F_Heal_Person(struct gentity_s *target, struct gentity_s *attacker)
 	{
 		if(target->client->ps.stats[STAT_HEALTH] < maxhealth + G_Q3F_WEAP_MEDIKIT_OVERHEAL)
 		{
+			#ifdef BUILD_BOTS
 			int before = target->client->ps.stats[STAT_HEALTH];
+			#endif
 			G_Q3F_Heal(target, 5, qtrue);
 			#ifdef BUILD_BOTS
 			Bot_Event_GaveMedicHealth( attacker, target, before, target->client->ps.stats[STAT_HEALTH] );

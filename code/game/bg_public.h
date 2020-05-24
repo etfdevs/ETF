@@ -951,7 +951,7 @@ void	BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s
 qboolean	BG_PlayerTouchesItem( playerState_t *ps, entityState_t *item, int atTime );
 
 float BG_JulianDay( int year, int month, int day );
-int BG_ApproxDaysSinceCompile( qtime_t time );
+int BG_ApproxDaysSinceCompile( const qtime_t *time );
 
 // RR2DO2: used in cgame
 int PM_GetIdleAnim( int weaponNum, int classNum );

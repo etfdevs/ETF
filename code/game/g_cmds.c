@@ -57,7 +57,7 @@ If you have questions concerning this license or the applicable additional terms
 // 10 digits time
 // 3 digits flags
 
-// 2 + 10 + 3 + 10 + 3 = 28
+// 2 + 10 + 3 + 10 + 3 = 28 + 5 spaces = 33
 
 // 28 * 32 clients = 896
 
@@ -75,8 +75,8 @@ DeathmatchScoreboardMessage
 ==================
 */
 void DeathmatchScoreboardMessage( gentity_t *ent ) {
-	char		entry[900];
-	char		string[1000];
+	char		entry[36];
+	char		string[MAX_STRING_CHARS-1];
 	int			stringlength;
 	int			i, j;
 	gclient_t	*cl;
@@ -913,7 +913,7 @@ void Cmd_Team_f( gentity_t *ent ) {
 	}
 
 	// RR2DO2: if in flyby, reset the flyby
-	if( ent->client && ent->client->inFlyBy )
+	if( /*ent->client && */ ent->client->inFlyBy )
 		trap_SendServerCommand( ent-g_entities, "flyby" );
 
 	trap_Argv( 1, s, sizeof( s ) );

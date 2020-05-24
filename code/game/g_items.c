@@ -159,12 +159,14 @@ int G_Q3F_Pickup_Backpack( gentity_t *ent, gentity_t *other )
 	char messagebuff[1024];
 	bg_q3f_playerclass_t *cls;
 	int buffcount, oldammo, addammo, maxammo, ammoindex, index;
-	char *ammoname;
+	const char *ammoname = { 0 };
 
 	memset( ammobuff, 0, sizeof(ammobuff) );
 	memset( messagebuff, 0, sizeof(messagebuff) );
 	cls = BG_Q3F_GetClass( &other->client->ps );
 	buffcount = -1;
+	addammo = maxammo = 0;
+	ammoindex = AMMO_NONE;
 
 		// Give the player all the ammo in this backpack
 	for( index = 0; index < 4; index++ )
@@ -466,7 +468,7 @@ Touch_Item
 ===============
 */
 void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace) {
-	int			respawn;
+	int			respawn = 1;
 	qboolean	predict;
 
 	if( other )		// Golliwog: NULL other is used for explosions

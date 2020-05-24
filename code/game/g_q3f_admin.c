@@ -1210,7 +1210,7 @@ void G_ETF_AdminPunish( gentity_t *admin )
 
 	ent = g_entities + clientNum;
 	// RR2DO2: if in flyby, reset the flyby
-	if( ent->client && ent->client->inFlyBy )
+	if( /*ent->client &&*/ ent->client->inFlyBy )
 		trap_SendServerCommand( ent-g_entities, "flyby" );
 
 	if( SetTeam(ent , "spectator" ) ) {

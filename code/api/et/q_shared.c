@@ -513,7 +513,7 @@ int Com_ParseInfos( char *buf, int max, char infos[][MAX_INFO_STRING] ) {
 	return count;
 }
 
-void QDECL Com_sprintf( char *dest, int size, const char *fmt, ...) {
+int QDECL Com_sprintf( char *dest, int size, const char *fmt, ...) {
 	int		ret;
 	va_list		argptr;
 
@@ -522,7 +522,9 @@ void QDECL Com_sprintf( char *dest, int size, const char *fmt, ...) {
 	va_end (argptr);
 	if (ret == -1) {
 		Com_Printf ("Com_sprintf: overflow of %i bytes buffer\n", size);
+		return 0;
 	}
+	return ret;
 }
 
 /*
@@ -538,33 +540,19 @@ previous strings
 ============
 */
 char	* QDECL va( char *format, ... ) {
+	char	*buf;
 	va_list		argptr;
 	#define	MAX_VA_STRING	32000
-	static char		temp_buffer[MAX_VA_STRING];
-	static char		string[MAX_VA_STRING];	// in case va is called by nested functions
 	static int		index = 0;
-	char	*buf;
-	int len;
+	static char		string[2][MAX_VA_STRING];	// in case va is called by nested functions
+	int ret;
 
+	buf = string[ index ];
+	index ^= 1;
 
 	va_start (argptr, format);
-	Q_vsnprintf(temp_buffer, sizeof(temp_buffer), format, argptr);
-	//vsprintf (temp_buffer, format,argptr);
+	ret = Q_vsnprintf(buf, sizeof(string[0]), format, argptr);
 	va_end (argptr);
-
-	/* Ensiform - This may not even be hit anymore with Q_vsnprintf as opposed to vsprintf */
-	if ((len = strlen(temp_buffer)) >= MAX_VA_STRING) {
-		Com_Error( ERR_DROP, "Attempted to overrun string in call to va()" );
-	}
-
-	if (len + index >= MAX_VA_STRING-1) {
-		index = 0;
-	}
-
-	buf = &string[index];
-	memcpy( buf, temp_buffer, len+1 );
-
-	index += len + 1;
 
 	return buf;
 }

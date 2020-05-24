@@ -112,7 +112,7 @@ static void G_Q3F_ChargeThink( gentity_t *ent )
 		VectorScale( src, 0.5, src );
 		for( scan = g_entities; scan < &g_entities[level.num_entities]; scan++ )
 		{
-			if( scan->inuse && scan->mapdata && scan->mapdata->flags & Q3F_FLAG_CHARGEABLE && ( scan->mapdata->state != Q3F_STATE_INVISIBLE || scan->mapdata->state != Q3F_STATE_DISABLED ) )
+			if( scan->inuse && scan->mapdata && (scan->mapdata->flags & Q3F_FLAG_CHARGEABLE) && scan->mapdata->state != Q3F_STATE_INVISIBLE && scan->mapdata->state != Q3F_STATE_DISABLED )
 			{
 				if( scan->r.bmodel )
 				{

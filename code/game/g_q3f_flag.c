@@ -58,8 +58,8 @@ void G_Q3F_FlagInfo( gentity_t *queryent )
 	char fihud[MAX_STRING_CHARS];
 	char *tempbuf;
 
-	const size_t lengthOfCenter = 6;// strlen( "cp \"\"\n" );
-	const size_t lengthOfPrint = 9;// strlen( "print \"\"\n" );
+	//const size_t lengthOfCenter = 6;// strlen( "cp \"\"\n" );
+	//const size_t lengthOfPrint = 9;// strlen( "print \"\"\n" );
 
 	fihud[0] = 0;
 

@@ -1468,10 +1468,12 @@ static SpiritScript_t * Spirit_ParseScript(const char *filename) {
 	pc_token_t token;
 	int handle;
 	int TempCount = SpiritScriptDepth + SpiritScriptCount;
-	SpiritScript_t *SpiritScript = &SpiritScripts[TempCount];
+	SpiritScript_t *SpiritScript = NULL;
 
 	if( TempCount >= MAX_SCRIPT ) 
 		return NULL;
+
+	SpiritScript = &SpiritScripts[TempCount];
 
 	handle = trap_PC_LoadSource( filename );
 	if (!handle)

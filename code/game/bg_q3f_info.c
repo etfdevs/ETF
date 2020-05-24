@@ -243,7 +243,7 @@ qboolean BG_ParseInfos( char *buf, mapInfo* miList, int* index) {
 BG_LoadMapInfoFromFile
 ===============
 */
-qboolean BG_LoadMapInfoFromFile( char *filename, displayContextDef_t* DC, mapInfo* miList, int* index ) {
+qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, mapInfo* miList, int* index ) {
 	int				len;
 	fileHandle_t	f;
 	char			buf[MAX_MAPINFOS_TEXT];

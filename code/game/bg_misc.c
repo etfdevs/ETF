@@ -1744,7 +1744,7 @@ float BG_JulianDay( int year, int month, int day ) {
 }
 
 // Note: this isn't too precise, but will do for an approximiation
-int BG_ApproxDaysSinceCompile( qtime_t time ) {
+int BG_ApproxDaysSinceCompile( const qtime_t *time ) {
 	char *compiledate = __DATE__;
 	char buf[64];
 	int compileday, compilemonth, compileyear;
@@ -1779,7 +1779,7 @@ int BG_ApproxDaysSinceCompile( qtime_t time ) {
 
 	// get days passed
 	startjulian = BG_JulianDay( compileyear, compilemonth, compileday );
-	endjulian = BG_JulianDay( time.tm_year + 1900, time.tm_mon + 1, time.tm_mday );
+	endjulian = BG_JulianDay( time->tm_year + 1900, time->tm_mon + 1, time->tm_mday );
 
 	if( startjulian > endjulian )
 		return 0;

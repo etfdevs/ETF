@@ -1095,7 +1095,7 @@ static void G_Q3F_GrenadeThink( gentity_t *ent )
 	// Grenade hits timer limit
 
 	g_q3f_grenade_t *gren;
-	int damage, given, statnum;
+	int damage, given = 0, statnum;
 	vec3_t origin;
 	gclient_t *client;
 
@@ -1104,7 +1104,8 @@ static void G_Q3F_GrenadeThink( gentity_t *ent )
 	statnum = G_StatsModIndex( gren->g->mod );
 
 	client = (ent->activator && ent->activator->client) ? ent->activator->client : NULL;
-	client->pers.stats.data[statnum].shots++;
+	if ( client )
+		client->pers.stats.data[statnum].shots++;
 
 	if( gren->g->damage )
 	{
@@ -1120,20 +1121,20 @@ static void G_Q3F_GrenadeThink( gentity_t *ent )
 		if (client && given < client->pers.stats.data[statnum].given) 
 			client->pers.stats.data[statnum].hits++;
 
-		if( ent->count && ent->activator->health > 0 )
+		if( ent->count && ent->activator && ent->activator->health > 0 && client )
 		{
 			int r = (rand() % 3);
 			// They forgot to throw the grenade :)
 
 			switch(r) {
 				case 0: trap_SendServerCommand(	-1, va( "print \"No, %s%s, you're supposed to THROW the grenade!\n\"",
-										ent->activator->client->pers.netname, S_COLOR_WHITE ) );
+										client->pers.netname, S_COLOR_WHITE ) );
 					break;
 				case 1: trap_SendServerCommand(	-1, va( "print \"%s%s, perhaps you should throw that grenade.\n\"",
-						   ent->activator->client->pers.netname, S_COLOR_WHITE ) );
+						   client->pers.netname, S_COLOR_WHITE ) );
 					break;
 				default : trap_SendServerCommand(	-1, va( "print \"Oh snap, %s%s, you forgot to throw your grenade!\n\"",
-							ent->activator->client->pers.netname, S_COLOR_WHITE ) );
+							client->pers.netname, S_COLOR_WHITE ) );
 					break;
 			}
 		}

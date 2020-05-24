@@ -37,7 +37,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "ui_local.h"
 
-qboolean BG_LoadMapInfoFromFile( char *filename, displayContextDef_t* DC, mapInfo* miList, int* index );
+qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, mapInfo* miList, int* index );
 
 /*
 =================

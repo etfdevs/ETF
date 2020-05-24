@@ -2038,13 +2038,15 @@ void CG_DrawOnScreenText(void) {
 				const char *tok = 0;
 				char temp[1024];
 				int heightOffset = 0;
-				vec4_t v4Color = 
-				{
-					(float)ColorUnion.m_RGBA[0]/255.f,
-					(float)ColorUnion.m_RGBA[1]/255.f,
-					(float)ColorUnion.m_RGBA[2]/255.f,
-					(float)ColorUnion.m_RGBA[3]/255.f,
-				};
+				vec4_t v4Color = { 0 };
+
+
+				VectorSet4(	v4Color, 
+							(float)ColorUnion.m_RGBA[0]/255.f,
+							(float)ColorUnion.m_RGBA[1]/255.f,
+							(float)ColorUnion.m_RGBA[2]/255.f,
+							(float)ColorUnion.m_RGBA[3]/255.f
+				);
 
 				Q_strncpyz(temp,worldtext->text,1024);
 				tok = strtok(temp,tokens);

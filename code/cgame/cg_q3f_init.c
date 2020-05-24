@@ -132,7 +132,7 @@ void CG_Q3F_InitLog( const char *prefix, const char *entry, const char *suffix )
 }
 
 extern displayContextDef_t cgDC;
-qboolean BG_LoadMapInfoFromFile( char *filename, displayContextDef_t* DC, mapInfo* miList, int* index );
+qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, mapInfo* miList, int* index );
 
 void CG_Q3F_LoadingMapInfo(void)
 {

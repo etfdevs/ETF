@@ -101,7 +101,7 @@ qboolean UMC_ReadLineSkipEmpty( fileHandle_t f, int *bytesread, int filelen, cha
 	return( qtrue );	// We got something, even if it's empty
 }
 
-int BG_Q3F_GetPathIndex( char *pathname, campath_t* campaths ) {
+int BG_Q3F_GetPathIndex( const char *pathname, campath_t* campaths ) {
 	int pathindex;
 
 	for ( pathindex = 0; pathindex < Q3F_MAX_PATHS; pathindex++ ) {
@@ -111,7 +111,7 @@ int BG_Q3F_GetPathIndex( char *pathname, campath_t* campaths ) {
 	return(-1);
 }
 
-int BG_Q3F_LoadCamPaths( char *mapname, campath_t* campaths ) {
+int BG_Q3F_LoadCamPaths( const char *mapname, campath_t* campaths ) {
 	int len, splineindex, pathindex, bytesread;
 	fileHandle_t fh;
 	spdheader_t spdheader;

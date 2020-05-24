@@ -627,7 +627,7 @@ bg_q3f_playerclass_t *BG_Q3F_GetClass( const playerState_t *ps )
 	return( cls ? cls : &bg_q3f_playerclass_null );
 }
 
-int CG_Q3F_GetClassNum(const char *classname)
+int BG_Q3F_GetClassNum(const char *classname)
 {
 	int i;
 	

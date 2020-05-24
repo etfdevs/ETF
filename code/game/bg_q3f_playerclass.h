@@ -109,7 +109,7 @@ enum {
 extern bg_q3f_playerclass_t *bg_q3f_classlist[];			// Array of pointers to class structures
 
 bg_q3f_playerclass_t *BG_Q3F_GetClass( const playerState_t *ps );	// Get a pointer to a class structure
-int CG_Q3F_GetClassNum(const char *classname);
+int BG_Q3F_GetClassNum(const char *classname);
 int BG_Q3F_GetWeaponSlotFromWeaponNum( const playerState_t *ps, int num); // Reverse Weaponslot lookup
 int BG_Q3F_GetRemappedWeaponFromWeaponNum( int classNum, int otherClassNum, int weapNum );	// Weapon map lookup
 

@@ -138,7 +138,7 @@ extern vec4_t clrBrownTextLt;
 extern vec4_t clrBrownTextLt2;
 extern vec4_t clrBrownLineFull;
 
-extern vec4_t g_color_table[Q_COLOR_BITS+1];
+extern const vec4_t g_color_table[Q_COLOR_BITS+1];
 
 qboolean GetColourFromHex( const char *string, vec4_t colour );
 qboolean GetColourFromString( const char *string, vec4_t colour );

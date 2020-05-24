@@ -764,9 +764,13 @@ qboolean G_Q3F_UseEntity( gentity_t *ent, gentity_t *other, gentity_t *attacker 
 	{
 		if( level.ceaseFire ) 
 			return( qfalse );
-		if( !ent->use && g_mapentDebug.integer )
+		if( !ent->use )
 		{
-			G_Printf( "Attempted G_Q3F_UseEntity(%s) without a use function defined\n", ent->classname ? ent->classname : "" );
+			if (g_mapentDebug.integer)
+			{
+
+				G_Printf("Attempted G_Q3F_UseEntity(%s) without a use function defined\n", ent->classname ? ent->classname : "");
+			}
 			return( qfalse );
 		}
 		ent->use( ent, other, attacker );
@@ -783,7 +787,7 @@ qboolean G_Q3F_UseEntity( gentity_t *ent, gentity_t *other, gentity_t *attacker 
 	ent->touch = touch;
 	ent->use = use;
 	//Call the original use now if it's allowed
-	if( allowuse ) {
+	if( allowuse && ent->use ) {
 		ent->use( ent, other, attacker );
 			// This is very nasty, and will quite likely break lots of things
 			/* Ensiform - FIXME This appears to break buttons with health applied, */
@@ -1798,6 +1802,10 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 
 		// Work out what players are affected by this give
 	teams = 0;
+	distance = 0;
+	pointcontents = 0;
+	holding = notholding = NULL;
+	clientstats = NULL;
 	if( ent )
 	{
 		if( other->mapdata->flags & Q3F_FLAG_AFFECTTEAM )
