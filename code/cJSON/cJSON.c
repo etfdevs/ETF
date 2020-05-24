@@ -42,6 +42,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#if defined(_WIN32) && defined(_MSC_VER)
+#pragma warning(disable : 4706)		// assignment within conditional expression
+#endif
+
 #include <string.h>
 #include <stdio.h>
 #include <math.h>

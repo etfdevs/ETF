@@ -39,6 +39,10 @@ If you have questions concerning this license or the applicable additional terms
 
 #include <string.h>
 
+#if defined(_WIN32) && defined(_MSC_VER)
+#pragma warning(disable : 4706)		// assignment within conditional expression
+#endif
+
 ///////////////////////////////////////////////////////////////////////////
 //
 //      FILE EXTENSIONS

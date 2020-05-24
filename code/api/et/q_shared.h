@@ -88,6 +88,8 @@ If you have questions concerning this license or the applicable additional terms
 #pragma warning(disable : 4711)		// selected for automatic inline expansion
 #pragma warning(disable : 4220)		// varargs matches remaining parameters
 
+#pragma warning(disable : 4706)		// assignment within conditional expression
+
 #if defined (_MSC_VER)
 #pragma warning(disable : 4996)		// 'function': was declared deprecated
 #endif
