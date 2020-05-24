@@ -1678,6 +1678,7 @@ static void G_Q3F_TargetRespawnTouch( gentity_t *respawn, gentity_t *player, tra
 	trace_t trace;
 	char *affectteamsptr, *effectradiusptr/*, *holdingptr, *notholdingptr*/;
 	g_q3f_playerclass_t	*cls;
+	qboolean wasgod = qfalse;
 
 	if( player && !player->client )
 		player = NULL;		// Stop checking against ent for criteria
@@ -1776,7 +1777,10 @@ static void G_Q3F_TargetRespawnTouch( gentity_t *respawn, gentity_t *player, tra
 		cls = G_Q3F_GetClass(&(current->client->ps));
 		if(cls->DeathCleanup)
 			cls->DeathCleanup(current);
+		wasgod = (current->flags & FL_GODMODE) ? qtrue : qfalse;
 		ClientSpawn( current );
+		if (wasgod)
+			current->flags |= FL_GODMODE;
 		tent = G_TempEntity( current->client->ps.origin, EV_PLAYER_TELEPORT_IN );
 		tent->s.clientNum = current->s.clientNum;
 	}
