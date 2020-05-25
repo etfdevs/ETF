@@ -784,6 +784,9 @@ void CG_RegisterWeapon( int weaponNum ) {
 
 	case WP_FLAMETHROWER:
 		weaponInfo->readySound = trap_S_RegisterSound( "sound/weapons/flamer/flamer_idle.wav", qfalse );
+		cgs.media.sparkFlareShader = trap_R_RegisterShader("sparkFlareParticle");
+		cgs.media.flamethrowerFireStream = trap_R_RegisterShader("flamethrowerFireStream");
+		cgs.media.flamethrowerBlueStream = trap_R_RegisterShader("gfx/flamethrower/nozzleflame");
 		break;
 
 	case WP_SNIPER_RIFLE:
@@ -2125,6 +2128,11 @@ void CG_FireWeapon( centity_t *cent ) {
 		return;
 	}
 	weap = CG_Q3F_GetWeaponStruct( ent->otherEntityNum2, ent->weapon );// &cg_weapons[ ent->weapon ];
+
+	if ( ent->number >= 0 && ent->number < MAX_CLIENTS && cent != &cg.predictedPlayerEntity ) {
+		// point from external event to client entity
+		cent = &cg_entities[ ent->number ];
+	}
 
 	// RR2DO2: sniperrifle doesn't shoot or flash or anything when in air
 	if( ent->weapon == WP_SNIPER_RIFLE && cg.snap->ps.groundEntityNum == ENTITYNUM_NONE )
