@@ -5144,13 +5144,13 @@ void Menu_Paint(menuDef_t *menu, qboolean forcePaint) {
 	
 	// HUD items only
 
+#ifdef CGAME
 	// slothy - class test
 	if((menu->classLimit != CLASS_ALL) && DC->playerClass) {
 		if(!(DC->playerClass & menu->classLimit))
 			return;
 	}
 
-#ifdef CGAME
 	// slothy - weapon test
 	if(menu->weaponLimit) {
 		int curweapon = 0;

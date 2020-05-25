@@ -453,7 +453,7 @@ static void G_Q3F_SC_FilterByPlayers( int playerCount, char *playerLower, char *
 	pHigh	= playerUpper ? atoi( playerUpper ) : 6;
 	if( pHigh <= 0 || pHigh > 6 )
 		pHigh = 6;
-	if( pLow <= 6 || pLow > 6 );//|| pLow > pHigh )
+	if( pLow <= 6 || pLow > 6 )//;//|| pLow > pHigh )
 		pLow = 6;
 	pHigh	+= playerCount;
 	pLow	= playerCount - pLow;

@@ -53,7 +53,7 @@ static cg_q3f_mapinternal_t mi;
 *****	Support functions
 ****/
 
-static void CG_Q3F_MI_Error( char *format, ... )
+static void CG_Q3F_MI_Error( const char *format, ... )
 {
 	// print an error, showing file and line.
 
@@ -75,7 +75,7 @@ static void CG_Q3F_MI_Error( char *format, ... )
 }
 
 
-static qboolean CG_Q3F_MI_GetToken( char *requiredToken )
+static qboolean CG_Q3F_MI_GetToken( const char *requiredToken )
 {
 	// Get the next token
 
@@ -94,17 +94,17 @@ static qboolean CG_Q3F_MI_GetToken( char *requiredToken )
 	return( qtrue );
 }
 
-static qboolean CG_Q3F_MI_IsSpace( char c )
+static qboolean CG_Q3F_MI_IsSpace( const char c )
 {
 	return( c == ' ' || c == '\n' || c == '\t' || c == '\r' );
 }
 
-static char *matchStrings[] = {
+static const char *matchStrings[] = {
 	"-", "and", "to", NULL
 };
 
 
-static qboolean CG_Q3F_MI_StoreMapInfoItem( char *key, char *value, cg_q3f_mapinfo_t *mapInfo, int numItems, qboolean override )
+static qboolean CG_Q3F_MI_StoreMapInfoItem( const char *key, const char *value, cg_q3f_mapinfo_t *_mapInfo, int numItems, qboolean override )
 {
 	// Store the specified entry in the array.
 
@@ -113,29 +113,27 @@ static qboolean CG_Q3F_MI_StoreMapInfoItem( char *key, char *value, cg_q3f_mapin
 
 	for( index = 0; index < numItems; index++ )
 	{
-		if( mapInfo[index].value && !Q_stricmp( mapInfo[index].key, key ) )
+		if( _mapInfo[index].value && !Q_stricmp( _mapInfo[index].key, key ) )
 		{
-			if( (c = *mapInfo[index].value) && !override )
+			if( (c = *_mapInfo[index].value) && !override )
 				return( qfalse );
-			Q_strncpyz( mapInfo[index].value, value, mapInfo[index].valueSize );
+			Q_strncpyz( _mapInfo[index].value, value, _mapInfo[index].valueSize );
 			return( c ? qfalse : qtrue );
 		}
 	}
 	return( qfalse );
 }
 
-static qboolean CG_Q3F_MI_MapSelectGetArenaField( char *mapname, char *queryfield, char *outbuff, int outsize )
+static qboolean CG_Q3F_MI_MapSelectGetArenaField( const char *mapname, const char *queryfield, char *outbuff, int outsize )
 {
 	// Pull the longname field out of the .arena file, if present.
 
 	char	*token, *buffptr;
-	int		count, len;
+	int		len;
 	char	buff[8192];
 	char	key[MAX_TOKEN_CHARS];
-	char	info[MAX_INFO_STRING];
-	qhandle_t arenaHandle;
+	fileHandle_t arenaHandle;
 
-	count = 0;
 
 	if( (len = trap_FS_FOpenFile( va( "scripts/%s.arena", mapname ), &arenaHandle, FS_READ )) < 0 )
 		return( qfalse );
@@ -157,7 +155,6 @@ static qboolean CG_Q3F_MI_MapSelectGetArenaField( char *mapname, char *queryfiel
 			break;
 		}
 
-		info[0] = '\0';
 		while ( 1 ) {
 			token = COM_ParseExt( &buffptr, qtrue );
 			if ( !token[0] ) {
@@ -190,7 +187,7 @@ static qboolean CG_Q3F_MI_MapSelectGetArenaField( char *mapname, char *queryfiel
 *****	Main functions
 ****/
 
-int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t mapInfo[], int numItems, int gameIndex )
+int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int numItems, int gameIndex )
 {
 	// Parse the mapinfo file, filling in any appropriate entry in the supplied mapInfo struct.
 
@@ -219,12 +216,12 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t mapInfo[], int numI
 		// Reset our array.
 	for( index = foundItems = 0; index < numItems; index++ )
 	{
-		if( mapInfo[index].value )
-			*mapInfo[index].value = 0;
+		if( _mapInfo[index].value )
+			*_mapInfo[index].value = 0;
 	}
 
 		// Save out our mapname if desired.
-	if( CG_Q3F_MI_StoreMapInfoItem( "mapname", rawmapname, mapInfo, numItems, qfalse ) )
+	if( CG_Q3F_MI_StoreMapInfoItem( "mapname", rawmapname, _mapInfo, numItems, qfalse ) )
 		foundItems++;
 
 	infoname = va( "%s/%s%s", MAPINFODIR, rawmapname, MAPINFOEXT );
@@ -270,7 +267,7 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t mapInfo[], int numI
 					if( !CG_Q3F_MI_GetToken( "" ) )
 						break;
 
-					if( CG_Q3F_MI_StoreMapInfoItem( buff, mi.token.string, mapInfo, numItems, currGameIndex == gameIndex ) )
+					if( CG_Q3F_MI_StoreMapInfoItem( buff, mi.token.string, _mapInfo, numItems, currGameIndex == gameIndex ) )
 						foundItems++;
 					if( !CG_Q3F_MI_GetToken( ";" ) )
 						break;
@@ -290,11 +287,11 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t mapInfo[], int numI
 		// Reset our array.
 	for( index = foundItems = 0; index < numItems; index++ )
 	{
-		if( mapInfo[index].value )
-			*mapInfo[index].value = 0;
+		if( _mapInfo[index].value )
+			*_mapInfo[index].value = 0;
 	}
 		// Save out our mapname if desired.
-	if( CG_Q3F_MI_StoreMapInfoItem( "mapname", rawmapname, mapInfo, numItems, qfalse ) )
+	if( CG_Q3F_MI_StoreMapInfoItem( "mapname", rawmapname, _mapInfo, numItems, qfalse ) )
 		foundItems++;
 
 		// Attempt to load in the old mapinfo file, and parse out player limits.
@@ -314,12 +311,13 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t mapInfo[], int numI
 	COM_BeginParseSession(infoname);
 
 		// Save out our mapname if desired.
-	if( CG_Q3F_MI_StoreMapInfoItem( "mapinfo", buff, mapInfo, numItems, qfalse ) )
+	if( CG_Q3F_MI_StoreMapInfoItem( "mapinfo", buff, _mapInfo, numItems, qfalse ) )
 		foundItems++;
 
 	for( ptr = buff; ptr && *ptr; ptr++ )
 	{
-		if( c1 = atoi( ptr ) )
+		c1 = atoi( ptr );
+		if( c1 != 0 )
 		{
 			// It's a number, let's see if we can find a marker and a second number.
 
@@ -327,7 +325,8 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t mapInfo[], int numI
 			for( ptr3 = ptr2; *ptr3 && (*ptr3 <'0' || *ptr3 > '9') && !CG_Q3F_MI_IsSpace( *ptr3 ); ptr3++ );
 			for( ptr4 = ptr3; *ptr4 && CG_Q3F_MI_IsSpace( *ptr4 ); ptr4++ );
 
-			if( (c2 = atoi( ptr4 )) && c2 > c1 )
+			c2 = atoi( ptr4 );
+			if( c2 != 0 && c2 > c1 )
 			{
 				// Check the marker.
 
@@ -341,10 +340,10 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t mapInfo[], int numI
 						// We've got a parsable pair of numbers, stick them in the array if possible.
 
 						Com_sprintf( buff, sizeof(buff), "%d", c1 );
-						if( CG_Q3F_MI_StoreMapInfoItem( "minplayers", buff, mapInfo, numItems, qfalse ) )
+						if( CG_Q3F_MI_StoreMapInfoItem( "minplayers", buff, _mapInfo, numItems, qfalse ) )
 							foundItems++;
 						Com_sprintf( buff, sizeof(buff), "%d", c2 );
-						if( CG_Q3F_MI_StoreMapInfoItem( "maxplayers", buff, mapInfo, numItems, qfalse ) )
+						if( CG_Q3F_MI_StoreMapInfoItem( "maxplayers", buff, _mapInfo, numItems, qfalse ) )
 							foundItems++;
 						ptr = (char *) -1;
 						break;
@@ -357,9 +356,9 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t mapInfo[], int numI
 		// Look for the longname field in the .arena file if necessary.
 	for( index = 0; index < numItems; index++ )
 	{
-		if( mapInfo[index].value && !Q_stricmp( mapInfo[index].key, "longname" ) )
+		if( _mapInfo[index].value && !Q_stricmp( _mapInfo[index].key, "longname" ) )
 		{
-			if( CG_Q3F_MI_MapSelectGetArenaField( rawmapname, "longname", mapInfo[index].value, mapInfo[index].valueSize ) )
+			if( CG_Q3F_MI_MapSelectGetArenaField( rawmapname, "longname", _mapInfo[index].value, _mapInfo[index].valueSize ) )
 				foundItems++;
 			break;
 		}

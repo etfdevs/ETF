@@ -49,7 +49,7 @@ void CG_ClearTrails (void);
 *****	Init functions used internally
 ****/
 
-static int CG_Q3F_LoadMapExt( char *newext, int *fhandle )
+/*static int CG_Q3F_LoadMapExt( char *newext, int *fhandle )
 {
 	// Works out and opens a 'companion' file for the map
 
@@ -73,7 +73,7 @@ static int CG_Q3F_LoadMapExt( char *newext, int *fhandle )
 		*dest++ = *newext++;
 
 	return( trap_FS_FOpenFile( buff, fhandle, FS_READ ) );
-}
+}*/
 
 void CG_Q3F_SetInitPhase( int newPhase )
 {

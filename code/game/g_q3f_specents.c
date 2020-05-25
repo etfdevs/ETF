@@ -3043,7 +3043,7 @@ void G_Q3F_ForceFieldExtTrace(	trace_t *results, const vec3_t start, const vec3_
 	// Slightly different version of the above, owner field is set explicitely.
 
 	gentity_t *ent, *activator;
-	gclient_t *client;
+	//gclient_t *client;
 	q3f_mapent_t *mapdata;
 //	qboolean passedcriteria;
 
@@ -3059,7 +3059,7 @@ void G_Q3F_ForceFieldExtTrace(	trace_t *results, const vec3_t start, const vec3_
 	{
 		// Right, the magic starts here - Find the entity we hit, and see if it allows teams or values.
 
-		client	= activator->client;
+		//client	= activator->client;
 		mapdata	= ent->mapdata;
 
 		// Check we're actually in a forcefield - the contentmask might be zero if we got a

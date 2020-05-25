@@ -909,6 +909,8 @@ void SP_worldspawn( void ) {
 	case MATCH_STATE_NORMAL:
 		if (!(g_matchMode.integer & MATCH_MODE_ACTIVE)) 
 			break;
+		G_SetMatchState( MATCH_STATE_WAITING );
+		break;
 	case MATCH_STATE_PREPARE:
 		G_SetMatchState( MATCH_STATE_WAITING );
 		break;

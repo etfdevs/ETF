@@ -2277,7 +2277,7 @@ void CG_Q3F_ParseEntities();
 //
 // cg_q3f_mapinfo.c
 //
-int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t mapInfo[], int numItems, int gameIndex );
+int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int numItems, int gameIndex );
 
 //
 // cg_q3f_flare.c

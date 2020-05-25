@@ -59,23 +59,23 @@ static const char *netSources[] = {
 	"Internet",
 	"Favorites"
 };
-static const int numNetSources = sizeof(netSources) / sizeof(const char*);
+static const int numNetSources = (int)(sizeof(netSources) / sizeof(const char*));
 
-static const char *Q3FGameJoinTypes[] = {
+/*static const char *Q3FGameJoinTypes[] = {
 	"All",
 	GAME_NAME_CAP,   //keeg used to be "ETF"
-};
+};*/
 
-static int const numQ3FGameJoinTypes = sizeof(Q3FGameJoinTypes) / sizeof(const char*);
+//static const int numQ3FGameJoinTypes = sizeof(Q3FGameJoinTypes) / sizeof(const char*);
 
-static const char *sortKeys[] = {
+/*static const char *sortKeys[] = {
 	"Server Name",
 	"Map Name",
 	"Open Player Spots",
 //	"Game Type",
 	"Ping Time"
-};
-static const int numSortKeys = sizeof(sortKeys) / sizeof(const char*);
+};*/
+//static const int numSortKeys = sizeof(sortKeys) / sizeof(const char*);
 
 static char* netnames[] = {
 	"???",

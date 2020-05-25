@@ -113,7 +113,7 @@ void G_ReadClientSessionData( gclient_t *client ) {
 	len = trap_FS_FOpenFile( fileName, &f, FS_READ );
 
 	// no file
-	if ( !f || !len || len == -1 ) {
+	if ( !f || !len || len == 0xFFFFFFFFU ) {
 		trap_FS_FCloseFile( f );
 		return;
 	}
@@ -252,7 +252,7 @@ void G_ReadSessionData( void ) {
 	len = trap_FS_FOpenFile( metaFileName, &f, FS_READ );
 
 	// no file
-	if ( !f || !len || len == -1 ) {
+	if ( !f || !len || len == 0xFFFFFFFFU ) {
 		Com_Printf( "failed to open file, clearing session data...\n" );
 		level.newSession = qtrue;
 		if(f)
