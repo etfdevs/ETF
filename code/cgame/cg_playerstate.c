@@ -202,7 +202,28 @@ void CG_DamageFeedback( int yawByte, int pitchByte, int damage ) {
 	cg.damageTime = cg.snap->serverTime;
 }
 
+static qboolean CG_Q3F_IsSpectator(const playerState_t *ps) {
+	const clientInfo_t *ci;
 
+	if (!ps) // hopefully never hit
+		return qtrue;
+
+	ci = &cgs.clientinfo[ps->clientNum];
+
+	if (!ci)
+		return qtrue;
+
+	if (ps->persistant[PERS_TEAM] == Q3F_TEAM_SPECTATOR || ci->team == Q3F_TEAM_SPECTATOR ||
+		ps->persistant[PERS_CURRCLASS] == Q3F_TEAM_SPECTATOR || ci->cls == Q3F_CLASS_NULL ||
+		(ps->eFlags & EF_Q3F_NOSPAWN) ||
+		(ps->pm_flags & PMF_FOLLOW) || 
+		(ps->pm_flags & PMF_CHASE))
+	{
+		return qtrue;
+	}
+
+	return qfalse;
+}
 
 
 /*
@@ -236,7 +257,7 @@ void CG_Respawn( void ) {
 
 	pclass[0] = 0;
 	cgDC.playerClass = 0;
-	if(cgs.clientinfo[cg.snap->ps.clientNum].team == Q3F_TEAM_SPECTATOR || (cg.snap->ps.eFlags & EF_Q3F_NOSPAWN)) {
+	if(CG_Q3F_IsSpectator(&cg.snap->ps)) {
 		cgDC.playerClass = CLASS_SPECTATOR;
 		strcpy(pclass, "spectator"); 
 	} else {
