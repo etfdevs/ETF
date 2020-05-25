@@ -1042,7 +1042,7 @@ qboolean		trap_VerifyCDKey( const char *key, const char *chksum);
 // ui_syscalls.c
 //
 void			trap_Print( const char *string );
-void			trap_Error( const char *string );
+void NORETURN	trap_Error( const char *string );
 int				trap_Milliseconds( void );
 void			trap_Cvar_Register( vmCvar_t *vmCvar, const char *varName, const char *defaultValue, int flags );
 void			trap_Cvar_Update( vmCvar_t *vmCvar );

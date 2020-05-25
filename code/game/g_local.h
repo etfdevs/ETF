@@ -1557,7 +1557,7 @@ void	trap_SnapVector( float *v );
 
 #ifdef API_ET
 void	trap_Printf( const char *fmt );
-void	trap_Error( const char *fmt );
+void	NORETURN trap_Error( const char *fmt );
 int		trap_Milliseconds( void );
 int		trap_Argc( void );
 void	trap_Argv( int n, char *buffer, int bufferLength );

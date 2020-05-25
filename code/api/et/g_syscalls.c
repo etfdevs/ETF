@@ -54,8 +54,9 @@ void	trap_Printf( const char *fmt ) {
 	Q_syscall( G_PRINT, fmt );
 }
 
-void	trap_Error( const char *fmt ) {
+void NORETURN trap_Error( const char *fmt ) {
 	Q_syscall( G_ERROR, fmt );
+	exit( 1 );
 }
 
 int		trap_Milliseconds( void ) {

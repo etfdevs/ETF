@@ -60,8 +60,9 @@ void	trap_Print( const char *fmt ) {
 	Q_syscall( CG_PRINT, fmt );
 }
 
-void	trap_Error( const char *fmt ) {
+void NORETURN trap_Error( const char *fmt ) {
 	Q_syscall( CG_ERROR, fmt );
+	exit( 1 );
 }
 
 int		trap_Milliseconds( void ) {

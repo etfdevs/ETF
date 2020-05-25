@@ -51,8 +51,9 @@ void trap_Print( const char *string ) {
 	Q_syscall( UI_PRINT, string );
 }
 
-void trap_Error( const char *string ) {
+void NORETURN trap_Error( const char *string ) {
 	Q_syscall( UI_ERROR, string );
+	exit( 1 );
 }
 
 int trap_Milliseconds( void ) {
