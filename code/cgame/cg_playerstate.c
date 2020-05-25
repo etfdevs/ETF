@@ -215,9 +215,9 @@ static qboolean CG_Q3F_IsSpectator(const playerState_t *ps) {
 
 	if (ps->persistant[PERS_TEAM] == Q3F_TEAM_SPECTATOR || ci->team == Q3F_TEAM_SPECTATOR ||
 		ps->persistant[PERS_CURRCLASS] == Q3F_TEAM_SPECTATOR || ci->cls == Q3F_CLASS_NULL ||
-		(ps->eFlags & EF_Q3F_NOSPAWN) ||
+		(ps->eFlags & EF_Q3F_NOSPAWN))/* ||
 		(ps->pm_flags & PMF_FOLLOW) || 
-		(ps->pm_flags & PMF_CHASE))
+		(ps->pm_flags & PMF_CHASE))*/
 	{
 		return qtrue;
 	}
