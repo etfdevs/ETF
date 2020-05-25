@@ -214,7 +214,7 @@ static qboolean CG_Q3F_IsSpectator(const playerState_t *ps) {
 		return qtrue;
 
 	if (ps->persistant[PERS_TEAM] == Q3F_TEAM_SPECTATOR || ci->team == Q3F_TEAM_SPECTATOR ||
-		ps->persistant[PERS_CURRCLASS] == Q3F_TEAM_SPECTATOR || ci->cls == Q3F_CLASS_NULL ||
+		ps->persistant[PERS_CURRCLASS] == Q3F_CLASS_NULL || ci->cls == Q3F_CLASS_NULL ||
 		(ps->eFlags & EF_Q3F_NOSPAWN))/* ||
 		(ps->pm_flags & PMF_FOLLOW) || 
 		(ps->pm_flags & PMF_CHASE))*/
@@ -261,7 +261,7 @@ void CG_Respawn( void ) {
 		cgDC.playerClass = CLASS_SPECTATOR;
 		strcpy(pclass, "spectator"); 
 	} else {
-		switch(cgs.clientinfo[cg.snap->ps.clientNum].cls)
+		switch(cg.snap->ps.persistant[PERS_CURRCLASS])
 		{
 			case Q3F_CLASS_RECON : cgDC.playerClass = CLASS_RECON; strcpy(pclass, "recon"); break;
 			case Q3F_CLASS_SNIPER : cgDC.playerClass = CLASS_SNIPER; strcpy(pclass, "sniper"); break;
