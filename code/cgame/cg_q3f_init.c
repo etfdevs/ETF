@@ -1191,11 +1191,6 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 	cgs.media.charsetPropB			= trap_R_RegisterShaderNoMip( "menu/art/font2_prop.tga" );
 	//cgs.media.logodisc				= trap_R_RegisterModel( "ui/models/logodisc.md3" );
 
-	//keeg for ET flamethrower
-	cgs.media.sparkFlareShader = trap_R_RegisterShader( "sparkFlareParticle" );
-	cgs.media.flamethrowerFireStream = trap_R_RegisterShader( "flamethrowerFireStream" );
-	cgs.media.flamethrowerBlueStream = trap_R_RegisterShader( "gfx/flamethrower/nozzleflame" );
-
 	if ( !cgs.media.grenadePrimeSound &&
 		cg_grenadePrimeSound.string &&
 		*cg_grenadePrimeSound.string )
