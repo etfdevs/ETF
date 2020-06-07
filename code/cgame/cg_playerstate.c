@@ -202,7 +202,7 @@ void CG_DamageFeedback( int yawByte, int pitchByte, int damage ) {
 	cg.damageTime = cg.snap->serverTime;
 }
 
-static qboolean CG_Q3F_IsSpectator(const playerState_t *ps) {
+/*static */qboolean CG_Q3F_IsSpectator(const playerState_t *ps) {
 	const clientInfo_t *ci;
 
 	if (!ps) // hopefully never hit

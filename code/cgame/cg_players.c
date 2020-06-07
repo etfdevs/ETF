@@ -396,6 +396,8 @@ CG_ColorFromString
 CG_NewClientInfo
 ======================
 */
+extern displayContextDef_t cgDC;
+qboolean CG_Q3F_IsSpectator(const playerState_t* ps);
 void CG_NewClientInfo( int clientNum ) {
 	clientInfo_t *ci;
 	clientInfo_t newInfo;
@@ -438,6 +440,35 @@ void CG_NewClientInfo( int clientNum ) {
 	// replace whatever was there with the new one
 	newInfo.infoValid = qtrue;
 	*ci = newInfo;
+
+	// Update on immediate info change
+	if ( cg.snap && cg.snap->ps.clientNum == clientNum && cgDC.playerClass != newInfo.cls ) {
+		char pclass[25];
+
+		pclass[0] = 0;
+		cgDC.playerClass = 0;
+		if (CG_Q3F_IsSpectator(&cg.snap->ps)) {
+			cgDC.playerClass = CLASS_SPECTATOR;
+			strcpy(pclass, "spectator");
+		}
+		else {
+			switch (cg.snap->ps.persistant[PERS_CURRCLASS])
+			{
+			case Q3F_CLASS_RECON: cgDC.playerClass = CLASS_RECON; strcpy(pclass, "recon"); break;
+			case Q3F_CLASS_SNIPER: cgDC.playerClass = CLASS_SNIPER; strcpy(pclass, "sniper"); break;
+			case Q3F_CLASS_SOLDIER: cgDC.playerClass = CLASS_SOLDIER; strcpy(pclass, "soldier"); break;
+			case Q3F_CLASS_GRENADIER: cgDC.playerClass = CLASS_GRENADIER; strcpy(pclass, "grenadier"); break;
+			case Q3F_CLASS_PARAMEDIC: cgDC.playerClass = CLASS_PARAMEDIC; strcpy(pclass, "paramedic"); break;
+			case Q3F_CLASS_MINIGUNNER: cgDC.playerClass = CLASS_MINIGUNNER; strcpy(pclass, "minigunner"); break;
+			case Q3F_CLASS_FLAMETROOPER: cgDC.playerClass = CLASS_FLAMETROOPER; strcpy(pclass, "flametrooper"); break;
+			case Q3F_CLASS_AGENT: cgDC.playerClass = CLASS_AGENT; strcpy(pclass, "agent"); break;
+			case Q3F_CLASS_ENGINEER: cgDC.playerClass = CLASS_ENGINEER; strcpy(pclass, "engineer"); break;
+			case Q3F_CLASS_CIVILIAN: cgDC.playerClass = CLASS_CIVILIAN; strcpy(pclass, "civilian"); break;
+			case Q3F_CLASS_NULL: cgDC.playerClass = CLASS_SPECTATOR; strcpy(pclass, "spectator"); break;
+			}
+		}
+		trap_Cvar_Set("ui_currentclass", pclass);
+	}
 	
 	// RR2DO2
 	//InitFlames( ci );
