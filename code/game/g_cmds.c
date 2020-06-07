@@ -1367,7 +1367,7 @@ static qboolean G_SayTo( gentity_t *ent, gentity_t *other, int mode, int color, 
 	}
 
 	if(	channel && other->client->chatchannels &&
-		!G_Q3F_ArrayFind( other->client->chatchannels, (int) channel )
+		!G_Q3F_ArrayFind( other->client->chatchannels, (uintptr_t) channel )
 		&& ent != other )
 			return( qfalse );	// This is a channel message, but the client isn't on this channel
 
@@ -2202,14 +2202,14 @@ static void G_Q3F_ChannelCommand( gentity_t *ent )
 		{
 			trap_Argv( curr, chanbuff, 64 );
 			q3f_cc_preprocess( chanbuff );
-			if( !G_Q3F_ArrayFind( array, (int) G_Q3F_GetString( chanbuff ) ) )
+			if( !G_Q3F_ArrayFind( array, (uintptr_t) G_Q3F_GetString( chanbuff ) ) )
 			{
 				if( array->used >= Q3F_CHANNEL_MAX )
 				{
 					trap_SendServerCommand( ent->s.number, va( "print \"You can only have %d channels at a time.\n\"", Q3F_CHANNEL_MAX ) );
 					break;
 				}
-				G_Q3F_ArrayAdd( array, Q3F_TYPE_STRING, 0, (int) chanbuff );
+				G_Q3F_ArrayAdd( array, Q3F_TYPE_STRING, 0, (uintptr_t) chanbuff );
 			}
 			curr++;
 		}
@@ -2259,14 +2259,14 @@ static void G_Q3F_ChannelCommand( gentity_t *ent )
 		{
 			trap_Argv( curr, chanbuff, 64 );
 			q3f_cc_preprocess( chanbuff );
-			if( !G_Q3F_ArrayFind( array, (int) G_Q3F_GetString( chanbuff ) ) )
+			if( !G_Q3F_ArrayFind( array, (uintptr_t) G_Q3F_GetString( chanbuff ) ) )
 			{
 				if( array->used >= Q3F_CHANNEL_MAX )
 				{
 					trap_SendServerCommand( ent->s.number, va( "print \"You can only have %d channels at a time.\n\"", Q3F_CHANNEL_MAX ) );
 					break;
 				}
-				G_Q3F_ArrayAdd( array, Q3F_TYPE_STRING, 0, (int) chanbuff );
+				G_Q3F_ArrayAdd( array, Q3F_TYPE_STRING, 0, (uintptr_t) chanbuff );
 			}
 			curr++;
 		}

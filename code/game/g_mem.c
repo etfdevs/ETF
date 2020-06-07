@@ -38,8 +38,11 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "g_local.h"
 
-
+#ifdef idx64
+#define POOLSIZE		(768 * 1024) // double space for 64-bit storage
+#else
 #define POOLSIZE		(384 * 1024)
+#endif
 #define	FREEMEMCOOKIE	((int)0xDEADBE3F)	// Any unlikely to be used value
 #define	ROUNDBITS		31					// Round to 32 bytes
 

@@ -205,7 +205,7 @@ void UpdateIPBans (void)
 			index = -1;
 			while( ( data = G_Q3F_ArrayTraverse( ipFilters, &index ) ) != NULL )
 			{
-				filter = data->d.ptrdata;
+				filter = (g_q3f_extIpFilter_t *)data->d.ptrdata;
 				*(unsigned *)b = filter->compare;
 				str = va( "%i.%i.%i.%i %i %s\n", b[0], b[1], b[2], b[3], filter->endtime, filter->reason );
 				trap_FS_Write( str, strlen(str), fh );
@@ -221,7 +221,7 @@ void UpdateIPBans (void)
 		index = -1;
 		while( ( data = G_Q3F_ArrayTraverse( ipFilters, &index ) ) != NULL )
 		{
-			filter = data->d.ptrdata;
+			filter = (g_q3f_extIpFilter_t *)data->d.ptrdata;
 			if( filter->compare == 0xFFFFFFFF )
 				continue;			// Don't store single-IP bans
 			if( filter->endtime )
@@ -267,7 +267,7 @@ qboolean G_FilterPacket( char *from, char **reason )
 	i = -1;
 	while( ( data = G_Q3F_ArrayTraverse( ipFilters, &i ) ) != NULL )
 	{
-		filter = data->d.ptrdata;
+		filter = (g_q3f_extIpFilter_t *)data->d.ptrdata;
 		if( (in & filter->mask) == filter->compare )
 		{
 			if( reason )
@@ -297,7 +297,7 @@ void AddIP( gentity_t *admin, char *str, int time, char *reason )
 			// Remove any existing entry matching this first
 			for( index = -1; (data = G_Q3F_ArrayTraverse( ipFilters, &index ) ) != NULL; )
 			{
-				scan = data->d.ptrdata;
+				scan = (g_q3f_extIpFilter_t *)data->d.ptrdata;
 				if( scan->mask == filter->mask &&
 					scan->compare == filter->compare )
 				{
@@ -315,7 +315,7 @@ void AddIP( gentity_t *admin, char *str, int time, char *reason )
 			filter->endtime = level.time + 1000 * time;
 
 		G_Q3F_AddString( &filter->reason, reason );
-		G_Q3F_ArrayAdd( ipFilters, Q3F_TYPE_OTHER, 0, (int) filter );
+		G_Q3F_ArrayAdd( ipFilters, Q3F_TYPE_OTHER, 0, (uintptr_t) filter );
 		UpdateIPBans();
 
 //		G_Q3F_AdminPrint( admin, "Added.\n" );
@@ -516,7 +516,7 @@ void AddIPMute( gentity_t *admin, char *str, int time )
 		if( time > 0 )
 			filter->endtime = level.time + 1000 * time;
 
-		G_Q3F_ArrayAdd( ipMutes, Q3F_TYPE_OTHER, 0, (int) filter );
+		G_Q3F_ArrayAdd( ipMutes, Q3F_TYPE_OTHER, 0, (uintptr_t) filter );
 		UpdateIPMutes();
 
 //		G_Q3F_AdminPrint( admin, "Added.\n" );
@@ -732,7 +732,7 @@ static void G_Q3F_AdminBannedIPs( gentity_t *admin )
 
 		for( index = -1; ( data = G_Q3F_ArrayTraverse( ipFilters, &index ) ) != NULL; )
 		{
-			filter = data->d.ptrdata;
+			filter = (g_q3f_extIpFilter_t *)data->d.ptrdata;
 
 			memcpy( ban, &filter->compare, sizeof(ban) );
 			Q_strcat(buffer, 1024, va( "%d.%d.%d.%d", ban[0], ban[1], ban[2], ban[3] ));
@@ -805,7 +805,7 @@ static void G_Q3F_AdminRemoveIP( gentity_t *admin )
 		return;
 	for( i = -1; (data = G_Q3F_ArrayTraverse( ipFilters, &i )) != NULL; )
 	{
-		filter = data->d.ptrdata;
+		filter = (g_q3f_extIpFilter_t *)data->d.ptrdata;
 		if( filter->mask == f.mask &&
 			filter->compare == f.compare )
 		{
@@ -846,7 +846,7 @@ static void G_Q3F_AdminListIPs( gentity_t *admin )
 
 	for( index = -1; (data = G_Q3F_ArrayTraverse( ipFilters, &index )) != NULL; )
 	{
-		filter = data->d.ptrdata;
+		filter = (g_q3f_extIpFilter_t *)data->d.ptrdata;
 		timestr = "";
 		if( filter->endtime && filter->endtime > level.time )
 		{
@@ -1521,7 +1521,7 @@ int G_Q3F_AdminNextExpireBans()
 
 	for( index = -1, nexttime = 0; (data = G_Q3F_ArrayTraverse( ipFilters, &index )) != NULL; )
 	{
-		filter = data->d.ptrdata;
+		filter = (g_q3f_extIpFilter_t *)data->d.ptrdata;
 		if( filter->endtime )
 		{
 			if( filter->endtime <= level.time )

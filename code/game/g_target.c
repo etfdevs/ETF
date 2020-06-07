@@ -505,7 +505,7 @@ void SP_target_location( gentity_t *self )
 		loc->str = self->message;
 		self->message = NULL;
 
-		G_Q3F_ArrayAdd( level.locationarray, Q3F_TYPE_OTHER, 0, (int) loc );
+		G_Q3F_ArrayAdd( level.locationarray, Q3F_TYPE_OTHER, 0, (uintptr_t) loc );
 	}
 
 	G_FreeEntity( self );
@@ -521,8 +521,8 @@ static int QDECL LS_SortFunc( const void *a, const void *b )
 		return( 1 );
 	if( !((q3f_data_t *) b)->type )
 		return( -1 );
-	la = (g_q3f_location_t *)((q3f_data_t *) a)->d.intdata;
-	lb = (g_q3f_location_t *)((q3f_data_t *) b)->d.intdata;
+	la = (g_q3f_location_t *)((q3f_data_t *) a)->d.ptrdata;
+	lb = (g_q3f_location_t *)((q3f_data_t *) b)->d.ptrdata;
 
 	if( la->pos[0] != lb->pos[0] )
 		return( la->pos[0] - lb->pos[0] );

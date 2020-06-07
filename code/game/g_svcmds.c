@@ -308,7 +308,7 @@ void Svcmd_RemoveIP_f (void)
 		return;
 	for( i = -1; (data = G_Q3F_ArrayTraverse( ipFilters, &i )) != NULL; )
 	{
-		filter = data->d.ptrdata;
+		filter = (g_q3f_extIpFilter_t *)data->d.ptrdata;
 		if( filter->mask == f.mask &&
 			filter->compare == f.compare )
 		{

@@ -224,7 +224,7 @@ static void G_Q3F_SC_ProcessSchedule()
 	if( !G_Q3F_SC_GetToken( "" ) )
 		return;
 	Q_strlwr( sc.token.string );
-	G_Q3F_KeyPairArrayAdd( sc.schedules, buff, Q3F_TYPE_STRING, 0, (int) sc.token.string );
+	G_Q3F_KeyPairArrayAdd( sc.schedules, buff, Q3F_TYPE_STRING, 0, (uintptr_t) sc.token.string );
 
 		// Check the trailing semicolon.
 	G_Q3F_SC_GetToken( ";" );
@@ -250,7 +250,7 @@ static void G_Q3F_SC_ProcessSetting( q3f_keypairarray_t **settingroot, qboolean 
 	if( !(kp = G_Q3F_SC_FindKPEntry( *settingroot, sc.token.string )) )
 	{
 		setting = G_Q3F_ArrayCreate();
-		G_Q3F_KeyPairArrayAdd( *settingroot, sc.token.string, Q3F_TYPE_ARRAY, 0, (int) setting );
+		G_Q3F_KeyPairArrayAdd( *settingroot, sc.token.string, Q3F_TYPE_ARRAY, 0, (uintptr_t) setting );
 	}
 	else setting = kp->value.d.arraydata;
 
@@ -271,7 +271,7 @@ static void G_Q3F_SC_ProcessSetting( q3f_keypairarray_t **settingroot, qboolean 
 //						if( closeQuote )
 //							Q_strcat( cmd, sizeof(cmd), "\"" );
 						if( cmd[0] )
-							G_Q3F_ArrayAdd( setting, Q3F_TYPE_STRING, 0, (int) cmd );
+							G_Q3F_ArrayAdd( setting, Q3F_TYPE_STRING, 0, (uintptr_t) cmd );
 						return;
 			case ';':	// End of a config line.
 						if( multitoken )
@@ -279,7 +279,7 @@ static void G_Q3F_SC_ProcessSetting( q3f_keypairarray_t **settingroot, qboolean 
 //							if( closeQuote )
 //								Q_strcat( cmd, sizeof(cmd), "\"" );
 							if( cmd[0] )
-								G_Q3F_ArrayAdd( setting, Q3F_TYPE_STRING, 0, (int) cmd );
+								G_Q3F_ArrayAdd( setting, Q3F_TYPE_STRING, 0, (uintptr_t) cmd );
 							cmd[0] = 0;
 //							closeQuote = qfalse;
 						}
@@ -297,7 +297,7 @@ static void G_Q3F_SC_ProcessSetting( q3f_keypairarray_t **settingroot, qboolean 
 						}
 						else {
 							if( sc.token.string )
-								G_Q3F_ArrayAdd( setting, Q3F_TYPE_STRING, 0, (int) sc.token.string );
+								G_Q3F_ArrayAdd( setting, Q3F_TYPE_STRING, 0, (uintptr_t) sc.token.string );
 							cmd[0] = 0;
 						}
 						break;
@@ -391,7 +391,7 @@ static void G_Q3F_SC_ProcessMapPattern( char *mapstr, qboolean include )
 		{
 			if( !*sublist )
 				*sublist = G_Q3F_ArrayCreate();
-			G_Q3F_ArrayAdd( *sublist, Q3F_TYPE_STRING, 0, (int) mapstr );
+			G_Q3F_ArrayAdd( *sublist, Q3F_TYPE_STRING, 0, (uintptr_t) mapstr );
 			for( index = -1; data = G_Q3F_ArrayTraverse( kp->value.d.arraydata, &index ); )
 				G_Q3F_SC_ProcessMapPattern( data->d.strdata, include );
 		}
@@ -405,7 +405,7 @@ static void G_Q3F_SC_ProcessMapPattern( char *mapstr, qboolean include )
 			{
 				if( G_Q3F_SC_PartialMatch( mapstr, kp->key ) &&
 					!G_Q3F_SC_FindArrayEntry( sc.generatedMapList, kp->key ) )
-					G_Q3F_ArrayAdd( sc.generatedMapList, Q3F_TYPE_STRING, 0, (int) kp->key );
+					G_Q3F_ArrayAdd( sc.generatedMapList, Q3F_TYPE_STRING, 0, (uintptr_t) kp->key );
 			}
 			else {
 				if( G_Q3F_SC_PartialMatch( mapstr, kp->key ) &&
@@ -480,7 +480,7 @@ static void G_Q3F_SC_FilterByPlayers( int playerCount, char *playerLower, char *
 		if( (kp = G_Q3F_KeyPairArrayFind( sc.sourceMapList, data->d.strdata )) &&
 			MAPMAX( kp->value.d.intdata )	>= pHigh &&
 			MAPMIN( kp->value.d.intdata )	<= pLow )
-			G_Q3F_ArrayAdd( newmaplist, Q3F_TYPE_STRING, 0, (int) kp->key );
+			G_Q3F_ArrayAdd( newmaplist, Q3F_TYPE_STRING, 0, (uintptr_t) kp->key );
 	}
 	G_Q3F_ArrayDestroy( sc.generatedMapList );
 	sc.generatedMapList = newmaplist;
@@ -522,7 +522,7 @@ void G_Q3F_SC_FilterByHistory( char *historyLimit )
 	{
 		if( !(kp = G_Q3F_SC_FindKPEntry( history, data->d.strdata )) ||
 			kp->value.d.intdata < limit )
-			G_Q3F_ArrayAdd( newmaplist, Q3F_TYPE_STRING, 0, (int) data->d.strdata );
+			G_Q3F_ArrayAdd( newmaplist, Q3F_TYPE_STRING, 0, (uintptr_t) data->d.strdata );
 	}
 	G_Q3F_ArrayDestroy( sc.generatedMapList );
 	sc.generatedMapList = newmaplist;

@@ -752,7 +752,7 @@ void G_SpawnGEntityFromSpawnVars( qboolean fromBSP, gentity_t *usethisent ) {
 		ent->mapdata->spawVars = G_Q3F_KeyPairArrayCreate();
 
 		for ( i = 0 ; i < level.numSpawnVars ; i++ ) {
-			G_Q3F_KeyPairArrayAdd( ent->mapdata->spawVars, level.spawnVars[i][0], Q3F_TYPE_STRING, 0, (int)level.spawnVars[i][1] );
+			G_Q3F_KeyPairArrayAdd( ent->mapdata->spawVars, level.spawnVars[i][0], Q3F_TYPE_STRING, 0, (uintptr_t)level.spawnVars[i][1] );
 		}
 	}
 }

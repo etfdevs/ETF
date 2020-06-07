@@ -81,7 +81,7 @@ void G_Q3F_ArrayDestroy( q3f_array_t *array )
 	G_Free( array );
 }
 
-int G_Q3F_ArrayAdd( q3f_array_t *array, char type, char flags, int data )
+int G_Q3F_ArrayAdd( q3f_array_t *array, char type, char flags, uintptr_t data )
 {
 	// Add a new entry to the array
 
@@ -90,6 +90,11 @@ int G_Q3F_ArrayAdd( q3f_array_t *array, char type, char flags, int data )
 
 	if( !array )
 		return( -1 );
+
+	if ( type < Q3F_TYPE_INTEGER || type > Q3F_TYPE_GENERICPTR ) {
+		G_Error("G_Q3F_ArrayAdd: Bad type index!");
+		return( -1 );
+	}
 
 	if( array->used >= array->max )
 	{
@@ -112,9 +117,34 @@ int G_Q3F_ArrayAdd( q3f_array_t *array, char type, char flags, int data )
 
 			ptr->flags	= flags;
 			ptr->type	= type;
-			if( (ptr->type = type) == Q3F_TYPE_STRING )
-				G_Q3F_AddString( &ptr->d.strdata, (char *) data );
-			else ptr->d.intdata = data;
+			switch(type)
+			{
+				case Q3F_TYPE_INTEGER:
+					ptr->d.intdata = (int)data;
+					break;
+				case Q3F_TYPE_STRING:
+					G_Q3F_AddString( &ptr->d.strdata, (char *) data );
+					break;
+				case Q3F_TYPE_FLOAT:
+					ptr->d.floatdata = (float)data;
+					break;
+				case Q3F_TYPE_ENTITY:
+					ptr->d.entitydata = (struct gentity_s *)data;
+					break;
+				case Q3F_TYPE_ARRAY:
+					ptr->d.arraydata = (struct q3f_array_s *)data;
+					break;
+				case Q3F_TYPE_KEYPAIRARRAY:
+					ptr->d.keypairarraydata = (struct q3f_keypairarray_s *)data;
+					break;
+				case Q3F_TYPE_OTHER:
+				//case Q3F_TYPE_GENERICPTR:
+					ptr->d.ptrdata = data;
+					break;
+				default:
+					// will never be reached due to above error
+					break;
+			}
 			array->used++;
 			return( index );
 		}
@@ -140,7 +170,7 @@ void G_Q3F_ArrayDel( q3f_array_t *array, int index )
 		G_Q3F_KeyPairArrayDestroy( ptr->d.keypairarraydata );
 	ptr->type	= Q3F_TYPE_NULL;
 	ptr->flags	= 0;
-	ptr->d.intdata = 0;
+	ptr->d.ptrdata = 0;
 
 	array->used--;
 	if( array->used*2 <= array->max && array->max > 4 )
@@ -221,14 +251,32 @@ void G_Q3F_ArrayConsolidate( q3f_array_t *array )
 static int QDECL AS_SortFunc( const void *a, const void *b )
 {
 	// Comparison function
+	const q3f_data_t *ad = (const q3f_data_t *)a;
+	const q3f_data_t *bd = (const q3f_data_t *)b;
 
-	if( !((q3f_data_t *) a)->type )
+	if( !ad->type )
 		return( 1 );
-	if( !((q3f_data_t *) b)->type )
+	if( !bd->type )
 		return( -1 );
-	if( ((q3f_data_t *) a)->d.intdata == ((q3f_data_t *) b)->d.intdata )
-		return( 0 );
-	return( (((q3f_data_t *) a)->d.intdata < ((q3f_data_t *) b)->d.intdata) ? -1 : 1 );
+
+	assert(ad->type == bd->type); // arary's can't have two separate types anyway
+	switch(ad->type) {
+		case Q3F_TYPE_INTEGER:
+		case Q3F_TYPE_FLOAT:
+			if( ad->d.intdata == bd->d.intdata )
+				return( 0 );
+			return( (ad->d.intdata < bd->d.intdata) ? -1 : 1 );
+		case Q3F_TYPE_STRING:
+			// Ensiform: TODO should this not sort by actual string comparison?
+			// Original code always uses integer sorts
+			if( ad->d.strdata == bd->d.strdata )
+				return( 0 );
+			return( (ad->d.strdata < bd->d.strdata) ? -1 : 1 );
+		default:
+			if( ad->d.ptrdata == bd->d.ptrdata )
+				return( 0 );
+			return( (ad->d.ptrdata < bd->d.ptrdata) ? -1 : 1 );
+	}
 }
 void G_Q3F_ArraySort( q3f_array_t *array )
 {
@@ -239,7 +287,7 @@ void G_Q3F_ArraySort( q3f_array_t *array )
 	qsort( array->data, array->max, sizeof(q3f_data_t), &AS_SortFunc );
 }
 
-q3f_data_t *G_Q3F_ArrayFind( q3f_array_t *array, int value )
+q3f_data_t *G_Q3F_ArrayFind( q3f_array_t *array, uintptr_t value )
 {
 	// Find the specified value
 
@@ -278,16 +326,15 @@ q3f_array_t *G_Q3F_ArrayCopy( q3f_array_t *array )
 	for( index = -1; (data = G_Q3F_ArrayTraverse( array, &index )) != NULL; )
 	{
 		if( data->type == Q3F_TYPE_ARRAY )
-			G_Q3F_ArrayAdd( newarray, data->type, data->flags, (int) G_Q3F_ArrayCopy( data->d.arraydata ) );
+			G_Q3F_ArrayAdd( newarray, data->type, data->flags, (uintptr_t) G_Q3F_ArrayCopy( data->d.arraydata ) );
 		else if( data->type == Q3F_TYPE_KEYPAIRARRAY )
-			G_Q3F_ArrayAdd( newarray, data->type, data->flags, (int) G_Q3F_KeyPairArrayCopy( data->d.keypairarraydata ) );
-		else G_Q3F_ArrayAdd( newarray, data->type, data->flags, data->d.intdata );
+			G_Q3F_ArrayAdd( newarray, data->type, data->flags, (uintptr_t) G_Q3F_KeyPairArrayCopy( data->d.keypairarraydata ) );
+		else G_Q3F_ArrayAdd( newarray, data->type, data->flags, data->d.ptrdata );
 	}
 	return( newarray );
 }
 
-
-
+/* =========== BEGIN KEYPAIR ARRAYS =========== */
 
 q3f_keypairarray_t *G_Q3F_KeyPairArrayCreate()
 {
@@ -330,7 +377,7 @@ void G_Q3F_KeyPairArrayDestroy( q3f_keypairarray_t *array )
 	G_Free( array );
 }
 
-int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, char *key, char type, char flags, int data )
+int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, char *key, char type, char flags, uintptr_t data )
 {
 	// Add a new entry to the array
 
@@ -362,9 +409,34 @@ int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, char *key, char type, char
 			ptr->value.flags	= flags;
 			ptr->value.type		= type;
 			G_Q3F_AddString( &ptr->key, (char *) key );
-			if( (ptr->value.type = type) == Q3F_TYPE_STRING )
-				G_Q3F_AddString( &ptr->value.d.strdata, (char *) data );
-			else ptr->value.d.intdata = data;
+			switch(type)
+			{
+				case Q3F_TYPE_INTEGER:
+					ptr->value.d.intdata = (int)data;
+					break;
+				case Q3F_TYPE_STRING:
+					G_Q3F_AddString( &ptr->value.d.strdata, (char *) data );
+					break;
+				case Q3F_TYPE_FLOAT:
+					ptr->value.d.floatdata = (float)data;
+					break;
+				case Q3F_TYPE_ENTITY:
+					ptr->value.d.entitydata = (struct gentity_s *)data;
+					break;
+				case Q3F_TYPE_ARRAY:
+					ptr->value.d.arraydata = (struct q3f_array_s *)data;
+					break;
+				case Q3F_TYPE_KEYPAIRARRAY:
+					ptr->value.d.keypairarraydata = (struct q3f_keypairarray_s *)data;
+					break;
+				case Q3F_TYPE_OTHER:
+				//case Q3F_TYPE_GENERICPTR:
+					ptr->value.d.ptrdata = data;
+					break;
+				default:
+					// will never be reached due to above error
+					break;
+			}
 			array->used++;
 			return( index );
 		}
@@ -401,7 +473,7 @@ void G_Q3F_KeyPairArrayDel( q3f_keypairarray_t *array, char *key )
 
 	ptr->value.type	= Q3F_TYPE_NULL;
 	ptr->value.flags	= 0;
-	ptr->value.d.intdata = 0;
+	ptr->value.d.ptrdata = 0;
 
 	array->used--;
 	if( array->used*2 < array->max && array->max > 4 )
@@ -482,14 +554,17 @@ void G_Q3F_KeyPairArrayConsolidate( q3f_keypairarray_t *array )
 static int QDECL KPAS_SortFunc( const void *a, const void *b )
 {
 	// Comparison function
+	const q3f_keypair_t *akp = (const q3f_keypair_t *)a;
+	const q3f_keypair_t *bkp = (const q3f_keypair_t *)b;
 
-	if( !((q3f_keypair_t *) a)->value.type )
+	if( !akp->value.type )
 		return( 1 );
-	if( !((q3f_keypair_t *) b)->value.type )
+	if( !bkp->value.type )
 		return( -1 );
-	if( ((q3f_keypair_t *) a)->key == ((q3f_keypair_t *) b)->key )
+
+	if( akp->key == bkp->key )
 		return( 0 );
-	return( (((q3f_keypair_t *) a)->key < ((q3f_keypair_t *) b)->key) ? -1 : 1 );
+	return( (akp->key < bkp->key) ? -1 : 1 );
 }
 void G_Q3F_KeyPairArraySort( q3f_keypairarray_t *array )
 {
@@ -539,10 +614,10 @@ q3f_keypairarray_t *G_Q3F_KeyPairArrayCopy( q3f_keypairarray_t *array )
 	for( index = -1; (data = G_Q3F_KeyPairArrayTraverse( array, &index )) != NULL; )
 	{
 		if( data->value.type == Q3F_TYPE_ARRAY )
-			G_Q3F_KeyPairArrayAdd( newarray, data->key, data->value.type, data->value.flags, (int) G_Q3F_ArrayCopy( data->value.d.arraydata ) );
+			G_Q3F_KeyPairArrayAdd( newarray, data->key, data->value.type, data->value.flags, (uintptr_t) G_Q3F_ArrayCopy( data->value.d.arraydata ) );
 		else if( data->value.type == Q3F_TYPE_KEYPAIRARRAY )
-			G_Q3F_KeyPairArrayAdd( newarray, data->key, data->value.type, data->value.flags, (int) G_Q3F_KeyPairArrayCopy( data->value.d.keypairarraydata ) );
-		else G_Q3F_KeyPairArrayAdd( newarray, data->key, data->value.type, data->value.flags, data->value.d.intdata );
+			G_Q3F_KeyPairArrayAdd( newarray, data->key, data->value.type, data->value.flags, (uintptr_t) G_Q3F_KeyPairArrayCopy( data->value.d.keypairarraydata ) );
+		else G_Q3F_KeyPairArrayAdd( newarray, data->key, data->value.type, data->value.flags, data->value.d.ptrdata );
 	}
 	return( newarray );
 }

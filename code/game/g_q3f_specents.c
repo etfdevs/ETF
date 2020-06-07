@@ -1307,7 +1307,7 @@ qboolean G_Q3F_NoBuildCheck( vec3_t mins, vec3_t maxs, int team, int mask )
 	i = -1;
 	while( data = G_Q3F_ArrayTraverse( nobuildarray, &i ) )
 	{
-		ptr = (g_q3f_nobuild_t *) data->d.intdata;
+		ptr = (g_q3f_nobuild_t *) data->d.ptrdata;
 		if(	ptr->mins[0] > maxs[0] ||
 			ptr->mins[1] > maxs[1] ||
 			ptr->mins[2] > maxs[2] ||
@@ -1376,7 +1376,7 @@ void SP_Q3F_func_nobuild( gentity_t *ent )
 		}
 	}
 
-	G_Q3F_ArrayAdd( nobuildarray, Q3F_TYPE_OTHER, 0, (int) nobuild );
+	G_Q3F_ArrayAdd( nobuildarray, Q3F_TYPE_OTHER, 0, (uintptr_t) nobuild );
 
 	G_FreeEntity( ent );	// We don't really want the ent cluttering the place up anymore
 }
@@ -1405,7 +1405,7 @@ qboolean G_Q3F_NoAnnoyCheck( vec3_t mins, vec3_t maxs, int team, int mask )
 	i = -1;
 	while( data = G_Q3F_ArrayTraverse( noannoyarray, &i ) )
 	{
-		ptr = (g_q3f_nobuild_t *) data->d.intdata;
+		ptr = (g_q3f_nobuild_t *) data->d.ptrdata;
 		if(	ptr->mins[0] > maxs[0] ||
 			ptr->mins[1] > maxs[1] ||
 			ptr->mins[2] > maxs[2] ||
@@ -1507,7 +1507,7 @@ void SP_Q3F_func_noannoyances( gentity_t *ent )
 		}
 	}
 
-	G_Q3F_ArrayAdd( noannoyarray, Q3F_TYPE_OTHER, 0, (int) noannoy );
+	G_Q3F_ArrayAdd( noannoyarray, Q3F_TYPE_OTHER, 0, (uintptr_t) noannoy );
 
 	G_FreeEntity( ent );	// We don't really want the ent cluttering the place up anymore
 }
@@ -2638,7 +2638,7 @@ void SP_Q3F_misc_onprotect( gentity_t *self )
 	if( !self->inuse )
 		return;
 	self->methodOfDeath	= 1;
-	self->health		= (int) G_Q3F_OnKillCriteria( self, "attacker" );
+	self->health		= (uintptr_t) G_Q3F_OnKillCriteria( self, "attacker" );
 }
 
 
@@ -2662,7 +2662,7 @@ static void G_Q3F_TargetSemitriggerTouch( gentity_t *ent, gentity_t *other, trac
 
 		// Build an array of all entities to target
 	for(	index = -1, arrayindex = 0;
-			(curr = G_Q3F_KeyPairArrayTraverse( (q3f_keypairarray_t *) ent->timestamp, &index )) && arrayindex < MAX_SEMITRIGGER_TARGETS; )
+			(curr = G_Q3F_KeyPairArrayTraverse( (q3f_keypairarray_t *) ent->ptrdata1, &index )) && arrayindex < MAX_SEMITRIGGER_TARGETS; )
 	{
 		if( !(targetkp = G_Q3F_KeyPairArrayFind( level.targetnameArray, curr->key )) )
 			continue;
@@ -2715,7 +2715,7 @@ void SP_Q3F_target_semitrigger( gentity_t *self )
 	kp->value.type = Q3F_TYPE_KEYPAIRARRAY;
 	G_Q3F_RemString( &str );
 
-	self->timestamp = (int) kp->value.d.keypairarraydata;
+	self->ptrdata1 = (uintptr_t) kp->value.d.keypairarraydata;
 	G_SpawnInt( "count2", "-1", &self->damage );
 	if( self->damage < 0 )
 		self->damage = self->count;

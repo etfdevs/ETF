@@ -222,6 +222,8 @@ struct gentity_s {
 	int			spawnIndex;
 
 	vec3_t		oldOrigin;
+	uintptr_t	ptrdata1;
+	uintptr_t	ptrdata2;
 };
 
 // Golliwog: Admin levels

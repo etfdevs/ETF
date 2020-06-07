@@ -147,7 +147,7 @@ g_q3f_location_t *Team_GetLocationFromPos( vec3_t pos )
 
 	for( index = -1; (data = G_Q3F_ArrayTraverse( level.locationarray, &index )) != NULL; )
 	{
-		loc = (g_q3f_location_t *) data->d.intdata;
+		loc = (g_q3f_location_t *) data->d.ptrdata;
 		len = ( origin[0] - loc->pos[0] ) * ( origin[0] - loc->pos[0] )
 			+ ( origin[1] - loc->pos[1] ) * ( origin[1] - loc->pos[1] )
 			+ ( origin[2] - loc->pos[2] ) * ( origin[2] - loc->pos[2] );

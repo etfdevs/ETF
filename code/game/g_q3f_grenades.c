@@ -798,7 +798,7 @@ static void NailThink( gentity_t *grenade )
 	if( (grenade->s.time + Q3F_NAILGRENADETIME) <= level.time )
 	{
 		// We're finished altogether, just clean up and go.
-		G_Free( (void *) grenade->health );
+		G_Free( (void *) grenade->ptrdata1 );
 		G_FreeEntity( grenade );
 		return;
 	}
@@ -832,7 +832,7 @@ static void NailThink( gentity_t *grenade )
 		temp->r.svFlags = SVF_BROADCAST;	// send to everyone
 	}
 
-	array = (struct gnail *) grenade->health;
+	array = (struct gnail *) grenade->ptrdata1;
 	bitptr = (char *) (array + Q3F_NUM_NAILGRENNAILS);
 
 	mins[0] = mins[1] = mins[2] = -4;
@@ -954,9 +954,9 @@ qboolean NailExplode( gentity_t *grenade )
 	grenade->s.apos.trDuration = 250;
 	grenade->s.apos.trTime = level.time;
 	grenade->think = NailThink;
-	grenade->health = (int) NailArrayCreate( grenade );	// Generate the array
+	grenade->ptrdata1 = (uintptr_t) NailArrayCreate( grenade );	// Generate the array
 	grenade->pain_debounce_time = level.time + Q3F_NAILGREN_PACKINTERVAL;
-	PackNailBits( grenade, (char *)(((struct gnail *) grenade->health) + Q3F_NUM_NAILGRENNAILS) );
+	PackNailBits( grenade, (char *)(((struct gnail *) grenade->ptrdata1) + Q3F_NUM_NAILGRENNAILS) );
 	trap_LinkEntity( grenade );
 	return( qtrue );
 }

@@ -177,7 +177,7 @@ q3f_array_t *G_Q3F_ProcessStrings( const char *value )
 		else flags = 0;
 		buff = G_Alloc( ptr - startptr + 1 );
 		Q_strncpyz( buff, startptr, ptr + 1 - startptr );	// Need the extra one because of the null terminator
-		G_Q3F_ArrayAdd( array, Q3F_TYPE_STRING, flags, (int) buff );
+		G_Q3F_ArrayAdd( array, Q3F_TYPE_STRING, flags, (uintptr_t) buff );
 		G_Free( buff );
 
 		if( *(startptr = ptr) )
@@ -676,7 +676,7 @@ void G_Q3F_ProcessMapField( const char *key, const char *value, gentity_t *ent )
 			buff[10] = 't';
 		}
 
-		G_Q3F_KeyPairArrayAdd( ent->mapdata->other, (char *) key, Q3F_TYPE_STRING, flag, (int) buff );
+		G_Q3F_KeyPairArrayAdd( ent->mapdata->other, (char *) key, Q3F_TYPE_STRING, flag, (uintptr_t) buff );
 	}
 }
 
@@ -1830,7 +1830,7 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 	if(g_matchState.integer <= MATCH_STATE_PLAYING && !level.intermissionQueued && !level.intermissiontime)
 	{
 		data = G_Q3F_KeyPairArrayFind( other->mapdata->other, teamscoreptr );
-		if( data && data->value.d.intdata ) 
+		if( data && data->value.d.ptrdata ) 
 		{
 			if( data->value.type == Q3F_TYPE_STRING )
 			{
@@ -2743,7 +2743,7 @@ static qboolean G_Q3F_AddNameToTargetArray( char *str, gentity_t *ent )
 	{
 		if( !(array = G_Q3F_ArrayCreate()) )
 			G_Error( "G_Q3F_AddNameToTargetArray(): Array creation failed." );
-		if( G_Q3F_KeyPairArrayAdd( level.targetnameArray, str, Q3F_TYPE_ARRAY, 0, (int) array ) < 0 )
+		if( G_Q3F_KeyPairArrayAdd( level.targetnameArray, str, Q3F_TYPE_ARRAY, 0, (uintptr_t) array ) < 0 )
 			G_Error( "G_Q3F_AddNameToTargetArray(): Unable to expand keypair array." );
 		newkey = qtrue;
 	}
@@ -2753,7 +2753,7 @@ static qboolean G_Q3F_AddNameToTargetArray( char *str, gentity_t *ent )
 	}
 
 		// Add new entry, sort
-	if( G_Q3F_ArrayAdd( array, Q3F_TYPE_ENTITY, 0, (int) ent ) < 0 )
+	if( G_Q3F_ArrayAdd( array, Q3F_TYPE_ENTITY, 0, (uintptr_t) ent ) < 0 )
 		G_Error( "G_Q3F_AddNameToTargetArray(): Unable to expand array." );
 	G_Q3F_ArraySort( array );
 
@@ -2777,7 +2777,7 @@ static qboolean G_Q3F_RemoveNameFromTargetArray( char *str, gentity_t *ent )
 
 	array = key->value.d.arraydata;
 	//if( !(data = G_Q3F_ArrayFind( array, (int) str )) )
-	if( !(data = G_Q3F_ArrayFind( array, (int) ent )) )
+	if( !(data = G_Q3F_ArrayFind( array, (uintptr_t) ent )) )
 		return( qfalse );			// Didn't match ent in list
 	index = data - array->data;		// Find the index into the array.
 	G_Q3F_ArrayDel( array, index );
