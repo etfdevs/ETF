@@ -90,7 +90,7 @@ void BG_Q3F_QuadSpline_ComputeSegments ( Q3F_QuadSpline_t *spline ) {
 }
 
 // Returns the lenght of the spline, by walking over the segments
-float BG_Q3F_QuadSpline_Length ( Q3F_QuadSpline_t *spline ) {
+float BG_Q3F_QuadSpline_Length ( const Q3F_QuadSpline_t *spline ) {
 	int		s;
 	float	length;
 	
@@ -106,7 +106,7 @@ float BG_Q3F_QuadSpline_Length ( Q3F_QuadSpline_t *spline ) {
 }
 
 // Calculates the two nearest vertexes on the spline, given a relative position on the spline
-void BG_Q3F_QuadSpline_Position( vec3_t src, vec3_t dst, float relpos, Q3F_QuadSpline_t *spline ) {
+void BG_Q3F_QuadSpline_Position( vec3_t src, vec3_t dst, float relpos, const Q3F_QuadSpline_t *spline ) {
 	if ( !spline->SegmentVtx )
 		return;
 
@@ -119,7 +119,7 @@ void BG_Q3F_QuadSpline_Position( vec3_t src, vec3_t dst, float relpos, Q3F_QuadS
 }
 
 // Calculates the angles of the two nearest vertexes on the spline, given a relative position on the spline
-void BG_Q3F_QuadSpline_PositionAngle( vec3_t src_angle, vec3_t dst_angle, float relpos, Q3F_QuadSpline_t *spline ) {
+void BG_Q3F_QuadSpline_PositionAngle( vec3_t src_angle, vec3_t dst_angle, float relpos, const Q3F_QuadSpline_t *spline ) {
 	int src_vtx_num, dst_vtx_num;
 
 	if ( !spline->SegmentVtx )
@@ -177,7 +177,7 @@ void BG_Q3F_CubicSpline_ComputeSegments ( Q3F_CubicSpline_t *spline ) {
 }
 
 // Returns the lenght of the spline, by walking over the segments
-float BG_Q3F_CubicSpline_Length ( Q3F_CubicSpline_t *spline ) {
+float BG_Q3F_CubicSpline_Length ( const Q3F_CubicSpline_t *spline ) {
 	int		s;
 	float	length;
 	
@@ -193,7 +193,7 @@ float BG_Q3F_CubicSpline_Length ( Q3F_CubicSpline_t *spline ) {
 }
 
 // Calculates the two nearest vertexes on the spline, given a relative position on the spline
-void BG_Q3F_CubicSpline_Position( vec3_t src, vec3_t dst, float relpos, Q3F_CubicSpline_t *spline ) {
+void BG_Q3F_CubicSpline_Position( vec3_t src, vec3_t dst, float relpos, const Q3F_CubicSpline_t *spline ) {
 	if ( !spline->SegmentVtx )
 		return;
 
@@ -206,7 +206,7 @@ void BG_Q3F_CubicSpline_Position( vec3_t src, vec3_t dst, float relpos, Q3F_Cubi
 }
 
 // Calculates the angles of the two nearest vertexes on the spline, given a relative position on the spline
-void BG_Q3F_CubicSpline_PositionAngle( vec3_t src_angle, vec3_t dst_angle, float relpos, Q3F_CubicSpline_t *spline ) {
+void BG_Q3F_CubicSpline_PositionAngle( vec3_t src_angle, vec3_t dst_angle, float relpos, const Q3F_CubicSpline_t *spline ) {
 	int src_vtx_num, dst_vtx_num;
 
 	if ( !spline->SegmentVtx )
@@ -239,7 +239,7 @@ BG_Q3F_EvaluateSplineTrajectory
 Done this at 2am in the Hampton Hotel at QuakeCon2K
 ===========================
 */
-void BG_Q3F_EvaluateSplineTrajectory( const trajectory_t *tr, Q3F_QuadSpline_t *qspline, Q3F_CubicSpline_t *cspline, int atTime, vec3_t result ) {
+void BG_Q3F_EvaluateSplineTrajectory( const trajectory_t *tr, const Q3F_QuadSpline_t *qspline, const Q3F_CubicSpline_t *cspline, int atTime, vec3_t result ) {
 	float		deltaTime;
 	vec3_t		src, dst, delta;
 	float		f;
@@ -310,7 +310,7 @@ BG_Q3F_EvaluateSplineTrajectoryAngle
 For determining velocity at a given time
 ===========================
 */
-void BG_Q3F_EvaluateSplineTrajectoryAngle( const trajectory_t *tr, Q3F_QuadSpline_t *qspline, Q3F_CubicSpline_t *cspline, int atTime, vec3_t result ) {
+void BG_Q3F_EvaluateSplineTrajectoryAngle( const trajectory_t *tr, const Q3F_QuadSpline_t *qspline, const Q3F_CubicSpline_t *cspline, int atTime, vec3_t result ) {
 	float		deltaTime;
 	vec3_t		src_angle, dst_angle, delta;
 	float		f;

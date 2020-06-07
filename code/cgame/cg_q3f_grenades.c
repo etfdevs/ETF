@@ -241,14 +241,14 @@ extern cg_q3f_grenade_t cg_q3f_grenade_emp;
 void CG_PulseExplosion(vec3_t base_origin) {
 	vec3_t origin,dir;
 //	cg_q3f_grenade_t *gren = &cg_q3f_grenade_emp;
-	localEntity_t	*le;
+	//localEntity_t	*le;
 	int i;
 
 	VectorCopy ( base_origin, origin);
 	if ( cg_no3DExplosions.value < 1 ) {
 		// Lift it up a bit to stop zfighting and other evil things
 		origin[2] += 8;
-		le = CG_MakeExplosion( origin, PULSEDURATION*0.8, 2, 4,
+		/*le = */CG_MakeExplosion( origin, PULSEDURATION*0.8, 2, 4,
 								cgs.media.sphereFlashModel,
 							    cgs.media.pulse3DExplosionShader
 							   );
@@ -258,7 +258,7 @@ void CG_PulseExplosion(vec3_t base_origin) {
 
 		// Now add the ring
 		VectorSet(dir, 0, 0, 1);
-		le = CG_Q3F_MakeRing( origin, dir, PULSEDURATION,
+		/*le = */CG_Q3F_MakeRing( origin, dir, PULSEDURATION,
 							  40, 128,
 							  0, cgs.media.pulseRingShader );
 		// And now, add a bunch of electric bolts
@@ -271,7 +271,7 @@ void CG_PulseExplosion(vec3_t base_origin) {
 			CG_Trace( &trace, origin, NULL, NULL, dest, -1, CONTENTS_SOLID );
 			if ( trace.fraction == 1.0 )
 				continue;
-			le = CG_Q3F_MakeBeam( origin, 
+			/*le = */CG_Q3F_MakeBeam( origin, 
 					 		      trace.endpos,
 								  15,
 								  trace.fraction * 12 + 2,
@@ -284,7 +284,7 @@ void CG_PulseExplosion(vec3_t base_origin) {
 			CG_OldMark(cgs.media.energyMarkShader,trace.endpos, trace.plane.normal,Q_flrand(0.0f, 1.0f)*360,7,colorWhite,cg_markTime.integer >> 1,LEMFT_ALPHA);
 		}
 	} else {
-		le = CG_MakeExplosion(	origin, 800, 2, 4,
+		/*le = */CG_MakeExplosion(	origin, 800, 2, 4,
 								cgs.media.sphereFlashModel,
 								cgs.media.pulseExplosionShader );
 	}

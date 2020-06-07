@@ -434,7 +434,7 @@ typedef struct {
 	qboolean		infoValid;
 
 	char			name[MAX_QPATH];
-	q3f_team_t		team;			//RR2DO2
+	int				team;			//RR2DO2
 	int				cls;			// Golliwog: Player's current (real) class
 
 	qboolean		shoutcaster;
@@ -1870,7 +1870,7 @@ float *CG_FadeColor( int startMsec, int totalMsec );
 float *CG_RFadeColor( int startMsec, int totalMsec );
 float *CG_TeamColor( int team );
 float *CG_TeamColor_Scoreboard( int team );
-void CG_Q3F_GetTeamColor (vec4_t hcolor, q3f_team_t teamnum);
+void CG_Q3F_GetTeamColor (vec4_t hcolor, int teamnum);
 void CG_Q3F_GetTeamColor2 (vec4_t *hcolor );
 void CG_TileClear( void );
 void CG_ColorForHealth( vec4_t hcolor );
@@ -1953,9 +1953,9 @@ qhandle_t *CG_Q3F_HeadModel( int classNum );
 F2RDef_t *CG_Q3F_LegsF2RScript( int classNum );
 F2RDef_t *CG_Q3F_TorsoF2RScript( int classNum );
 F2RDef_t *CG_Q3F_HeadF2RScript( int classNum );
-byte *CG_Q3F_LegsColour( int classNum, q3f_team_t teamNum );
-byte *CG_Q3F_TorsoColour( int classNum, q3f_team_t teamNum );
-byte *CG_Q3F_HeadColour( int classNum, q3f_team_t teamNum );
+byte *CG_Q3F_LegsColour( int classNum, int teamNum );
+byte *CG_Q3F_TorsoColour( int classNum, int teamNum );
+byte *CG_Q3F_HeadColour( int classNum, int teamNum );
 qboolean CG_Q3F_RegisterClassModels( int classNum );
 qboolean CG_Q3F_RegisterClassSounds( int classNum );
 

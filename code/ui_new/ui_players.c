@@ -315,15 +315,15 @@ F2RDef_t *UI_Q3F_HeadF2RScript( int classNum ) {
 	return( uiInfo.f2rcache[classNum][2] );
 }
 
-byte *UI_Q3F_LegsColour( int classNum, q3f_team_t teamNum ) {
+byte *UI_Q3F_LegsColour( int classNum, int teamNum ) {
 	return( &uiInfo.skincolours[classNum][teamNum-Q3F_TEAM_RED][0][0] );
 }
 
-byte *UI_Q3F_TorsoColour( int classNum, q3f_team_t teamNum ) {
+byte *UI_Q3F_TorsoColour( int classNum, int teamNum ) {
 	return( &uiInfo.skincolours[classNum][teamNum-Q3F_TEAM_RED][1][0] );
 }
 
-byte *UI_Q3F_HeadColour( int classNum, q3f_team_t teamNum ) {
+byte *UI_Q3F_HeadColour( int classNum, int teamNum ) {
 	return( &uiInfo.skincolours[classNum][teamNum-Q3F_TEAM_RED][2][0] );
 }
 

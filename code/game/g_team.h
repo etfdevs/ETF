@@ -69,11 +69,11 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 void Team_InitGame(void);
 //void Team_ReturnFlag(int team);
 //void Team_FreeEntity(gentity_t *ent);
-gentity_t *SelectCTFSpawnPoint ( q3f_team_t team, int teamstate, vec3_t origin, vec3_t angles );	// RR2DO2
+gentity_t *SelectCTFSpawnPoint ( int team, int teamstate, vec3_t origin, vec3_t angles );	// RR2DO2
 g_q3f_location_t *Team_GetLocation(gentity_t *ent);
 g_q3f_location_t *Team_GetLocationFromPos( vec3_t pos );
 qboolean Team_GetLocationMsg(gentity_t *ent, char *loc, int loclen);
-void TeamplayInfoMessage( q3f_team_t team );
+void TeamplayInfoMessage( int team );
 void CheckTeamStatus(void);
 
 //int Pickup_Team( gentity_t *ent, gentity_t *other );

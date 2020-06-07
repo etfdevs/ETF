@@ -109,7 +109,7 @@ void G_ReadClientSessionData( gclient_t *client ) {
 	unsigned int len = 0;
 	const char *tmp = NULL;
 
-	Com_sprintf( fileName, sizeof(fileName), "session/client%02i.json", client - level.clients );
+	Com_sprintf( fileName, sizeof(fileName), "session/client%02i.json", (int)(client - level.clients) );
 	len = trap_FS_FOpenFile( fileName, &f, FS_READ );
 
 	// no file
@@ -149,7 +149,7 @@ void G_ReadClientSessionData( gclient_t *client ) {
 		sess->sessionClass = cJSON_ToInteger( object );
 	}
 	if ( (object = cJSON_GetObjectItem( root, "sessionTeam" )) ) {
-		sess->sessionTeam = (q3f_team_t)cJSON_ToInteger( object );
+		sess->sessionTeam = cJSON_ToInteger( object );
 	}
 	if ( (object = cJSON_GetObjectItem( root, "adminLevel" )) ) {
 		sess->adminLevel = cJSON_ToInteger( object );

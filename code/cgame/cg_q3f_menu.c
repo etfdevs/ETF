@@ -89,15 +89,15 @@ void CG_Q3F_MenuInit()
 	}
 }
 
-void CG_Q3F_MenuAddOption(int num, char *text, char *text2, char *command) {
+void CG_Q3F_MenuAddOption(int num, const char *text, const char *text2, const char *command) {
 	if( num < 0 || num > 9 ) {
 		return;
 	}
 
-	Q_strncpyz( menustrings[num], text, 128 );
-	Q_strncpyz( menucommands[num], command, 128 );
+	Q_strncpyz( menustrings[num], text, sizeof(menustrings[num]) );
+	Q_strncpyz( menucommands[num], command, sizeof(menucommands[num]) );
 	if( text2 ) {
-		Q_strncpyz( menustrings2[num], text2, 128 );
+		Q_strncpyz( menustrings2[num], text2, sizeof(menustrings2[num]) );
 	}
 
 	menuoptionstate[num] = MOS_ACTIVE;
@@ -246,7 +246,7 @@ static void TeamMenu() {
 
          //keeg:  fixed the com_sprintf line to use a string not a char, and the menu add option to reference 
          //the right team name string...
-			trap_Cvar_VariableStringBuffer(va("cg_%steam", teamnames[index]), teamnamebuffer, 64);
+			trap_Cvar_VariableStringBuffer(va("cg_%steam", teamnames[index]), teamnamebuffer, sizeof(teamnamebuffer));
 			Com_sprintf(buf, sizeof(buf), "^%c%s", colourcodes[index], teamnamebuffer);
 			CG_Q3F_MenuAddOption(index, buf, va("^%c%i", colourcodes[index], count), va("team %s\n", teamnames[index]));
 		} else {

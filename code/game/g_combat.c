@@ -733,6 +733,8 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 				targ->client->ps.velocity[2] = 0;
 			}
 		}
+		/* likely intentional so marking as such because it would be massive gameplay change */
+		/* fall through */
 	case MOD_SNIPER_RIFLE:
 	case MOD_SNIPER_RIFLE_HEAD:
 	case MOD_SNIPER_RIFLE_FEET:

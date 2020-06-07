@@ -1024,6 +1024,7 @@ void QDECL CG_Printf( int mode, const char *msg, ... ) {
 			//trap_Print("\n");
 			return;
 		}
+		/* fall through */
 	case BOX_PRINT_MODE_CHAT_REAL:
 		buf = cg.basicChat;
 		times = cg.basicChatTimes;
@@ -1894,7 +1895,7 @@ void PaintScoreFeeder(itemDef_t* item, int teamnum) {
 	for (i = listPtr->startPos; i < count; i++) {
 		int j;
 		
-		if(sortedScores[i].client->team != (q3f_team_t)teamnum) {
+		if(sortedScores[i].client->team != teamnum) {
 			continue;
 		}
 
@@ -2549,7 +2550,7 @@ char *CG_Q3F_AddString( const char *str )
 	char *newstr;
 
 	len = strlen( str ) + 1;
-	if( cgs.stringDataLen + len >= sizeof(cgs.stringData) )
+	if( cgs.stringDataLen + len >= (int)sizeof(cgs.stringData) )
 		CG_Error( "CG_Q3F_AddString: Out of space." );
 	newstr = strcpy( &cgs.stringData[cgs.stringDataLen], str );
 	cgs.stringDataLen += len;
@@ -2566,7 +2567,7 @@ void *CG_Q3F_AddBlock( int size, int alignment )
 
 	int offset;
 	offset = (cgs.stringDataLen + alignment - 1) & ~(alignment - 1);
-	if( offset + size >= sizeof(cgs.stringData) )
+	if( offset + size >= (int)sizeof(cgs.stringData) )
 		CG_Error( "CG_Q3F_AddBlock: Out of space." );
 	cgs.stringDataLen = offset + size;
 	return( cgs.stringData + offset );

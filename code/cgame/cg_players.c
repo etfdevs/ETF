@@ -163,15 +163,15 @@ F2RDef_t *CG_Q3F_HeadF2RScript( int classNum ) {
 	return( cgs.media.f2rcache[classNum][2] );
 }
 
-byte *CG_Q3F_LegsColour( int classNum, q3f_team_t teamNum ) {
+byte *CG_Q3F_LegsColour( int classNum, int teamNum ) {
 	return( &cgs.media.skincolours[classNum][teamNum-Q3F_TEAM_RED][0][0] );
 }
 
-byte *CG_Q3F_TorsoColour( int classNum, q3f_team_t teamNum ) {
+byte *CG_Q3F_TorsoColour( int classNum, int teamNum ) {
 	return( &cgs.media.skincolours[classNum][teamNum-Q3F_TEAM_RED][1][0] );
 }
 
-byte *CG_Q3F_HeadColour( int classNum, q3f_team_t teamNum ) {
+byte *CG_Q3F_HeadColour( int classNum, int teamNum ) {
 	return( &cgs.media.skincolours[classNum][teamNum-Q3F_TEAM_RED][2][0] );
 }
 
@@ -1654,7 +1654,7 @@ void CG_Q3F_CalcAgentVisibility( qboolean *drawmodel, float *shaderalpha, qboole
 	}
 }
 
-qboolean CG_Q3F_AddRefEntityWithAgentEffect( refEntity_t *ent, centity_t *cent, entityState_t *state, q3f_team_t team, int section )
+qboolean CG_Q3F_AddRefEntityWithAgentEffect( refEntity_t *ent, centity_t *cent, entityState_t *state, int team, int section )
 {
 	// Render with agent effect
 	// Effect is divided into 6 units, with each of the 3 parts covering 4 units.
@@ -1910,7 +1910,7 @@ void CG_Player( centity_t *cent ) {
 	refEntity_t		head;
 	int				clientNum;
 	int				renderfx;
-	qboolean		shadow, newModel;
+	qboolean		shadow, newModel = qfalse;
 	float			shadowPlane;
 	centity_t		hallucination;
 

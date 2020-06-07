@@ -1745,7 +1745,7 @@ float BG_JulianDay( int year, int month, int day ) {
 
 // Note: this isn't too precise, but will do for an approximiation
 int BG_ApproxDaysSinceCompile( const qtime_t *time ) {
-	char *compiledate = __DATE__;
+	const char *compiledate = __DATE__;
 	char buf[64];
 	int compileday, compilemonth, compileyear;
 	float startjulian, endjulian;
@@ -1814,7 +1814,7 @@ int BG_cleanName( const char *pszIn, char *pszOut, unsigned int dwMaxLength, qbo
 // Only used locally
 
 typedef struct {
-	char *colorname;
+	const char *colorname;
 	vec4_t *color;
 } colorTable_t;
 
@@ -1844,9 +1844,9 @@ colorTable_t OSP_Colortable[] =
 						};
 
 extern void trap_Cvar_Set( const char *var_name, const char *value );
-void BG_setCrosshair(char *colString, float *col, float alpha, char *cvarName)
+void BG_setCrosshair(const char *colString, float *col, float alpha, const char *cvarName)
 {
-	char *s = colString;
+	const char *s = colString;
 
 	col[0] = 1.0f;
 	col[1] = 1.0f;

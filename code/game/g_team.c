@@ -213,7 +213,7 @@ go to a random point that doesn't telefrag
 */
 #define	MAX_TEAM_SPAWN_POINTS	32
 //gentity_t *SelectRandomTeamSpawnPoint( int teamstate, team_t team ) {
-gentity_t *SelectRandomTeamSpawnPoint( int teamstate, q3f_team_t team ) {	// RR2DO2
+gentity_t *SelectRandomTeamSpawnPoint( int teamstate, int team ) {	// RR2DO2
 	gentity_t	*spot;
 	int			count;
 	int			selection;
@@ -264,7 +264,7 @@ SelectCTFSpawnPoint
 ============
 */
 //gentity_t *SelectCTFSpawnPoint ( team_t team, int teamstate, vec3_t origin, vec3_t angles ) {
-gentity_t *SelectCTFSpawnPoint ( q3f_team_t team, int teamstate, vec3_t origin, vec3_t angles ) {	// RR2DO2
+gentity_t *SelectCTFSpawnPoint ( int team, int teamstate, vec3_t origin, vec3_t angles ) {	// RR2DO2
 	gentity_t	*spot;
 
 	spot = SelectRandomTeamSpawnPoint ( teamstate, team );
@@ -301,7 +301,7 @@ djbob: new new format
 	clientNum health armor powerups
 ==================
 */
-void TeamplayInfoMessage( q3f_team_t team ) {
+void TeamplayInfoMessage( int team ) {
 	char		entry[1024];
 	char		string[8192];
 	int			stringlength;

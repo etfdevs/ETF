@@ -63,18 +63,18 @@ typedef struct Q3F_CubicSpline_s {
 } Q3F_CubicSpline_t;
 
 void BG_Q3F_QuadSpline_ComputeSegments ( Q3F_QuadSpline_t *spline );
-float BG_Q3F_QuadSpline_Length ( Q3F_QuadSpline_t *spline );
-void BG_Q3F_QuadSpline_Position( vec3_t src, vec3_t dst, float relpos, Q3F_QuadSpline_t *spline );
-void BG_Q3F_QuadSpline_PositionAngle( vec3_t src_angle, vec3_t dst_angle, float relpos, Q3F_QuadSpline_t *spline );
+float BG_Q3F_QuadSpline_Length ( const Q3F_QuadSpline_t *spline );
+void BG_Q3F_QuadSpline_Position( vec3_t src, vec3_t dst, float relpos, const Q3F_QuadSpline_t *spline );
+void BG_Q3F_QuadSpline_PositionAngle( vec3_t src_angle, vec3_t dst_angle, float relpos, const Q3F_QuadSpline_t *spline );
 
 void BG_Q3F_CubicSpline_ComputeSegments ( Q3F_CubicSpline_t *spline );
-float BG_Q3F_CubicSpline_Length ( Q3F_CubicSpline_t *spline );
-void BG_Q3F_CubicSpline_Position( vec3_t src, vec3_t dst, float relpos, Q3F_CubicSpline_t *spline );
-void BG_Q3F_CubicSpline_PositionAngle( vec3_t src_angle, vec3_t dst_angle, float relpos, Q3F_CubicSpline_t *spline );
+float BG_Q3F_CubicSpline_Length ( const Q3F_CubicSpline_t *spline );
+void BG_Q3F_CubicSpline_Position( vec3_t src, vec3_t dst, float relpos, const Q3F_CubicSpline_t *spline );
+void BG_Q3F_CubicSpline_PositionAngle( vec3_t src_angle, vec3_t dst_angle, float relpos, const Q3F_CubicSpline_t *spline );
 
 // General Spline Calculation Functions
-void BG_Q3F_EvaluateSplineTrajectory( const trajectory_t *tr, Q3F_QuadSpline_t *qspline, Q3F_CubicSpline_t *cspline, int atTime, vec3_t result );
-void BG_Q3F_EvaluateSplineTrajectoryAngle( const trajectory_t *tr, Q3F_QuadSpline_t *qspline, Q3F_CubicSpline_t *cspline, int atTime, vec3_t result );
+void BG_Q3F_EvaluateSplineTrajectory( const trajectory_t *tr, const Q3F_QuadSpline_t *qspline, const Q3F_CubicSpline_t *cspline, int atTime, vec3_t result );
+void BG_Q3F_EvaluateSplineTrajectoryAngle( const trajectory_t *tr, const Q3F_QuadSpline_t *qspline, const Q3F_CubicSpline_t *cspline, int atTime, vec3_t result );
 //void BG_Q3F_EvaluateSplineTrajectoryDelta( const trajectory_t *tr, Q3F_QuadSpline_t *qspline, Q3F_CubicSpline_t *cspline, int atTime, vec3_t result );
 
 #endif

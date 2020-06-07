@@ -292,7 +292,7 @@ typedef struct g_q3f_waypoint_s {
 // MUST be dealt with in G_InitSessionData() / G_ReadSessionData() / G_WriteSessionData()
 typedef struct {
 	//team_t		sessionTeam;
-	q3f_team_t	sessionTeam;		// RR2DO2
+	int			sessionTeam;		// RR2DO2
 	int			sessionClass;		// Golliwog
 	int			spectatorTime;		// for determining next-in-line to play
 	spectatorState_t	spectatorState;
@@ -808,7 +808,7 @@ int	G_SoundIndex( const char *name );
 int	G_ShaderIndex( const char *name );		// Much like modelindex
 int G_SpiritScriptIndex( const char *name );
 
-void	G_TeamCommand( q3f_team_t team, char *cmd );	//RR2DO2
+void	G_TeamCommand( int team, char *cmd );	//RR2DO2
 void	G_KillBox (gentity_t *ent);
 gentity_t *G_Find (gentity_t *from, int fieldofs, const char *match);
 gentity_t *G_PickTarget (char *targetname);
@@ -929,11 +929,11 @@ void G_UnlaggedTrace( gentity_t *ent, trace_t *results, const vec3_t start,
 							const vec3_t end, int passEntityNum, int contentmask );
 
 // g_client.c
-int TeamCount( int ignoreClientNum, q3f_team_t team );	// RR2DO2
+int TeamCount( int ignoreClientNum, int team );	// RR2DO2
 #if 0
 int TeamLeader( int team );
 #endif
-q3f_team_t PickTeam( int ignoreClientNum );				// RR2DO2
+int PickTeam( int ignoreClientNum );				// RR2DO2
 void SetClientViewAngle( gentity_t *ent, vec3_t angle );
 gentity_t *SelectSpawnPoint ( vec3_t avoidPoint, vec3_t origin, vec3_t angles, gentity_t *ent );
 void CopyToBodyQue( gentity_t *ent );

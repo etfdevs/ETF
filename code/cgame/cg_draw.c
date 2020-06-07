@@ -1255,7 +1255,7 @@ void CG_ScanForCrosshairEntity( void ) {
 							continue;	// Not valid, or ourself
 						if( cg_entities[content].currentState.otherEntityNum2 != agentclass && mode < 1 )
 							continue;	// Not the same class
-						if( cgs.clientinfo[content].team != (q3f_team_t)agentteam && mode < 2 )
+						if( cgs.clientinfo[content].team != agentteam && mode < 2 )
 							continue;	// Not the same team
 						break;
 					}

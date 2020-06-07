@@ -545,13 +545,13 @@ char	* QDECL va( char *format, ... ) {
 	#define	MAX_VA_STRING	32000
 	static int		index = 0;
 	static char		string[2][MAX_VA_STRING];	// in case va is called by nested functions
-	int ret;
+	//int ret;
 
 	buf = string[ index ];
 	index ^= 1;
 
 	va_start (argptr, format);
-	ret = Q_vsnprintf(buf, sizeof(string[0]), format, argptr);
+	/*ret = */Q_vsnprintf(buf, sizeof(string[0]), format, argptr);
 	va_end (argptr);
 
 	return buf;

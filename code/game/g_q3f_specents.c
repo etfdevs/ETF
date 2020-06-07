@@ -2019,7 +2019,7 @@ static void G_Q3F_FuncDamageCalc( gentity_t *self, gentity_t *other, qboolean ch
 {
 	// Think about where we are, and when next to think.
 
-	q3f_mapent_t *mapdata;
+	//q3f_mapent_t *mapdata;
 	q3f_keypair_t *kp;
 	float regenerated;
 	char *ptr;
@@ -2033,7 +2033,7 @@ static void G_Q3F_FuncDamageCalc( gentity_t *self, gentity_t *other, qboolean ch
 		gotfuncdamageptrs	= qtrue;
 	}
 
-	mapdata = self->mapdata;
+	//mapdata = self->mapdata;
 	if( checkcriteria && other && other->client )
 	{
 		// Do a manual criteria check, since this isn't necessarily a trigger
@@ -2452,7 +2452,7 @@ static qboolean G_Q3F_CheckOnKillCriteria( gentity_t *miscent, gentity_t *player
 
 #define	Q3F_MAX_ONKILL_PLAYERS		32
 
-static qboolean gotonkillptrs;
+//static qboolean gotonkillptrs;
 char *attackertargetptr, *victimtargetptr;
 char *okattackermessagekeys[3][4];
 char *okvictimmessagekeys[3][4];
@@ -2462,7 +2462,7 @@ void G_Q3F_CheckOnKill( gentity_t *attacker, gentity_t *victim )
 	// if attackertarget or victimtarget can be executed.
 
 	gentity_t *current, *scan, *killer, *killed = NULL, *other = NULL;
-	qboolean issameplayer, needrankcalculation;
+	qboolean issameplayer;// , needrankcalculation;
 	trace_t tr;
 	g_q3f_onkill_t *killdata;
 	vec3_t pos;
@@ -2471,7 +2471,7 @@ void G_Q3F_CheckOnKill( gentity_t *attacker, gentity_t *victim )
 		attacker = victim;
 	issameplayer = attacker == victim;
 
-	needrankcalculation = qfalse;
+	//needrankcalculation = qfalse;
 	for( current = level.onKillHead; current; current = current->chain )
 	{
 		if( issameplayer && (!current->mapdata || !(current->mapdata->flags & Q3F_FLAG_ALLOWSAME)) )

@@ -263,8 +263,8 @@ void CG_Q3F_PanelDrawString( char *str, float x, float y, float size, float maxx
 	while( *str )
 	{
 			// Start by getting a line of text.
-		for(	index = 0, lastspace = -1, width = 0, wordendptr = NULL, broken = qfalse;
-				*str && index < sizeof(panel.buff) - 1; index++ )
+		for(	index = 0, lastspace = -1, width = 0, lastspacewidth = -1, wordendptr = NULL, broken = qfalse;
+				*str && index < (int)sizeof(panel.buff) - 1; index++ )
 		{
 			panel.buff[index] = *str++;
 			if( !(panel.buff[index] == Q_COLOR_ESCAPE ||
@@ -465,7 +465,7 @@ void CG_Q3F_MessageString( char *srcptr, clientInfo_t *activator, clientInfo_t *
 	char curr;
 	clientInfo_t *current;
 	char minibuff[64];
-//	bg_q3f_playerclass_t *cls;
+	bg_q3f_playerclass_t *cls;
 	int colourstack[32], colourstacksize;
 
 	if( colour < 0 || colour > 31 )
@@ -524,12 +524,25 @@ void CG_Q3F_MessageString( char *srcptr, clientInfo_t *activator, clientInfo_t *
 								Q_strncpyz( buffptr, panelTeamNames[current->team], buffendptr - buffptr );
 								buffptr = _MS_FixColour( buffptr, colour );
 							}
+							break;
 				case 'c':	// Team colour
 							if( current )
 							{
 								*buffptr += '^';
 								*buffptr += panelTeamCodes[current->team];
 							}
+							break;
+				case 's':	// Current class
+							if( current )
+							{
+								cls = bg_q3f_classlist[current->cls];
+								if( !cls || cls == bg_q3f_classlist[Q3F_CLASS_NULL] )
+									Q_strncpyz( buffptr, panelTeamNames[5], buffendptr - buffptr );
+								else
+									Q_strncpyz( buffptr, cls->title, buffendptr - buffptr );
+								buffptr = _MS_FixColour( buffptr, colour );
+							}
+							break;
 				default:	// Another letter - leave it as-is, so it can be processed with va()
 							*buffptr++ = *(srcptr - 2);
 							*buffptr++ = *(srcptr - 1);

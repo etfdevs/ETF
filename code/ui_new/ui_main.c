@@ -53,13 +53,10 @@ static const char *MonthAbbrev[] = {
 
 static const char *netSources[] = {
 	"Local",
-#ifdef API_Q3
-	"Mplayer",
-#endif
 	"Internet",
 	"Favorites"
 };
-static const int numNetSources = (int)(sizeof(netSources) / sizeof(const char*));
+static const int numNetSources = (int)ARRAY_LEN(netSources);
 
 /*static const char *Q3FGameJoinTypes[] = {
 	"All",
@@ -77,11 +74,10 @@ static const int numNetSources = (int)(sizeof(netSources) / sizeof(const char*))
 };*/
 //static const int numSortKeys = sizeof(sortKeys) / sizeof(const char*);
 
-static char* netnames[] = {
+static const char* netnames[] = {
 	"???",
 	"UDP",
-	"IPX",
-	NULL
+	"UDP6"
 };
 
 static qhandle_t hudpreviews[ETF_HUDCOUNT][ETF_HUDVARCOUNT];
@@ -273,7 +269,7 @@ static const char *gunNames[] = {
 	"Syringe",
 	"Wrench"
 };
-static const int numGunNames = sizeof(gunNames) / sizeof(const char*);
+static const int numGunNames = (int)ARRAY_LEN(gunNames);
 //static qhandle_t gunPreviews[18];
 
 static const char *grenNames[] = {
@@ -286,7 +282,7 @@ static const char *grenNames[] = {
 	"Pulse Grenade",
 	"Stun Grenade"
 };
-static const int numGrenNames = sizeof(grenNames) / sizeof(const char*);
+static const int numGrenNames = ARRAY_LEN(grenNames);
 	
 static const char *itemNames[] = {
 	"Autosentry",
@@ -294,11 +290,10 @@ static const char *itemNames[] = {
 	"HE Charge",
 	"Supply Station"
 };
-static const int numItemNames = sizeof(itemNames) / sizeof(const char*);
+static const int numItemNames = (int)ARRAY_LEN(itemNames);
 
-
-static int gamecodetoui[] = {4,2,3,0,5,1,6};
-static int uitogamecode[] = {4,6,2,3,1,5,7};
+//static int gamecodetoui[] = {4,2,3,0,5,1,6};
+//static int uitogamecode[] = {4,6,2,3,1,5,7};
 
 
 static void UI_StartServerRefresh(qboolean full);
@@ -1521,10 +1516,10 @@ static void UI_DrawPreviewCinematic(rectDef_t *rect, float scale, vec4_t color) 
 
 }
 
-static void UI_DrawEffects(rectDef_t *rect, float scale, vec4_t color) {
+/*static void UI_DrawEffects(rectDef_t *rect, float scale, vec4_t color) {
 	UI_DrawHandlePic( rect->x, rect->y - 14, 128, 8, uiInfo.uiDC.Assets.fxBasePic );
 	UI_DrawHandlePic( rect->x + uiInfo.effectsColor * 16 + 8, rect->y - 16, 16, 12, uiInfo.uiDC.Assets.fxPic[uiInfo.effectsColor] );
-}
+}*/
 
 static void UI_DrawMapPreview(rectDef_t *rect, float scale, vec4_t color, qboolean net) {
 	int map = (net) ? ui_currentNetMap.integer : ui_currentMap.integer;
@@ -1789,6 +1784,10 @@ static void UI_DrawPBStatus(rectDef_t *rect, float scale, vec4_t color, int text
 	float col[4];
 
 	int pbstat = trap_Cvar_VariableValue("cl_punkbuster");
+
+	if (engine_is_ETE) {
+		pbstat = 0;
+	}
 
 	switch(pbstat)
 	{
@@ -2693,8 +2692,8 @@ void HUD_DrawMapName(			rectDef_t* rect, float scale, vec4_t color, int textStyl
 void HUD_DrawMatchString(		rectDef_t* rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t* parentfont);
 void HUD_DrawVoteString(		rectDef_t* rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t* parentfont);
 void HUD_DrawVoteTally(			rectDef_t* rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t* parentfont, qboolean yes);
-void HUD_DrawTeamName(			rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font, q3f_team_t team );
-void HUD_DrawTeamCount(			rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font, q3f_team_t team );
+void HUD_DrawTeamName(			rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font, int team );
+void HUD_DrawTeamCount(			rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font, int team );
 void HUD_DrawEndGameTeamScores( rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font );
 void HUD_DrawMapVoteName(		rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font, int num );
 void HUD_DrawMapVoteTally(		rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font, int num );
@@ -2725,7 +2724,7 @@ static void UI_OwnerDraw( itemDef_t *item, float x, float y, float w, float h, f
 		UI_DrawHandicap(&rect, scale, color, textStyle, textalignment, text_x, text_y, parentfont );
 		break;
     case UI_EFFECTS:
-		UI_DrawEffects(&rect, scale, color);
+		//UI_DrawEffects(&rect, scale, color);
 		break;
     case UI_PREVIEWCINEMATIC:
 		UI_DrawPreviewCinematic(&rect, scale, color);
@@ -3118,7 +3117,7 @@ static qboolean UI_Handicap_HandleKey(int flags, float *special, int key) {
   return qfalse;
 }
 
-static qboolean UI_Effects_HandleKey(int flags, float *special, int key) {
+/*static qboolean UI_Effects_HandleKey(int flags, float *special, int key) {
   if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
 
 		if (key == K_MOUSE2) {
@@ -3137,7 +3136,7 @@ static qboolean UI_Effects_HandleKey(int flags, float *special, int key) {
     return qtrue;
   }
   return qfalse;
-}
+}*/
 
 /*static qboolean UI_JoinGameType_HandleKey(int flags, float *special, int key) {
 	if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
@@ -3283,18 +3282,18 @@ static qboolean UI_CheckFavServerVersion( const char *info )
 }
 
 static qboolean	UI_FavouriteServer_HandleKey(int flags, float *special, int key, int number) {
-	char addr[MAX_NAME_LENGTH];
-	char buff[MAX_STRING_CHARS];
+	char addr[46];
+	char buff[MAX_INFO_STRING];
 
 	if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
 
 		if(trap_LAN_GetServerCount( AS_FAVORITES ) <= number )
 			return qfalse;
 
-		trap_LAN_GetServerInfo( AS_FAVORITES, number, buff, MAX_STRING_CHARS );
+		trap_LAN_GetServerInfo( AS_FAVORITES, number, buff, sizeof(buff) );
 
 		addr[0] = '\0';
-		Q_strncpyz(addr, 	Info_ValueForKey(buff, "addr"), MAX_NAME_LENGTH);
+		Q_strncpyz(addr, Info_ValueForKey(buff, "addr"), sizeof(addr));
 
 		if(!*addr) {
 			return qfalse;
@@ -3316,9 +3315,9 @@ static qboolean UI_OwnerDrawHandleKey(int ownerDraw, int flags, float *special, 
     case UI_HANDICAP:
 		return UI_Handicap_HandleKey(flags, special, key);
 		break;
-    case UI_EFFECTS:
-		return UI_Effects_HandleKey(flags, special, key);
-		break;
+    //case UI_EFFECTS:
+	//	return UI_Effects_HandleKey(flags, special, key);
+	//	break;
 /*    case UI_JOINGAMETYPE:
 		return UI_JoinGameType_HandleKey(flags, special, key);
 		break;*/
@@ -5927,19 +5926,20 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 						return Info_ValueForKey(info, "addr");
 					} else {
 						if ( ui_netSource.integer == AS_LOCAL ) {
+							int nettype = atoi(Info_ValueForKey(info, "nettype"));
+
+							if (nettype < 0 || nettype >= (int)ARRAY_LEN(netnames)) {
+								nettype = 0;
+							}
+
 							Com_sprintf( hostname, sizeof(hostname), "%s [%s]",
 											Info_ValueForKey(info, "hostname"),
-											netnames[atoi(Info_ValueForKey(info, "nettype"))] );
+											netnames[nettype] );
 							return hostname;
 						}
 						else {
-							if (atoi(Info_ValueForKey(info, "sv_allowAnonymous")) != 0) {				// anonymous server
-								Com_sprintf( hostname, sizeof(hostname), "(A) %s",
-												Info_ValueForKey(info, "hostname"));
-							} else {
-								Com_sprintf( hostname, sizeof(hostname), "%s",
-												Info_ValueForKey(info, "hostname"));
-							}
+							Com_sprintf( hostname, sizeof(hostname), "%s",
+											Info_ValueForKey(info, "hostname"));
 							return hostname;
 						}
 					}
@@ -6809,7 +6809,7 @@ void _UI_Init( qboolean inGameLoad ) {
 	trap_LAN_LoadCachedServers();
 
 	// sets defaults for ui temp cvars
-	uiInfo.effectsColor = gamecodetoui[(int)trap_Cvar_VariableValue("color")-1];
+	//uiInfo.effectsColor = gamecodetoui[(int)trap_Cvar_VariableValue("color")-1];
 	uiInfo.currentCrosshair = ((int)trap_Cvar_VariableValue("cg_drawCrosshair") % NUM_CROSSHAIRS);
 	trap_Cvar_Set("ui_mousePitch", (trap_Cvar_VariableValue("m_pitch") >= 0) ? "0" : "1");
 
@@ -8757,13 +8757,13 @@ void UI_Q3F_BuildServerMaplist() {
 	uiInfo.Q3F_serverMaplistBuilt = qtrue;
 }
 
-void HUD_DrawTeamName( rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font, q3f_team_t team ) {
+void HUD_DrawTeamName( rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font, int team ) {
 	char buffer[64];
 	trap_Cvar_VariableStringBuffer(va("cg_%steam", teamnames[team]), buffer, 64);
 	Text_Paint(rect->x + text_x, rect->y + rect->h + text_y, scale, color, buffer, 0, 0, textStyle, font, textalignment);
 }
 
-void HUD_DrawTeamCount( rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font, q3f_team_t team ) {
+void HUD_DrawTeamCount( rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font, int team ) {
 	char buffer[64];
 	int count[4];
 	int pings[4];

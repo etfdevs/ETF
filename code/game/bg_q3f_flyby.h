@@ -80,8 +80,8 @@ typedef struct campath_s
 } campath_t;
 
 qboolean UMC_ReadLineSkipEmpty( fileHandle_t f, int *bytesread, int filelen, char *buff, int buffsize );
-int BG_Q3F_GetPathIndex( const char *pathname, campath_t* campaths );
+int BG_Q3F_GetPathIndex( const char *pathname, const campath_t* campaths );
 int BG_Q3F_LoadCamPaths( const char *mapname, campath_t* campaths );
-int BG_Q3F_LocateFlybyPath( int numPaths, campath_t* campaths );
+int BG_Q3F_LocateFlybyPath( int numPaths, const campath_t* campaths );
 
 #endif

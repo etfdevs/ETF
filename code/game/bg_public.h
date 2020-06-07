@@ -1080,7 +1080,7 @@ typedef struct {
 //Keeg might come in handy
 int BG_cleanName(const char *pszIn, char *pszOut, unsigned int dwMaxLength, qboolean fCRLF);
 // Keeg Crosshair support
-void BG_setCrosshair(char *colString, float *col, float alpha, char *cvarName);
+void BG_setCrosshair(const char *colString, float *col, float alpha, const char *cvarName);
 
 // Keeger support for atmospherics, tracemap
 //

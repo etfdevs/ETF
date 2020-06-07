@@ -2891,7 +2891,7 @@ class           ETFInterface:public IEngineInterface
 				OB_GETMSG(Msg_TeamStat);
 				if(pMsg)
 				{
-					q3f_team_t iTeam = Q3F_TEAM_FREE;
+					int iTeam = Q3F_TEAM_FREE;
 					switch(pMsg->m_Team)
 					{
 					case TF_TEAM_RED:

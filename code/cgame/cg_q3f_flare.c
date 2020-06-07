@@ -608,7 +608,7 @@ void CG_SetFlareRenderer( refdef_t *refdef, vec4_t *flareblind ) {
 }
 
 qboolean CG_FLR_StoreFlare( cg_q3f_flare_t *flare ) {
-	if( cgs.numFlares >= (sizeof(cgs.flares) / sizeof(cg_q3f_flare_t)) ) {
+	if( cgs.numFlares >= (int)ARRAY_LEN(cgs.flares) ) {
 		return qfalse;
 	}
 
@@ -631,7 +631,7 @@ qboolean CG_FLR_UpdateFlare( cg_q3f_flare_t *flare ) {
 }
 
 qboolean CG_FLR_StoreSunFlare( cg_q3f_flare_t *sunflare ) {
-	if( cgs.numSunFlares >= (sizeof(cgs.sunFlares) / sizeof(cg_q3f_flare_t)) ) {
+	if( cgs.numSunFlares >= (int)ARRAY_LEN(cgs.sunFlares) ) {
 		return qfalse;
 	}
 

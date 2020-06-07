@@ -44,7 +44,7 @@ If you have questions concerning this license or the applicable additional terms
 #define CONFIGDIR		"config/"
 #define	CONFIGROOT		"config/server.cfg"
 #define	HISTORYFILE		"config/history.cfg"
-#define	INDEXSEPERATOR	"+"
+#define	INDEXSEPERATOR	'+'
 
 typedef struct {
 	int configHandle;

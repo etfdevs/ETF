@@ -191,7 +191,7 @@ static qboolean ParseF2RFile_Spirit( const int handle, const char *F2RFile, F2RL
 			return( qfalse );
 		}
 
-		strncpy( tagname, token.string, TAGLENGTH );
+		Q_strncpyz( tagname, token.string, TAGLENGTH );
 
 		Com_Printf( "'%s' contains tagname: '%s'\n", F2RFile, tagname );
 
@@ -213,7 +213,7 @@ static qboolean ParseF2RFile_Spirit( const int handle, const char *F2RFile, F2RL
 			return qfalse;
 
 		Link = &F2RLinkCache[ F2RLinks++ ];
-		strncpy(Link->tag , tagname, TAGLENGTH);
+		Q_strncpyz(Link->tag , tagname, TAGLENGTH);
 		Link->SpiritScript = SpiritScript;
 		Link->next = *StoreLink;
 		*StoreLink = Link;
@@ -426,9 +426,9 @@ trap_R_RegisterModel
 ===============
 */
 qhandle_t trap_R_RegisterModel( const char *name ) {
-	F2RDef_t *F2RScript;
+	F2RDef_t *F2RScript = Load_F2RFile(name);
 
-	if( F2RScript = Load_F2RFile( name ) ) {
+	if( F2RScript ) {
 		F2RScript->model = trap_R_RealRegisterModel( name );
 		/* Add this script in the hash */
 		F2RScript->next = F2RHash[F2RScript->model & (F2R_HASHSIZE-1)];

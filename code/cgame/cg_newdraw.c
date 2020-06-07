@@ -313,7 +313,7 @@ static void CG_DrawPlayerHealthBar(rectDef_t *rect, vec4_t color ) {
 						 color);
 }
 
-static void CG_DrawTeamScore( q3f_team_t team, rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font ) {
+static void CG_DrawTeamScore( int team, rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font ) {
 	char num[16];
 
 	if ( cg.teamScores[team - Q3F_TEAM_RED] == SCORE_NOT_PRESENT ) {
@@ -325,13 +325,13 @@ static void CG_DrawTeamScore( q3f_team_t team, rectDef_t *rect, float scale, vec
 	CG_Text_Paint(rect->x + text_x, rect->y + rect->h + text_y, scale, color, num, 0, 0, textStyle, font, textalignment);
 }
 
-static void CG_DrawTeamName( q3f_team_t team, rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font ) {
+static void CG_DrawTeamName( int team, rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font ) {
 	char buffer[64];
 	trap_Cvar_VariableStringBuffer(va("cg_%steam", teamnames[team-1]), buffer, 64);
 	CG_Text_Paint(rect->x + text_x, rect->y + rect->h + text_y, scale, color, buffer, 0, 0, textStyle, font, textalignment);
 }
 
-static void CG_DrawTeamCount( q3f_team_t team, rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font ) {
+static void CG_DrawTeamCount( int team, rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font ) {
 	char num[16];
 
 	if( cg.teamCounts[team - Q3F_TEAM_RED] ) {
@@ -602,7 +602,7 @@ void CG_DrawChargeModel( rectDef_t *rect )
 }*/
 
 
-static void CG_DrawTeamPing( q3f_team_t team, rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font ) {
+static void CG_DrawTeamPing( int team, rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font ) {
 	char num[16];
 
 	if( cg.teamCounts[team - Q3F_TEAM_RED] ) {
@@ -4236,7 +4236,7 @@ void CG_RunMenuScript(char **args) {
 CG_Q3F_GetTeamColor
 ===================
 */
-void CG_Q3F_GetTeamColor (vec4_t hcolor, q3f_team_t teamnum) {
+void CG_Q3F_GetTeamColor (vec4_t hcolor, int teamnum) {
 	hcolor[0] = hcolor[1] = hcolor[2] = 0.0;
 	hcolor[3] = 1.0;
 	switch( teamnum )

@@ -716,7 +716,7 @@ Returns number of players on a team
 ================
 */
 //team_t TeamCount( int ignoreClientNum, int team ) {
-int TeamCount( int ignoreClientNum, q3f_team_t team ) {	//RR2DO2
+int TeamCount( int ignoreClientNum, int team ) {	//RR2DO2
 	int		i;
 	int		count = 0;
 
@@ -743,7 +743,7 @@ PickTeam
 */
 
 typedef struct g_q3f_pickteam_s {
-	q3f_team_t team;
+	int team;
 	int count, score, frags;
 } g_q3f_pickteam_t;
 
@@ -766,7 +766,7 @@ static int PickTeamSortFunc( const void *arg1, const void *arg2 )
 }
 
 //team_t PickTeam( int ignoreClientNum ) {
-q3f_team_t PickTeam( int ignoreClientNum ) {	// RR2DO2
+int PickTeam( int ignoreClientNum ) {	// RR2DO2
 	g_q3f_pickteam_t teams[4];
 	g_q3f_teaminfo_t *ti;
 	g_q3f_pickteam_t *pt;
@@ -791,7 +791,7 @@ q3f_team_t PickTeam( int ignoreClientNum ) {	// RR2DO2
 	return( teams[0].team );	// Returns Q3F_TEAM_SPECTATOR if it failed to find a team
 }
 
-q3f_team_t PickAutoJoinTeam( int ClientNum ) {	// RR2DO2
+int PickAutoJoinTeam( int ClientNum ) {	// RR2DO2
 	g_q3f_teaminfo_t *ti;
 	int teamPlayerCount;
 
@@ -961,7 +961,7 @@ void ClientUserinfoChanged( int clientNum, char * reason ) {
 	char	*s;
 	char	oldname[MAX_STRING_CHARS];
 	gclient_t	*client;
-	char	c1[MAX_INFO_STRING];
+	//char	c1[MAX_INFO_STRING];
 	char	userinfo[MAX_INFO_STRING];
 
 	ent = g_entities + clientNum;
@@ -1069,7 +1069,7 @@ void ClientUserinfoChanged( int clientNum, char * reason ) {
 	}
 
 	// colors
-	strcpy(c1, Info_ValueForKey( userinfo, "color" ));
+	//strcpy(c1, Info_ValueForKey( userinfo, "color" ));
 
 	// Golliwog: Check for automatic weapon reload
 	if(ent->r.svFlags & SVF_BOT)

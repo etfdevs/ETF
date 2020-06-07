@@ -2383,6 +2383,7 @@ char *G_Q3F_MessageString( char *srcptr, gentity_t *activator, gentity_t *querye
 				{
 					case '1':	// slothy - fix for ET upcase problem
 								current = other;
+								/* fall through */
 					case 'h':	// Health
 								if( current->client )
 								{
@@ -2393,6 +2394,7 @@ char *G_Q3F_MessageString( char *srcptr, gentity_t *activator, gentity_t *querye
 								break;
 					case '2':	// slothy - fix for ET upcase problem
 								current = other;
+								/* fall through */
 					case 'a':	// Armour
 								if( current->client )
 								{
@@ -2403,6 +2405,7 @@ char *G_Q3F_MessageString( char *srcptr, gentity_t *activator, gentity_t *querye
 								break;
 					case '3':	// slothy - fix for ET upcase problem
 						current = other;
+						/* fall through */
 					case 'l':	// Location
 								loc = Team_GetLocation( current );
 								Q_strncpyz( buffptr, loc ? loc->str : "unknown location", buffendptr - buffptr );
@@ -2412,6 +2415,7 @@ char *G_Q3F_MessageString( char *srcptr, gentity_t *activator, gentity_t *querye
 								break;
 					case '4':	// slothy - fix for ET upcase problem
 						current = other;
+						/* fall through */
 					case 'd':	// Location of death
 								if( current->client )
 								{
@@ -2439,6 +2443,7 @@ char *G_Q3F_MessageString( char *srcptr, gentity_t *activator, gentity_t *querye
 								break;
 					case '5':	// slothy - fix for ET upcase problem
 						current = other;
+						/* fall through */
 					case 't':	// Team
 								if( current->client )
 								{
@@ -2453,6 +2458,7 @@ char *G_Q3F_MessageString( char *srcptr, gentity_t *activator, gentity_t *querye
 								break;
 					case '6':	// slothy - fix for ET upcase problem
 						current = other;
+						/* fall through */
 					case 'c':	// Team colour
 								if( current->client )
 								{
@@ -2467,6 +2473,7 @@ char *G_Q3F_MessageString( char *srcptr, gentity_t *activator, gentity_t *querye
 								break;
 					case '7':	// slothy - fix for ET upcase problem
 						current = other;
+						/* fall through */
 					case 'g':	// Disguise
 								if( current->client )
 								{
@@ -2499,6 +2506,7 @@ char *G_Q3F_MessageString( char *srcptr, gentity_t *activator, gentity_t *querye
 								break;
 					case '8':	// slothy - fix for ET upcase problem
 						current = other;
+						/* fall through */
 					case 's':	// Current class
 								if( current->client )
 								{
@@ -2511,6 +2519,7 @@ char *G_Q3F_MessageString( char *srcptr, gentity_t *activator, gentity_t *querye
 								break;
 					case '9':	// slothy - fix for ET upcase problem
 						current = other;
+						/* fall through */
 					case 'n':	// Name
 								if( current->client )
 								{

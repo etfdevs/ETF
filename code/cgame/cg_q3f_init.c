@@ -651,7 +651,7 @@ static const char *voiceSounds[] = {
 	"sound/voices/spencer/tap_yourock.wav"
 };
 
-static const size_t numVoiceSounds = ARRAY_LEN( voiceSounds );
+static const int numVoiceSounds = (int)ARRAY_LEN( voiceSounds );
 
 static void CG_Q3F_InitPhaseSoundVoiceComms(void)
 {

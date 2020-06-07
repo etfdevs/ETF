@@ -434,6 +434,7 @@ void CG_DemoClick( int key, qboolean down ) {
 			}
 			return;
 		}       // Roll over into timescale changes
+		/* fall through */
 	case K_KP_LEFTARROW:
 		if ( !down ) {
 			float tscale;
@@ -479,6 +480,7 @@ void CG_DemoClick( int key, qboolean down ) {
 			}
 			return;
 		}       // Roll over into timescale changes
+		/* fall through */
 	case K_KP_RIGHTARROW:
 		if ( !down ) {
 			float tscale;

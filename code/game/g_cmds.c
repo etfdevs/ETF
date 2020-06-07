@@ -75,15 +75,12 @@ DeathmatchScoreboardMessage
 ==================
 */
 void DeathmatchScoreboardMessage( gentity_t *ent ) {
-	char		entry[36];
+	char		entry[56];
 	char		string[MAX_STRING_CHARS-1];
 	int			stringlength;
-	int			i, j;
+	int			i, j, prefix;
 	gclient_t	*cl;
 	int			numSorted;
-	int			score;
-	gentity_t	*gent;
-
 
 	// send the latest information on all clients
 	string[0] = 0;
@@ -91,8 +88,15 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 
 	numSorted = level.numConnectedClients;
 
+	// estimate prefix length to avoid oversize of final string
+	prefix = Com_sprintf( string, sizeof(string), "scores %i %i %i %i %i", numSorted, 
+		level.teamScores[Q3F_TEAM_RED], level.teamScores[Q3F_TEAM_BLUE], level.teamScores[Q3F_TEAM_YELLOW], level.teamScores[Q3F_TEAM_GREEN] );
+
+	string[0] = 0;
+
 	for (i=0 ; i < numSorted ; i++) {
-		int		ping, flags;
+		int		ping, flags, score;
+		const gentity_t *gent;
 
 		cl = &level.clients[level.sortedClients[i]];
 		gent = &g_entities[level.sortedClients[i]];
@@ -132,7 +136,7 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 		if(cl->sess.sessionTeam == Q3F_TEAM_SPECTATOR)
 			score = cl->sess.spectatorClient;
 
-		Com_sprintf (entry, sizeof(entry),
+		j = Com_sprintf (entry, sizeof(entry),
 			" %i %i %i %i %i", 
 			level.sortedClients[i],
 			score, 
@@ -140,8 +144,7 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 			(level.time - cl->pers.enterTime)/60000,
 			flags
 		);
-		j = strlen(entry);
-		if (stringlength + j >= sizeof(string))
+		if (stringlength + j + prefix >= (int)sizeof(string))
 			break;
 		strcpy (string + stringlength, entry);
 		stringlength += j;
@@ -963,7 +966,7 @@ void Cmd_Follow_f( gentity_t *ent, spectatorState_t state ) {
 			// Ensiform: Check all forms of spectator with the uniform function instead
 
 			if(	&level.clients[j] != ent->client &&
-				level.clients[j].sess.sessionTeam == (q3f_team_t)ent->client->spectatorTeam &&
+				level.clients[j].sess.sessionTeam == ent->client->spectatorTeam &&
 				!Q3F_IsSpectator( &level.clients[j] ) )
 			{
 				ent->client->sess.spectatorState = state;
