@@ -3254,11 +3254,11 @@ static qboolean UI_CheckFavServerVersion( const char *info )
 {
 	const char *mapname = NULL;
 	const char *val = NULL;
-	int pure = 0;
+	//int pure = 0;
 
 	val = Info_ValueForKey(info, "balancedteams");
-	pure = atoi(Info_ValueForKey(info, "maxlives")) != 0;
-	if( strcmp(val, FORTS_SHORTVERSION) != 0 && pure )
+	//pure = atoi(Info_ValueForKey(info, "maxlives")) != 0;
+	if( strcmp(val, FORTS_SHORTVERSION) != 0 /*&& pure*/ )
 	{
 		Com_Error(ERR_DROP, "This server is NOT running " FORTS_VERSION "!\nJoining this server will not function properly with this version." );
 		return qfalse;
@@ -3952,7 +3952,7 @@ static qboolean UI_CheckVersion( void )
 	static char info[MAX_STRING_CHARS];
 	const char *mapname = NULL;
 	const char *val = NULL;
-	int pure = 0;
+	//int pure = 0;
 
 	int index = uiInfo.serverStatus.currentServer;
 	if( (index < 0) || (index >= uiInfo.serverStatus.numDisplayServers) )
@@ -3963,8 +3963,8 @@ static qboolean UI_CheckVersion( void )
 	trap_LAN_GetServerInfo(ui_netSource.integer, uiInfo.serverStatus.displayServers[index], info, MAX_STRING_CHARS);
 
 	val = Info_ValueForKey(info, "balancedteams");
-	pure = atoi(Info_ValueForKey(info, "maxlives")) != 0;
-	if( strcmp(val, FORTS_SHORTVERSION) != 0 && pure )
+	//pure = atoi(Info_ValueForKey(info, "maxlives")) != 0;
+	if( strcmp(val, FORTS_SHORTVERSION) != 0 /*&& pure*/ )
 	{
 		Com_Error(ERR_DROP, "This server is NOT running " FORTS_VERSION "!\nJoining this server will not function properly with this version." );
 		return qfalse;
