@@ -6933,7 +6933,7 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu ) {
 				Menus_ActivateByName("main");
 
 				trap_Cvar_VariableStringBuffer("name", buf, sizeof(buf));
-				if(Q_stricmp(buf, "ETF_Player") == 0)
+				if(Q_stricmp(buf, "ETF_Player") == 0 || Q_stricmp(buf, "ETPlayer") == 0)
 					Menus_ActivateByName("menu_profile");
 				else
 					Menus_ActivateByName("menubar");	// RR2DO2: spawning the Q3F menubar
