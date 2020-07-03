@@ -1462,17 +1462,21 @@ void ClientBegin( int clientNum ) {
 	int i;	// RR2DO2
 	int spawn_count; // Ensiform, from ET so that CG_Respawn still happens
 
+#ifdef BUILD_LUA
 	// call LUA clientBegin only once when player connects
 	qboolean firsttime = qfalse;
+#endif
 
 	ent = g_entities + clientNum;
 
 	client = level.clients + clientNum;
 
+#ifdef BUILD_LUA
 	if (client->pers.connected == CON_CONNECTING)
 	{
 		firsttime = qtrue;
 	}
+#endif
 
 	if ( ent->r.linked ) {
 		trap_UnlinkEntity( ent );

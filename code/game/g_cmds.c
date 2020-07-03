@@ -2519,7 +2519,7 @@ void G_Q3F_DropAmmoToCommand( gentity_t *ent ) {
 	gentity_t *drop;
 	gitem_t *item;
 	vec3_t velocity, pvel;
-	char *ammoname;
+	const char *ammoname;
 
 	if( !ent->client || ent->health <= 0 || level.ceaseFire || ent->client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING) )
 		return;
@@ -2663,7 +2663,7 @@ void G_Q3F_DropAmmoCommand( gentity_t *ent )
 	gentity_t *drop;
 	gitem_t *item;
 	vec3_t velocity, pvel;
-	char *ammoname;
+	const char *ammoname;
 
 	if( !ent->client || ent->health <= 0 || level.ceaseFire || ent->client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING) )
 		return;

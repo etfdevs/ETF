@@ -7520,7 +7520,7 @@ static cvarTable_t		cvarTable[] = {
 	{ &ui_checkversion,			"ui_checkversion",			"0",								CVAR_ARCHIVE },
 };
 
-static int		cvarTableSize = sizeof(cvarTable) / sizeof(cvarTable[0]);
+static const int cvarTableSize = (int)ARRAY_LEN( cvarTable );
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -7540,7 +7540,7 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	{ &com_hunkmegs,		"com_hunkmegs",			128,		128,		-1,		0,	0,	qfalse },
 };
 
-static int cvarLimitTableSize = sizeof( cvarLimitTable ) / sizeof( cvarLimitTable[0] );
+static const int cvarLimitTableSize = (int)ARRAY_LEN( cvarLimitTable );
 
 /*
 =================

@@ -167,12 +167,13 @@ typedef struct {
 	int id;
 	char *name;
 } panelTransitionMap_t;
-panelTransitionMap_t panelTransitionNames[] = {
+static const panelTransitionMap_t panelTransitionNames[] = {
 	// List of transition names.
 
 	{ Q3F_PANELTRANS_NONE,	"none" },
 	{ Q3F_PANELTRANS_FADE,	"fade" },
 };
+static const int numPanelTransitionNames = (int)ARRAY_LEN(panelTransitionNames);
 
 qboolean G_Q3F_PanelBaseSpawn( gentity_t *panel )
 {
@@ -184,7 +185,7 @@ qboolean G_Q3F_PanelBaseSpawn( gentity_t *panel )
 		// Find the transition to use.
 	G_SpawnString( "transition", "none", &str );
 	panel->s.weapon = -1;
-	for( index = 0; index < (sizeof(panelTransitionNames) / sizeof(panelTransitionMap_t)); index++ )
+	for( index = 0; index < numPanelTransitionNames; index++ )
 	{
 		if( !Q_stricmp( str, panelTransitionNames[index].name ) )
 		{

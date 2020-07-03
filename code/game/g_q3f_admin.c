@@ -1328,8 +1328,8 @@ void G_Q3F_RCONPasswordCommand( gentity_t *ent ) {
 	char password[MAX_STRING_CHARS];
 	char buff[MAX_STRING_CHARS];
 
-	trap_Cvar_VariableStringBuffer("rconpassword", buff, MAX_STRING_CHARS);
-	trap_Argv(1, password, MAX_STRING_CHARS);
+	trap_Cvar_VariableStringBuffer("rconpassword", buff, sizeof(buff));
+	trap_Argv(1, password, sizeof(password));
 
 	if( *buff && !Q_stricmp( password, buff )) {
 		ent->client->sess.adminLevel = ADMIN_FULL;
@@ -1565,5 +1565,3 @@ void G_Q3F_ShoutcastLoginCommand( gentity_t *player )
 		return;
 	}
 }
-
-

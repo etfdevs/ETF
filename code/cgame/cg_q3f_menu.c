@@ -685,7 +685,8 @@ static void DisguiseClassMenu()
 	Q_strncpyz( menucommands[9],	"cancel", 128 );
 }*/
 
-static unsigned char chargetimes[] = { 5, 10, 20, 30, 60, 120, 180 };
+static const unsigned char chargetimes[] = { 5, 10, 20, 30, 60, 120, 180 };
+static const int numchargetimes = (int)ARRAY_LEN(chargetimes);
 void ChargeMenu()
 {
 	// Menu options to lay a charge
@@ -694,7 +695,7 @@ void ChargeMenu()
 
 	CG_Q3F_MenuInit();
 
-	for( line = 0; line < sizeof(chargetimes); line++ ) {
+	for( line = 0; line < numchargetimes; line++ ) {
 		CG_Q3F_MenuAddOption( line, va("%d seconds", chargetimes[line]), NULL, va("charge %d\n", chargetimes[line]) );
 	}
 

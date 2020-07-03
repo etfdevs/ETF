@@ -656,7 +656,7 @@ static void G_Q3F_SC_ParseDate( char *str, int *day, int *time )
 	char *ptr;
 	qboolean foundTime;
 
-	for( index = 0, ptr = str; index < sizeof(buff) - 1 && Q_isalpha( *ptr ); index++ )
+	for( index = 0, ptr = str; index < (int)ARRAY_LEN(buff) - 1 && Q_isalpha( *ptr ); index++ )
 		buff[index] = *ptr++;
 	buff[len = index] = 0;
 
@@ -732,7 +732,7 @@ static qboolean G_Q3F_SC_InDateRange( int day, int time, int dates[4] )
 	boundCmp = G_Q3F_CompareDate(	dates[STARTDAY], dates[STARTTIME],
 									dates[ENDDAY], dates[ENDTIME] );
 	return( (boundCmp <= 0 && startCmp >= 0 && endCmp <= 0) ||
-			(boundCmp > 0 && startCmp >= 0 || endCmp <= 0) );
+			(boundCmp > 0 && (startCmp >= 0 || endCmp <= 0)) );
 }
 
 static void G_Q3F_DetermineSetting()

@@ -316,7 +316,7 @@ static const char *gunNames[] = {
 	"napalmcannon",
 	""
 };
-static const int numGunNames = sizeof(gunNames) / sizeof(const char*);
+//static const int numGunNames = (int)sizeof(gunNames) / sizeof(const char*);
 
 int G_Q3F_ProcessWeaponString( const char *value )
 {
@@ -806,7 +806,7 @@ qboolean G_Q3F_TouchEntity( gentity_t *ent, gentity_t *other, trace_t *trace )
 
 	int targetstate;
 	q3f_mapent_t *mapdata;
-	qboolean isholdable;
+	//qboolean isholdable;
 
 	if( !ent->client || Q3F_IsSpectator( ent->client ) || ent->health <= 0 ) {
 		// RR2DO2: fix, spectators may go through doors! (spectator teleport)
@@ -818,7 +818,8 @@ qboolean G_Q3F_TouchEntity( gentity_t *ent, gentity_t *other, trace_t *trace )
 		}
 	}
 
-	if( mapdata = other->mapdata )
+	mapdata = other->mapdata;
+	if( mapdata )
 	{
 		// If there's no mapdata, there's no criteria to check :)
 
@@ -850,13 +851,13 @@ qboolean G_Q3F_TouchEntity( gentity_t *ent, gentity_t *other, trace_t *trace )
 		{
 			if( other->parent == ent && (other->timestamp + 2000) >= level.time )
 				return( qfalse );		// 'Last holder' can't touch it again.
-			isholdable = qtrue;
+			//isholdable = qtrue;
 			if( (mapdata->state == Q3F_STATE_INACTIVE ||
 				mapdata->state == Q3F_STATE_ACTIVE) )
 				targetstate = Q3F_STATE_CARRIED;	// Pick up holdable
 		}
 		else {
-			isholdable = qfalse;
+			//isholdable = qfalse;
 			if( mapdata->waittime > level.time )
 				return( qfalse );					// We're still waiting
 			if( mapdata->state == Q3F_STATE_INACTIVE )
@@ -934,7 +935,7 @@ qboolean G_Q3F_TriggerEntity( gentity_t *ent, gentity_t *activator, int state, t
 	q3f_mapent_t		*mapdata;
 	q3f_keypairarray_t	*propogator;
 	int					newstate, oldstate;
-	char *actname = 0, *entname = 0;
+	const char *actname = 0, *entname = 0;
 
 	if( level.ceaseFire )
 		return( qfalse );			// Nothing is triggered during ceasefires

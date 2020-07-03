@@ -49,10 +49,10 @@ If you have questions concerning this license or the applicable additional terms
 #endif
 
 typedef struct patchBlock_s {
-	int	address;
-	int size;
-	char * orig_data;
-	char * new_data;
+	uintptr_t	address;
+	size_t	size;
+	char *orig_data;
+	char *new_data;
 } patchBlock_t;
 
 #ifdef WIN32
@@ -72,11 +72,11 @@ static patchBlock_t patches_linux_etded[1] ={
 #endif
 
 
-static int UnprotectMemory(int address, int size, int * flags) {
+static int UnprotectMemory(uintptr_t address, size_t size, int * flags) {
 #ifdef WIN32
 	return VirtualProtect ((LPVOID)address, size, PAGE_EXECUTE_READWRITE, (PDWORD)flags);
 #elif defined  __linux__
-	int start = address & ~(PAGE_SIZE-1);
+	uintptr_t start = address & ~(PAGE_SIZE-1);
 	size = (address + size) & ~(PAGE_SIZE-1) - start + PAGE_SIZE;
 	return mprotect( (void *)start, size, PROT_READ|PROT_WRITE|PROT_EXEC ) == 0;
 #endif
@@ -87,7 +87,7 @@ static void ProtectMemory(int address, int size, int flags) {
 	int temp;
 	VirtualProtect ((LPVOID)address, size, flags, (PDWORD)&temp);
 #elif defined  __linux__
-	int start = address & ~(PAGE_SIZE-1);
+	uintptr_t start = address & ~(PAGE_SIZE-1);
 	size = (address + size) & ~(PAGE_SIZE-1) - start + PAGE_SIZE;
 	mprotect( (void *)start, size, PROT_READ|PROT_EXEC );
 #endif
@@ -107,7 +107,7 @@ static void HandlePatchBlock(patchBlock_t * patch, int count) {
 	}
 }
 
-static int findString(const char * test) {
+/*static int findString(const char * test) {
 	int i;
 	for (i=0x804b000;i<0xb000000;i++) {
 	    if (!(i & 1023)) 
@@ -116,7 +116,7 @@ static int findString(const char * test) {
 			return i;
 	}
 	return 0;
-}
+}*/
 
 void G_PatchEngine(void) {
 #ifndef idx64

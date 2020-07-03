@@ -457,7 +457,7 @@ void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops ) {
 	fileHandle_t fh;
 	char buf[32];
 	int execClassConfig = 0;
-	static qboolean doneFirstSpawn = qfalse;
+	//static qboolean doneFirstSpawn = qfalse;
 
 	// check for changing follow mode
 	if ( ps->clientNum != ops->clientNum ) {
@@ -473,7 +473,7 @@ void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops ) {
 
 	// respawning
 	if ( ps->persistant[PERS_SPAWN_COUNT] != ops->persistant[PERS_SPAWN_COUNT] ) {
-		doneFirstSpawn = qtrue;
+		//doneFirstSpawn = qtrue;
 
 		CG_Respawn();
 

@@ -420,7 +420,7 @@ static cvarTable_t		gameCvarTable[] = {
 	
 };
 
-static int		gameCvarTableSize = sizeof( gameCvarTable ) / sizeof( gameCvarTable[0] );
+static const int gameCvarTableSize = (int)ARRAY_LEN( gameCvarTable );
 
 
 void G_InitGame( int levelTime, int randomSeed, int restart );
@@ -558,7 +558,7 @@ void G_FindTeams( void ) {
 
 	c = 0;
 	c2 = 0;
-	for ( i=1, e=g_entities+i ; i < level.num_entities ; i++,e++ ){
+	for ( i=MAX_CLIENTS, e=g_entities+i ; i < level.num_entities ; i++,e++ ){
 		if (!e->inuse)
 			continue;
 		if (!e->team)
@@ -624,10 +624,10 @@ void G_RegisterCvars( void ) {
 
 	// check some things
 
-	if ( g_gametype.integer < 0 || g_gametype.integer >= GT_MAX_GAME_TYPE ) {
-		G_Printf( "g_gametype %i is out of range, defaulting to 0\n", g_gametype.integer );
+	//if ( g_gametype.integer < 0 || g_gametype.integer >= GT_MAX_GAME_TYPE ) {
+	//	G_Printf( "g_gametype %i is out of range, defaulting to 0\n", g_gametype.integer );
 		trap_Cvar_Set( "g_gametype", "0" );
-	}
+	//}
 
 	/* Ensiform - Forcing this to 0 here as it can sometimes be imported from ET configs and set to 1, thus CVAR_ROM would be bad */
 	trap_Cvar_Set( "sv_floodProtect", "0" );

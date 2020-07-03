@@ -3925,6 +3925,7 @@ void SP_Q3F_misc_changeclass( gentity_t *ent ) {
 	ent->r.svFlags = SVF_NOCLIENT;
 }
 
+#if 0
 /*QUAKED misc_setweapons (0.3 0.1 0.6) (-8 -8 -8) (8 8 8)
 */
 
@@ -4097,6 +4098,7 @@ void SP_Q3F_misc_disableweapons( gentity_t *ent )
 {
 	ent->touch = G_Q3F_MiscDisableWeaponsTouch;
 }
+#endif
 
 #if 0
 

@@ -864,7 +864,7 @@ static int CG_Q3F_SupplystationPanel()
 void CG_Q3F_Supplystation( centity_t *cent ) {
 	refEntity_t base, hud;
 	float shadowplane;
-	int drawshadow;
+	//int drawshadow;
 	orientation_t tag;
 	int i;
 	vec3_t panelorigin;
@@ -876,7 +876,7 @@ void CG_Q3F_Supplystation( centity_t *cent ) {
 
 	CG_Q3F_BuildableSprites(cent);
 
-	drawshadow = CG_ShadowMark( cent->lerpOrigin, 9, 128, &shadowplane);
+	/*drawshadow = */CG_ShadowMark( cent->lerpOrigin, 9, 128, &shadowplane);
 
 	memset( &base, 0, sizeof(base) );
 	VectorCopy( cent->lerpOrigin, base.origin);

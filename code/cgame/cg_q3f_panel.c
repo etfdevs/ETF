@@ -344,7 +344,7 @@ void CG_Q3F_PanelFitString( int *numlines, float *size, char *str, int flags, fl
 	qboolean wrap, spaceBreak, proportional;
 	float wordWidths[64];
 	int wordWidthIndex, wordCount, index, len, linesUsed;
-	char *ptr, *wordstartptr;
+	char *ptr;//, *wordstartptr;
 	float width, height, lines, invaspect;
 
 	wrap			= flags & PANEL_STR_WRAP;
@@ -352,7 +352,7 @@ void CG_Q3F_PanelFitString( int *numlines, float *size, char *str, int flags, fl
 	proportional	= qfalse;	// flags & PANEL_STR_PROPORTIONAL;	// Don't know how to handle this... yet.
 
 	len = strlen( str );
-	for( wordWidthIndex = 0, wordstartptr = ptr = str, width = 0, wordCount = index = 0; index < len; )
+	for( wordWidthIndex = 0, /*wordstartptr =*/ ptr = str, width = 0, wordCount = index = 0; index < len; )
 	{
 		if( *ptr == Q_COLOR_ESCAPE )
 		{
@@ -364,7 +364,7 @@ void CG_Q3F_PanelFitString( int *numlines, float *size, char *str, int flags, fl
 			if( width )
 			{
 				wordWidths[wordWidthIndex++] = width;
-				if( wordWidthIndex >= (sizeof(wordWidths)/sizeof(float)) )
+				if( wordWidthIndex >= (int)ARRAY_LEN(wordWidths) )
 					break;
 				width = 0;
 			}
@@ -1053,7 +1053,7 @@ qboolean CG_Q3F_RenderPanel(	qhandle_t backshader, qhandle_t foreshader, int tra
 	//		for back/foreground shaders & transition effect, even if false is returned.
 
 	vec3_t eyepos, tmp;
-	float fovproduct, fovtemp;
+	float fovproduct;//, fovtemp;
 	panelTransition_t *ptrans;
 	qboolean inrange;
 //	refEntity_t ref;
@@ -1107,7 +1107,7 @@ qboolean CG_Q3F_RenderPanel(	qhandle_t backshader, qhandle_t foreshader, int tra
 		fovproduct = sin( (M_PI / 360) * (cg.refdef.fov_x > cg.refdef.fov_y ? cg.refdef.fov_x : cg.refdef.fov_y) );
 
 		VectorMA( origin, 4, panel.forward, tmp );
-		fovtemp = DotProduct( panel.viewforward, panel.forward );
+		//fovtemp = DotProduct( panel.viewforward, panel.forward );
 		fovproduct = sin( (M_PI / 360) * (cg.refdef.fov_x > cg.refdef.fov_y ? cg.refdef.fov_x : cg.refdef.fov_y) );
 		if( DotProduct( panel.viewforward, panel.forward ) > fovproduct )
 		{
@@ -1178,7 +1178,7 @@ qboolean CG_Q3F_RenderPanel(	qhandle_t backshader, qhandle_t foreshader, int tra
 }
 
 
-panelEntType_t panelEntTypes[] = {
+static const panelEntType_t panelEntTypes[] = {
 	{ Q3F_PANELTYPE_NAME,			&CG_Q3F_PanelFuncName				},
 	{ Q3F_PANELTYPE_SCORESUMMARY,	&CG_Q3F_PanelFuncScoreSummary		},
 	{ Q3F_PANELTYPE_LOCATION,		&CG_Q3F_PanelFuncLocation			},
@@ -1186,13 +1186,13 @@ panelEntType_t panelEntTypes[] = {
 	{ Q3F_PANELTYPE_RADAR,			&CG_Q3F_PanelFuncRadar				},
 	{ Q3F_PANELTYPE_MESSAGE,		&CG_Q3F_PanelFuncMessage			},
 };
-#define PANELENTTYPETABLESIZE (sizeof(panelEntTypes) / sizeof(panelEntType_t))
+static const int PANELENTTYPETABLESIZE =  (int)ARRAY_LEN(panelEntTypes);
 
 void CG_Q3F_Panel( centity_t *cent )
 {
 	// Renders the entity based on the ET_PANEL subtype.
 
-	panelEntType_t *ptype;
+	const panelEntType_t *ptype;
 	int index;
 	float distance;
 

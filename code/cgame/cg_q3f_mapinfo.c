@@ -137,8 +137,8 @@ static qboolean CG_Q3F_MI_MapSelectGetArenaField( const char *mapname, const cha
 
 	if( (len = trap_FS_FOpenFile( va( "scripts/%s.arena", mapname ), &arenaHandle, FS_READ )) < 0 )
 		return( qfalse );
-	if( len > sizeof(buff) - 1 )
-		len = sizeof(buff) - 1;
+	if( len > MAX_TOKEN_CHARS - 1 )
+		len = MAX_TOKEN_CHARS - 1;
 	trap_FS_Read( buff, len, arenaHandle );
 	buff[len] = 0;
 	buffptr = buff;
@@ -302,8 +302,8 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 			trap_FS_FCloseFile( mi.infoHandle );
 		return( 0 );
 	}
-	if( index >= sizeof(buff) )
-		index = sizeof(buff) - 1;
+	if( index >= (int)ARRAY_LEN(buff) )
+		index = (int)ARRAY_LEN(buff) - 1;
 	trap_FS_Read( buff, index, mi.infoHandle );
 	trap_FS_FCloseFile( mi.infoHandle );
 	buff[index] = 0;

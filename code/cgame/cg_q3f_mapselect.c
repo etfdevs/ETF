@@ -54,6 +54,8 @@ int mapSelectTally[ETF_MAPSELECT_SELECTCOUNT];
 **	Support functions
 */
 
+#if 0
+//unused
 static char *CG_Q3F_MapSelectCloneString( char *str )
 {
 	// Clone the string in the main buffer
@@ -72,6 +74,7 @@ static char *CG_Q3F_MapSelectCloneString( char *str )
 
 	return( newstr );
 }
+#endif
 
 
 /*
