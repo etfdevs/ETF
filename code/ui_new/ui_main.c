@@ -6821,6 +6821,8 @@ void _UI_Init( qboolean inGameLoad ) {
 
 	trap_Cvar_Register(NULL, "debug_protocol", "", 0 );
 
+	trap_Cvar_Register(NULL, "g_gameindex", "1", CVAR_SERVERINFO | CVAR_LATCH);
+
 //	trap_Cvar_Set("ui_actualNetGameType", va("%d", ui_netGameType.integer));
 
 	HUD_LoadLanguageData();
