@@ -191,6 +191,8 @@ void G_ReadClientSessionData( gclient_t *client ) {
 		/* Ensiform - Nuke the class if we're spectator */
 		client->ps.persistant[PERS_CURRCLASS] = Q3F_CLASS_NULL;
 		sess->sessionClass = Q3F_CLASS_NULL;
+		sess->spectatorState = SPECTATOR_FREE;
+		sess->spectatorClient = -1;
 	}
 
 	cJSON_Delete( root );
@@ -226,6 +228,7 @@ void G_InitClientSessionData( gclient_t *client, char *userinfo ) {
 	else
 		sess->spectatorState = SPECTATOR_NOT;
 
+	sess->spectatorClient = -1;
 	sess->spectatorTime = level.time;
 
 	memset( sess->ignoreClients, 0, sizeof( sess->ignoreClients ) );
