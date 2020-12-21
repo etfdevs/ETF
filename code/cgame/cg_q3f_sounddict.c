@@ -110,7 +110,7 @@ void CG_Q3F_ParseSoundDictionary()
 				linepos = MAX_STRING_CHARS;		// Comment token, ignore rest of line
 			if( linepos >= MAX_STRING_CHARS - 1 )
 				continue;		// End of buffer, just drop silently
-			if( curr <= ' ' || curr >= 128 )
+			if( curr <= ' ')
 			{
 				// whitespace
 				if( isspace )
@@ -284,7 +284,7 @@ void CG_Q3F_StartSoundString( const char *str )
 	for( index = 0; *str && index < (MAX_STRING_CHARS - 3); str++ )
 	{
 		curr = *str;
-		if( curr <= ' ' || curr >= 128 )
+		if( curr <= ' ')
 		{
 			if( isspace )
 				continue;

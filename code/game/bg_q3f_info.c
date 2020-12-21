@@ -268,7 +268,7 @@ qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, 
 	/* Ensiform - Add this so we can check what files cause the Unexpected end of info file error */
 	COM_BeginParseSession(filename);
 	if(BG_ParseInfos(buf, miList, index)) {
-		COM_StripExtension( COM_SkipPath( filename ), rawmapname, sizeof(rawmapname) );
+		COM_StripExtension( COM_SkipPath( (char*)filename ), rawmapname, sizeof(rawmapname) );
 		miList[(*index)-1].mapLoadName = String_Alloc( rawmapname );
 	}
 

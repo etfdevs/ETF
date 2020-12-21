@@ -348,7 +348,7 @@ void G_Q3F_MapSelectInit()
 
 		// Pick a set of entries at random.
 	allNames = G_Alloc( sizeof(char *) * mapList->used );
-	for( index = -1, nameIndex = 0; data = G_Q3F_ArrayTraverse( mapList, &index ); nameIndex++ )
+	for( index = -1, nameIndex = 0; (data = G_Q3F_ArrayTraverse( mapList, &index )); nameIndex++ )
 		allNames[nameIndex] = data->d.strdata;
 	for( nameIndex = 0; nameIndex < mapList->used; nameIndex++ )
 	{

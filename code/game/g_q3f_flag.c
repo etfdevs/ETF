@@ -654,7 +654,7 @@ qboolean G_Q3F_CheckHeld( gentity_t *holder, q3f_array_t *array )
 			return( qfalse );
 		targarray = targkp->value.d.arraydata;
 		// Check each ent in that hash
-		for( index2 = -1, ent = NULL; data2 = G_Q3F_ArrayTraverse( targarray, &index2 ); )
+		for( index2 = -1, ent = NULL; (data2 = G_Q3F_ArrayTraverse( targarray, &index2 )); )
 		{
 			ent = data2->d.entitydata;
 			if( ent->mapdata &&
@@ -686,7 +686,7 @@ qboolean G_Q3F_CheckNotHeld( gentity_t *holder, q3f_array_t *array )
 			return( qfalse );
 		targarray = targkp->value.d.arraydata;
 		// Check each ent in that hash
-		for( index2 = -1, ent = NULL; data2 = G_Q3F_ArrayTraverse( targarray, &index2 ); )
+		for( index2 = -1, ent = NULL; (data2 = G_Q3F_ArrayTraverse( targarray, &index2 )); )
 		{
 			ent = data2->d.entitydata;
 			if( ent->mapdata &&

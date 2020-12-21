@@ -942,8 +942,8 @@ void CG_AddFlameToScene( flameChunk_t *fHead ) {
 		if (!f->ignitionOnly &&
 			((float)(FLAME_SPRITE_START_BLUE_SCALE*f->blueLife) < (float)lived)) {
 
-			float alpha, lifeFrac;
-			qboolean skip=qfalse;
+			float _alpha, lifeFrac;
+			qboolean _skip = qfalse;
 
 			// should we merge it with the next sprite?
 			while (fNext && !droppedTrail) {
@@ -952,13 +952,8 @@ void CG_AddFlameToScene( flameChunk_t *fHead ) {
 					&&	(fabs(f->timeStart - fNext->timeStart) < 100)
 					&&	(DotProduct( f->velDir, fNext->velDir ) > 0.99)
 					) {
-					if (!droppedTrail) {
-						CG_MergeFlameChunks( f, fNext );
-						fNext = f->nextFlameChunk;		// it may have changed
-					} else {
-						skip = qtrue;
-						break;
-					}
+					CG_MergeFlameChunks( f, fNext );
+					fNext = f->nextFlameChunk;		// it may have changed
 				} else {
 					break;
 				}
@@ -966,13 +961,13 @@ void CG_AddFlameToScene( flameChunk_t *fHead ) {
 
 			lifeFrac = (lived - FLAME_SPRITE_START_BLUE_SCALE*f->blueLife) / (FLAME_LIFETIME - FLAME_SPRITE_START_BLUE_SCALE*f->blueLife);
 
-			alpha = (1.0 - lifeFrac)*1.4;
-			if (alpha > 1.0)
-				alpha = 1.0;
+			_alpha = (1.0 - lifeFrac)*1.4;
+			if (_alpha > 1.0)
+				_alpha = 1.0;
 
-			if (!skip) {
+			if (!_skip) {
 				// draw the sprite
-				CG_AddFlameSpriteToScene (f, lifeFrac, alpha );
+				CG_AddFlameSpriteToScene (f, lifeFrac, _alpha );
 			}
 			// update the sizeRate
 			f->sizeRate = GET_FLAME_SIZE_SPEED( f->sizeMax );

@@ -1637,23 +1637,23 @@ void CG_LoadMenus(const char *menuFile, qboolean resetHud) {
 			while( UMC_ReadLineSkipEmpty( f, &bytesread, len, linebuff, sizeof(linebuff) ) ) {
 				float x, y;
 				menuDef_t *menu;
-				char *p, *p2;
+				char *_p, *p2;
 				
-				for(p = linebuff; *p; p++) {
-					if(*p == ' ') {
-						*p++ = '\0';
+				for(_p = linebuff; *_p; _p++) {
+					if(*_p == ' ') {
+						*_p++ = '\0';
 						break;
 					}
 				}
 
-				for(p2 = p; *p2; p2++) {
+				for(p2 = _p; *p2; p2++) {
 					if(*p2 == ' ') {
 						*p2++ = '\0';
 						break;
 					}
 				}
 
-				x = atof(p);
+				x = atof(_p);
 				y = atof(p2);
 
 				menu = Menus_FindByName( linebuff );

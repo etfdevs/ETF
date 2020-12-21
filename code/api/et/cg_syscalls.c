@@ -661,7 +661,7 @@ char* trap_TranslateString( const char *string ) {
 
 // Media register functions
 #ifdef _DEBUG
-#define DEBUG_REGISTERPROFILE_INIT int dbgTime = trap_Milliseconds();
+#define DEBUG_REGISTERPROFILE_INIT UNUSED_VAR int dbgTime = trap_Milliseconds();
 #define DEBUG_REGISTERPROFILE_EXEC(f,n) if( developer.integer ) CG_Printf( BOX_PRINT_MODE_CHAT, "%s : loaded %s in %i msec\n", f, n, trap_Milliseconds()-dbgTime ); 
 sfxHandle_t	trap_S_RealRegisterSound( const char *sample, qboolean compressed ) {
 	sfxHandle_t snd;

@@ -114,7 +114,7 @@ int CG_Text_Width(const char *text, float scale, int limit, fontStruct_t *parent
 		count = 0;
 
 		while (s && *s && count < len) {
-			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
+			if (*s >= GLYPH_CHARSTART) {
 				if ( Q_IsColorStringPtr( s ) ) {
 					s += 2;
 					continue;
@@ -167,7 +167,7 @@ void CG_Text_Width_To_Max(char *text, float scale, int max, fontStruct_t *parent
 			return;
 		}
 		while (s && *s) {
-			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
+			if (*s >= GLYPH_CHARSTART) {
 				if ( Q_IsColorStringPtr(s) ) {
 					s += 2;
 					continue;
@@ -227,7 +227,7 @@ int CG_Text_Height(const char *text, float scale, int limit, fontStruct_t *paren
 		count = 0;
 
 		while (s && *s && count < len) {
-			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
+			if(*s >= GLYPH_CHARSTART) {
 				if ( Q_IsColorStringPtr(s) ) {
 					s += 2;
 					continue;
@@ -326,7 +326,7 @@ void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text
 		count = 0;
 
 		while (s && *s && count < len) {
-			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
+			if (*s >= GLYPH_CHARSTART) {
 				glyph = &font->glyphs[(unsigned char)*s];
 
 				if ( Q_IsColorStringPtr( s ) ) {

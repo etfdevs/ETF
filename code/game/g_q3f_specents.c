@@ -143,14 +143,14 @@ void G_Q3F_CommandPointThink( gentity_t *ent )
 			G_Q3F_PropogateTrigger( kp->value.d.keypairarraydata, activator, &trace );
 
 			// Reset the 'allowteams' field of the named entities.
-		if( kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "teamset" ) ) )
+		if( (kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "teamset" ) )) )
 		{
-			for( index = -1; data = G_Q3F_ArrayTraverse( kp->value.d.arraydata, &index ); )
+			for( index = -1; (data = G_Q3F_ArrayTraverse( kp->value.d.arraydata, &index )); )
 			{
 				if( !(targkp = G_Q3F_KeyPairArrayFind( level.targetnameArray, data->d.strdata )) )
 					continue;
 				targetarray = targkp->value.d.arraydata;
-				for( targindex = -1; targdata = G_Q3F_ArrayTraverse( targetarray, &targindex ); )
+				for( targindex = -1; (targdata = G_Q3F_ArrayTraverse( targetarray, &targindex )); )
 				{
 					target = targdata->d.entitydata;
 					if( target->mapdata )
@@ -160,14 +160,14 @@ void G_Q3F_CommandPointThink( gentity_t *ent )
 				}
 			}
 		}
-		if( kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "nonteamset" ) ) )
+		if( (kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "nonteamset" ) )) )
 		{
-			for( index = -1; data = G_Q3F_ArrayTraverse( kp->value.d.arraydata, &index ); )
+			for( index = -1; (data = G_Q3F_ArrayTraverse( kp->value.d.arraydata, &index )); )
 			{
 				if( !(targkp = G_Q3F_KeyPairArrayFind( level.targetnameArray, data->d.strdata )) )
 					continue;
 				targetarray = targkp->value.d.arraydata;
-				for( targindex = -1; targdata = G_Q3F_ArrayTraverse( targetarray, &targindex ); )
+				for( targindex = -1; (targdata = G_Q3F_ArrayTraverse( targetarray, &targindex )); )
 				{
 					target = targdata->d.entitydata;
 					if( target->mapdata )
@@ -213,14 +213,14 @@ void G_Q3F_CommandPointTouch( gentity_t *ent, gentity_t *other, trace_t *trace )
 	teammask = kp ? kp->value.d.intdata : (1 << teamnum);
 
 		// Set teamset teams to only respond to the activator's team
-	if( kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "teamset" ) ) )
+	if( (kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "teamset" ) )) )
 	{
-		for( index = -1; data = G_Q3F_ArrayTraverse( kp->value.d.arraydata, &index ); )
+		for( index = -1; (data = G_Q3F_ArrayTraverse( kp->value.d.arraydata, &index )); )
 		{
 			if( !(targkp = G_Q3F_KeyPairArrayFind( level.targetnameArray, data->d.strdata )) )
 				continue;
 			targetarray = targkp->value.d.arraydata;
-			for( targindex = -1; targdata = G_Q3F_ArrayTraverse( targetarray, &targindex ); )
+			for( targindex = -1; (targdata = G_Q3F_ArrayTraverse( targetarray, &targindex )); )
 			{
 				target = targdata->d.entitydata;
 				if( !target->mapdata )
@@ -232,14 +232,14 @@ void G_Q3F_CommandPointTouch( gentity_t *ent, gentity_t *other, trace_t *trace )
 		}
 	}
 		// Set nonteamset teams to only respond to the activator's team
-	if( kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "nonteamset" ) ) )
+	if( (kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "nonteamset" ) )) )
 	{
-		for( index = -1; data = G_Q3F_ArrayTraverse( kp->value.d.arraydata, &index ); )
+		for( index = -1; (data = G_Q3F_ArrayTraverse( kp->value.d.arraydata, &index )); )
 		{
 			if( !(targkp = G_Q3F_KeyPairArrayFind( level.targetnameArray, data->d.strdata )) )
 				continue;
 			targetarray = targkp->value.d.arraydata;
-			for( targindex = -1; targdata = G_Q3F_ArrayTraverse( targetarray, &targindex ); )
+			for( targindex = -1; (targdata = G_Q3F_ArrayTraverse( targetarray, &targindex )); )
 			{
 				target = targdata->d.entitydata;
 				if( !target->mapdata )
@@ -284,7 +284,7 @@ void SP_Q3F_func_commandpoint( gentity_t *ent )
 		// Sort before we can search (won't have been done yet)
 	G_Q3F_KeyPairArraySort( ent->mapdata->other );
 
-	if( kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "teamset" ) ) )
+	if( (kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "teamset" ) )) )
 	{
 		// Split up teamset string into individual entities
 		str = kp->value.d.strdata;
@@ -292,7 +292,7 @@ void SP_Q3F_func_commandpoint( gentity_t *ent )
 		kp->value.type = Q3F_TYPE_ARRAY;
 		G_Q3F_RemString( &str );
 	}
-	if( kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "nonteamset" ) ) )
+	if( (kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "nonteamset" ) )) )
 	{
 		// Split up nonteamset string into individual entities
 		str = kp->value.d.strdata;
@@ -300,7 +300,7 @@ void SP_Q3F_func_commandpoint( gentity_t *ent )
 		kp->value.type = Q3F_TYPE_ARRAY;
 		G_Q3F_RemString( &str );
 	}
-	if( kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "pulsetarget" ) ) )
+	if( (kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "pulsetarget" ) )) )
 	{
 		// Split up target string into individual entities
 		str = kp->value.d.strdata;
@@ -308,7 +308,7 @@ void SP_Q3F_func_commandpoint( gentity_t *ent )
 		kp->value.type = Q3F_TYPE_KEYPAIRARRAY;
 		G_Q3F_RemString( &str );
 	}
-	if( kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "expiretarget" ) ) )
+	if( (kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "expiretarget" ) )) )
 	{
 		// Split up target string into individual entities
 		str = kp->value.d.strdata;
@@ -316,7 +316,7 @@ void SP_Q3F_func_commandpoint( gentity_t *ent )
 		kp->value.type = Q3F_TYPE_KEYPAIRARRAY;
 		G_Q3F_RemString( &str );
 	}
-	if( kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "pulsegive" ) ) )
+	if( (kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "pulsegive" ) )) )
 	{
 		// Split up give string into individual entities
 		str = kp->value.d.strdata;
@@ -324,7 +324,7 @@ void SP_Q3F_func_commandpoint( gentity_t *ent )
 		kp->value.type = Q3F_TYPE_KEYPAIRARRAY;
 		G_Q3F_RemString( &str );
 	}
-	if( kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "pulsecount" ) ) )
+	if( (kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "pulsecount" ) )) )
 	{
 		// Convert to an integer
 		str = kp->value.d.strdata;
@@ -332,7 +332,7 @@ void SP_Q3F_func_commandpoint( gentity_t *ent )
 		kp->value.type = Q3F_TYPE_INTEGER;
 		G_Q3F_RemString( &str );
 	}
-	if( kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "overrideteams" ) ) )
+	if( (kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "overrideteams" ) )) )
 	{
 		// Convert to an integer
 		str = kp->value.d.strdata;
@@ -1208,7 +1208,7 @@ void G_Q3F_TargetCommandTouch( gentity_t *ent, gentity_t *other, trace_t *trace 
 				if( !spaceindex )
 					spaceindex = index;
 			}
-			if( index < sizeof(cmdbuff) - 2 )
+			if ( index < (int)sizeof(cmdbuff) - 2 )
 				cmdbuff[index++] = *endptr;
 		}
 		cmdbuff[index] = 0;
@@ -1305,7 +1305,7 @@ qboolean G_Q3F_NoBuildCheck( vec3_t mins, vec3_t maxs, int team, int mask )
 		return( qfalse );
 
 	i = -1;
-	while( data = G_Q3F_ArrayTraverse( nobuildarray, &i ) )
+	while( (data = G_Q3F_ArrayTraverse( nobuildarray, &i )) )
 	{
 		ptr = (g_q3f_nobuild_t *) data->d.intdata;
 		if(	ptr->mins[0] > maxs[0] ||
@@ -1403,7 +1403,7 @@ qboolean G_Q3F_NoAnnoyCheck( vec3_t mins, vec3_t maxs, int team, int mask )
 		return( qfalse );
 
 	i = -1;
-	while( data = G_Q3F_ArrayTraverse( noannoyarray, &i ) )
+	while( (data = G_Q3F_ArrayTraverse( noannoyarray, &i )) )
 	{
 		ptr = (g_q3f_nobuild_t *) data->d.intdata;
 		if(	ptr->mins[0] > maxs[0] ||
@@ -2068,7 +2068,7 @@ static void G_Q3F_FuncDamageCalc( gentity_t *self, gentity_t *other, qboolean ch
 		self->last_move_time = 0;
 		self->health = self->count;
 
-		if( kp = G_Q3F_KeyPairArrayFind( self->mapdata->other, restoretargetptr ) )
+		if( (kp = G_Q3F_KeyPairArrayFind( self->mapdata->other, restoretargetptr )) )
 		{
 			if( kp->value.type == Q3F_TYPE_STRING )
 			{
@@ -2156,7 +2156,7 @@ static void G_Q3F_FuncDamageCalc( gentity_t *self, gentity_t *other, qboolean ch
 			}
 
 			self->health = self->count;
-			if( kp = G_Q3F_KeyPairArrayFind( self->mapdata->other, healthtargetptr ) )
+			if( (kp = G_Q3F_KeyPairArrayFind( self->mapdata->other, healthtargetptr )) )
 			{
 				if( kp->value.type == Q3F_TYPE_STRING )
 				{
@@ -2194,7 +2194,7 @@ static void G_Q3F_FuncDamageCalc( gentity_t *self, gentity_t *other, qboolean ch
 				trap_AdjustAreaPortalState( self, qtrue );
 				trap_UnlinkEntity( self );		// Vanish from mortal ken.
 
-				if( kp = G_Q3F_KeyPairArrayFind( self->mapdata->other, damagetargetptr ) )
+				if( (kp = G_Q3F_KeyPairArrayFind( self->mapdata->other, damagetargetptr )) )
 				{
 					if( kp->value.type == Q3F_TYPE_STRING )
 					{
@@ -2353,7 +2353,7 @@ static g_q3f_onkill_t *G_Q3F_OnKillCriteria( gentity_t *ent, char *prefix )
 	Q_strncpyz( buffflags, prefix, sizeof(buffflags) );
 	Q_strcat( buffflags, sizeof(buffflags), "flags" );
 
-	for( index = -1; kp = G_Q3F_KeyPairArrayTraverse( ent->mapdata->other, &index ); )
+	for( index = -1; (kp = G_Q3F_KeyPairArrayTraverse( ent->mapdata->other, &index )); )
 	{
 		key = kp->key;
 		value = kp->value.d.strdata;
@@ -3380,7 +3380,7 @@ qboolean G_Q3F_PositionDynamicSpawn( gentity_t *ent, vec3_t origin, vec3_t angle
 		targetarray = targetkp->value.d.arraydata;
 		targindex = -1;
 		for(	numEnts = 0;
-				target = G_Q3F_ArrayTraverse( targetarray, &targindex );
+				(target = G_Q3F_ArrayTraverse( targetarray, &targindex ));
 				numEnts++ )
 		{
 			ents[numEnts] = target->d.entitydata;

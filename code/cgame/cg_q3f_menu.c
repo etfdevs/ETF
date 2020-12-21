@@ -44,7 +44,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "../game/bg_q3f_playerclass.h"
 #include "cg_q3f_mapselect.h"
 
-static int menustate, menutime, menuchoice, menuchoicetime, menuslidetime;
+static int menustate, menutime, menuchoice, menuchoicetime/*, menuslidetime*/;
 static qboolean isinvismenu;	// hack for supplystation menu
 
 typedef enum { 
@@ -485,7 +485,7 @@ void CG_Q3F_StoreClassinfo() {
 				*p++ = '\0';
 				
 				s = p;
-				if(c = strchr(s, '/')) {
+				if((c = strchr(s, '/'))) {
 					*c++ = '\0';
 				}
 

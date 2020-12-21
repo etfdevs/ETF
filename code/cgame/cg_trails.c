@@ -698,9 +698,9 @@ void CG_AddTrailToScene( trailJunc_t *trail, int iteration, int numJuncs )
 		if (!(trail->flags & TJFL_NOPOLYMERGE)) {
 			trap_R_AddPolysToScene( trail->shader, 3, &outVerts[0], numOutVerts/3 );
 		} else {
-			int k;
-			for (k=0; k<numOutVerts/3; k++) {
-				trap_R_AddPolyToScene( trail->shader, 3, &outVerts[k*3] );
+			int _k;
+			for (_k=0; _k<numOutVerts/3; _k++) {
+				trap_R_AddPolyToScene( trail->shader, 3, &outVerts[_k*3] );
 			}
 		}
 	}
@@ -711,9 +711,9 @@ void CG_AddTrailToScene( trailJunc_t *trail, int iteration, int numJuncs )
 		if (!(trail->flags & TJFL_NOPOLYMERGE)) {
 			trap_R_AddPolysToScene( trail->shader, 4, &verts[0], i/4 );
 		} else {
-			int k;
-			for (k=0; k<i/4; k++) {
-				trap_R_AddPolyToScene( trail->shader, 4, &verts[k*4] );
+			int _k;
+			for (_k=0; _k<i/4; _k++) {
+				trap_R_AddPolyToScene( trail->shader, 4, &verts[_k*4] );
 			}
 		}
 	}

@@ -237,7 +237,7 @@ void CG_Q3F_PanelDrawString( char *str, float x, float y, float size, float maxx
 {
 	// Draw a string to the panel.
 
-	float currx, curry, maxwidth, maxheight, lastspacewidth;
+	float currx, curry, maxwidth, /*maxheight,*/ lastspacewidth;
 	int index, lastspace, numLines;
 	char *wordendptr;
 	float width;
@@ -250,7 +250,7 @@ void CG_Q3F_PanelDrawString( char *str, float x, float y, float size, float maxx
 	if( maxy <= y )
 		maxy = 480;
 	maxwidth	= maxx - x;
-	maxheight	= maxy - y;
+//	maxheight	= maxy - y;
 
 	panel.clipxmin = x;
 	panel.clipxmax = maxx;
@@ -341,14 +341,14 @@ void CG_Q3F_PanelFitString( int *numlines, float *size, char *str, int flags, fl
 {
 	// Work out what size a string would have to be to fit into the specified width and height.
 
-	qboolean wrap, spaceBreak, proportional;
+	qboolean wrap, /*spaceBreak,*/ proportional;
 	float wordWidths[64];
 	int wordWidthIndex, wordCount, index, len, linesUsed;
 	char *ptr;//, *wordstartptr;
 	float width, height, lines, invaspect;
 
 	wrap			= flags & PANEL_STR_WRAP;
-	spaceBreak		= qtrue;	//flags & PANEL_STR_SPACEBREAK;		// Break on spaces wherever possible anyway.
+//	spaceBreak		= qtrue;	//flags & PANEL_STR_SPACEBREAK;		// Break on spaces wherever possible anyway.
 	proportional	= qfalse;	// flags & PANEL_STR_PROPORTIONAL;	// Don't know how to handle this... yet.
 
 	len = strlen( str );
@@ -373,7 +373,7 @@ void CG_Q3F_PanelFitString( int *numlines, float *size, char *str, int flags, fl
 		index++;
 		ptr++;
 	}
-	if( width && wordWidthIndex < (sizeof(wordWidths)/sizeof(float)) )
+	if( width && wordWidthIndex < (int)(sizeof(wordWidths)/sizeof(float)) )
 		wordWidths[wordWidthIndex++] = width;
 	wordCount = wordWidthIndex;
 
@@ -906,7 +906,7 @@ static int CG_Q3F_PanelFuncRadar()
 
 	centity_t *cent = (centity_t *) panel.data;
 	localEntity_t *le;
-	float sweepFront, range, angle, blipAngle, blipRange, blipIntensity;
+	float sweepFront, /*range,*/ angle, blipAngle, blipRange, blipIntensity;
 	int index, blipTeam, blipHeight;
 	qboolean sweepCalculated;
 //	vec3_t blipOrg;
@@ -926,7 +926,7 @@ static int CG_Q3F_PanelFuncRadar()
 			{
 				sweepFront	= ((float) cg.time) / cent->currentState.angles2[1];
 				sweepFront	= (sweepFront - floor(sweepFront)) * 2*M_PI;
-				range		= cent->currentState.angles2[0];
+//				range		= cent->currentState.angles2[0];
 				angle		= ((float) 100) / cent->currentState.angles2[1];
 				angle		= (angle - floor(angle)) * 2*M_PI;
 				sweepCalculated = qtrue;
