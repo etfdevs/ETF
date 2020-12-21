@@ -1554,18 +1554,18 @@ void CG_Q3F_CalcAgentVisibility( qboolean *drawmodel, float *shaderalpha, qboole
 	// start and end points.
 
 	float morphalpha, invisalpha, currfrac;
-	qboolean drawmorph, drawinvis, hasmorph, hasinvis;
+	qboolean drawmorph, drawinvis/*, hasmorph, hasinvis*/;
 	int starttime = 0, endtime = 0;
 
 	drawinvis = qtrue;
-	hasinvis = qfalse;
+//	hasinvis = qfalse;
 	invisalpha = 0;
 
 	if( agentstate->modelindex2 & Q3F_AGENT_INVIS )
 	{
 		// We want the agent invisible effect
 
-		hasinvis = qtrue;
+//		hasinvis = qtrue;
 		starttime = agentstate->origin2[0];
 		if( agentstate->modelindex2 & Q3F_AGENT_INVISEND )
 		{
@@ -1599,12 +1599,12 @@ void CG_Q3F_CalcAgentVisibility( qboolean *drawmodel, float *shaderalpha, qboole
 	}
 
 	drawmorph = qtrue;
-	hasmorph = qfalse;
+//	hasmorph = qfalse;
 	morphalpha = 0;
 	*newmodel = qfalse;
 	if( agentstate->modelindex2	& Q3F_AGENT_DISGUISE )
 	{
-		hasmorph = qtrue;
+//		hasmorph = qtrue;
 		if( agentstate->modelindex2 & Q3F_AGENT_DISGUISEEND )
 		{
 			// Going backwards, normal fade, or else not disguising

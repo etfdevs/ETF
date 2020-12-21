@@ -554,7 +554,7 @@ int Text_Width(const char *text, float scale, int limit, fontStruct_t *parentfon
 		}
 		count = 0;
 		while (s && *s && count < len) {
-			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2)) || (*s == '\n')) {
+			if (*s >= GLYPH_CHARSTART || *s == '\n') {
 				if ( Q_IsColorStringPtr(s) ) {
 					s += 2;
 					continue;
@@ -609,8 +609,7 @@ int Text_Height(const char *text, float scale, int limit, fontStruct_t *parentfo
 		}
 		count = 0;
 		while (s && *s && count < len) {
-			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2)) || (*s == '\n')) {
-			//if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
+			if (*s >= GLYPH_CHARSTART || *s == '\n') {
 				if ( Q_IsColorStringPtr(s) ) {
 					s += 2;
 					continue;
@@ -701,7 +700,7 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, f
 		count = 0;
 
 		while (s && *s && count < len) {
-			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
+			if (*s >= GLYPH_CHARSTART) {
 				glyph = &font->glyphs[(unsigned char)*s];
 				//int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
 				//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
@@ -787,7 +786,7 @@ void Text_Width_To_Max(char *text, float scale, int max, fontStruct_t *parentfon
 				*s = '\0';
 				return;
 			}
-			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
+			if (*s >= GLYPH_CHARSTART) {
 				if ( Q_IsColorStringPtr(s) ) {
 					s += 2;
 					continue;
@@ -853,7 +852,7 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 		count = 0;
 		glyph2 = &font->glyphs[(int)cursor];
 		while (s && *s && count < len) {
-			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
+			if (*s >= GLYPH_CHARSTART) {
 				glyph = &font->glyphs[(unsigned char)*s];
 		//int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
 		//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
@@ -972,7 +971,7 @@ static void Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4_t 
 		count = 0;
 		
 		while (s && *s && count < len) {
-			if(((*s >= GLYPH_CHARSTART) && (*s <= GLYPH_CHAREND)) || ((*s >= GLYPH_CHARSTART2) && (*s <= GLYPH_CHAREND2))) {
+			if (*s >= GLYPH_CHARSTART) {
 				glyph = &font->glyphs[(unsigned char)*s];
 				if ( Q_IsColorStringPtr( s ) ) {
 					memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );

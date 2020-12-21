@@ -300,6 +300,8 @@ void CG_AddMarks( void ) {
 					}
 				}
 				break;
+			case LEMFT_TEMP:
+			break;
 			}
 		} 
 		trap_R_AddPolyToScene( mp->markShader, mp->poly.numVerts, mp->verts );

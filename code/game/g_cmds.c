@@ -193,7 +193,7 @@ void Cmd_Stats_f( gentity_t *ent ) {
 			ent->client->pers.stats.data[i].deaths
 			);
 		j = strlen(entry);
-		if (stringlength + j >= sizeof(string))
+		if (stringlength + j >= (int)sizeof(string))
 			break;
 		strcpy (string + stringlength, entry);
 		stringlength += j;

@@ -70,7 +70,7 @@ void G_Q3F_WaypointBuildArray()
 
 		// Build a set of waypoints.
 	level.waypointarray = G_Q3F_ArrayCreate();
-	for( iterator = -1; locData = G_Q3F_ArrayTraverse( level.locationarray, &iterator ); )
+	for( iterator = -1; (locData = G_Q3F_ArrayTraverse( level.locationarray, &iterator )); )
 	{
 		for( checkIterator = -1; (checkLocData = G_Q3F_ArrayTraverse( level.locationarray, &checkIterator )) && checkIterator < iterator; )
 		{
@@ -89,7 +89,7 @@ void G_Q3F_WaypointBuildArray()
 			loc = (g_q3f_location_t *) locData->d.ptrdata;
 			VectorCopy( loc->pos, mins );
 			VectorCopy( loc->pos, maxs );
-			for( ; checkLocData = G_Q3F_ArrayTraverse( level.locationarray, &checkIterator ); )
+			for( ; (checkLocData = G_Q3F_ArrayTraverse( level.locationarray, &checkIterator )); )
 			{
 				if( !Q_stricmp(	((g_q3f_location_t *)locData->d.ptrdata)->str, 
 								((g_q3f_location_t *)checkLocData->d.ptrdata)->str ) )

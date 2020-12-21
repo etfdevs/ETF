@@ -467,11 +467,14 @@ static const char *parse_string( cJSON *item, const char *str ) {
 
 				ptr2 += len;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
 				switch ( len ) {
 				case 3: *--ptr2 = ((uc | 0x80) & 0xBF); uc >>= 6;
 				case 2: *--ptr2 = ((uc | 0x80) & 0xBF); uc >>= 6;
 				case 1: *--ptr2 = (char)(uc | firstByteMark[len]);
 				default: break;
+#pragma GCC diagnostic pop
 				}
 				ptr2 += len;
 				ptr += 4;

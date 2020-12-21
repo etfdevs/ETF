@@ -432,7 +432,7 @@ CG_TouchTriggerPrediction
 Predict push triggers and items
 =========================
 */
-static void CG_TouchTriggerPrediction( void ) {
+static void UNUSED_VAR CG_TouchTriggerPrediction( void ) {
 	int			i;
 	trace_t		trace;
 	entityState_t	*ent;

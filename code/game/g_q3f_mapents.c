@@ -237,7 +237,7 @@ int G_Q3F_ProcessFlagString( const char *value )
 
 	array = G_Q3F_ProcessStrings( value );
 	flags = 0;
-	for( index = -1; data = G_Q3F_ArrayTraverse( array, &index ); )
+	for( index = -1; (data = G_Q3F_ArrayTraverse( array, &index )); )
 	{
 		for( pfsptr = pfsmap; pfsptr->flags; pfsptr++ )
 		{
@@ -269,7 +269,7 @@ int G_Q3F_ProcessTeamString( const char *value )
 	if( !(array = G_Q3F_ProcessStrings( value )) )
 		return( 0 );
 	bitfield = 0;
-	for( index = -1; data = G_Q3F_ArrayTraverse( array, &index ); )
+	for( index = -1; (data = G_Q3F_ArrayTraverse( array, &index )); )
 	{
 		teamnum = G_Q3F_GetTeamNum( data->d.strdata );
 		if( !teamnum )
@@ -331,7 +331,7 @@ int G_Q3F_ProcessWeaponString( const char *value )
 	if( !(array = G_Q3F_ProcessStrings( value )) )
 		return( 0 );
 	bitfield = 0;
-	for( index = -1; data = G_Q3F_ArrayTraverse( array, &index ); )
+	for( index = -1; (data = G_Q3F_ArrayTraverse( array, &index )); )
 	{
 		for( wpnindex = WP_AXE; wpnindex < WP_NUM_WEAPONS; wpnindex++ )
 		{
@@ -362,7 +362,7 @@ int G_Q3F_ProcessClassString( const char *value )
 	if( !(array = G_Q3F_ProcessStrings( value )) )
 		return( 0 );
 	bitfield = 0;
-	for( index = -1; data = G_Q3F_ArrayTraverse( array, &index ); )
+	for( index = -1; (data = G_Q3F_ArrayTraverse( array, &index )); )
 	{
 		for( clsindex = 0; clsindex < Q3F_CLASS_MAX; clsindex++ )
 		{
@@ -395,7 +395,7 @@ int G_Q3F_ProcessGameIndexString( const char *value )
 	if( !(array = G_Q3F_ProcessStrings( value )) )
 		return( 0 );
 	bitfield = 0;
-	for( index = -1; data = G_Q3F_ArrayTraverse( array, &index ); )
+	for( index = -1; (data = G_Q3F_ArrayTraverse( array, &index )); )
 	{
 		gameindex = atoi( data->d.strdata );
 		if( !gameindex ) // integer, DUH
@@ -556,7 +556,7 @@ int G_Q3F_ProcessBlackHoleTypeString( const char *value )
 
 	array = G_Q3F_ProcessStrings( value );
 	types = 0;
-	for( index = -1; data = G_Q3F_ArrayTraverse( array, &index ); )
+	for( index = -1; (data = G_Q3F_ArrayTraverse( array, &index )); )
 	{
 		for( bhtptr = bhtmap; bhtptr->type; bhtptr++ )
 		{
@@ -1408,7 +1408,7 @@ void G_Q3F_StateBroadcast( gentity_t *ent, gentity_t *activator, gentity_t *quer
 		actstring = "";		// Activator name
 	if( *actstring || queryent != activator ) {
 			// Message to player
-		if( entry = G_Q3F_KeyPairArrayFind( otherdata, strarray[state][0] ) ) {
+		if( (entry = G_Q3F_KeyPairArrayFind( otherdata, strarray[state][0] )) ) {
 			message = G_Q3F_MessageString( entry->value.d.strdata, activator, queryent, 7 );
 			switch( type ) {
 				case Q3F_BROADCAST_TEXT:		trap_SendServerCommand(	queryent - g_entities, va( "%s \"%s\n\"", ((entry->value.flags & Q3F_VFLAG_FORCE) ? "cp" : "print"), message ) ); break;
@@ -1430,7 +1430,7 @@ void G_Q3F_StateBroadcast( gentity_t *ent, gentity_t *activator, gentity_t *quer
 			if( type == Q3F_BROADCAST_TEXT && queryent->client )
 				G_LogPrintf( "etfbroadcast: single%s \"%s\" %s\n", (prefix ? prefixinfobuff : messagesuffix), queryent->client->pers.netname, message );
 		}
-		if( entry = G_Q3F_KeyPairArrayFind( otherdata, strarray[state][1] ) ) {
+		if( (entry = G_Q3F_KeyPairArrayFind( otherdata, strarray[state][1] )) ) {
 			// Message to team players (all except player?)
 
 			message = G_Q3F_MessageString( entry->value.d.strdata, activator, queryent, 7 );
@@ -1458,7 +1458,7 @@ void G_Q3F_StateBroadcast( gentity_t *ent, gentity_t *activator, gentity_t *quer
 				G_LogPrintf( "etfbroadcast: team%s \"%s\" %s\n", (prefix ? prefixinfobuff : messagesuffix), queryent->client->pers.netname, message );
 		}
 
-		if( entry = G_Q3F_KeyPairArrayFind( otherdata, strarray[state][2] ) ) {
+		if( (entry = G_Q3F_KeyPairArrayFind( otherdata, strarray[state][2] )) ) {
 			// Message to non-team players
 			message = G_Q3F_MessageString( entry->value.d.strdata, activator, queryent, 7 );
 			for( index = 0 ; index < level.maxclients ; index++ ) {
@@ -1480,7 +1480,7 @@ void G_Q3F_StateBroadcast( gentity_t *ent, gentity_t *activator, gentity_t *quer
 	}
 	
 	for(i = 3; i < max; i++) {
-		if( entry = G_Q3F_KeyPairArrayFind( otherdata, strarray[state][i] ) ) {
+		if( (entry = G_Q3F_KeyPairArrayFind( otherdata, strarray[state][i] )) ) {
 			if ( i == 3 && type == Q3F_BROADCAST_SOUND && !(entry->value.flags & Q3F_VFLAG_FORCE)) {
 				G_AddEvent( ent, EV_GENERAL_SOUND, G_SoundIndex( entry->value.d.strdata ));
 				continue;
@@ -1528,14 +1528,14 @@ void G_Q3F_PropogateTrigger( q3f_keypairarray_t *propogator, gentity_t *activato
 	if( !propogator || !level.targetnameArray )
 		return;
 
-	for( index = -1; curr = G_Q3F_KeyPairArrayTraverse( propogator, &index ); )
+	for( index = -1; (curr = G_Q3F_KeyPairArrayTraverse( propogator, &index )); )
 	{
 		if( !(targetkp = G_Q3F_KeyPairArrayFind( level.targetnameArray, curr->key )) ) {
 			continue;
 		}
 		targindex = -1;
 		targetarray = targetkp->value.d.arraydata;
-		while( target = G_Q3F_ArrayTraverse( targetarray, &targindex ) )
+		while( (target = G_Q3F_ArrayTraverse( targetarray, &targindex )) )
 			G_Q3F_TriggerEntity( target->d.entitydata, activator, curr->value.d.intdata, trace, (curr->value.flags & Q3F_VFLAG_FORCE) );
 	}
 }
@@ -1552,12 +1552,12 @@ qboolean G_Q3F_CheckStates( q3f_keypairarray_t *array )
 	q3f_array_t *targetarray;
 	q3f_data_t *targdata;
 
-	for( index = -1; kp = G_Q3F_KeyPairArrayTraverse( array, &index ); )
+	for( index = -1; (kp = G_Q3F_KeyPairArrayTraverse( array, &index )); )
 	{
 		if( !(targkp = G_Q3F_KeyPairArrayFind( level.targetnameArray, kp->key )) )
 			return( qfalse );		// No targets by this name.
 		targetarray = targkp->value.d.arraydata;
-		for( targindex = -1; targdata = G_Q3F_ArrayTraverse( targetarray, &targindex ); )
+		for( targindex = -1; (targdata = G_Q3F_ArrayTraverse( targetarray, &targindex )); )
 		{
 			ent = targdata->d.entitydata;
 			if( ent->mapdata && ent->mapdata->state == kp->value.d.intdata )
@@ -1635,7 +1635,7 @@ qboolean G_Q3F_CheckClientStats( gentity_t *activator, q3f_keypairarray_t *array
 		hasclientstatsstrings = qtrue;
 	}
 
-	for( index = -1; data = G_Q3F_KeyPairArrayTraverse( array, &index ); )
+	for( index = -1; (data = G_Q3F_KeyPairArrayTraverse( array, &index )); )
 	{
 		if( data->value.flags & Q3F_VFLAG_CLSTAT_EQ && data->value.flags & Q3F_VFLAG_CLSTAT_LT )
 			eval = EVAL_LTEQ;
@@ -1914,7 +1914,7 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 			// requested.
 		cls = BG_Q3F_GetClass( &current->client->ps );
 		magicarmourtype = setarmourtype = qfalse;
-		for( index = -1; data = G_Q3F_KeyPairArrayTraverse( give, &index ); )
+		for( index = -1; (data = G_Q3F_KeyPairArrayTraverse( give, &index )); )
 		{
 			force = data->value.flags	& Q3F_VFLAG_FORCE;
 			add = data->value.flags		& Q3F_VFLAG_GIVE_ADD;
@@ -2826,7 +2826,7 @@ void G_Q3F_AddEntityToTargetArray( gentity_t *ent )
 	if( ent->mapdata && ent->mapdata->groupname )
 	{
 		index = -1;
-		while( data = G_Q3F_ArrayTraverse( ent->mapdata->groupname, &index ) )
+		while( (data = G_Q3F_ArrayTraverse( ent->mapdata->groupname, &index )) )
 		{
 			if( G_Q3F_AddNameToTargetArray( data->d.strdata, ent ) )
 				G_Q3F_KeyPairArraySort( level.targetnameArray );
@@ -2851,7 +2851,7 @@ void G_Q3F_RemoveEntityFromTargetArray( gentity_t *ent )
 	if( ent->mapdata && ent->mapdata->groupname )
 	{
 		index = -1;
-		while( data = G_Q3F_ArrayTraverse( ent->mapdata->groupname, &index ) )
+		while( (data = G_Q3F_ArrayTraverse( ent->mapdata->groupname, &index )) )
 		{
 			if( G_Q3F_RemoveNameFromTargetArray( data->d.strdata, ent ) )
 				G_Q3F_KeyPairArraySort( level.targetnameArray );
@@ -2889,7 +2889,7 @@ void G_Q3F_KillAndRecreateEntity( gentity_t *ent ) {
 	level.numSpawnVars = 0;
 	level.numSpawnVarChars = 0;
 
-	for( i = -1; data = G_Q3F_KeyPairArrayTraverse( ent->mapdata->spawVars, &i ); ) {
+	for( i = -1; (data = G_Q3F_KeyPairArrayTraverse( ent->mapdata->spawVars, &i )); ) {
 		level.spawnVars[ level.numSpawnVars ][0] = G_AddSpawnVarToken( data->key );
 		level.spawnVars[ level.numSpawnVars ][1] = G_AddSpawnVarToken( data->value.d.strdata );
 		level.numSpawnVars++;
@@ -2928,7 +2928,7 @@ void G_Q3F_TargetResetUse( gentity_t *self, gentity_t *other, gentity_t *activat
 	}
 
 	arrayindex = 0;
-	if( kp = G_Q3F_KeyPairArrayFind( level.targetnameArray, self->target ) )
+	if( (kp = G_Q3F_KeyPairArrayFind( level.targetnameArray, self->target )) )
 	{
 		targets = kp->value.d.arraydata;
 		for( index = -1; ( arrayindex < MAX_RESET_TARGETS ) && ( data = G_Q3F_ArrayTraverse( targets, &index ) ) ; )

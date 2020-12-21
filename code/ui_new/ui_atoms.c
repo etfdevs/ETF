@@ -665,7 +665,7 @@ qboolean UI_ConsoleCommand( int realTime ) {
 
 		buff[1] = 0;
 
-		for( i = 0; i < GLYPHS_PER_FONT; i++ ) {
+		for ( i = 0; i < GLYPHS_PER_FONT; i++ ) {
 			if ( ( i >= GLYPH_CHARSTART && i <= GLYPH_CHAREND ) || ( i >= GLYPH_CHARSTART2 && i <= GLYPH_CHAREND2 ) ) {
 				buff[0] = i;
 				trap_Print( va( "%i: %s :: height: %i top: %i bottom: %i pitch: %i xSkip: %i imageWidth: %i imageHeight: %i s: %f t: %f s2: %f t2: %f glyph: %i shaderName: %s\n",

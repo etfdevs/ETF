@@ -1071,8 +1071,8 @@ static void CG_Q3F_InitPhaseShaderRemap()
 		}
 	
 		if( splitIndex > cgs.initIndex && index > (splitIndex + 1) &&
-			splitIndex - cgs.initIndex < sizeof(from) - 1 &&
-			index - splitIndex < sizeof(to) - 2 )
+			splitIndex - cgs.initIndex < (int)sizeof(from) - 1 &&
+			index - splitIndex < (int)sizeof(to) - 2 )
 		{
 			// Something to remap.
 

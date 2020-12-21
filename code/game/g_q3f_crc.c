@@ -77,7 +77,7 @@ static int UnprotectMemory(uintptr_t address, size_t size, int * flags) {
 	return VirtualProtect ((LPVOID)address, size, PAGE_EXECUTE_READWRITE, (PDWORD)flags);
 #elif defined  __linux__
 	uintptr_t start = address & ~(PAGE_SIZE-1);
-	size = (address + size) & ~(PAGE_SIZE-1) - start + PAGE_SIZE;
+	size = (address + size) & (~(PAGE_SIZE-1) - start + PAGE_SIZE);
 	return mprotect( (void *)start, size, PROT_READ|PROT_WRITE|PROT_EXEC ) == 0;
 #endif
 }
@@ -88,7 +88,7 @@ static void ProtectMemory(int address, int size, int flags) {
 	VirtualProtect ((LPVOID)address, size, flags, (PDWORD)&temp);
 #elif defined  __linux__
 	uintptr_t start = address & ~(PAGE_SIZE-1);
-	size = (address + size) & ~(PAGE_SIZE-1) - start + PAGE_SIZE;
+	size = (address + size) & (~(PAGE_SIZE-1) - start + PAGE_SIZE);
 	mprotect( (void *)start, size, PROT_READ|PROT_EXEC );
 #endif
 }
