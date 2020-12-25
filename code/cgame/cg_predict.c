@@ -385,6 +385,7 @@ static void CG_InterpolatePlayerState( qboolean grabAngles ) {
 CG_TouchItem
 ===================
 */
+#if 0
 static void CG_TouchItem( centity_t *cent ) {
 	gitem_t		*item;
 
@@ -432,7 +433,7 @@ CG_TouchTriggerPrediction
 Predict push triggers and items
 =========================
 */
-static void UNUSED_VAR CG_TouchTriggerPrediction( void ) {
+static void CG_TouchTriggerPrediction( void ) {
 	int			i;
 	trace_t		trace;
 	entityState_t	*ent;
@@ -494,6 +495,7 @@ static void UNUSED_VAR CG_TouchTriggerPrediction( void ) {
 		cg.predictedPlayerState.jumppad_ent = 0;
 	}
 }
+#endif
 
 #define ABS(x) ((x) < 0 ? (-(x)) : (x))
 
