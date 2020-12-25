@@ -252,11 +252,11 @@ qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, 
 
 	len = DC->openFile( filename, &f, FS_READ );
 	if ( !f ) {
-		DC->Print( va( S_COLOR_RED "file not found: %s\n", filename ) );
+		DC->Print( S_COLOR_RED "file not found: %s\n", filename );
 		return( qfalse );
 	}
 	if ( len >= MAX_MAPINFOS_TEXT ) {
-		DC->Print( va( S_COLOR_RED "file too large: %s is %i, max allowed is %i", filename, len, MAX_MAPINFOS_TEXT ) );
+		DC->Print( S_COLOR_RED "file too large: %s is %i, max allowed is %i", filename, len, MAX_MAPINFOS_TEXT );
 		DC->closeFile( f );
 		return( qfalse );
 	}
