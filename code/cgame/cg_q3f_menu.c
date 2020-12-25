@@ -58,8 +58,10 @@ static char menustrings2[10][128];
 static char menucommands[10][128];
 static menuoption_state_t menuoptionstate[10];
 
-static char menuname[20];
-static char menu_menuname[20];
+#define MAX_MENUNAME_STRING 22
+
+static char menuname[MAX_MENUNAME_STRING];
+static char menu_menuname[MAX_MENUNAME_STRING];
 
 static float menurange;
 static vec3_t menulocation;
@@ -114,7 +116,7 @@ void CG_Q3F_MenuSetDisabled(int num) {
 void CG_Q3F_MenuCancel( qboolean command ) {
 	// 'Cancel' a menu
 
-	char cmdbuff[20];
+	char cmdbuff[MAX_MENUNAME_STRING];
 	int index;
 
 	if( menustate == Q3F_MENUSTATE_FADING || menustate == Q3F_MENUSTATE_NONE ) {
@@ -123,7 +125,7 @@ void CG_Q3F_MenuCancel( qboolean command ) {
 
 	if( command && trap_Argc() > 2 ) {
 		for( index = trap_Argc() - 1; index >= 2; index-- ) {
-			trap_Argv( 2, cmdbuff, 20 );
+			trap_Argv( 2, cmdbuff, sizeof(cmdbuff) );
 			if( !Q_stricmp( cmdbuff, menuname ) )
 				break;		// Not the current menu
 		}
@@ -268,7 +270,7 @@ static void TeamMenu() {
 
 	CG_Q3F_MenuAddOption(9, "CANCEL", NULL,	"cancel");
 
-	Q_strncpyz(menu_menuname, "menubox_changeteam", 20);
+	Q_strncpyz(menu_menuname, "menubox_changeteam", sizeof(menu_menuname));
 }
 
 void CG_Q3F_StartSpectate(void) {
@@ -347,7 +349,7 @@ static void SpectatorTeamMenu() {
 		CG_Q3F_MenuSetDisabled(6);
 	}
 
-	Q_strncpyz(menu_menuname, "menubox_specteam", 20);
+	Q_strncpyz(menu_menuname, "menubox_specteam", sizeof(menu_menuname));
 }
 
 void CG_Q3F_SpectatorTypeMenu() {
@@ -437,7 +439,7 @@ void CG_Q3F_SpectatorTypeMenu() {
 		CG_Q3F_MenuSetDisabled(9);
 	}
 
-	Q_strncpyz(menu_menuname, "menubox_specopts", 20);
+	Q_strncpyz(menu_menuname, "menubox_specopts", sizeof(menu_menuname));
 }
 
 void CG_Q3F_StoreClassinfo() {
@@ -527,7 +529,7 @@ static void ClassMenu() {
 	}
 	
 	CG_Q3F_MenuInit();
-	Q_strncpyz(menu_menuname, "menubox_changeclass", 20);
+	Q_strncpyz(menu_menuname, "menubox_changeclass", sizeof(menu_menuname));
 
 	for(i = 0; i < 10; i++) {
 		if(allowClasses[i] == '1') {
@@ -569,7 +571,7 @@ static void DisguiseMenu() {
 	CG_Q3F_MenuAddOption( 3, ((cg.snap->ps.eFlags & EF_Q3F_INVISIBLE) ? "Deactivate invisibility" : "Activate invisibility"),	NULL, "invisible\n");
 	CG_Q3F_MenuAddOption( 9, "Cancel", NULL, "cancel");
 
-	Q_strncpyz(menu_menuname, "menubox_agentopts", 20);
+	Q_strncpyz(menu_menuname, "menubox_agentopts", sizeof(menu_menuname));
 }
 
 static void DisguiseTeamMenu()
@@ -613,7 +615,7 @@ static void DisguiseTeamMenu()
 	// Always allow a cancel menu
 	CG_Q3F_MenuAddOption( 9, "Cancel", NULL, "cancel");
 
-	Q_strncpyz(menu_menuname, "menubox_agentteam", 20);
+	Q_strncpyz(menu_menuname, "menubox_agentteam", sizeof(menu_menuname));
 }
 
 static void DisguiseClassMenu()
@@ -643,7 +645,7 @@ static void DisguiseClassMenu()
 		CG_Q3F_MenuAddOption( 9, "Cancel", NULL, "cancel" );
 	}
 
-	Q_strncpyz(menu_menuname, "menubox_agentclass", 20);
+	Q_strncpyz(menu_menuname, "menubox_agentclass", sizeof(menu_menuname));
 }
 
 /*static void MapHelpMenu()
@@ -707,7 +709,7 @@ void ChargeMenu()
 	}
 	CG_Q3F_MenuAddOption( 9, "Cancel",		NULL, "cancel" );
 
-	Q_strncpyz(menu_menuname, "menubox_charge", 20);
+	Q_strncpyz(menu_menuname, "menubox_charge", sizeof(menu_menuname));
 }
 
 static void DropammoMenu()
@@ -728,7 +730,7 @@ static void DropammoMenu()
 
 	CG_Q3F_MenuAddOption(9, "Cancel", NULL, "cancel");
 
-	Q_strncpyz(menu_menuname, "menubox_drop", 20);
+	Q_strncpyz(menu_menuname, "menubox_drop", sizeof(menu_menuname));
 }
 
 static void ReadyMenu()
@@ -742,7 +744,7 @@ static void ReadyMenu()
 	CG_Q3F_MenuAddOption(0, "I'm ready", NULL, "ready\n");
 	CG_Q3F_MenuAddOption(1, "Not yet ready", NULL, "cancel");
 
-	Q_strncpyz(menu_menuname, "menubox_ready", 20);
+	Q_strncpyz(menu_menuname, "menubox_ready", sizeof(menu_menuname));
 }
 
 static void VoteMenu()
@@ -753,7 +755,7 @@ static void VoteMenu()
 	CG_Q3F_MenuAddOption(1, "Vote: No", "0", "vote no\n");
 
 	CG_Q3F_MenuAddOption(2, "Don't vote", NULL, "cancel");
-	Q_strncpyz(menu_menuname, "menubox_vote", 20);
+	Q_strncpyz(menu_menuname, "menubox_vote", sizeof(menu_menuname));
 }
 
 void MenuCheckVoteTally() 
@@ -802,7 +804,7 @@ static void BuildMenu()
 
 	CG_Q3F_MenuAddOption( 9, "Cancel", NULL, "cancel" );
 
-	Q_strncpyz(menu_menuname, "menubox_build", 20);
+	Q_strncpyz(menu_menuname, "menubox_build", sizeof(menu_menuname));
 }
 
 qboolean CG_Q3F_ShowingSentryUpgradeMenu()
@@ -874,7 +876,7 @@ static void UpgradeSentryMenu()
 
 	CG_Q3F_MenuAddOption( 9, "Cancel", NULL, "cancel");
 
-	Q_strncpyz(menu_menuname, "menubox_upgrade", 20);
+	Q_strncpyz(menu_menuname, "menubox_upgrade", sizeof(menu_menuname));
 }
 
 static void SupplyStationMenu()
@@ -985,7 +987,7 @@ void CG_Q3F_MenuCommand()
 	// Stop using supplystation (bit hackish)
 	cg.usingSupplystation = 0;
 
-	trap_Argv( 1, cmdbuff, 32 );
+	trap_Argv( 1, cmdbuff, sizeof(cmdbuff) );
 	if( !Q_stricmp( "team", cmdbuff ) ) {
 		TeamMenu();
 	} else if( !Q_stricmp( "spectatorteam", cmdbuff ) ) {
@@ -1025,7 +1027,7 @@ void CG_Q3F_MenuCommand()
 		CG_Printf( BOX_PRINT_MODE_CHAT, "Unknown menu command '%s'.\n", cmdbuff );
 		return;
 	}
-	Q_strncpyz( menuname, cmdbuff, 20 );	// Set the current menu for reference
+	Q_strncpyz( menuname, cmdbuff, sizeof(menu_menuname) );	// Set the current menu for reference
 }
 
 void CG_Q3F_DrawMenuBox() {
