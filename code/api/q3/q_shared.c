@@ -20,15 +20,15 @@ float Com_Clamp( float min, float max, float value ) {
 COM_SkipPath
 ============
 */
-char *COM_SkipPath (char *pathname)
+char *COM_SkipPath (const char *pathname)
 {
 	char	*last;
 	
-	last = pathname;
+	last = (char*) pathname;
 	while (*pathname)
 	{
 		if (*pathname=='/')
-			last = pathname+1;
+			last = (char*)pathname+1;
 		pathname++;
 	}
 	return last;
