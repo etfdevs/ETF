@@ -1208,7 +1208,7 @@ void G_Q3F_TargetCommandTouch( gentity_t *ent, gentity_t *other, trace_t *trace 
 				if( !spaceindex )
 					spaceindex = index;
 			}
-			if ( index < (int)sizeof(cmdbuff) - 2 )
+			if ( index < MAX_STRING_CHARS - 2 )
 				cmdbuff[index++] = *endptr;
 		}
 		cmdbuff[index] = 0;
