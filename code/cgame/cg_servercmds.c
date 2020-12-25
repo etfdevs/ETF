@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "cg_q3f_mapselect.h"
 #include "cg_q3f_grenades.h"
 #include "../game/bg_q3f_weapon.h"
-#include "../game/bg_q3f_tea.h"
 #include "../../ui/menudef.h"
 
 void CG_IntermissionScoreDump();

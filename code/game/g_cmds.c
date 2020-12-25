@@ -41,7 +41,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_admin.h"
 #include "bg_q3f_util.h"
 #include "g_q3f_mapselect.h"
-#include "bg_q3f_tea.h"
 #include "../../ui/menudef.h"			// for the voice chats
 
 #include "g_bot_interface.h"

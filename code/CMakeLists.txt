@@ -262,7 +262,6 @@ set(src_cgame
 	game/bg_q3f_permon.c
 	game/bg_q3f_playerclass.c
 	game/bg_q3f_splines.c
-	game/bg_q3f_tea.c
 	game/bg_q3f_util.c
 	game/bg_q3f_weapon.c
 	game/bg_slidemove.c
@@ -286,10 +285,7 @@ set(src_cgame
 	cgame/cg_playerstate.c
 	cgame/cg_polybus.c
 	cgame/cg_predict.c
-	#cgame/cg_q3f_anticheat.c
 	cgame/cg_q3f_classutil.c
-	cgame/cg_q3f_controllable.c
-	cgame/cg_q3f_crc.c
 	cgame/cg_q3f_customshader.c
 	cgame/cg_q3f_f2r.c
 	cgame/cg_q3f_flare.c
@@ -309,6 +305,7 @@ set(src_cgame
 	cgame/cg_q3f_spawn.c
 	cgame/cg_q3f_spirit.c
 	cgame/cg_q3f_trapcalls.c
+	cgame/cg_q3f_usermenu.c
 	cgame/cg_q3f_water.c
 	cgame/cg_q3f_waypoint.c
 	cgame/cg_scoreboard.c
@@ -346,7 +343,6 @@ set(src_game
 	game/bg_q3f_permon.c
 	game/bg_q3f_playerclass.c
 	game/bg_q3f_splines.c
-	game/bg_q3f_tea.c
 	game/bg_q3f_util.c
 	game/bg_q3f_weapon.c
 	game/bg_slidemove.c

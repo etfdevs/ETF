@@ -4217,11 +4217,6 @@ static void UI_RunMenuScript(char **args) {
 		} else if (Q_stricmp(name, "ServerSort") == 0) {
 			int sortColumn;
 			if (Int_Parse(args, &sortColumn)) {
-				// RR2DO2: hack!
-#ifdef API_Q3
-				if( sortColumn == 3 )
-					sortColumn = 4;
-#endif // API_Q3
 #ifdef API_ET
 				if( sortColumn >= 3 )
 					sortColumn += 1;
@@ -7797,11 +7792,7 @@ static void UI_StartServerRefresh(qboolean full)
 	}
 
 	uiInfo.serverStatus.refreshtime = uiInfo.uiDC.realTime + 5000;
-	if( ui_netSource.integer == AS_GLOBAL
-#ifdef API_Q3
-		|| ui_netSource.integer == AS_MPLAYER
-#endif
-		) {
+	if( ui_netSource.integer == AS_GLOBAL ) {
 		if( ui_netSource.integer == AS_GLOBAL ) {
 			i = 0;
 		}

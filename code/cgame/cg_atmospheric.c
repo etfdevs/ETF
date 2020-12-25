@@ -151,6 +151,15 @@ qboolean CG_AtmosphericKludge()
 	kludgeChecked = qtrue;
 	kludgeResult = qfalse;
 
+	if( !Q_stricmp( cgs.mapname, "maps/etf_2night3.bsp" ) )
+	{
+		CG_EffectParse( "T=RAIN,D=800 800" );
+		return( kludgeResult = qtrue );
+	} else if( !Q_stricmp( cgs.mapname, "maps/etf_castles.bsp" ) ) {
+		CG_EffectParse( "T=SNOW,BV=30 30,GV=60 20,D=800 800" );
+		return( kludgeResult = qtrue );
+	}
+
 	/*if( !Q_stricmp( cgs.mapname, "maps/trainyard.bsp" ) )
 	{
 		//CG_EffectParse( "T=RAIN,B=5 10,C=0.5 2,G=0.5 2,BV=30 100,GV=20 80,W=1 2,D=1000 1000" );

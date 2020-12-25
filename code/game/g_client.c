@@ -37,7 +37,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_admin.h"
 #include "g_q3f_team.h"
 #include "g_q3f_flag.h"
-#include "bg_q3f_tea.h"
 
 #include "g_bot_interface.h"
 #ifdef BUILD_LUA
