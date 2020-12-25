@@ -373,7 +373,7 @@ void CG_Q3F_PanelFitString( int *numlines, float *size, char *str, int flags, fl
 		index++;
 		ptr++;
 	}
-	if( width && wordWidthIndex < (int)(sizeof(wordWidths)/sizeof(float)) )
+	if( width && wordWidthIndex < (int)ARRAY_LEN(wordWidths) )
 		wordWidths[wordWidthIndex++] = width;
 	wordCount = wordWidthIndex;
 
