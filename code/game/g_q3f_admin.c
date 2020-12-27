@@ -187,7 +187,7 @@ UpdateIPBans
 void UpdateIPBans (void)
 {
 	q3f_data_t *data;
-	int index;
+	intptr_t index;
 	g_q3f_extIpFilter_t *filter;
 	byte	b[4];
 	char	iplist[MAX_INFO_STRING];
@@ -242,7 +242,7 @@ G_FilterPacket
 */
 qboolean G_FilterPacket( char *from, char **reason )
 {
-	int		i;
+	intptr_t	i;
 	unsigned	in;
 	byte m[4];
 	char *p;
@@ -287,7 +287,7 @@ void AddIP( gentity_t *admin, char *str, int time, char *reason )
 {
 	g_q3f_extIpFilter_t *filter, *scan;
 	q3f_data_t *data;
-	int index;
+	intptr_t index;
 
 	filter = G_Alloc( sizeof(g_q3f_extIpFilter_t) );
 	if( StringToFilter( admin, str, filter ) )
@@ -315,7 +315,7 @@ void AddIP( gentity_t *admin, char *str, int time, char *reason )
 			filter->endtime = level.time + 1000 * time;
 
 		G_Q3F_AddString( &filter->reason, reason );
-		G_Q3F_ArrayAdd( ipFilters, Q3F_TYPE_OTHER, 0, (int) filter );
+		G_Q3F_ArrayAdd( ipFilters, Q3F_TYPE_OTHER, 0, (intptr_t) filter );
 		UpdateIPBans();
 
 //		G_Q3F_AdminPrint( admin, "Added.\n" );
@@ -516,7 +516,7 @@ void AddIPMute( gentity_t *admin, char *str, int time )
 		if( time > 0 )
 			filter->endtime = level.time + 1000 * time;
 
-		G_Q3F_ArrayAdd( ipMutes, Q3F_TYPE_OTHER, 0, (int) filter );
+		G_Q3F_ArrayAdd( ipMutes, Q3F_TYPE_OTHER, 0, (intptr_t) filter );
 		UpdateIPMutes();
 
 //		G_Q3F_AdminPrint( admin, "Added.\n" );
@@ -722,7 +722,7 @@ static void G_Q3F_AdminBannedIPs( gentity_t *admin )
 
 	g_q3f_extIpFilter_t *filter;
 	q3f_data_t *data;
-	int			index;
+	intptr_t index;
 	byte ban[4];
 	char buffer[1024];
 
@@ -785,7 +785,7 @@ static void G_Q3F_AdminRemoveIP( gentity_t *admin )
 	//ipFilter_t	f;
 	g_q3f_extIpFilter_t f, *filter;
 	q3f_data_t *data;
-	int			i;
+	intptr_t i;
 	char		str[MAX_TOKEN_CHARS];
 
 	if ( trap_Argc() < 3 ) {
@@ -833,7 +833,8 @@ static void G_Q3F_AdminListIPs( gentity_t *admin )
 
 	g_q3f_extIpFilter_t *filter;
 	q3f_data_t *data;
-	int			index, time;
+	intptr_t index;
+	int time;
 	char		*ipstr, *timestr;
 	byte ban[4];
 
@@ -1514,7 +1515,8 @@ int G_Q3F_AdminNextExpireBans()
 
 	g_q3f_extIpFilter_t *filter;
 	q3f_data_t *data;
-	int			index, nexttime;
+	intptr_t index;
+	int nexttime;
 
 	if( !ipFilters )
 		return( 0 );

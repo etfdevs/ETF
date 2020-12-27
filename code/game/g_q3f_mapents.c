@@ -177,7 +177,7 @@ q3f_array_t *G_Q3F_ProcessStrings( const char *value )
 		else flags = 0;
 		buff = G_Alloc( ptr - startptr + 1 );
 		Q_strncpyz( buff, startptr, ptr + 1 - startptr );	// Need the extra one because of the null terminator
-		G_Q3F_ArrayAdd( array, Q3F_TYPE_STRING, flags, (int) buff );
+		G_Q3F_ArrayAdd( array, Q3F_TYPE_STRING, flags, (intptr_t) buff );
 		G_Free( buff );
 
 		if( *(startptr = ptr) )
@@ -232,7 +232,8 @@ int G_Q3F_ProcessFlagString( const char *value )
 
 	q3f_array_t *array;
 	q3f_data_t *data;
-	int index, flags;
+	intptr_t index;
+	int flags;
 	g_q3f_pfsmap_t *pfsptr;
 
 	array = G_Q3F_ProcessStrings( value );
@@ -263,7 +264,7 @@ int G_Q3F_ProcessTeamString( const char *value )
 	int bitfield;
 	q3f_array_t *array;
 	q3f_data_t *data;
-	int index;
+	intptr_t index;
 	int teamnum;
 
 	if( !(array = G_Q3F_ProcessStrings( value )) )
@@ -323,10 +324,10 @@ int G_Q3F_ProcessWeaponString( const char *value )
 	// Process the team string into a bitfield.
 	// Assumes strings of the format axe,rocketlauncher,nailgun,dartgun etc.
 
-	int bitfield;
+	int bitfield, wpnindex;
 	q3f_array_t *array;
 	q3f_data_t *data;
-	int index, wpnindex;
+	intptr_t index;
 
 	if( !(array = G_Q3F_ProcessStrings( value )) )
 		return( 0 );
@@ -354,10 +355,10 @@ int G_Q3F_ProcessClassString( const char *value )
 	// Process the class string into a bitfield
 	// Assumes strings of the format recon,soldier etc.
 
-	int bitfield;
+	int bitfield, clsindex;
 	q3f_array_t *array;
 	q3f_data_t *data;
-	int index, clsindex;
+	intptr_t index;
 
 	if( !(array = G_Q3F_ProcessStrings( value )) )
 		return( 0 );
@@ -389,7 +390,7 @@ int G_Q3F_ProcessGameIndexString( const char *value )
 	int bitfield;
 	q3f_array_t *array;
 	q3f_data_t *data;
-	int index;
+	intptr_t index;
 	int gameindex;
 
 	if( !(array = G_Q3F_ProcessStrings( value )) )
@@ -551,7 +552,8 @@ int G_Q3F_ProcessBlackHoleTypeString( const char *value )
 
 	q3f_array_t *array;
 	q3f_data_t *data;
-	int index, types;
+	intptr_t index;
+	int types;
 	g_q3f_bhtmap_t *bhtptr;
 
 	array = G_Q3F_ProcessStrings( value );
@@ -676,7 +678,7 @@ void G_Q3F_ProcessMapField( const char *key, const char *value, gentity_t *ent )
 			buff[10] = 't';
 		}
 
-		G_Q3F_KeyPairArrayAdd( ent->mapdata->other, (char *) key, Q3F_TYPE_STRING, flag, (int) buff );
+		G_Q3F_KeyPairArrayAdd( ent->mapdata->other, (char *) key, Q3F_TYPE_STRING, flag, (intptr_t) buff );
 	}
 }
 
@@ -1520,7 +1522,7 @@ void G_Q3F_PropogateTrigger( q3f_keypairarray_t *propogator, gentity_t *activato
 {
 	// Trigger all the entities in the specified kparray
 
-	int index, targindex;
+	intptr_t index, targindex;
 	q3f_keypair_t *curr, *targetkp;
 	q3f_array_t *targetarray;
 	q3f_data_t *target;
@@ -1545,7 +1547,7 @@ qboolean G_Q3F_CheckStates( q3f_keypairarray_t *array )
 	// Check each entry and ensure that at least one named
 	// entity matching is in the desired state
 
-	int index, targindex;
+	intptr_t index, targindex;
 	gentity_t *ent = NULL;
 	q3f_keypair_t *kp, *targkp;//*data, *targdata;
 //	q3f_keypairarray_t *targetkpa;
@@ -1612,7 +1614,7 @@ qboolean G_Q3F_CheckClientStats( gentity_t *activator, q3f_keypairarray_t *array
 {
 	// Check each entry and make sure all of them evaluate to true
 
-	int index;
+	intptr_t index;
 	q3f_keypair_t *data;
 	evaltype_t eval = -1;
 	bg_q3f_playerclass_t *cls;
@@ -1767,7 +1769,8 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 	// Attempt to give all affected entities the specified bonuses.
 	// Currently, only affects the activating player.
 
-	int index, force, add, teams, pointcontents, newvalue;
+	intptr_t index;
+	int force, add, teams, pointcontents, newvalue;
 	float distance, effectfactor;
 	q3f_keypair_t *data;
 	q3f_keypairarray_t *give, *clientstats;
@@ -2744,7 +2747,7 @@ static qboolean G_Q3F_AddNameToTargetArray( char *str, gentity_t *ent )
 	{
 		if( !(array = G_Q3F_ArrayCreate()) )
 			G_Error( "G_Q3F_AddNameToTargetArray(): Array creation failed." );
-		if( G_Q3F_KeyPairArrayAdd( level.targetnameArray, str, Q3F_TYPE_ARRAY, 0, (int) array ) < 0 )
+		if( G_Q3F_KeyPairArrayAdd( level.targetnameArray, str, Q3F_TYPE_ARRAY, 0, (intptr_t) array ) < 0 )
 			G_Error( "G_Q3F_AddNameToTargetArray(): Unable to expand keypair array." );
 		newkey = qtrue;
 	}
@@ -2754,7 +2757,7 @@ static qboolean G_Q3F_AddNameToTargetArray( char *str, gentity_t *ent )
 	}
 
 		// Add new entry, sort
-	if( G_Q3F_ArrayAdd( array, Q3F_TYPE_ENTITY, 0, (int) ent ) < 0 )
+	if( G_Q3F_ArrayAdd( array, Q3F_TYPE_ENTITY, 0, (intptr_t) ent ) < 0 )
 		G_Error( "G_Q3F_AddNameToTargetArray(): Unable to expand array." );
 	G_Q3F_ArraySort( array );
 
@@ -2769,7 +2772,7 @@ static qboolean G_Q3F_RemoveNameFromTargetArray( char *str, gentity_t *ent )
 	q3f_keypair_t *key;
 	q3f_array_t *array;
 	q3f_data_t *data;
-	int index;
+	intptr_t index;
 
 	if(	!level.targetnameArray ||
 		!str || !*str ||
@@ -2778,7 +2781,7 @@ static qboolean G_Q3F_RemoveNameFromTargetArray( char *str, gentity_t *ent )
 
 	array = key->value.d.arraydata;
 	//if( !(data = G_Q3F_ArrayFind( array, (int) str )) )
-	if( !(data = G_Q3F_ArrayFind( array, (int) ent )) )
+	if( !(data = G_Q3F_ArrayFind( array, (intptr_t) ent )) )
 		return( qfalse );			// Didn't match ent in list
 	index = data - array->data;		// Find the index into the array.
 	G_Q3F_ArrayDel( array, index );
@@ -2811,7 +2814,7 @@ void G_Q3F_AddEntityToTargetArray( gentity_t *ent )
 	// Assumes that the name is an AddString pointer.
 
 	q3f_data_t *data;
-	int index;
+	intptr_t index;
 
 	if( !level.targetnameArray )
 	{
@@ -2840,7 +2843,7 @@ void G_Q3F_RemoveEntityFromTargetArray( gentity_t *ent )
 	// target/groupnames are still identical.
 
 	q3f_data_t *data;
-	int index;
+	intptr_t index;
 
 	if( !level.targetnameArray )
 		return;
@@ -2872,7 +2875,7 @@ extern char *G_AddSpawnVarToken( const char *string );
 extern qboolean gotfuncdamageptrs;
 
 void G_Q3F_KillAndRecreateEntity( gentity_t *ent ) {
-	int i;
+	intptr_t i;
 	q3f_keypair_t *data;
 	// backup ent spawnindex
 	int entSpawnIndex = ent->spawnIndex;
@@ -2920,7 +2923,8 @@ void G_Q3F_TargetResetUse( gentity_t *self, gentity_t *other, gentity_t *activat
 	q3f_keypair_t	*kp;
 	q3f_array_t		*targets;
 	q3f_data_t		*data;
-	int				index, arrayindex;
+	intptr_t		index;
+	int				arrayindex;
 	gentity_t		*resetents[MAX_RESET_TARGETS];
 
 	if ( !self->target ) {

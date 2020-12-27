@@ -356,7 +356,7 @@ void CG_Q3F_Goal( centity_t *cent )
 				Spirit_SetCustomShader( cgs.gameShaders[s1->modelindex2] );
 				Spirit_RunScript( cgs.gameSpiritScript[s1->legsAnim], 
 					cent->lerpOrigin, cent->lerpOrigin, axisDefault,
-					(int)cent );
+					(intptr_t)cent );
 			}
 		}
 

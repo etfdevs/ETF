@@ -641,7 +641,7 @@ qboolean G_Q3F_CheckHeld( gentity_t *holder, q3f_array_t *array )
 {
 	// Check that all entities are held by holder.
 
-	int index, index2;
+	intptr_t index, index2;
 	q3f_keypair_t *targkp;
 	q3f_array_t *targarray;
 	q3f_data_t *data, *data2;
@@ -673,7 +673,7 @@ qboolean G_Q3F_CheckNotHeld( gentity_t *holder, q3f_array_t *array )
 {
 	// Check that none of the specified entities are held by holder.
 
-	int index, index2;
+	intptr_t index, index2;
 	q3f_keypair_t *targkp;
 	q3f_array_t *targarray;
 	q3f_data_t *data, *data2;

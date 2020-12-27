@@ -257,7 +257,7 @@ void G_DumpEntityInfo( gentity_t *ent, qboolean coredump, char* prefix, char* ti
 	}
 
 	G_LogPrintf("%s Flags: %i\n", prefix, ent->flags );
-	G_LogPrintf("%s Health: %i\n", prefix, ent->health );
+	G_LogPrintf("%s Health: %li\n", prefix, ent->health );
 	G_LogPrintf("%s Model: %s\n", prefix, ent->model );
 	G_LogPrintf("%s Model2: %s\n", prefix, ent->model2 );
 	G_LogPrintf("%s Origin: (%f %f %f)\n", prefix, ent->r.currentOrigin[0], ent->r.currentOrigin[1], ent->r.currentOrigin[2] );

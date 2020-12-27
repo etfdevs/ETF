@@ -74,7 +74,7 @@ void trap_R_AddRefEntityToScene( const refEntity_t *re, const centity_t *cent ) 
 		if ( F2RScript ) {
 			for (F2RLink = F2RScript->links; F2RLink ; F2RLink = F2RLink->next )
 				Spirit_RunModel( F2RLink->SpiritScript, re, 
-				F2RLink->tag, (int)cent );
+				F2RLink->tag, (intptr_t)cent );
 		}
 	}
 	trap_R_RealAddRefEntityToScene( re );

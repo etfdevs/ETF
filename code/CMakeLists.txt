@@ -3,6 +3,8 @@ project(etf VERSION 2.0 LANGUAGES C CXX)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
+link_libraries("-rdynamic")
+set(CMAKE_BUILD_TYPE "Debug")
 
 include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
@@ -168,10 +170,10 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 
 		set(sys_libs ${sys_libs} "-framework Carbon -framework Cocoa -framework OpenGL -framework IOKit")
 	else()
-		if ((Architecture STREQUAL "x86" OR Architecture STREQUAL "i386") AND X86)
-			add_definitions(-m32)
-			set(ldflags "${ldflags} -m32")
-		endif()
+		#if ((Architecture STREQUAL "x86" OR Architecture STREQUAL "i386") AND X86)
+		#	add_definitions(-m32)
+		#	set(ldflags "${ldflags} -m32")
+		#endif()
 
 		if (os STREQUAL "linux")
 			set(sys_libs ${sys_libs} dl)

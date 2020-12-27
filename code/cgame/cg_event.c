@@ -2184,7 +2184,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		if( es->angles[1] )
 			CG_Q3F_Vibrate( es->angles[1], es->origin );
 		Spirit_RunScript( cgs.gameSpiritScript[es->legsAnim],es->origin, es->origin, axisDefault,
-			(int)cent );
+			(intptr_t)cent );
 		CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_EXPLOSION);
 		break;
 

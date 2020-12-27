@@ -133,7 +133,7 @@ g_q3f_location_t *Team_GetLocationFromPos( vec3_t pos )
 
 	float			bestlen, secondbestlen, len;
 	vec3_t			origin;
-	int				index;
+	intptr_t		index;
 	q3f_data_t		*data;
 	g_q3f_location_t *loc, *best, *secondbest;
 

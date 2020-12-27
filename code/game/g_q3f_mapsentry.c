@@ -151,6 +151,7 @@ void SP_Q3F_misc_mapsentry( gentity_t *ent )
 
 	char *str;
 	g_q3f_mapsentry_t *sentry;
+	int tmp;
 
 		// Find the correct type to use.
 	G_SpawnString( "type", "minigun", &str );
@@ -168,12 +169,14 @@ void SP_Q3F_misc_mapsentry( gentity_t *ent )
 	// Load the assorted parameters
 
 	ent->soundLoop = sentry->projectileSpeed;
-	G_SpawnFloat( "range",		G_Q3F_itoa( sentry->defaultRange		),	&ent->angle	);
-	G_SpawnInt( "damage",		G_Q3F_itoa( sentry->defaultDamage		),	&ent->damage		);
-	G_SpawnInt( "rateoffire",	G_Q3F_itoa( sentry->defaultRateOfFire	),	&ent->splashDamage	);
-	G_SpawnInt( "initammo",		G_Q3F_itoa( sentry->defaultInitAmmo		),	&ent->health		);
-	G_SpawnInt( "maxammo",		G_Q3F_itoa( sentry->defaultMaxAmmo		),	&ent->count			);
-	G_SpawnInt( "ammoregen",	G_Q3F_itoa( sentry->defaultAmmoRegen	),	&ent->noise_index	);
+	G_SpawnFloat( "range",		G_Q3F_itoa( sentry->defaultRange		),	&ent->angle );
+	G_SpawnInt( "damage",		G_Q3F_itoa( sentry->defaultDamage		),	&ent->damage );
+	G_SpawnInt( "rateoffire",	G_Q3F_itoa( sentry->defaultRateOfFire	),	&ent->splashDamage );
+	G_SpawnInt( "initammo",		G_Q3F_itoa( sentry->defaultInitAmmo		),	&tmp );
+	ent->health = tmp;
+	G_SpawnInt( "maxammo",		G_Q3F_itoa( sentry->defaultMaxAmmo		),	&tmp );
+	ent->count = tmp;
+	G_SpawnInt( "ammoregen",	G_Q3F_itoa( sentry->defaultAmmoRegen	),	&ent->noise_index );
 
 	// Set up the ent itself.
 	ent->angle*=ent->angle;

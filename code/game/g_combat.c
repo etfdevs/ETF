@@ -959,7 +959,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 
 	if ( g_debugDamage.integer ) {
 //		G_Printf( "client:%i health:%i damage:%i armor:%i\n", targ->s.number,
-		G_Printf( "%i: client:%i health:%i damage:%f armor:%f\n", level.time, targ->s.number,
+		G_Printf( "%i: client:%i health:%li damage:%f armor:%f\n", level.time, targ->s.number,
 			targ->health, take, asave );
 	}
 

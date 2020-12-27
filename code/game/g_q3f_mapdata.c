@@ -60,7 +60,7 @@ void G_Q3F_ArrayDestroy( q3f_array_t *array )
 {
 	// Destroy this array
 
-	int index;
+	intptr_t index;
 	q3f_data_t *data;
 
 	if( !array )
@@ -81,7 +81,7 @@ void G_Q3F_ArrayDestroy( q3f_array_t *array )
 	G_Free( array );
 }
 
-int G_Q3F_ArrayAdd( q3f_array_t *array, char type, char flags, int data )
+int G_Q3F_ArrayAdd( q3f_array_t *array, char type, char flags, intptr_t data )
 {
 	// Add a new entry to the array
 
@@ -122,7 +122,7 @@ int G_Q3F_ArrayAdd( q3f_array_t *array, char type, char flags, int data )
 	return( -1 );		// Something horrible happened :(
 }
 
-void G_Q3F_ArrayDel( q3f_array_t *array, int index )
+void G_Q3F_ArrayDel( q3f_array_t *array, intptr_t index )
 {
 	// Remove an entry from the array
 
@@ -166,7 +166,7 @@ void G_Q3F_ArrayDel( q3f_array_t *array, int index )
 	}
 }
 
-q3f_data_t *G_Q3F_ArrayTraverse( q3f_array_t *array, int *index )
+q3f_data_t *G_Q3F_ArrayTraverse( q3f_array_t *array, intptr_t *index )
 {
 	// Go through the array looking for a non-null entry.
 
@@ -239,7 +239,7 @@ void G_Q3F_ArraySort( q3f_array_t *array )
 	qsort( array->data, array->max, sizeof(q3f_data_t), &AS_SortFunc );
 }
 
-q3f_data_t *G_Q3F_ArrayFind( q3f_array_t *array, int value )
+q3f_data_t *G_Q3F_ArrayFind( q3f_array_t *array, intptr_t value )
 {
 	// Find the specified value
 
@@ -269,7 +269,7 @@ q3f_array_t *G_Q3F_ArrayCopy( q3f_array_t *array )
 	// Copy an array, as well as any strings/arrays/keypairarrays etc.
 
 	q3f_array_t *newarray;
-	int index;
+	intptr_t index;
 	q3f_data_t *data;
 
 	if( !array || !array->used || !(newarray = G_Q3F_ArrayCreate()) )
@@ -278,9 +278,9 @@ q3f_array_t *G_Q3F_ArrayCopy( q3f_array_t *array )
 	for( index = -1; (data = G_Q3F_ArrayTraverse( array, &index )) != NULL; )
 	{
 		if( data->type == Q3F_TYPE_ARRAY )
-			G_Q3F_ArrayAdd( newarray, data->type, data->flags, (int) G_Q3F_ArrayCopy( data->d.arraydata ) );
+			G_Q3F_ArrayAdd( newarray, data->type, data->flags, (intptr_t) G_Q3F_ArrayCopy( data->d.arraydata ) );
 		else if( data->type == Q3F_TYPE_KEYPAIRARRAY )
-			G_Q3F_ArrayAdd( newarray, data->type, data->flags, (int) G_Q3F_KeyPairArrayCopy( data->d.keypairarraydata ) );
+			G_Q3F_ArrayAdd( newarray, data->type, data->flags, (intptr_t) G_Q3F_KeyPairArrayCopy( data->d.keypairarraydata ) );
 		else G_Q3F_ArrayAdd( newarray, data->type, data->flags, data->d.intdata );
 	}
 	return( newarray );
@@ -308,7 +308,7 @@ void G_Q3F_KeyPairArrayDestroy( q3f_keypairarray_t *array )
 {
 	// Destroy this array
 
-	int index;
+	intptr_t index;
 	q3f_keypair_t *data;
 
 	if( !array )
@@ -330,7 +330,7 @@ void G_Q3F_KeyPairArrayDestroy( q3f_keypairarray_t *array )
 	G_Free( array );
 }
 
-int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, char *key, char type, char flags, int data )
+int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, char *key, char type, char flags, intptr_t data )
 {
 	// Add a new entry to the array
 
@@ -377,7 +377,7 @@ void G_Q3F_KeyPairArrayDel( q3f_keypairarray_t *array, char *key )
 	// Remove an entry from the array
 
 	q3f_keypair_t *ptr, *newdata;
-	int newsize, newindex, oldindex;
+	intptr_t newsize, newindex, oldindex;
 
 	if( !array || !key || !*key )
 		return;
@@ -427,7 +427,7 @@ void G_Q3F_KeyPairArrayDel( q3f_keypairarray_t *array, char *key )
 	}
 }
 
-q3f_keypair_t *G_Q3F_KeyPairArrayTraverse( q3f_keypairarray_t *array, int *index )
+q3f_keypair_t *G_Q3F_KeyPairArrayTraverse( q3f_keypairarray_t *array, intptr_t *index )
 {
 	// Go through the array looking for a non-null entry.
 
@@ -530,7 +530,7 @@ q3f_keypairarray_t *G_Q3F_KeyPairArrayCopy( q3f_keypairarray_t *array )
 	// Copy an array, as well as any strings/arrays/keypairarrays etc.
 
 	q3f_keypairarray_t *newarray;
-	int index;
+	intptr_t index;
 	q3f_keypair_t *data;
 
 	if( !array || !array->used || !(newarray = G_Q3F_KeyPairArrayCreate()) )
@@ -539,9 +539,9 @@ q3f_keypairarray_t *G_Q3F_KeyPairArrayCopy( q3f_keypairarray_t *array )
 	for( index = -1; (data = G_Q3F_KeyPairArrayTraverse( array, &index )) != NULL; )
 	{
 		if( data->value.type == Q3F_TYPE_ARRAY )
-			G_Q3F_KeyPairArrayAdd( newarray, data->key, data->value.type, data->value.flags, (int) G_Q3F_ArrayCopy( data->value.d.arraydata ) );
+			G_Q3F_KeyPairArrayAdd( newarray, data->key, data->value.type, data->value.flags, (intptr_t) G_Q3F_ArrayCopy( data->value.d.arraydata ) );
 		else if( data->value.type == Q3F_TYPE_KEYPAIRARRAY )
-			G_Q3F_KeyPairArrayAdd( newarray, data->key, data->value.type, data->value.flags, (int) G_Q3F_KeyPairArrayCopy( data->value.d.keypairarraydata ) );
+			G_Q3F_KeyPairArrayAdd( newarray, data->key, data->value.type, data->value.flags, (intptr_t) G_Q3F_KeyPairArrayCopy( data->value.d.keypairarraydata ) );
 		else G_Q3F_KeyPairArrayAdd( newarray, data->key, data->value.type, data->value.flags, data->value.d.intdata );
 	}
 	return( newarray );

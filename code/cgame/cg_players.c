@@ -1862,10 +1862,10 @@ void CG_AddPlayerEffects( centity_t *cent, const refEntity_t *torso, const refEn
 	//Diseased player effect
 	if( cent->currentState.eFlags & EF_Q3F_DISEASED ) 
 	{
-		Spirit_RunScript(cgs.spirit.diseased, cent->lerpOrigin, cent->lerpOrigin, axisDefault, (int)cent );
+		Spirit_RunScript(cgs.spirit.diseased, cent->lerpOrigin, cent->lerpOrigin, axisDefault, (intptr_t)cent );
 		cent->pe.EffectFlags |= PE_EF_DISEASED;
 	} else if ( cent->pe.EffectFlags & PE_EF_DISEASED ) {
-		if( !Spirit_UpdateScript( cgs.spirit.diseased, cent->lerpOrigin, axisDefault, (int)cent ))
+		if( !Spirit_UpdateScript( cgs.spirit.diseased, cent->lerpOrigin, axisDefault, (intptr_t)cent ))
 			cent->pe.EffectFlags &= ~PE_EF_DISEASED;
 	}
 
@@ -1877,40 +1877,40 @@ void CG_AddPlayerEffects( centity_t *cent, const refEntity_t *torso, const refEn
 	//Stunned player effect
 	if( cent->currentState.powerups & ( 1 << PW_Q3F_CONCUSS ))
 	{
-		Spirit_RunModel( cgs.spirit.stunned, torso , "tag_head", (int)cent );
+		Spirit_RunModel( cgs.spirit.stunned, torso , "tag_head", (intptr_t)cent );
 		cent->pe.EffectFlags |= PE_EF_STUNNED;
 	} else if (cent->pe.EffectFlags & PE_EF_STUNNED ) {
-		if (!Spirit_UpdateModel( cgs.spirit.stunned, torso , "tag_head", (int)cent ))
+		if (!Spirit_UpdateModel( cgs.spirit.stunned, torso , "tag_head", (intptr_t)cent ))
 			cent->pe.EffectFlags &= ~PE_EF_STUNNED;
 	}
 
 	//Gassed player effect
 	if( cent->currentState.powerups & ( 1 << PW_Q3F_GAS ))
 	{
-		Spirit_RunModel( cgs.spirit.gassed, torso , "tag_head", (int)cent );
+		Spirit_RunModel( cgs.spirit.gassed, torso , "tag_head", (intptr_t)cent );
 		cent->pe.EffectFlags |= PE_EF_GASSED;
 	} else if (cent->pe.EffectFlags & PE_EF_GASSED ) {
-		if (!Spirit_UpdateModel( cgs.spirit.gassed, torso , "tag_head", (int)cent )) 
+		if (!Spirit_UpdateModel( cgs.spirit.gassed, torso , "tag_head", (intptr_t)cent ))
 			cent->pe.EffectFlags &= ~PE_EF_GASSED;
 	}
 
 	//Flashed player effect
 	if( cent->currentState.powerups & ( 1 << PW_Q3F_FLASH ))
 	{
-		Spirit_RunModel( cgs.spirit.flashed, torso , "tag_head", (int)cent );
+		Spirit_RunModel( cgs.spirit.flashed, torso , "tag_head", (intptr_t)cent );
 		cent->pe.EffectFlags |= PE_EF_FLASHED;
 	} else if (cent->pe.EffectFlags & PE_EF_FLASHED ) {
-		if (!Spirit_UpdateModel( cgs.spirit.flashed, torso , "tag_head", (int)cent ))
+		if (!Spirit_UpdateModel( cgs.spirit.flashed, torso , "tag_head", (intptr_t)cent ))
 			cent->pe.EffectFlags &= ~PE_EF_FLASHED;
 	}
 
 	//Tranqed player effect
 	if( cent->currentState.extFlags & EXTF_TRANQED)
 	{
-		Spirit_RunModel( cgs.spirit.tranqed, torso , "tag_head", (int)cent );
+		Spirit_RunModel( cgs.spirit.tranqed, torso , "tag_head", (intptr_t)cent );
 		cent->pe.EffectFlags |= PE_EF_TRANQED;
 	} else if (cent->pe.EffectFlags & PE_EF_TRANQED ) {
-		if (!Spirit_UpdateModel( cgs.spirit.tranqed, torso , "tag_head", (int)cent ))
+		if (!Spirit_UpdateModel( cgs.spirit.tranqed, torso , "tag_head", (intptr_t)cent ))
 			cent->pe.EffectFlags &= ~PE_EF_TRANQED;
 	}
 
@@ -1920,10 +1920,10 @@ void CG_AddPlayerEffects( centity_t *cent, const refEntity_t *torso, const refEn
 	//Leg wounded player effect
 	if( cent->currentState.extFlags & EXTF_LEGWOUNDS)
 	{
-		Spirit_RunScript(cgs.spirit.legshot, origin, origin, axisDefault, (int)cent );
+		Spirit_RunScript(cgs.spirit.legshot, origin, origin, axisDefault, (intptr_t)cent );
 		cent->pe.EffectFlags |= PE_EF_DISEASED;
 	} else if ( cent->pe.EffectFlags & PE_EF_LEGWOUNDS ) {
-		if( !Spirit_UpdateScript( cgs.spirit.legshot, origin, axisDefault, (int)cent ))
+		if( !Spirit_UpdateScript( cgs.spirit.legshot, origin, axisDefault, (intptr_t)cent ))
 			cent->pe.EffectFlags &= ~PE_EF_LEGWOUNDS;
 	}
 }

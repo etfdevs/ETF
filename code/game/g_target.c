@@ -505,7 +505,7 @@ void SP_target_location( gentity_t *self )
 		loc->str = self->message;
 		self->message = NULL;
 
-		G_Q3F_ArrayAdd( level.locationarray, Q3F_TYPE_OTHER, 0, (int) loc );
+		G_Q3F_ArrayAdd( level.locationarray, Q3F_TYPE_OTHER, 0, (intptr_t) loc );
 	}
 
 	G_FreeEntity( self );
@@ -539,5 +539,5 @@ void G_Q3F_LocationSort()
 	G_Q3F_ArrayConsolidate( level.locationarray );		// Free up some space
 	qsort( level.locationarray->data, level.locationarray->max, sizeof(q3f_data_t), &LS_SortFunc );
 
-	G_Printf( "%d locations loaded.\n", level.locationarray->used );
+	G_Printf( "%ld locations loaded.\n", level.locationarray->used );
 }

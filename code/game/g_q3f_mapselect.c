@@ -311,7 +311,8 @@ void G_Q3F_MapSelectInit()
 
 	q3f_array_t *mapList;
 	q3f_data_t *data;
-	int index, nameIndex;
+	intptr_t index;
+	int nameIndex;
 	char **allNames, *str;
 	char buff[1024];
 
