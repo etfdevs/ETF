@@ -134,7 +134,7 @@ void G_Q3F_WaypointCommand( gentity_t *ent )
 	int index, count;
 	gentity_t *other;
 	char location[64], message[1024];
-	char *chanptr;
+	char *chanptr = NULL;
 	g_q3f_waypoint_t *wp;
 
 	if( trap_Argc() != 4 )

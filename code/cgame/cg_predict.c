@@ -473,7 +473,7 @@ static void CG_TouchTriggerPrediction( void ) {
 			continue;
 		}
 
-		trap_CM_BoxTrace( &trace, cg.predictedPlayerState.origin, cg.predictedPlayerState.origin, 
+		trap_CM_BoxTrace( &trace, cg.predictedPlayerState.origin, cg.predictedPlayerState.origin,
 			cg_pmove.mins, cg_pmove.maxs, cmodel, -1 );
 
 		if ( !trace.startsolid ) {
@@ -530,7 +530,7 @@ static int IsUnacceptableError( playerState_t *ps, playerState_t *pps ) {
 			pps->speed != ps->speed ||
 			pps->delta_angles[0] != ps->delta_angles[0] ||
 			pps->delta_angles[1] != ps->delta_angles[1] ||
-			pps->delta_angles[2] != ps->delta_angles[2] || 
+			pps->delta_angles[2] != ps->delta_angles[2] ||
 			pps->groundEntityNum != ps->groundEntityNum ) {
 		return 4;
 	}
@@ -658,7 +658,7 @@ void CG_PredictPlayerState( void ) {
 	qboolean	moved;
 	usercmd_t	oldestCmd;
 	usercmd_t	latestCmd;
-	int stateIndex, predictCmd;
+	int stateIndex = -1, predictCmd = -1;
 	int numPredicted = 0, numPlayedBack = 0; // debug code
 
 	cg.hyperspace = qfalse;	// will be set if touching a trigger_teleport

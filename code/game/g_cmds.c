@@ -2511,14 +2511,14 @@ void G_Q3F_DropAmmoToCommand( gentity_t *ent ) {
 	// See if there's any discardable ammo, and dump it.
 
 	char buff[16];
-	int index, type, temp, inclip, total;
+	int index, type, temp = 0, inclip = 0, total;
 	int count = -1;
 	//bg_q3f_playerclass_t *cls;
 	playerState_t *ps;
 	gentity_t *drop;
 	gitem_t *item;
 	vec3_t velocity, pvel;
-	const char *ammoname;
+	const char *ammoname = NULL;
 
 	if( !ent->client || ent->health <= 0 || level.ceaseFire || ent->client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING) )
 		return;
@@ -2655,14 +2655,14 @@ void G_Q3F_DropAmmoCommand( gentity_t *ent )
 	// See if there's any discardable ammo, and dump it.
 
 	char buff[16];
-	int index, type, count, temp, inclip, avail_cells;
-	float conv_fact;
+	int index, type, count, temp = 0, inclip = 0, avail_cells;
+	float conv_fact = 1.0f;
 	//bg_q3f_playerclass_t *cls;
 	playerState_t *ps;
 	gentity_t *drop;
 	gitem_t *item;
 	vec3_t velocity, pvel;
-	const char *ammoname;
+	const char *ammoname = NULL;
 
 	if( !ent->client || ent->health <= 0 || level.ceaseFire || ent->client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING) )
 		return;

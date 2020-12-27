@@ -1395,7 +1395,7 @@ static qboolean G_Q3F_SentrySetAngle( gentity_t *ent, const vec3_t angles, float
 void G_Q3F_RunSentry( gentity_t *ent )
 {
 	AimBlock_t aim;
-	int activegun, spinleft;
+	int activegun = -1, spinleft;
 	
 #ifdef SENTRY_MOVE
 	if(ent->sound2to1 && ent->parent)

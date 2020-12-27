@@ -107,7 +107,7 @@ void G_Q3F_RemString( char **target )
 {
 	// Remove an existing string from the array
 
-	q3f_stringnode_t *curr, *parent, *defunct, *defunctparent;
+	q3f_stringnode_t *curr, *parent = NULL, *defunct, *defunctparent;
 	char *str;
 	int cmpresult;
 

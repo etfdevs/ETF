@@ -319,7 +319,7 @@ char *weightkeystr;
 gentity_t *SelectQ3FSpawnPoint(	vec3_t avoidPoint, vec3_t origin, vec3_t angles, gentity_t *ent )
 {
 	gentity_t *scan, *max;
-	int numCandidates, weighting, weightleft, index;
+	int numCandidates, weighting, weightleft, index = 0;
 	char *tmp;
 	q3f_keypair_t *kp;
 	gentity_t *candidates[128];
