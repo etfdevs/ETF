@@ -954,7 +954,7 @@ qboolean NailExplode( gentity_t *grenade )
 	grenade->s.apos.trDuration = 250;
 	grenade->s.apos.trTime = level.time;
 	grenade->think = NailThink;
-	grenade->health = (int) NailArrayCreate( grenade );	// Generate the array
+	grenade->health = (intptr_t) NailArrayCreate( grenade );	// Generate the array
 	grenade->pain_debounce_time = level.time + Q3F_NAILGREN_PACKINTERVAL;
 	PackNailBits( grenade, (char *)(((struct gnail *) grenade->health) + Q3F_NUM_NAILGRENNAILS) );
 	trap_LinkEntity( grenade );

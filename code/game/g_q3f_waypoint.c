@@ -59,7 +59,7 @@ static int QDECL WBA_SortFunc( const void *a, const void *b )
 
 void G_Q3F_WaypointBuildArray()
 {
-	int iterator, checkIterator;
+	intptr_t iterator, checkIterator;
 	q3f_data_t *locData, *checkLocData;
 	vec3_t mins, maxs;
 	g_q3f_location_t *loc;
@@ -100,7 +100,7 @@ void G_Q3F_WaypointBuildArray()
 			wp->pos[1] = mins[1] + 0.5 * (maxs[1] - mins[1]);
 			wp->pos[2] = mins[2] + 0.5 * (maxs[2] - mins[2]);
 			wp->str = loc->str;
-			G_Q3F_ArrayAdd( level.waypointarray, Q3F_TYPE_OTHER, 0, (int) wp );
+			G_Q3F_ArrayAdd( level.waypointarray, Q3F_TYPE_OTHER, 0, (intptr_t) wp );
 		}
 	}
 	G_Q3F_ArrayConsolidate( level.waypointarray );		// Free up some space
@@ -205,7 +205,7 @@ void G_Q3F_WaypointCommand( gentity_t *ent )
 		{
 			other = &g_entities[index];
 			if(	other->client->chatchannels &&
-				G_Q3F_ArrayFind( other->client->chatchannels, (int) chanptr ) )
+				G_Q3F_ArrayFind( other->client->chatchannels, (intptr_t) chanptr ) )
 			{
 				G_Q3F_WaypointSend( ent, other, wp, message );
 				count++;

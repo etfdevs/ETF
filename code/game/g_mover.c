@@ -1721,7 +1721,8 @@ static void G_Q3F_LocateNextTrainTarget( gentity_t *train )
 
 	gentity_t *ent, *test;
 	gentity_t *targets[MAX_TRAIN_TARGETS];
-	int index, arrayindex;
+	intptr_t index;
+	int arrayindex;
 	q3f_keypair_t *targetkp;
 	q3f_array_t *targetarray;
 	q3f_data_t *target;

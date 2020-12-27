@@ -51,7 +51,7 @@ If you have questions concerning this license or the applicable additional terms
 #define MAX_GROUPS		256
 #define GROUP_HASHSIZE	256
 #define GROUP_HASHMASK	(GROUP_HASHSIZE-1)
-#define GROUP_HASH(_KEY,_SYSTEM) ((( _KEY >> 5 ) | ((int)_SYSTEM)) & GROUP_HASHMASK)
+#define GROUP_HASH(_KEY,_SYSTEM) ((( _KEY >> 5 ) | ((intptr_t)_SYSTEM)) & GROUP_HASHMASK)
 
 #define SPIRIT_ACCEL				0x1
 #define	SPIRIT_ALIGN				0x2
@@ -749,7 +749,7 @@ void Spirit_AddParticles( void ) {
 	SpiritRunTime = cg.time;
 }
 
-void Spirit_RunSystem( const SpiritSystem_t *SpiritSystem, int key, const vec3_t origin, const vec3_t oldorigin,  const vec3_t axis[3]) {
+void Spirit_RunSystem( const SpiritSystem_t *SpiritSystem, intptr_t key, const vec3_t origin, const vec3_t oldorigin, const vec3_t axis[3]) {
 	vec3_t delta;
 	int i, hash;
 	pgroup_t *pgroup;
@@ -806,7 +806,7 @@ void Spirit_RunSystem( const SpiritSystem_t *SpiritSystem, int key, const vec3_t
 	}
 }
 
-qboolean Spirit_UpdateScript( const SpiritScript_t *SpiritScript, const vec3_t origin, const vec3_t axis[3], int key ) {
+qboolean Spirit_UpdateScript( const SpiritScript_t *SpiritScript, const vec3_t origin, const vec3_t axis[3], intptr_t key ) {
 	int hash;
 	pgroup_t *pgroup;
 	SpiritSystem_t *SpiritSystem;
@@ -833,7 +833,7 @@ qboolean Spirit_UpdateScript( const SpiritScript_t *SpiritScript, const vec3_t o
 	return ret;
 }
 
-void Spirit_RunScript( const SpiritScript_t *SpiritScript, const vec3_t origin, const vec3_t oldorigin, const vec3_t axis[3], int key ) {
+void Spirit_RunScript( const SpiritScript_t *SpiritScript, const vec3_t origin, const vec3_t oldorigin, const vec3_t axis[3], intptr_t key ) {
 	if (! SpiritScript ) return;
 	if ( SpiritRunTime >= cg.time ) return;
 	if ( SpiritScript->sound ) {
@@ -851,7 +851,7 @@ void Spirit_RunScript( const SpiritScript_t *SpiritScript, const vec3_t origin, 
 }
 
 
-void Spirit_RunModel( const SpiritScript_t *SpiritScript, const refEntity_t *re, const char * tagname, int key ) {
+void Spirit_RunModel( const SpiritScript_t *SpiritScript, const refEntity_t *re, const char * tagname, intptr_t key ) {
 	orientation_t	lerped;
 	vec3_t		origin, oldorigin;
 	matrix3_t	axis;
@@ -870,7 +870,7 @@ void Spirit_RunModel( const SpiritScript_t *SpiritScript, const refEntity_t *re,
 	Spirit_RunScript(SpiritScript, origin, oldorigin, axis, key );
 }
 
-qboolean Spirit_UpdateModel( const SpiritScript_t *SpiritScript, const refEntity_t *re, const char * tagname, int key ) {
+qboolean Spirit_UpdateModel( const SpiritScript_t *SpiritScript, const refEntity_t *re, const char * tagname, intptr_t key ) {
 	orientation_t	lerped;
 	vec3_t		origin;
 	matrix3_t	axis;

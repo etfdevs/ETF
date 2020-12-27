@@ -142,7 +142,7 @@ struct gentity_s {
 
 	char		*message;
 
-	int			timestamp;		// body queue sinking, etc
+	intptr_t	timestamp;		// body queue sinking, etc
 								// slothy: timestamp used for visual aid in mover
 	int			timestamp2;
 
@@ -181,7 +181,7 @@ struct gentity_s {
 	int			fly_sound_debounce_time;	// wind tunnel
 	int			last_move_time;
 
-	int			health;
+	intptr_t	health;
 
 	qboolean	takedamage;
 
@@ -189,7 +189,7 @@ struct gentity_s {
 	int			splashDamage;	// quad will increase this without increasing radius
 	int			methodOfDeath;
 	int			splashMethodOfDeath;
-	int			count;
+	intptr_t	count;
 
 	gentity_t	*chain;
 	gentity_t	*enemy;

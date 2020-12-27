@@ -268,7 +268,7 @@ void G_UseTargets( gentity_t *ent, gentity_t *activator ) {
 	q3f_keypair_t	*kp;
 	q3f_array_t		*targets;
 	q3f_data_t		*data;
-	int				index;
+	intptr_t		index;
 	
 	if ( !ent ) {
 		return;

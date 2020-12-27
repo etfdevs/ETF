@@ -939,7 +939,8 @@ void G_Q3F_MuonFix( void );
 void G_Q3F_OdiumFix( void );
 
 void G_InitGame( int levelTime, int randomSeed, int restart ) {
-	int					i, index;
+	int					i;
+	intptr_t 			index;
 //	gitem_t *item;
 	char buff[MAX_QPATH], mapname[MAX_QPATH];
 	q3f_array_t* mapList;

@@ -182,7 +182,7 @@ q3f_keypairarray_t *G_Q3F_LoadMapInfo( char *mapname )
 						break;
 					if( !kpa )
 						kpa = G_Q3F_KeyPairArrayCreate();
-					G_Q3F_KeyPairArrayAdd( kpa, keyname, Q3F_TYPE_STRING, 0, (int) mi.token.string );
+					G_Q3F_KeyPairArrayAdd( kpa, keyname, Q3F_TYPE_STRING, 0, (intptr_t) mi.token.string );
 					if( !G_Q3F_MI_GetToken( ";" ) )
 						break;
 				}
@@ -213,7 +213,7 @@ q3f_keypairarray_t *G_Q3F_LoadMapInfo( char *mapname )
 	trap_FS_FCloseFile( mi.infoHandle );
 
 	kpa = G_Q3F_KeyPairArrayCreate();
-	G_Q3F_KeyPairArrayAdd( kpa, "mapinfo", Q3F_TYPE_STRING, 0, (int) rawmpi );
+	G_Q3F_KeyPairArrayAdd( kpa, "mapinfo", Q3F_TYPE_STRING, 0, (intptr_t) rawmpi );
 	for( ptr = rawmpi; ptr && *ptr; ptr++ )
 	{
 		c1 = atoi( ptr );
@@ -238,9 +238,9 @@ q3f_keypairarray_t *G_Q3F_LoadMapInfo( char *mapname )
 					if( !Q_stricmp( matchStrings[index], keyname ) )
 					{
 						Com_sprintf( keyname, sizeof(keyname), "%d", c1 );
-						G_Q3F_KeyPairArrayAdd( kpa, "minplayers", Q3F_TYPE_STRING, 0, (int) keyname );
+						G_Q3F_KeyPairArrayAdd( kpa, "minplayers", Q3F_TYPE_STRING, 0, (intptr_t) keyname );
 						Com_sprintf( keyname, sizeof(keyname), "%d", c2 );
-						G_Q3F_KeyPairArrayAdd( kpa, "maxplayers", Q3F_TYPE_STRING, 0, (int) keyname );
+						G_Q3F_KeyPairArrayAdd( kpa, "maxplayers", Q3F_TYPE_STRING, 0, (intptr_t) keyname );
 						ptr = (char *) -1;
 						break;
 					}

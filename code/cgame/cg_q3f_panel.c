@@ -749,7 +749,7 @@ static int CG_Q3F_PanelFuncLocation()
 								640 - 2*cent->currentState.angles2[0], 480 - 2*cent->currentState.angles2[1] );
 		cent->teleportFlag = numLines;
 		cent->beamEnd[0] = size;
-		cent->muzzleFlashTime = (int) locStr;
+		cent->muzzleFlashTime = (intptr_t) locStr;
 	}
 	yoff = 480 - 2*cent->currentState.angles2[1];
 	yoff = cent->currentState.angles2[1] + 0.5 * (yoff - numLines * size * panel.aspect);

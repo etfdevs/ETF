@@ -288,7 +288,7 @@ void Svcmd_RemoveIP_f (void)
 	//ipFilter_t	f;
 	g_q3f_extIpFilter_t f, *filter;
 	q3f_data_t *data;
-	int			i;
+	intptr_t	i;
 	char		str[MAX_TOKEN_CHARS];
 
 	if ( trap_Argc() < 2 ) {

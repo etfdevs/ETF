@@ -44,7 +44,7 @@ If you have questions concerning this license or the applicable additional terms
 
 typedef struct q3f_data_s {		// This should be padded to 8 bytes. (I think)
 	union {
-		int intdata;
+		intptr_t intdata;
 		char *strdata;
 		float floatdata;
 //		double *doubledata;
@@ -57,7 +57,7 @@ typedef struct q3f_data_s {		// This should be padded to 8 bytes. (I think)
 } q3f_data_t;
 
 typedef struct q3f_array_s {
-	int used, max;
+	intptr_t used, max;
 	q3f_data_t *data;
 } q3f_array_t;
 
@@ -67,7 +67,7 @@ typedef struct q3f_keypair_s {
 } q3f_keypair_t;
 
 typedef struct q3f_keypairarray_s {
-	int used, max;
+	intptr_t used, max;
 	q3f_keypair_t *data;
 } q3f_keypairarray_t;
 
@@ -88,19 +88,19 @@ enum {
 
 q3f_array_t *G_Q3F_ArrayCreate();
 void G_Q3F_ArrayDestroy( q3f_array_t *array );
-int G_Q3F_ArrayAdd( q3f_array_t *array, char type, char flags, int data );
-void G_Q3F_ArrayDel( q3f_array_t *array, int index );
-q3f_data_t *G_Q3F_ArrayTraverse( q3f_array_t *array, int *index );
+int G_Q3F_ArrayAdd( q3f_array_t *array, char type, char flags, intptr_t data );
+void G_Q3F_ArrayDel( q3f_array_t *array, intptr_t index );
+q3f_data_t *G_Q3F_ArrayTraverse( q3f_array_t *array, intptr_t *index );
 void G_Q3F_ArrayConsolidate( q3f_array_t *array );
 void G_Q3F_ArraySort( q3f_array_t *array );
-q3f_data_t *G_Q3F_ArrayFind( q3f_array_t *array, int value );
+q3f_data_t *G_Q3F_ArrayFind( q3f_array_t *array, intptr_t value );
 q3f_array_t *G_Q3F_ArrayCopy( q3f_array_t *array );
 
 q3f_keypairarray_t *G_Q3F_KeyPairArrayCreate();
 void G_Q3F_KeyPairArrayDestroy( q3f_keypairarray_t * );
-int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, char *key, char type, char flags, int data );
+int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, char *key, char type, char flags, intptr_t data );
 void G_Q3F_KeyPairArrayDel( q3f_keypairarray_t *array, char *key );
-q3f_keypair_t *G_Q3F_KeyPairArrayTraverse( q3f_keypairarray_t *array, int *index );
+q3f_keypair_t *G_Q3F_KeyPairArrayTraverse( q3f_keypairarray_t *array, intptr_t *index );
 void G_Q3F_KeyPairArrayConsolidate( q3f_keypairarray_t *array );
 void G_Q3F_KeyPairArraySort( q3f_keypairarray_t *array );
 q3f_keypair_t *G_Q3F_KeyPairArrayFind( q3f_keypairarray_t *array, char *key );
