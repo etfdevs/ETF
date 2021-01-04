@@ -539,5 +539,5 @@ void G_Q3F_LocationSort()
 	G_Q3F_ArrayConsolidate( level.locationarray );		// Free up some space
 	qsort( level.locationarray->data, level.locationarray->max, sizeof(q3f_data_t), &LS_SortFunc );
 
-	G_Printf( "%ld locations loaded.\n", level.locationarray->used );
+	G_Printf( "%d locations loaded.\n", (int)level.locationarray->used );
 }

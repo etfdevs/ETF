@@ -1118,7 +1118,7 @@ void G_Q3F_UpdateMapHistory( char *mapname )
 		{
 			if( kp->value.d.intdata > 0 )
 			{
-				str = va( "\"%s\" %ld;\r\n", kp->key, kp->value.d.intdata );
+				str = va( "\"%s\" %d;\r\n", kp->key, (int)kp->value.d.intdata );
 				trap_FS_Write( str, strlen( str ), fileHandle );
 			}
 		}

@@ -2043,15 +2043,15 @@ static void G_Q3F_FuncDamageCalc( gentity_t *self, gentity_t *other, qboolean ch
 		if( !G_Q3F_CheckCriteria( other, self ) )
 		{
 			if( g_mapentDebug.integer )
-				G_Printf(	"func_damage: %ld damage ignored from %s.\n",
-							(self->splashDamage - self->health),
+				G_Printf(	"func_damage: %d damage ignored from %s.\n",
+							self->splashDamage - (int)self->health,
 							other->client->pers.netname );
 			self->health = self->splashDamage;		// Reset health
 			return;
 		}
 		if( g_mapentDebug.integer )
-			G_Printf(	"func_damage: %ld damage from %s.\n",
-						(self->splashDamage - self->health),
+			G_Printf(	"func_damage: %d damage from %s.\n",
+						self->splashDamage - (int)self->health,
 						other->client->pers.netname );
 	}
 
@@ -2150,8 +2150,8 @@ static void G_Q3F_FuncDamageCalc( gentity_t *self, gentity_t *other, qboolean ch
 			// We've hit max health. Yippee!
 
 			if( g_mapentDebug.integer ) {
-				G_Printf(	"func_damage: Reached %ld health at %d.\n",
-							self->count, level.time );
+				G_Printf(	"func_damage: Reached %d health at %d.\n",
+							(int)self->count, level.time );
 				G_Printf(	"func_damage: Reached max health at %d.\n",
 							level.time );
 
@@ -2217,8 +2217,8 @@ static void G_Q3F_FuncDamageCalc( gentity_t *self, gentity_t *other, qboolean ch
 			}
 			else {
 				if( g_mapentDebug.integer )
-					G_Printf(	"func_damage: health %ld at %d.\n",
-								self->health, level.time );
+					G_Printf(	"func_damage: health %d at %d.\n",
+								(int)self->health, level.time );
 			}
 		}
 	}
@@ -3275,7 +3275,7 @@ static int G_Q3F_TargetAccumulatorStateThink( gentity_t *ent, gentity_t *activat
 
 		// Print off any appropriate messages.
 	memset( messagekeys, 0, sizeof(messagekeys) );
-	key = va( "%ld", ent->count );
+	key = va( "%d", (int)ent->count );
 	G_Q3F_StateBroadcast( ent, activator, activator, "_message", &messagekeys[0],	Q3F_BROADCAST_TEXT, key );
 	G_Q3F_StateBroadcast( ent, activator, activator, "_sound", &messagekeys[1],		Q3F_BROADCAST_SOUND, key );
 	G_Q3F_StateBroadcast( ent, activator, activator, "_dict", &messagekeys[2],		Q3F_BROADCAST_DICT, key );
@@ -3289,7 +3289,7 @@ static int G_Q3F_TargetAccumulatorStateThink( gentity_t *ent, gentity_t *activat
 		}
 	}
 
-	key = va( "target_%ld", ent->count );
+	key = va( "target_%d", (int)ent->count );
 	if( (key = G_Q3F_GetString( key )) &&
 		(kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, key)) )
 	{
@@ -3302,7 +3302,7 @@ static int G_Q3F_TargetAccumulatorStateThink( gentity_t *ent, gentity_t *activat
 		}
 		kpa = kp->value.d.keypairarraydata;
 		if( g_mapentDebug.integer )
-			G_Printf( "    Triggering accumulator target %ld in state think.\n", ent->count );
+			G_Printf( "    Triggering accumulator target %d in state think.\n", (int)ent->count );
 		G_Q3F_PropogateTrigger( kpa, activator, trace );
 	}
 
@@ -3530,7 +3530,7 @@ void G_Q3F_MiscMatchtimerThink( gentity_t *ent )
 
 	//G_Printf( "misc_matchtimer thinking: state %d: count: %d\n", ent->mapdata->state, ent->count );
 
-	key = va( "target_%ld", ent->count );
+	key = va( "target_%d", (int)ent->count );
 	G_Q3F_StateBroadcast( ent, ent, ent, "_message",	&messagekeys[0], Q3F_BROADCAST_TEXT, key );
 	G_Q3F_StateBroadcast( ent, ent, ent, "_sound",		&messagekeys[1], Q3F_BROADCAST_SOUND, key );
 	G_Q3F_StateBroadcast( ent, ent, ent, "_dict",		&messagekeys[2], Q3F_BROADCAST_DICT, key );
@@ -3548,7 +3548,7 @@ void G_Q3F_MiscMatchtimerThink( gentity_t *ent )
 	G_Q3F_StateBroadcast_TeamedNoActivator( ent, "_sound",		Q3F_BROADCAST_SOUND,	key );
 	G_Q3F_StateBroadcast_TeamedNoActivator( ent, "_dict",		Q3F_BROADCAST_DICT,		key );*/
 
-	key = va( "target_%ld", ent->count );
+	key = va( "target_%d", (int)ent->count );
 	if( (key = G_Q3F_GetString( key )) &&
 		(kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, key)) ) {
 
@@ -3561,7 +3561,7 @@ void G_Q3F_MiscMatchtimerThink( gentity_t *ent )
 		}
 		kpa = kp->value.d.keypairarraydata;
 		if( g_mapentDebug.integer )
-			G_Printf( "    Triggering misc_matchtimer target %ld in think.\n", ent->count );
+			G_Printf( "    Triggering misc_matchtimer target %d in think.\n", (int)ent->count );
 		G_Q3F_PropogateTrigger( kpa, NULL, NULL );
 	}
 
@@ -3587,7 +3587,7 @@ void G_Q3F_MiscMatchtimerThink( gentity_t *ent )
 			}
 			kpa = kp->value.d.keypairarraydata;
 			if( g_mapentDebug.integer )
-				G_Printf( "    Triggering misc_matchtimer target %ld in think.\n", ent->count );
+				G_Printf( "    Triggering misc_matchtimer target %d in think.\n", (int)ent->count );
 			G_Q3F_PropogateTrigger( kpa, ent, NULL );
 		}
 
