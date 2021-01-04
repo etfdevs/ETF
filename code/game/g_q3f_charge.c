@@ -67,7 +67,7 @@ static void G_Q3F_ChargeThink( gentity_t *ent )
 		if( ent->count <= 5 )
 		{
 			// Send a message to owner
-			str = va( "print \"%ld...\n\"", ent->count );
+			str = va( "print \"%d...\n\"", (int)ent->count );
 			trap_SendServerCommand( ent->activator->s.number, str );
 		}
 

@@ -3561,8 +3561,8 @@ static void G_Q3F_PlayerStatus( gentity_t *ent )
 		}
 		else if( player->client && player->client->pers.connected == CON_CONNECTING )
 		{
-			trap_SendServerCommand( ent-g_entities, va("print \"%3ld %4d %6s %5d %s\n\"",
-								(intptr_t)(player-g_entities),
+			trap_SendServerCommand( ent-g_entities, va("print \"%3d %4d %6s %5d %s\n\"",
+								(int)(player-g_entities),
 								player->client->ps.ping,
 								"conn",
 								player->client->ps.persistant[PERS_SCORE],
