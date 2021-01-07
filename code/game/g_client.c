@@ -1860,10 +1860,6 @@ void ClientDisconnect( int clientNum ) {
 	int			i;
 	g_q3f_playerclass_t *cls;
 
-	// cleanup if we are kicking a bot that
-	// hasn't spawned yet
-//	G_RemoveQueuedBotBegin( clientNum );
-
 	ent = g_entities + clientNum;
 
 	if ( !ent->client ) {

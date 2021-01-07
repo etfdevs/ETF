@@ -348,7 +348,6 @@ set(src_game
 	game/bg_slidemove.c
 	game/bg_tracemap.c
 	game/g_active.c
-	game/g_arenas.c
 	#game/g_bot_interface.c
 	game/g_client.c
 	game/g_cmds.c
@@ -385,6 +384,7 @@ set(src_game
 	game/g_q3f_weapon.c
 	game/g_session.c
 	game/g_spawn.c
+	game/g_stats.c
 	game/g_svcmds.c
 	${CMAKE_SOURCE_DIR}/api/et/g_syscalls.c
 	game/g_target.c

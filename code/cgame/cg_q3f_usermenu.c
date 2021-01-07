@@ -97,7 +97,7 @@ thatsit:
 }
 
 
-void CG_Q3F_CustomMenuShow( const char * filename ) {
+void CG_Q3F_CustomMenuShow( const char *filename ) {
 	int  index, len;
 	fileHandle_t handle;
 	int filelen, filedone;

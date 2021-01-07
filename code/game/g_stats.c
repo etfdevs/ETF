@@ -36,7 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "g_local.h"
 
-static int ModConversion[MOD_LASTONE] = {
+static const int ModConversion[MOD_LASTONE] = {
 /*	MOD_UNKNOWN	*/				STATS_OTHER,
 /*	MOD_SHOTGUN	*/				STATS_WP + WP_SUPERSHOTGUN,
 /*	MOD_AXE	*/					STATS_WP + WP_AXE,

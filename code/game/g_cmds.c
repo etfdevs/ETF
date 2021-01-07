@@ -41,7 +41,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_admin.h"
 #include "bg_q3f_util.h"
 #include "g_q3f_mapselect.h"
-#include "../../ui/menudef.h"			// for the voice chats
+//#include "../../ui/menudef.h"			// for the voice chats
 
 #include "g_bot_interface.h"
 #ifdef BUILD_LUA
@@ -3632,37 +3632,6 @@ void ClientCommand( int clientNum ) {
 		}
 		return;
 	}
-#if 0
-	/* Ensiform - These go bye bye */
-	if (Q_stricmp (cmd, "vsay") == 0) {
-		Cmd_Voice_f (ent, SAY_ALL, qfalse, qfalse);
-		return;
-	}
-	if (Q_stricmp (cmd, "vsay_team") == 0) {
-		Cmd_Voice_f (ent, SAY_TEAM, qfalse, qfalse);
-		return;
-	}
-	if (Q_stricmp (cmd, "vtell") == 0) {
-		Cmd_VoiceTell_f ( ent, qfalse );
-		return;
-	}
-	if (Q_stricmp (cmd, "vosay") == 0) {
-		Cmd_Voice_f (ent, SAY_ALL, qfalse, qtrue);
-		return;
-	}
-	if (Q_stricmp (cmd, "vosay_team") == 0) {
-		Cmd_Voice_f (ent, SAY_TEAM, qfalse, qtrue);
-		return;
-	}
-	if (Q_stricmp (cmd, "votell") == 0) {
-		Cmd_VoiceTell_f ( ent, qtrue );
-		return;
-	}
-#endif
-/*	if (Q_stricmp (cmd, "vtaunt") == 0) {
-		Cmd_VoiceTaunt_f ( ent );
-		return;
-	}*/
 	if (Q_stricmp (cmd, "score") == 0) {
 		Cmd_Score_f (ent);
 		return;
@@ -3883,9 +3852,6 @@ void ClientCommand( int clientNum ) {
 	else if (Q_stricmp (cmd, "unready") == 0)
 		Cmd_UnReady_f( ent );
 	// RR2DO2
-	// RR2DO2: anti cheat
-	/*else if (Q_stricmp( cmd, level.cheatcmd ) == 0 )
-		G_Q3F_CheatLog( ent );*/
 	else if (Q_stricmp("special", cmd) == 0  && ent->client->sess.sessionTeam != Q3F_TEAM_SPECTATOR && G_Q3F_SpecialCommand(ent) )
 		{}		// We've done our stuff in the command in the if()
 	else if(!Q_stricmp("special", cmd) && ent->client->sess.sessionTeam == Q3F_TEAM_SPECTATOR && (ent->client->sess.spectatorState == SPECTATOR_FOLLOW ||

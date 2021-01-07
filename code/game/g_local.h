@@ -674,8 +674,6 @@ typedef struct {
 	int			greenTeamModificationCount;
 	int			yellowTeamModificationCount;
 
-	char		cheatcmd[9];	// command clients send during this map when they are cheating
-
 	char		tinfo[Q3F_TEAM_NUM_TEAMS][1400];
 
 	// actual time this server frame started
