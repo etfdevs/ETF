@@ -2179,7 +2179,8 @@ static void G_Q3F_ChannelCommand( gentity_t *ent )
 	// Allow the user to specify which channels they want for team messages.
 
 	char chanbuff[64];
-	intptr_t numargs, curr, index;
+	int numargs, curr;
+	intptr_t index;
 	q3f_array_t *array;
 	q3f_data_t *data;
 	char *str;
