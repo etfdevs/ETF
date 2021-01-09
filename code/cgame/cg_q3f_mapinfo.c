@@ -191,8 +191,7 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 {
 	// Parse the mapinfo file, filling in any appropriate entry in the supplied mapInfo struct.
 
-	intptr_t index;
-	int currGameIndex, foundItems, c1, c2;
+	int index, currGameIndex, foundItems, c1, c2;
 	char rawmapname[1024], buff[1024], fallbackbuff[128];
 	char *infoname, *ptr, *ptr2, *ptr3, *ptr4;
 
