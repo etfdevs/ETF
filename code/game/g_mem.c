@@ -39,6 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_local.h"
 
 
+// note, probably should double the size on 64-bit
 #define POOLSIZE		(384 * 1024)
 #define	FREEMEMCOOKIE	((int)0xDEADBE3F)	// Any unlikely to be used value
 #define	ROUNDBITS		31					// Round to 32 bytes

@@ -227,7 +227,6 @@ void CG_ParseSysteminfo( void ) {
 }
 
 
-
 static void CG_ParseMatchState( void ) {
 	int	oldstate = cg.matchState;
 
@@ -240,7 +239,6 @@ static void CG_ParseMatchState( void ) {
 		trap_S_StartLocalSound( cgs.media.countFightSound, CHAN_ANNOUNCER );
 		CG_LowPriority_Printf( BOX_PRINT_MODE_CENTER, "FIGHT!" );
 	}
-
 }
 
 /*

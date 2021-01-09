@@ -177,12 +177,12 @@ If you have questions concerning this license or the applicable additional terms
 
 typedef enum {
 
-	GT_FORTS,				// default Q3F
+	GT_FORTS = 0,				// default Q3F
 
 	GT_MAX_GAME_TYPE
 } gametype_t;
 
-typedef enum { GENDER_MALE, GENDER_FEMALE, GENDER_NEUTER } gender_t;
+typedef enum { GENDER_MALE = 0, GENDER_FEMALE, GENDER_NEUTER } gender_t;
 
 #define MAX_ARENAS			1024
 #define	MAX_ARENAS_TEXT		8192
@@ -199,7 +199,7 @@ movement on the server game.
 */
 
 typedef enum {
-	PM_NORMAL,				// can accelerate and turn
+	PM_NORMAL = 0,				// can accelerate and turn
 	PM_NOCLIP,				// noclip movement
 	PM_SPECTATOR,			// still run into walls
 	PM_LIMITEDSPECTATOR,	// RR2DO2: spawns but can't move
@@ -212,7 +212,7 @@ typedef enum {
 } pmtype_t;
 
 typedef enum {
-	WEAPON_READY, 
+	WEAPON_READY = 0, 
 	WEAPON_RAISING,
 	WEAPON_DROPPING,
 	WEAPON_RRAISING,		// JT - RRAISING & RDROPPING - State variables for
@@ -304,7 +304,7 @@ void Pmove (pmove_t *pmove);
 // player_state->stats[] indexes
 // NOTE: may not have more than 16
 typedef enum {
-	STAT_HEALTH,
+	STAT_HEALTH = 0,
 	STAT_HOLDABLE_ITEM,
 	STAT_WEAPONS,					// 16 bit fields
 	STAT_ARMOR,				
@@ -316,7 +316,7 @@ typedef enum {
 } statIndex_t;
 
 typedef enum {
-	Q3F_WEAPON_RELOAD,				// Set when a reload is requested
+	Q3F_WEAPON_RELOAD = 0,				// Set when a reload is requested
 	Q3F_WEAPON_NORELOAD,			// Set for clients that don't want auto reload
 	FL_Q3F_SCANNER,					// Scanner enabled?
 	FL_Q3F_LAYCHARGE,				// Laying a charge (no shooting/moving)
@@ -332,7 +332,7 @@ typedef enum {
 // cleared on respawn
 // NOTE: may not have more than 16
 typedef enum {
-	PERS_SCORE,						// !!! MUST NOT CHANGE, SERVER AND GAME BOTH REFERENCE !!!
+	PERS_SCORE = 0,						// !!! MUST NOT CHANGE, SERVER AND GAME BOTH REFERENCE !!!
 	PERS_HITS,						// total points damage inflicted so damage beeps can sound on change
 	PERS_RANK,						// player rank or team rank
 	PERS_TEAM,						// player team
@@ -409,7 +409,7 @@ typedef enum {
 
 // NOTE: may not have more than 16
 typedef enum {
-	PW_NONE,
+	PW_NONE = 0,
 
 	PW_QUAD,
 	PW_BATTLESUIT,
@@ -417,7 +417,6 @@ typedef enum {
 	PW_INVIS,
 	PW_REGEN,
 	PW_FLIGHT,
-	PW_PENTAGRAM,
 
 	PW_Q3F_CONCUSS,
 	PW_Q3F_FLASH,
@@ -427,11 +426,13 @@ typedef enum {
 	PW_Q3F_AQUALUNG,
 	PW_Q3F_CEASEFIRE,
 
+	PW_PENTAGRAM,
+
 	PW_NUM_POWERUPS
 } powerup_t;
 
 typedef enum {
-	HI_NONE,
+	HI_NONE = 0,
 
 	HI_TELEPORTER,
 	HI_MEDKIT,
@@ -463,7 +464,7 @@ typedef enum {
 } weapon_t;
 
 typedef enum {
-	AMMO_SHELLS,
+	AMMO_SHELLS = 0,
 	AMMO_NAILS,
 	AMMO_ROCKETS,
 	AMMO_CELLS,
@@ -515,7 +516,7 @@ typedef enum {
 #define	EVENT_VALID_MSEC	300
 
 typedef enum {
-	EV_NONE,
+	EV_NONE = 0,
 
 	EV_FOOTSTEP,
 	EV_FOOTSTEP_METAL,
@@ -731,7 +732,7 @@ typedef enum {
 // RR2DO2
 
 typedef enum {
-	DISGUISING_NOT,
+	DISGUISING_NOT = 0,
 	DISGUISING_CLASS,
 	DISGUISING_TEAM
 } disguising_t;
@@ -744,7 +745,7 @@ typedef enum {
 
 // means of death
 typedef enum {
-	MOD_UNKNOWN,
+	MOD_UNKNOWN = 0,
 	MOD_SHOTGUN,
 	MOD_AXE,
 	MOD_NAILGUN,
@@ -810,7 +811,7 @@ typedef enum {
 
 // gitem_t->type
 typedef enum {
-	IT_BAD,
+	IT_BAD = 0,
 	IT_WEAPON,				// EFX: rotate + upscale + minlight
 	IT_AMMO,				// EFX: rotate
 	IT_ARMOR,				// EFX: rotate + minlight
@@ -882,7 +883,7 @@ qboolean	BG_CanItemBeGrabbed( int gametype, const entityState_t *ent, const play
 // entityState_t->eType
 //
 typedef enum {
-	ET_GENERAL,
+	ET_GENERAL = 0,
 	ET_ITEM,
 	ET_PLAYER,
 	ET_MISSILE,
@@ -1024,7 +1025,7 @@ typedef enum {
 } bg_q3f_panelTransitionType_t;
 
 enum {
-	Q3F_STATE_INACTIVE,
+	Q3F_STATE_INACTIVE = 0,
 	Q3F_STATE_ACTIVE,
 	Q3F_STATE_DISABLED,
 	Q3F_STATE_INVISIBLE,

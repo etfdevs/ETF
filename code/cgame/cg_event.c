@@ -1436,7 +1436,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	}
 	//ci = &cgs.clientinfo[ clientNum ];
 
-
 	switch ( event ) {
 	//
 	// movement generated events

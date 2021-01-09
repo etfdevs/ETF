@@ -645,7 +645,7 @@ static void G_Q3F_SC_CompileMapList( q3f_array_t *setting, int playerCount, qboo
 ***** Schedule functions
 ****/
 
-static char *dayNames[] = {
+static const char *dayNames[] = {
 	"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 };
 

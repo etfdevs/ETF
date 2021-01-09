@@ -41,10 +41,7 @@ If you have questions concerning this license or the applicable additional terms
 // Debug:
 void CG_Q3F_DrawCamPaths( void ) {
 	int segmentindex, splineindex, pathindex;
-	vec3_t nullvec;
 	vec3_t vec_lookat;
-
-	VectorSet(nullvec, 0, 0, 0);
 	
 	for ( pathindex = 0; pathindex < cgs.camNumPaths; pathindex++ ) {
 		for ( splineindex = 0; splineindex < cgs.campaths[pathindex].numsplines; splineindex++ ) {

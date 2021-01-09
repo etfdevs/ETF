@@ -44,8 +44,8 @@ typedef struct g_q3f_extIpFilter_s {
 extern q3f_array_t *ipFilters;
 extern int g_q3f_banCheckTime;
 
-extern q3f_array_t *ipMute;
-extern int g_q3f_muteCheckTime;
+//extern q3f_array_t *ipMute;
+//extern int g_q3f_muteCheckTime;
 
 qboolean StringToFilter( gentity_t *admin, char *s, g_q3f_extIpFilter_t *f );
 void UpdateIPBans (void);

@@ -1442,8 +1442,8 @@ static void CG_Portal( centity_t *cent ) {
 	// create the render entity
 	memset (&ent, 0, sizeof(ent));
 	if ( s1->legsAnim >= 0 && s1->legsAnim < Q3F_MAX_PATHS ) {
-		vec3_t nullvec;
-		VectorSet(nullvec, 0, 0, 0);
+		//vec3_t nullvec;
+		//VectorSet(nullvec, 0, 0, 0);
 
 		if (cgs.campaths[s1->legsAnim].camtraj.trTime + cgs.campaths[s1->legsAnim].camtraj.trDuration < cg.time) {
 			vec3_t vec_angle;
