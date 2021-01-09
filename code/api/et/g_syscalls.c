@@ -486,7 +486,7 @@ int trap_AAS_Retreat
 }
 
 int trap_AAS_AlternativeRouteGoals(vec3_t start, vec3_t goal, int travelflags,
-										 aas_altroutegoal_t *altroutegoals, int maxaltroutegoals,
+										 void *altroutegoals, int maxaltroutegoals,
 										 int color) {
 	return Q_syscall( BOTLIB_AAS_ALTROUTEGOALS, start, goal, travelflags, altroutegoals, maxaltroutegoals, color );
 }

@@ -992,21 +992,6 @@ qboolean	ConsoleCommand( void ) {
 	}
 	// Golliwog.
 
-	/*if (Q_stricmp (cmd, "addbot") == 0) {
-		Svcmd_AddBot_f();
-		return qtrue;
-	}
-
-	if (Q_stricmp (cmd, "removebot") == 0) {
-		Svcmd_RemoveBot_f();
-		return qtrue;
-	}*/
-
-	/*if (Q_stricmp (cmd, "abort_podium") == 0) {
-		Svcmd_AbortPodium_f();
-		return qtrue;
-	}*/
-
 	if (Q_stricmp (cmd, "addip") == 0) {
 		Svcmd_AddIP_f();
 		return qtrue;

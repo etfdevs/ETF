@@ -42,10 +42,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_public.h"
 #include "g_q3f_mapdata.h"
 
-#ifdef API_ET
-#include "be_aas.h"
-#endif
-
 //disable deprecated warnings
 #if defined(_MSC_VER)
 #pragma warning( disable : 4996 )
@@ -1467,7 +1463,7 @@ int			trap_AAS_Retreat
 	int travelflags
 );
 int			trap_AAS_AlternativeRouteGoals(vec3_t start, vec3_t goal, int travelflags,
-										 aas_altroutegoal_t *altroutegoals, int maxaltroutegoals,
+										 void *altroutegoals, int maxaltroutegoals,
 										 int color);
 void		trap_AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, int blocking );
 void		trap_AAS_RecordTeamDeathArea( vec3_t srcpos, int srcarea, int team, int teamCount, int travelflags );
