@@ -1921,7 +1921,7 @@ void CG_AddPlayerEffects( centity_t *cent, const refEntity_t *torso, const refEn
 	if( cent->currentState.extFlags & EXTF_LEGWOUNDS)
 	{
 		Spirit_RunScript(cgs.spirit.legshot, origin, origin, axisDefault, (intptr_t)cent );
-		cent->pe.EffectFlags |= PE_EF_DISEASED;
+		cent->pe.EffectFlags |= PE_EF_LEGWOUNDS;
 	} else if ( cent->pe.EffectFlags & PE_EF_LEGWOUNDS ) {
 		if( !Spirit_UpdateScript( cgs.spirit.legshot, origin, axisDefault, (intptr_t)cent ))
 			cent->pe.EffectFlags &= ~PE_EF_LEGWOUNDS;
