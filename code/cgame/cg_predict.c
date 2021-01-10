@@ -189,7 +189,6 @@ void CG_SpectatorTrace( trace_t *result, const vec3_t start, const vec3_t mins, 
 	*result = t;
 }
 
-#if 0
 // Activator is cgs.clientinfo[skipNumber]
 // Ent is the forcefield
 qboolean CG_Q3F_CheckCriteria( const centity_t *clAct, const clientInfo_t *activator, const centity_t *ent )
@@ -204,26 +203,25 @@ qboolean CG_Q3F_CheckCriteria( const centity_t *clAct, const clientInfo_t *activ
 
 	team	= activator->team;
 	cls		= activator->cls;
-	if( cls == Q3F_CLASS_AGENT && ent->currentState.eFlags & EF_Q3F_DISGUISECRITERIA )
+	if( cls == Q3F_CLASS_AGENT && ent->currentState.eFlags & EF_Q3F_DISGUISECRITERIA && cg.agentDataEntity && cg.agentDataEntity->currentValid )
 	{
-		if( activator->client->agentclass )
-			cls = activator->client->agentclass;
-		if( activator->client->agentteam )
-			team = activator->client->agentteam;
+		if( cg.agentDataEntity->currentState.torsoAnim )
+			cls = cg.agentDataEntity->currentState.torsoAnim;
+		if( cg.agentDataEntity->currentState.weapon )
+			team = cg.agentDataEntity->currentState.weapon;
 	}
 
 	{
 		qboolean a1, b1;
-		a1 = !cent->currentState.otherEntityNum2 || (cent->currentState.otherEntityNum2 & (1 << team));
-		b1 = !cent->currentState.frame || (cent->currentState.frame & (1 << cls));
+		a1 = !ent->currentState.otherEntityNum2 || (ent->currentState.otherEntityNum2 & (1 << team));
+		b1 = !ent->currentState.frame || (ent->currentState.frame & (1 << cls));
 
 		passedCriteria =(a1) &&								// In the correct team?
-						(b1)								// In required class?
+						(b1);								// In required class?
 	}
 
-	return( (ent->currentState.eFlags & Q3F_FLAG_REVERSECRITERIA) ? !passedCriteria : passedCriteria );
+	return( (ent->currentState.eFlags & EF_Q3F_REVERSECRITERIA) ? !passedCriteria : passedCriteria );
 }
-#endif
 
 void CG_Trace( trace_t *result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, 
 					 int skipNumber, int mask ) {
@@ -244,28 +242,23 @@ void CG_Trace( trace_t *result, const vec3_t start, const vec3_t mins, const vec
 		(cent = &cg_entities[t.entityNum]) != NULL && cent->currentValid &&
 		(cent->currentState.eType == ET_Q3F_FORCEFIELD ))
 	{
-		// Ensiform: frame is now class instead of otherEntityNum else civs are unpredictable
-		if(	(cent->currentState.frame & (1 << cgs.clientinfo[skipNumber].cls)) &&
-			(cent->currentState.otherEntityNum2 & (1 << cgs.clientinfo[skipNumber].team)) )
+		if( !CG_Q3F_CheckCriteria( &cg_entities[skipNumber], &cgs.clientinfo[skipNumber], cent ) )
 		{
-			// Check direction for players passing criteria.
-
-			if(	!(cent->currentState.eFlags & EF_Q3F_FAILDIRECTION) &&
-				!CG_Q3F_ForceFieldAllowDirection( cent->currentState.angles, start, end ) )
+			if(	!(cent->currentState.eFlags & EF_Q3F_FAILDIRECTION) ||
+					!CG_Q3F_ForceFieldAllowDirection( cent->currentState.angles, start, end ) )
 			{
+				// Players who failed the criteria.
+
 				*result = t;
 				return;
 			}
 		}
-		else if(	!(cent->currentState.eFlags & EF_Q3F_FAILDIRECTION) ||
-					!CG_Q3F_ForceFieldAllowDirection( cent->currentState.angles, start, end ) )
+		else if(	!(cent->currentState.eFlags & EF_Q3F_FAILDIRECTION) &&
+				!CG_Q3F_ForceFieldAllowDirection( cent->currentState.angles, start, end ) )
 		{
-			// Players who failed the criteria.
-
 			*result = t;
 			return;
 		}
-
 
 		// Right, time to try _without_ the forcefield mask.
 
