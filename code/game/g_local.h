@@ -1090,7 +1090,7 @@ void G_Q3F_SupplyStationRepair( gentity_t *player, int suppnum );
 void G_Q3F_SupplyStationRefill( gentity_t *player, int suppnum );
 // Golliwog.
 
-void G_DumpEntityInfo( gentity_t *ent, qboolean coredump, char* prefix, char* title, qboolean client );
+void G_DumpEntityInfo( gentity_t *ent, qboolean coredump, const char* prefix, const char* title, qboolean client );
 
 // Golliwog: Panel commands.
 qboolean G_Q3F_RadiateToSurface( vec3_t focus, float maxDist, vec3_t traceEnd, vec3_t angles, gentity_t **traceEnt, int contentmask, int ignoreEnt );

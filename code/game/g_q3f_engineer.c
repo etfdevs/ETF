@@ -210,7 +210,7 @@ qboolean G_Q3F_SentryEnemyValid( gentity_t *ent, gentity_t *enemy )
 	return qtrue;
 }
 
-void G_DumpClientInfo( gclient_t *cl, char* prefix, char* title) {
+static void G_DumpClientInfo( gclient_t *cl, const char* prefix, const char* title) {
 	char buf[16];
 	
 	if(!cl) {
@@ -234,7 +234,7 @@ void G_DumpClientInfo( gclient_t *cl, char* prefix, char* title) {
 	G_LogPrintf("%s ==================\n", prefix );
 }
 
-void G_DumpEntityInfo( gentity_t *ent, qboolean coredump, char* prefix, char* title, qboolean client ) {
+void G_DumpEntityInfo( gentity_t *ent, qboolean coredump, const char* prefix, const char* title, qboolean client ) {
 	char buf[16];
 
 	if(!ent) {
