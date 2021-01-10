@@ -3,8 +3,6 @@ project(etf VERSION 2.0 LANGUAGES C CXX)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
-link_libraries("-rdynamic")
-set(CMAKE_BUILD_TYPE "Debug")
 
 include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
@@ -94,6 +92,11 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
   # Set the possible values of build type for cmake-gui
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
+
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+    # Ensure debug symbols in backtrace
+    link_libraries("-rdynamic")
 endif()
 
 # compiler specific flags
