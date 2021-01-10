@@ -1073,7 +1073,7 @@ void ClientThink_real( gentity_t *ent ) {
 	// Golliwog.
 
 	// Tranquilised
-	if( client->tranqTime ) 	{
+	if( client->tranqTime ) {
 		if( level.time >= client->tranqTime ) {
 			trap_SendServerCommand( ent->s.number, "print \"You feel better now.\n\"" );
 			client->tranqTime = 0;

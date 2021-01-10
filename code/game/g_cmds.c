@@ -863,7 +863,7 @@ void StopFollowing( gentity_t *ent, qboolean resetclient ) {
 		ent->client->sess.spectatorClient = -1;
 
 	ent->client->ps.clientNum = ent - g_entities;
-	ent->client->ps.stats[STAT_HEALTH] = 100;			// WE LIVE,AGAIN!
+	ent->health = ent->client->ps.stats[STAT_HEALTH] = 100;			// WE LIVE,AGAIN!
 
 	// Player won't be an engineer anymore so nuke the data
 	G_Q3F_UpdateEngineerStats(ent);

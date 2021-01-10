@@ -396,6 +396,8 @@ typedef enum {
 
 // The extFlags field is an 8-bit (presently) space for extra flags.
 // Ensiform: This is actually 32-bit in ETF.
+#define EXTF_UNUSED1		0x01
+#define EXTF_UNUSED2		0x02
 #define	EXTF_BURNING		0x04			// Player is burning
 #define	EXTF_TRANQED		0x08			// Player is tranqed
 #define	EXTF_CONTROL		0x10			// Player is controlling something instead of running around.
