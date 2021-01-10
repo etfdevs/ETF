@@ -58,6 +58,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_mapents.h"
 #include "bg_q3f_util.h"
 
+#define __STDC_FORMAT_MACROS // older compilers need this
+#include <inttypes.h>
+
 #include "g_bot_interface.h"
 #ifdef DREVIL_BOT_SUPPORT
 static void BotSendSentryStatus(gentity_t *sentry);
@@ -257,7 +260,7 @@ void G_DumpEntityInfo( gentity_t *ent, qboolean coredump, char* prefix, char* ti
 	}
 
 	G_LogPrintf("%s Flags: %i\n", prefix, ent->flags );
-	G_LogPrintf("%s Health: %li\n", prefix, ent->health );
+	G_LogPrintf("%s Health: %" PRIiPTR "\n", prefix, ent->health );
 	G_LogPrintf("%s Model: %s\n", prefix, ent->model );
 	G_LogPrintf("%s Model2: %s\n", prefix, ent->model2 );
 	G_LogPrintf("%s Origin: (%f %f %f)\n", prefix, ent->r.currentOrigin[0], ent->r.currentOrigin[1], ent->r.currentOrigin[2] );

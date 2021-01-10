@@ -41,6 +41,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_team.h"
 #include "g_q3f_admin.h"
 
+#define __STDC_FORMAT_MACROS // older compilers need this
+#include <inttypes.h>
+
 #include "g_bot_interface.h"
 #ifdef BUILD_LUA
 #include "g_lua.h"
@@ -959,7 +962,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 
 	if ( g_debugDamage.integer ) {
 //		G_Printf( "client:%i health:%i damage:%i armor:%i\n", targ->s.number,
-		G_Printf( "%i: client:%i health:%li damage:%f armor:%f\n", level.time, targ->s.number,
+		G_Printf( "%i: client:%i health:%" PRIiPTR " damage:%f armor:%f\n", level.time, targ->s.number,
 			targ->health, take, asave );
 	}
 
@@ -969,7 +972,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		if( client )
 		{
 			G_DebugLog(	"*** G_Damage: %s -> %s\n", attacker->client->pers.netname, client->pers.netname );
-			G_DebugLog( "Damage: %d (%d), Health: %d, Armor: %d (%d%%, %d)\n",
+			G_DebugLog( "Damage: %d (%d), Health: %" PRIiPTR ", Armor: %d (%d%%, %d)\n",
 						origdamage, dflags, targ->health, origarmour,
 						client->ps.stats[STAT_ARMORTYPE], client->ps.stats[STAT_Q3F_ARMOURCLASS] );
 			G_DebugLog(	"Post-modifier damage: %f, Post-armor damage: %f, Post FF damage: %f\n",
@@ -979,7 +982,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		}
 		else if( targ->parent && targ->parent->client ) {
 			G_DebugLog(	"*** G_Damage: %s -> %s\n", attacker->client->pers.netname, targ->parent->client->pers.netname );
-			G_DebugLog( "Damage: %d (%d), Health: %d\n",
+			G_DebugLog( "Damage: %d (%d), Health: %" PRIiPTR "\n",
 						origdamage, dflags, targ->health );
 			G_DebugLog(	"Post-modifier damage: %f, Post FF damage: %f\n", damage, take );
 			G_DebugLog(	"Final Health: %f\n", (float) (targ->health) - take );
