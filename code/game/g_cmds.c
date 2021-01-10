@@ -355,7 +355,15 @@ void Cmd_Give_f (gentity_t *ent)
 	if (give_all || Q_stricmp( name, "health") == 0)
 	{
 //		ent->health = ent->client->ps.stats[STAT_MAX_HEALTH];
-		ent->health = BG_Q3F_GetClass( &ent->client->ps )->maxhealth;
+		ent->health = ent->client->ps.stats[STAT_HEALTH] = BG_Q3F_GetClass( &ent->client->ps )->maxhealth;
+
+		// Picking up health cure legwounds
+		if (ent->client->legwounds)
+		{
+			ent->client->legwounds  = 0;
+			trap_SendServerCommand( ent->s.number, va("print \"Your legs have fully healed.\n"));
+		}
+
 		if (!give_all)
 			return;
 	}

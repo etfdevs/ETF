@@ -1935,8 +1935,26 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 				newvalue = _CalcGiveValue(	current->health, add,
 											(force ? 999 : cls->maxhealth), -10000,
 											effectfactor, data->value.d.intdata );
-				if( newvalue >= current->health )
+				if( newvalue >= current->health ) {
+					// Picking up health cure legwounds
+					if (current->client->legwounds)
+					{
+						if (data->value.d.intdata > 95)
+							current->client->legwounds  = 0;
+						else
+							current->client->legwounds = current->client->legwounds - (newvalue/20);
+
+						if (current->client->legwounds < 1)
+							current->client->legwounds = 0;
+
+						if (current->client->legwounds == 0) {
+							trap_SendServerCommand( current->s.number, va("print \"Your legs have fully healed.\n"));
+						} else {
+							trap_SendServerCommand( current->s.number, va("print \"Your legs have partially healed.\n"));
+						}
+					}
 					current->client->ps.stats[STAT_HEALTH] = current->health = newvalue;
+				}
 				else G_Damage( current, other, NULL, NULL, NULL, current->health - newvalue, DAMAGE_NO_ARMOR, MOD_UNKNOWN );
 			}
 			else if( data->key == givestringptrs[1] )	// Alter player armour

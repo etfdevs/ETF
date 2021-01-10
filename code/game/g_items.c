@@ -365,6 +365,25 @@ int Pickup_Health (gentity_t *ent, gentity_t *other) {
 	if (other->health > max ) {
 		other->health = max;
 	}
+
+	// Picking up health cure legwounds
+	if (other->client->legwounds)
+	{
+		if (quantity > 95)
+			other->client->legwounds  = 0;
+		else
+			other->client->legwounds = other->client->legwounds - (other->health/20);
+
+		if (other->client->legwounds < 1)
+			other->client->legwounds = 0;
+
+		if (other->client->legwounds == 0) {
+			trap_SendServerCommand( other->s.number, va("print \"Your legs have fully healed.\n"));
+		} else {
+			trap_SendServerCommand( other->s.number, va("print \"Your legs have partially healed.\n"));
+		}
+	}
+
 	other->client->ps.stats[STAT_HEALTH] = other->health;
 
 	if ( ent->item->quantity == 100 ) {		// mega health respawns slow
