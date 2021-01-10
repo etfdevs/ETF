@@ -1750,6 +1750,15 @@ static int _CalcPowerupValue( int srcvalue, qboolean add, qboolean force, float 
 	return( level.time + value );
 }
 
+static int _CalcMaladiesValue( int srcvalue, qboolean add, qboolean force, float factor, int newvalue ) {
+	if (srcvalue <= level.time && force && newvalue == 0) {
+		return 0;
+	}
+	else {
+		return _CalcPowerupValue( srcvalue, add, force, factor, newvalue );
+	}
+}
+
 #define NUMGIVESTRINGS 37
 //keeg renamed haste to speed
 static char *givestrings[NUMGIVESTRINGS] = {
@@ -2018,16 +2027,16 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 					_CalcPowerupValue( current->client->ps.powerups[PW_Q3F_CEASEFIRE], add, force, effectfactor, data->value.d.intdata );
 			else if( data->key == givestringptrs[30] )	// Alter player gas time
 				current->client->ps.powerups[PW_Q3F_GAS] =
-					_CalcPowerupValue( current->client->ps.powerups[PW_Q3F_GAS], add, force, effectfactor, data->value.d.intdata );
+					_CalcMaladiesValue( current->client->ps.powerups[PW_Q3F_GAS], add, force, effectfactor, data->value.d.intdata );
 			else if( data->key == givestringptrs[31] )	// Alter player stun time
 				current->client->ps.powerups[PW_Q3F_CONCUSS] =
-					_CalcPowerupValue( current->client->ps.powerups[PW_Q3F_CONCUSS], add, force, effectfactor, data->value.d.intdata );
+					_CalcMaladiesValue( current->client->ps.powerups[PW_Q3F_CONCUSS], add, force, effectfactor, data->value.d.intdata );
 			else if( data->key == givestringptrs[32] )	// Alter player flash time
 				current->client->ps.powerups[PW_Q3F_FLASH] =
-					_CalcPowerupValue( current->client->ps.powerups[PW_Q3F_FLASH], add, force, effectfactor, data->value.d.intdata );
+					_CalcMaladiesValue( current->client->ps.powerups[PW_Q3F_FLASH], add, force, effectfactor, data->value.d.intdata );
 			else if( data->key == givestringptrs[33] )	// Alter player tranq time
 				current->client->tranqTime =
-					_CalcPowerupValue( current->client->tranqTime, add, force, effectfactor, data->value.d.intdata );
+					_CalcMaladiesValue( current->client->tranqTime, add, force, effectfactor, data->value.d.intdata );
 			else if( data->key == givestringptrs[34] )	// Alter player fire time
 			{
 				int i;
