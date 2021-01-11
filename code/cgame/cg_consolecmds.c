@@ -784,6 +784,21 @@ static void CG_Q3F_Special2( void ) {
 	}
 }
 
+static void CG_Q3F_MeleeSwap_f( void ) {
+	// RR2DO2: prevent crash
+	if(!cg.snap || !cg.snap->ps.persistant || (cg.snap->ps.pm_flags & PMF_FOLLOW) || (cg.snap->ps.pm_flags & PMF_CHASE) || (cg.snap->ps.powerups[PW_Q3F_CEASEFIRE]))
+		return;
+
+	if(cg.snap->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_CIVILIAN || cg.snap->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_NULL) {
+		return;
+	}
+
+	if(cg.snap->ps.weapon != WP_AXE)
+		cg.weaponSelect = WP_AXE;
+	else if (cg.lastWeapon)
+		cg.weaponSelect = cg.lastWeapon;
+}
+
 static void CG_Q3F_BeginGesture (void ) {
 	char buffer[64];
 	if( trap_Argc() < 2 )
@@ -1386,6 +1401,7 @@ static consoleCommand_t	commands[] = {
 	{ "weapon", CG_Weapon_f },
 	{ "weaponslot", CG_WeaponSlot_f },
 	{ "lastweapon", CG_LastWeapon_f },
+	{ "meleeswap", CG_Q3F_MeleeSwap_f },
 	{ "tell_target", CG_TellTarget_f },
 	{ "tell_teamtarget", CG_TellTeamTarget_f }, // RR2DO2
 	{ "tell_attacker", CG_TellAttacker_f },
