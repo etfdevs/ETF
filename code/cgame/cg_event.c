@@ -2292,7 +2292,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_HE_EXPLODE:
 		DEBUGNAME("EV_HE_EXPLODE");
 		Spirit_RunScript( cgs.spirit.explosion_he, cent->lerpOrigin, cent->lerpOrigin, axisDefault, 0 );
-		CG_ExplosionMark( cent->lerpOrigin, 80, colorWhite);
+		CG_ExplosionMark( cent->lerpOrigin, 200, colorWhite); // 80
 		CG_Q3F_Vibrate( 10000, cent->lerpOrigin );
 		CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_HE_BLOW);
 		break;
