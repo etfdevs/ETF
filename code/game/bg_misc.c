@@ -1334,7 +1334,7 @@ char *modNames[MOD_LASTONE] = {
 	"MOD_DISCONNECT",
 };
 
-char *eventnames[] = {
+const char *eventnames[] = {
 	"EV_NONE",
 
 	"EV_FOOTSTEP",

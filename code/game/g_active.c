@@ -698,7 +698,7 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 
 #ifdef _DEBUG
 	{
-		extern char *eventnames[];
+		extern const char *eventnames[];
 		char buf[256];
 		trap_Cvar_VariableStringBuffer("showevents", buf, sizeof(buf));
 		if ( atof(buf) != 0 ) {

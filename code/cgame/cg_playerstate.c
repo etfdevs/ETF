@@ -281,7 +281,7 @@ void CG_Respawn( void ) {
 	cgDC.weapon = 0;  // cg.snap->ps.weapon;
 }
 
-extern char *eventnames[];
+extern const char *eventnames[];
 
 /*
 ==============

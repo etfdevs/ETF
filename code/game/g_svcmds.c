@@ -344,6 +344,42 @@ void Svcmd_RemoveIP_f (void)
 	G_Printf ( "Didn't find %s.\n", str );
 }
 
+static const char* entityTypeNames[] = {
+	"ET_GENERAL",
+	"ET_ITEM",
+	"ET_PLAYER",
+	"ET_MISSILE",
+	"ET_MOVER",
+	"ET_BEAM",
+	"ET_PORTAL",
+	"ET_SPEAKER",
+	"ET_PUSH_TRIGGER",
+	"ET_TELEPORT_TRIGGER",
+	"ET_INVISIBLE",
+	"ET_Q3F_GRENADE",
+	"ET_Q3F_GOAL",
+	"ET_Q3F_HUD",
+	"ET_Q3F_AGENTDATA",
+	"ET_Q3F_SCANNERDATA",
+	"ET_SNIPER_DOT",
+	"ET_FLAME",
+	"ET_Q3F_SENTRY",
+	"ET_Q3F_SUPPLYSTATION",
+	"ET_Q3F_BEAM",
+	"ET_Q3F_MAPSENTRY",
+	"ET_Q3F_PANEL",
+	"ET_Q3F_FORCEFIELD",
+	"ET_Q3F_SENTRYCAM",
+	"ET_Q3F_TELEPORTTRANSITION",
+	"ET_Q3F_MAGICMIRROR",
+	"ET_Q3F_SKYPORTAL",
+	"ET_Q3F_FLAMER",
+	"ET_Q3F_VISIBILITY",
+	"ET_EVENTS"
+};
+
+extern const char *eventnames[];
+
 /*
 ===================
 Svcmd_EntityList_f
@@ -352,109 +388,32 @@ Svcmd_EntityList_f
 void	Svcmd_EntityList_f (void) {
 	int			e;
 	gentity_t		*check;
+	int			count;
+	//char *match;
+
+	/*if ( trap_Argc() > 1 ) {
+		match = ConcatArgs( 1 );
+	} else {
+		match = NULL;
+	}*/
 
 	check = g_entities;
+	count = 0;
+	G_Printf( "%-4s  %-20s %-20s\n", " Num", "Entity Type", "Class" );
+	G_Printf( "--------------------------------------------------------------------\n" );
 	for (e = 0; e < level.num_entities ; e++, check++) {
 		if ( !check->inuse ) {
 			continue;
 		}
-		G_Printf("%3i:", e);
-		switch ( check->s.eType ) {
-		case ET_GENERAL:
-			G_Printf("ET_GENERAL          ");
-			break;
-		case ET_PLAYER:
-			G_Printf("ET_PLAYER           ");
-			break;
-		case ET_ITEM:
-			G_Printf("ET_ITEM             ");
-			break;
-		case ET_MISSILE:
-			G_Printf("ET_MISSILE          ");
-			break;
-		case ET_MOVER:
-			G_Printf("ET_MOVER            ");
-			break;
-		case ET_BEAM:
-			G_Printf("ET_BEAM             ");
-			break;
-		case ET_PORTAL:
-			G_Printf("ET_PORTAL           ");
-			break;
-		case ET_SPEAKER:
-			G_Printf("ET_SPEAKER          ");
-			break;
-		case ET_PUSH_TRIGGER:
-			G_Printf("ET_PUSH_TRIGGER     ");
-			break;
-		case ET_TELEPORT_TRIGGER:
-			G_Printf("ET_TELEPORT_TRIGGER ");
-			break;
-		case ET_INVISIBLE:
-			G_Printf("ET_INVISIBLE        ");
-			break;
-/*		case ET_GRAPPLE:
-			G_Printf("ET_GRAPPLE          ");
-			break;*/
-		case ET_Q3F_GRENADE:
-			G_Printf("ET_Q3F_GRENADE         ");
-			break;
-		case ET_Q3F_GOAL:
-			G_Printf("ET_Q3F_GOAL         ");
-			break;
-		case ET_Q3F_HUD:
-			G_Printf("ET_Q3F_HUD         ");
-			break;
-		case ET_Q3F_AGENTDATA:
-			G_Printf("ET_Q3F_AGENTDATA         ");
-			break;
-		case ET_Q3F_SCANNERDATA:
-			G_Printf("ET_Q3F_SCANNERDATA         ");
-			break;
-		case ET_SNIPER_DOT:
-			G_Printf("ET_SNIPER_DOT         ");
-			break;
-		case ET_FLAME:
-			G_Printf("ET_FLAME         ");
-			break;
-		case ET_Q3F_SENTRY:
-			G_Printf("ET_Q3F_SENTRY         ");
-			break;
-		case ET_Q3F_SUPPLYSTATION:
-			G_Printf("ET_Q3F_SUPPLYSTATION         ");
-			break;
-		case ET_Q3F_BEAM:
-			G_Printf("ET_Q3F_BEAM         ");
-			break;
-		case ET_Q3F_MAPSENTRY:
-			G_Printf("ET_Q3F_MAPSENTRY         ");
-			break;
-		case ET_Q3F_PANEL:
-			G_Printf("ET_Q3F_PANEL         ");
-			break;
-		case ET_Q3F_FORCEFIELD:
-			G_Printf("ET_Q3F_FORCEFIELD         ");
-			break;
-		case ET_Q3F_SENTRYCAM:
-			G_Printf("ET_Q3F_SENTRYCAM         ");
-			break;
-		case ET_Q3F_TELEPORTTRANSITION:
-			G_Printf("ET_Q3F_TELEPORTTRANSITION         ");
-			break;
-		case ET_Q3F_SKYPORTAL:
-			G_Printf("ET_Q3F_SKYPORTAL         ");
-			break;
-
-		default:
-			G_Printf("%3i                 ", check->s.eType);
-			break;
-		}
-
-		if ( check->classname ) {
-			G_Printf("%s", check->classname);
-		}
-		G_Printf("\n");
+		//if ( match && !Com_Filter( match, cmd->name ) )
+		//	continue;
+		if ( check->s.eType < ET_EVENTS )
+			G_Printf( "%4i: %-20s %-20s\n", e, entityTypeNames[check->s.eType], check->classname && check->classname[0] ? check->classname : "noclass" );
+		else
+			G_Printf( "%4i: %-20s %-20s\n", e, eventnames[check->s.eType - ET_EVENTS], check->classname && check->classname[0] ? check->classname : "noclass" );
+		count++;
 	}
+	G_Printf("...%d entities\n", count);
 }
 
 gclient_t	*ClientForString( const char *s ) {

@@ -1649,6 +1649,8 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand("etfmap");
 	trap_AddCommand("etfdevmap");
 
+	trap_AddCommand("entitylist");		// list entities on server (only available with server running)
+
 	//trap_AddCommand("showspecs");		// lists spectators in console
 
 	// Golliwog: Add all the class changing commands
