@@ -48,6 +48,13 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum );
 void CG_Shutdown( void );
 static qboolean CG_CheckExecKey( int key );
 
+qboolean intShaderTime = qfalse;
+qboolean linearLight = qfalse;
+
+int dll_com_trapGetValue;
+int dll_trap_R_AddRefEntityToScene2;
+int dll_trap_R_AddLinearLightToScene;
+
 /*
 ================
 vmMain

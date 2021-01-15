@@ -1148,6 +1148,7 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 {
 	// Perform required initialization before anything else happens.
 
+	char  value[MAX_CVAR_VALUE_STRING];
 	const char *s;
 	qtime_t now;
 	int i;
@@ -1172,6 +1173,19 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
   	// OSP - sync to main refdef  keeg brought in to stop tracemap crash in cgame
    //keeg note:  could just change the other code to use cg.refdef but talk to RR2 first
 	cg.refdef_current = &cg.refdef;
+
+	trap_Cvar_VariableStringBuffer( "//trap_GetValue", value, sizeof( value ) );
+	if ( value[0] ) {
+		dll_com_trapGetValue = atoi( value );
+		if ( trap_GetValue( value, sizeof( value ), "trap_R_AddRefEntityToScene2" ) ) {
+			dll_trap_R_AddRefEntityToScene2 = atoi( value );
+			intShaderTime = qtrue;
+		}
+		if ( trap_GetValue( value, sizeof( value ), "trap_R_AddLinearLightToScene_ETE" ) ) {
+			dll_trap_R_AddLinearLightToScene = atoi( value );
+			linearLight = qtrue;
+		}
+	}
 
 	CG_RegisterCvars();
 

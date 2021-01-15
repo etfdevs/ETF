@@ -2622,4 +2622,16 @@ void CG_Q3F_ConcussionEffect2( int* x, int* y );
 
 qboolean CG_CullPointAndRadius( const vec3_t pt, vec_t radius );
 
+// extension interface
+extern  qboolean intShaderTime;
+extern  qboolean linearLight;
+
+qboolean trap_GetValue( char *value, int valueSize, const char *key );
+void trap_R_AddRefEntityToScene2( const refEntity_t *re );
+void trap_R_AddLinearLightToScene( const vec3_t start, const vec3_t end, float intensity, float r, float g, float b );
+extern int dll_com_trapGetValue;
+extern int dll_trap_R_AddRefEntityToScene2;
+extern int dll_trap_R_AddLinearLightToScene;
+
+
 #endif	//__CG_LOCAL_H
