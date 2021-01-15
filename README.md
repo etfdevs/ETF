@@ -1,5 +1,7 @@
 # ETF 2.0
 
+[![Discord Shield](https://discord.com/api/guilds/253600486219972608/widget.png?style=shield)](https://discord.com/channels/253600486219972608/401475882897899523)
+
 This is an early upload of the ETF mod post 1.6 release with some experimental code added that was not part of any original release but was my testing purposes.
 
 Notes:
