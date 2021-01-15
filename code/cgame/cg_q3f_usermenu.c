@@ -47,7 +47,7 @@ static char Custom_StringSpace[CUSTOM_STRING_MAX];
 static int Custom_StringUsed;
 static struct {
 	int key;
-	char *keystring;
+	//char *keystring;
 	char *title;
 	char *command;
 } Custom_Items[CUSTOM_ITEM_MAX];
@@ -102,18 +102,18 @@ void CG_Q3F_CustomMenuShow( const char *filename ) {
 	fileHandle_t handle;
 	int filelen, filedone;
 	char buffer[1024], *line;
-	char fullname[MAX_QPATH];
+	char fullname[MAX_QPATH*2];
 
 	Custom_StringUsed = 0;
 	Custom_ItemsUsed = 0;
 
 	if (!filename[0]) {
-		Q_strncpyz(fullname, "/ui/usermenu/default_main.cfg", MAX_QPATH);
+		Q_strncpyz(fullname, "/ui/usermenu/default_main.cfg", sizeof(fullname));
 	} else if (!strchr(filename, '/')) {
-		Q_strncpyz(fullname, "/ui/usermenu/", MAX_QPATH);
-		Q_strcat(fullname, MAX_QPATH, filename);
+		Q_strncpyz(fullname, "/ui/usermenu/", sizeof(fullname));
+		Q_strcat(fullname, sizeof(fullname), filename);
 	} else {
-        Q_strncpyz(fullname, filename, MAX_QPATH);
+        Q_strncpyz(fullname, filename, sizeof(fullname));
 	}
 
 	filelen = trap_FS_FOpenFile( fullname, &handle, FS_READ );
@@ -135,7 +135,7 @@ void CG_Q3F_CustomMenuShow( const char *filename ) {
 		switch ( index ) {
 		case 0:
 			Custom_Items[Custom_ItemsUsed].key = buffer[0];
-			Custom_Items[Custom_ItemsUsed].keystring = "a";
+			//Custom_Items[Custom_ItemsUsed].keystring = "a";
 			index = 1;
 			break;
 		case 1:
@@ -187,7 +187,7 @@ int CG_Q3F_CustomMenuItems( void ) {
 	return Custom_ItemsUsed;
 }
 
-const char * CG_Q3F_CustomMenuGetItem(int index, int column) {
+const char *CG_Q3F_CustomMenuGetItem(int index, int column) {
 	static char buf[2];
 
 	if (index < 0 || index >= Custom_ItemsUsed)
