@@ -929,3 +929,9 @@ int trap_GeneticParentsAndChildSelection(int numranks, float *ranks, int *parent
 void trap_PbStat ( int clientNum , char *category , char *values ) {
 	Q_syscall( PB_STAT_REPORT , clientNum , category , values ) ;
 }
+
+// extension interface
+
+qboolean trap_GetValue( char *value, int valueSize, const char *key ) {
+	return Q_syscall( dll_com_trapGetValue, value, valueSize, key );
+}

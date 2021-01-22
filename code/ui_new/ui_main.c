@@ -310,7 +310,12 @@ static int QDECL UI_ServersQsortCompare( const void *arg1, const void *arg2 );
 static const char *UI_SelectedMap(int index, int *actual);
 //static int UI_GetIndexFromSelection(int actual);
 
-//int ProcessNewUI( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6 );
+qboolean intShaderTime = qfalse;
+qboolean linearLight = qfalse;
+
+int dll_com_trapGetValue;
+int dll_trap_R_AddRefEntityToScene2;
+int dll_trap_R_AddLinearLightToScene;
 
 /*
 ================
@@ -6668,6 +6673,19 @@ void _UI_Init( qboolean inGameLoad ) {
 	//uiInfo.inGameLoad = inGameLoad;
 
 	UI_Q3F_SetVersion();
+
+	trap_Cvar_VariableStringBuffer( "//trap_GetValue", ver, sizeof( ver ) );
+	if ( ver[0] ) {
+		dll_com_trapGetValue = atoi( ver );
+		if ( trap_GetValue( ver, sizeof( ver ), "trap_R_AddRefEntityToScene2" ) ) {
+			dll_trap_R_AddRefEntityToScene2 = atoi( ver );
+			intShaderTime = qtrue;
+		}
+		if ( trap_GetValue( ver, sizeof( ver ), "trap_R_AddLinearLightToScene_ETE" ) ) {
+			dll_trap_R_AddLinearLightToScene = atoi( ver );
+			linearLight = qtrue;
+		}
+	}
 
 	UI_RegisterCvars();
 	UI_InitMemory();

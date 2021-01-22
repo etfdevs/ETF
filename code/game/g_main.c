@@ -428,7 +428,8 @@ void G_RunFrame( int levelTime );
 void G_ShutdownGame( int restart );
 void CheckExitRules( void );
 
-
+// extension interface
+int dll_com_trapGetValue;
 
 /*
 ================
@@ -946,6 +947,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	q3f_array_t* mapList;
 	q3f_data_t* data;
 	char mapbuffer[4096];
+	char value[ MAX_CVAR_VALUE_STRING ];
 
 #ifdef PERFLOG
 	BG_Q3F_PerformanceMonitorInit("performance_game.log");
@@ -956,6 +958,12 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_Printf ("gamename: %s\n", GAME_VERSION);
 	G_Printf ("gamedate: %s\n", __DATE__);
 	G_Printf ("gameversion: %s\n", FORTS_VERSION);
+
+	// extension interface
+	trap_Cvar_VariableStringBuffer( "//trap_GetValue", value, sizeof( value ) );
+	if ( value[0] ) {
+		dll_com_trapGetValue = atoi( value );
+	}
 
 	trap_Cvar_Set("g_balancedteams", FORTS_SHORTVERSION);
 

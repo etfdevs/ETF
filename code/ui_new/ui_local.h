@@ -1079,4 +1079,15 @@ void			trap_S_StartBackgroundTrack( const char *intro, const char *loop, int fad
 
 #define ASSET_BACKGROUND "uiBackground"
 
+// extension interface
+extern  qboolean intShaderTime;
+extern  qboolean linearLight;
+
+qboolean trap_GetValue( char *value, int valueSize, const char *key );
+void trap_R_AddRefEntityToScene2( const refEntity_t *re );
+void trap_R_AddLinearLightToScene( const vec3_t start, const vec3_t end, float intensity, float r, float g, float b );
+extern int dll_com_trapGetValue;
+extern int dll_trap_R_AddRefEntityToScene2;
+extern int dll_trap_R_AddLinearLightToScene;
+
 #endif

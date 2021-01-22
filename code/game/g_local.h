@@ -1599,6 +1599,12 @@ int	trap_PC_UnReadToken( int handle );
 // shared syscalls
 void	trap_DropClient( int clientNum, const char *reason, int length );
 
+
+// extension interface
+
+qboolean trap_GetValue( char *value, int valueSize, const char *key );
+extern int dll_com_trapGetValue;
+
 void QDECL G_DebugLog( const char *fmt, ... );
 
 #ifdef _DEBUG

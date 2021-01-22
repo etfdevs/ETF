@@ -533,3 +533,17 @@ void trap_openURL( const char *s ) {
 void trap_GetHunkData( int* hunkused, int* hunkexpected ) {
 	Q_syscall( UI_GETHUNKDATA, hunkused, hunkexpected );
 }
+
+// extension interface
+
+qboolean trap_GetValue( char *value, int valueSize, const char *key ) {
+	return Q_syscall( dll_com_trapGetValue, value, valueSize, key );
+}
+
+void trap_R_AddRefEntityToScene2( const refEntity_t *re ) {
+	Q_syscall( dll_trap_R_AddRefEntityToScene2, re );
+}
+
+void trap_R_AddLinearLightToScene( const vec3_t start, const vec3_t end, float intensity, float r, float g, float b ) {
+	Q_syscall( dll_trap_R_AddLinearLightToScene, start, end, intensity, r, g, b );
+}
