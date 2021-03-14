@@ -63,6 +63,11 @@ jobs:
         release: false
         update: false
 
+    - name: Configure MinGW for x86
+      shell: bash
+      run: |
+        echo "C:\msys64\mingw32\bin" >> $GITHUB_PATH
+
     - uses: actions/checkout@v2
       with:
         submodules: recursive
