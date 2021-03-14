@@ -76,7 +76,7 @@ typedef enum cgameEvent_e {
 */
 // Arnout : Q3F Port
 enum {
-  CGAME_EVENT_NONE,
+  CGAME_EVENT_NONE = 0,
 //  CGAME_EVENT_TEAMMENU,
 //  CGAME_EVENT_SCOREBOARD,
   CGAME_EVENT_EDITHUD,

@@ -1430,7 +1430,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatInput, 
 	}
 
 	// Golliwog: Handle channel messages
-	if( (*chatText == '#') ) {
+	if( *chatText == '#' ) {
 		for( j = 0, chatText++; *chatText && *chatText != ' ' && j < 63; j++ ) {
 			location[j] = *chatText++;
 			if( location[j] >= 'A' && location[j] <= 'Z' )
@@ -1454,7 +1454,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatInput, 
 	// Golliwog.
 
 	// Golliwog: Handle samples
-	if( ( *chatText == '&') ) {
+	if( *chatText == '&' ) {
 		for( j = 0, chatText++; *chatText && (!(*chatText == ' ' && chatInput)) && j < MAX_QPATH - 1; j++ ) {
 			sound[j] = *chatText++;
 			if( sound[j] >= 'A' && sound[j] <= 'Z' )
@@ -3563,7 +3563,7 @@ static void G_Q3F_PlayerStatus( gentity_t *ent )
 		{
 			trap_SendServerCommand( ent-g_entities, va("print \"%3d %4d %6s %5d %s\n\"",
 								player->s.number,
-								player->client->ps.ping,
+								player->client->pers.realPing,//ps.ping
 								(player->client->sess.sessionTeam ? g_q3f_teamlist[player->client->sess.sessionTeam].name : "spec"),
 								player->client->ps.persistant[PERS_SCORE],
 								player->client->pers.netname ) );

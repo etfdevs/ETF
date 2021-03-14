@@ -1430,7 +1430,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 	}
 	// Golliwog.
 
-	if( /*guid &&*/ *guid_str && (!client->sess.guidStr || Q_stricmp( client->sess.guidStr, guid_str )) )
+	if( /*guid &&*/ *guid_str && (!*client->sess.guidStr || Q_stricmp( client->sess.guidStr, guid_str )) )
 	{
 		Q_strncpyz( client->sess.guidStr, guid_str, sizeof(client->sess.guidStr) );
 	}
@@ -1668,9 +1668,9 @@ qboolean ClientSpawn(gentity_t *ent) {
 	client->pers.teamState.state = TEAM_ACTIVE;
 
 	// Golliwog: Send a menu command
-	if( ( client->sess.sessionTeam == Q3F_TEAM_SPECTATOR ) )
+	if( client->sess.sessionTeam == Q3F_TEAM_SPECTATOR )
 		G_Q3F_SendTeamMenu( ent, qfalse );
-	else if( ( client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_NULL ) )
+	else if( client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_NULL )
 		G_Q3F_SendClassMenu( ent, 0 );
 
 	// toggle the teleport bit so the client knows to not lerp

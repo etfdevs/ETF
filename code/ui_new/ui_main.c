@@ -325,7 +325,6 @@ This is the only way control passes into the module.
 This must be the very first function compiled into the .qvm file
 ================
 */
-vmCvar_t  ui_new;
 vmCvar_t  ui_debug;
 vmCvar_t  ui_initialized;
 
@@ -1411,8 +1410,6 @@ void UI_LoadMenus(const char *menuFile, qboolean reset) {
 			trap_Error( S_COLOR_RED "default menu file not found: ui/menus.txt, unable to continue!^7" );
 		}
 	}
-
-	ui_new.integer = 1;
 
 	if (reset) {
 		Menu_Reset();
@@ -7462,7 +7459,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &ui_server15,				"server15",					"",									CVAR_ARCHIVE },
 	{ &ui_server16,				"server16",					"",									CVAR_ARCHIVE },
 	{ &ui_cdkeychecked,			"ui_cdkeychecked",			"0",								CVAR_ROM },
-	{ &ui_new,					"ui_new",					"0",								CVAR_TEMP },
 	{ &ui_debug,				"ui_debug",					"0",								CVAR_TEMP },
 	{ &ui_initialized,			"ui_initialized",			"0",								CVAR_TEMP },
 	{ &ui_currentMap,			"ui_currentMap",			"0",								CVAR_TEMP },

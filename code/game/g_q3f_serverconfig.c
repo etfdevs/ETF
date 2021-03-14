@@ -297,7 +297,7 @@ static void G_Q3F_SC_ProcessSetting( q3f_keypairarray_t **settingroot, qboolean 
 							Q_strcat( cmd, sizeof(cmd), sc.token.string );
 						}
 						else {
-							if( sc.token.string )
+							if( sc.token.string[0] != '\0' )
 								G_Q3F_ArrayAdd( setting, Q3F_TYPE_STRING, 0, (intptr_t) sc.token.string );
 							cmd[0] = 0;
 						}

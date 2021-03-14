@@ -90,18 +90,15 @@ static void G_Q3F_AdminPrint( gentity_t *admin, const char *fmt, ... )
 	// Print to the admin, or the console (if done as an RCON command)
 
 	va_list		argptr;
-	char		text[1024];
+	char		text[1024] = { 0 };
 
-	strcpy( text, "print \"" );
 	va_start (argptr, fmt);
-	Q_vsnprintf( text + (admin ? 7 : 0), sizeof(text) - (admin ? 7 : 0), fmt, argptr );
+	Q_vsnprintf( text, sizeof(text), fmt, argptr );
 	va_end (argptr);
 
 	if( admin )
 	{
-		// Ensiform : FIXME should this be Q_strcat to protect from overflow?
-		strcat( text, "\"" );
-		trap_SendServerCommand( admin->s.number, text );
+		trap_SendServerCommand( admin->s.number, va( "print \"%s\"\n", text ) );
 	}
 	else {
 		trap_Printf( text );
@@ -675,7 +672,7 @@ static void G_Q3F_AdminStatus( gentity_t *admin )
 		{
 			G_Q3F_AdminPrint(	admin, "%3d %21s %4d %6s %5d %s\n",
 								player->s.number, player->client->sess.ipStr,
-								player->client->ps.ping,
+								player->client->pers.realPing,//ps.ping
 								(player->client->sess.sessionTeam ? g_q3f_teamlist[player->client->sess.sessionTeam].name : "spec"),
 								player->client->ps.persistant[PERS_SCORE],
 								player->client->pers.netname );
@@ -748,6 +745,7 @@ static void G_Q3F_AdminAddIP( gentity_t *admin )
 	char		reasonword[MAX_STRING_CHARS];
 	char		reason[MAX_STRING_CHARS];
 	int			time, curr, maxarg;
+	size_t		len;
 
 	if ( trap_Argc() < 3 ) {
 		G_Q3F_AdminPrint( admin, "Usage: admin addip <ip-mask> [seconds] [reason]\n");
@@ -774,6 +772,10 @@ static void G_Q3F_AdminAddIP( gentity_t *admin )
 		if( maxarg - curr > 1 )
 			Q_strcat( reason, sizeof(reason), " " );
 	}
+
+	len = strlen( reason );
+	if ( len > 0 && reason[len-1] == ' ' )
+		reason[len-1] = '\0';
 
 	AddIP( admin, str, time, reason );
 	G_Q3F_AdminCheckBannedPlayers();
@@ -1354,12 +1356,12 @@ void G_Q3F_AdminPasswordCommand( gentity_t *admin )
 	}
 	trap_Argv( 1, password, sizeof(password) );
 
-	if(	g_adminPassword.string && *g_adminPassword.string && !Q_stricmp( password, g_adminPassword.string ) ) {
+	if(	*g_adminPassword.string && !Q_stricmp( password, g_adminPassword.string ) ) {
 		admin->client->sess.adminLevel = ADMIN_FULL;
 		G_Q3F_AdminPrint( admin, "Admin password accepted.\n" );
 		trap_SendServerCommand( admin->s.number, "hud_auth_admin 1" );
 	}
-	else if( g_matchPassword.string && *g_matchPassword.string && !Q_stricmp( password, g_matchPassword.string ) ) {
+	else if( *g_matchPassword.string && !Q_stricmp( password, g_matchPassword.string ) ) {
 		admin->client->sess.adminLevel = ADMIN_MATCH;
 		G_Q3F_AdminPrint( admin, "Match admin password accepted.\n" );
 		trap_SendServerCommand( admin->s.number, "hud_auth_admin 1" );
@@ -1554,7 +1556,7 @@ void G_Q3F_ShoutcastLoginCommand( gentity_t *player )
 	}
 	trap_Argv( 1, password, sizeof(password) );
 
-	if(	g_shoutcastPassword.string && *g_shoutcastPassword.string && !Q_stricmp( password, g_shoutcastPassword.string ) ) {
+	if(	*g_shoutcastPassword.string && !Q_stricmp( password, g_shoutcastPassword.string ) ) {
 		player->client->sess.shoutcaster = qtrue;
 		G_Q3F_AdminPrint( player, "Shoutcast password accepted.\n" );
 		trap_SendServerCommand( player->s.number, "hud_auth_shoutcast 1" );

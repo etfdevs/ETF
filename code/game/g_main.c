@@ -1835,7 +1835,7 @@ void LogExit( const char *string ) {
 			continue;
 		}
 
-		ping = cl->ps.ping < 999 ? cl->ps.ping : 999;
+		ping = cl->pers.realPing < 999 ? cl->pers.realPing : 999;//ps.ping
 
 		G_LogPrintf( "score: %i  ping: %i  client: %i %s^7\n", cl->ps.persistant[PERS_SCORE], ping, level.sortedClients[i],	cl->pers.netname );
 	}
@@ -2355,7 +2355,7 @@ void G_Q3F_CalculateTeamPings()
 							counts[Q3F_TEAM_GREEN],		pings[Q3F_TEAM_GREEN],
 							warningmask ) );
 
-	if( (warningmask && 0xFF) && (warningmask & 0xFF) != level.teamPreviousBalanceWarning && g_showTeamBalanceWarning.integer )
+	if( (warningmask & 0xFF) && (warningmask & 0xFF) != level.teamPreviousBalanceWarning && g_showTeamBalanceWarning.integer )
 	{
 //		G_LogPrintf(	"CalculateTeamPings: %d/%d-%d %d/%d-%d/%d : %d/%d-%d %d/%d-%d/%d.",
 //						lowcountindex,	lowcount, nextlowcount, highcountindex, highcount, nexthighcount,

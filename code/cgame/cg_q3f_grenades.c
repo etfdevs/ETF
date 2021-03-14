@@ -929,7 +929,6 @@ void CG_Q3F_GrenOnePrime()
 		CG_Q3F_GrenThrow();
 	else {
 		if( !cgs.media.grenadePrimeSound &&
-			cg_grenadePrimeSound.string && 
 			*cg_grenadePrimeSound.string )
 			cgs.media.grenadePrimeSound = trap_S_RegisterSound( cg_grenadePrimeSound.string, qfalse );
 		if( cgs.media.grenadePrimeSound )
@@ -980,7 +979,6 @@ void CG_Q3F_GrenTwoPrime()
 		CG_Q3F_GrenThrow();
 	else {
 		if( !cgs.media.grenadePrimeSound &&
-			cg_grenadePrimeSound.string && 
 			*cg_grenadePrimeSound.string )
 			cgs.media.grenadePrimeSound = trap_S_RegisterSound( cg_grenadePrimeSound.string, qfalse );
 		if( cgs.media.grenadePrimeSound )

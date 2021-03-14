@@ -717,7 +717,7 @@ static void CG_VoiceTellAttacker_f( void ) {
 static qboolean CG_Q3F_Special( void ) 
 {
 	// RR2DO2: prevent crash
-	if(!cg.snap || !cg.snap->ps.persistant || (cg.snap->ps.pm_flags & PMF_FOLLOW) || (cg.snap->ps.pm_flags & PMF_CHASE) || (cg.snap->ps.powerups[PW_Q3F_CEASEFIRE]))
+	if(!cg.snap || (cg.snap->ps.pm_flags & PMF_FOLLOW) || (cg.snap->ps.pm_flags & PMF_CHASE) || (cg.snap->ps.powerups[PW_Q3F_CEASEFIRE]))
 		return (qfalse);
 
 	switch(cg.snap->ps.persistant[PERS_CURRCLASS])
@@ -753,7 +753,7 @@ static qboolean CG_Q3F_Special( void )
 
 static void CG_Q3F_Special2( void ) {
 	// RR2DO2: prevent crash
-	if(!cg.snap || !cg.snap->ps.persistant || (cg.snap->ps.pm_flags & PMF_FOLLOW) || (cg.snap->ps.pm_flags & PMF_CHASE) || (cg.snap->ps.powerups[PW_Q3F_CEASEFIRE]))
+	if(!cg.snap || (cg.snap->ps.pm_flags & PMF_FOLLOW) || (cg.snap->ps.pm_flags & PMF_CHASE) || (cg.snap->ps.powerups[PW_Q3F_CEASEFIRE]))
 		return;
 
 	switch(cg.snap->ps.persistant[PERS_CURRCLASS]) {
@@ -786,7 +786,7 @@ static void CG_Q3F_Special2( void ) {
 
 static void CG_Q3F_MeleeSwap_f( void ) {
 	// RR2DO2: prevent crash
-	if(!cg.snap || !cg.snap->ps.persistant || (cg.snap->ps.pm_flags & PMF_FOLLOW) || (cg.snap->ps.pm_flags & PMF_CHASE) || (cg.snap->ps.powerups[PW_Q3F_CEASEFIRE]))
+	if(!cg.snap || (cg.snap->ps.pm_flags & PMF_FOLLOW) || (cg.snap->ps.pm_flags & PMF_CHASE) || (cg.snap->ps.powerups[PW_Q3F_CEASEFIRE]))
 		return;
 
 	if(cg.snap->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_CIVILIAN || cg.snap->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_NULL) {

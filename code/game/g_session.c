@@ -51,7 +51,7 @@ static void Q_FSWriteJSON( void *root, fileHandle_t f ) {
 	const char *serialised = NULL;
 
 	serialised = cJSON_Serialize( (cJSON *)root, 1 );
-	trap_FS_Write( serialised, strlen( serialised ), f );
+	trap_FS_Write( serialised, (int)strlen( serialised ), f );
 	trap_FS_FCloseFile( f );
 
 	free( (void *)serialised );
