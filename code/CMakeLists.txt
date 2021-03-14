@@ -72,6 +72,8 @@ else()
 	endif()
 endif()
 
+message("Configured for ${CMAKE_SYSTEM_PROCESSOR}")
+
 # target os
 if (APPLE)
 	set(os "macosx")
@@ -112,14 +114,25 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	if (NOT c_has_fvisibility)
 		message(FATAL_ERROR "Compiler does not support -fvisibility")
 	endif()
-	set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-old-style-declaration -Wno-missing-field-initializers -fPIC -fno-strict-aliasing -fvisibility=hidden -march=pentium -mtune=pentiumpro)
+	if(APPLE AND X86_64)
+		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-old-style-declaration -Wno-missing-field-initializers -fPIC -fno-strict-aliasing -fvisibility=hidden)
+	elseif(X86_64)
+		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-old-style-declaration -Wno-missing-field-initializers -fPIC -fno-strict-aliasing -fvisibility=hidden)
+	else()
+		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-old-style-declaration -Wno-missing-field-initializers -fPIC -fno-strict-aliasing -fvisibility=hidden -march=pentium -mtune=pentiumpro)
+	endif()
 	# debug: explicit -Og -D_DEBUG, implicit -g
 	set(compiler_flags_debug ${compiler_flags_global} -Og -D_DEBUG)
 	# relwithdebinfo: implicit -O2 -g -DNDEBUG
 	set(compiler_flags_relwithdebinfo ${compiler_flags_global})
 	# release: implicit -O3 -DNDEBUG
+	if(NOT APPLE AND X86 AND NOT X86_64 AND NOT WIN64)
 	set(compiler_flags_release ${compiler_flags_global} -Winline -ffast-math -fomit-frame-pointer -finline-functions -fschedule-insns2 -fno-unsafe-math-optimizations -fstrength-reduce)
+	else()
+	set(compiler_flags_release ${compiler_flags_global} -Winline -ffast-math -fomit-frame-pointer -finline-functions -fschedule-insns2 -fno-unsafe-math-optimizations -fstrength-reduce)
+	endif()
 else()
+message(FATAL_ERROR "Compiler flags not setup for this compiler")
 endif()
 
 #if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
