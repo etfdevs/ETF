@@ -49,9 +49,9 @@ jobs:
           #  platform: x64
           #  suffix: .x86_64
 
-    defaults:
-      run:
-        shell: bash
+    #defaults:
+      #run:
+        #shell: bash
         #shell: msys2 {0}
 
     steps:
@@ -72,17 +72,13 @@ jobs:
       run: cmake -E make_directory ${{github.workspace}}/code/bin
 
     - name: Configure CMake
-      #working-directory: ${{github.workspace}}/code/bin
-      run: |
-        cd "${{github.workspace}}/code/bin"
-        cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+      working-directory: ${{github.workspace}}/code/bin
+      run: cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
       #run: cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/i686-w64-mingw32.cmake
 
     - name: Build
-      #working-directory: ${{github.workspace}}/code/bin
-      run: |
-        cd "${{github.workspace}}/code/bin"
-        cmake --build . --config ${{ matrix.config }}
+      working-directory: ${{github.workspace}}/code/bin
+      run: cmake --build . --config ${{ matrix.config }}
 
     - uses: actions/upload-artifact@v2
       if: ${{ matrix.config == 'Release' }}
