@@ -49,10 +49,9 @@ jobs:
           #  platform: x64
           #  suffix: .x86_64
 
-    #defaults:
-      #run:
-        #shell: bash
-        #shell: msys2 {0}
+    defaults:
+      run:
+        shell: bash
 
     steps:
     - uses: msys2/setup-msys2@v2
@@ -63,10 +62,14 @@ jobs:
         release: false
         update: false
 
-    - name: Configure MinGW for x86
+    - name: Configure MinGW for ${{ matrix.arch }} into PATH
       shell: bash
       run: |
-        echo "C:\msys64\mingw32\bin" >> $GITHUB_PATH
+        if [ ${{ matrix.arch }} == "x86" ]; then
+          echo "C:\msys64\mingw32\bin" >> $GITHUB_PATH
+        else
+          echo "C:\msys64\mingw64\bin" >> $GITHUB_PATH
+        fi
 
     - uses: actions/checkout@v2
       with:
@@ -78,8 +81,7 @@ jobs:
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/code/bin
-      #run: cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
-      run: cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/i686-w64-mingw32.cmake
+      run: cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
 
     - name: Build
       working-directory: ${{github.workspace}}/code/bin
