@@ -188,7 +188,7 @@ jobs:
       with:
         name: macos-${{ matrix.arch }}
         path: |
-          src/bin/*.dylib
-          src/bin/*_mac
+          code/bin/*.dylib
+          code/bin/*_mac
         if-no-files-found: error
         retention-days: 5

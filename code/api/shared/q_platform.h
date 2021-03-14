@@ -256,6 +256,15 @@ If you have questions concerning this license or the applicable additional terms
 	#error "PATH_SEP not defined"
 #endif
 
+#if defined (__GNUC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wno-unused-function"
+#endif
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wno-unused-function"
+#endif
+
 // endianness
 // Use compiler builtins where possible for maximum performance
 #include <stdint.h>
@@ -325,6 +334,13 @@ static QINLINE float FloatSwap(float f)
     CopyLongSwap(&out, &f);
     return out;
 }
+
+#if defined (__GNUC)
+#pragma GCC diagnostic pop
+#endif
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 
 #if defined(Q3_BIG_ENDIAN) && defined(Q3_LITTLE_ENDIAN)
 	#error "Endianness defined as both big and little"
