@@ -258,11 +258,11 @@ If you have questions concerning this license or the applicable additional terms
 
 #if defined (__GNUC)
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wno-unused-function"
+#pragma GCC diagnostic ignored "-Wunused-function"
 #endif
 #if defined(__clang__)
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wno-unused-function"
+#pragma clang diagnostic ignored "-Wunused-function"
 #endif
 
 // endianness
