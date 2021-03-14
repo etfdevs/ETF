@@ -48,6 +48,11 @@ jobs:
           #- arch: x64
           #  platform: x64
           #  suffix: .x86_64
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
     steps:
     - uses: msys2/setup-msys2@v2
       with:
@@ -66,12 +71,10 @@ jobs:
       run: cmake -E make_directory ${{github.workspace}}/code/bin
 
     - name: Configure CMake
-      shell: msys2
       working-directory: ${{github.workspace}}/code/bin
       run: cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/i686-w64-mingw32.cmake
 
     - name: Build
-      shell: msys2
       working-directory: ${{github.workspace}}/code/bin
       run: cmake --build . --config ${{ matrix.config }}
 
