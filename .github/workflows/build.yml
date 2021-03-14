@@ -74,7 +74,7 @@ jobs:
     - name: Configure CMake
       working-directory: ${{github.workspace}}/code/bin
       #run: cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
-      run: cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/i686-w64-mingw32.cmake
+      run: cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/i686-w64-mingw32.cmake
 
     - name: Build
       working-directory: ${{github.workspace}}/code/bin
