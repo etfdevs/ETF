@@ -95,7 +95,7 @@ else()
 	endif()
 endif()
 
-message("Configured for ${CMAKE_SYSTEM_PROCESSOR}")
+message("Configured for ${CMAKE_SYSTEM_PROCESSOR} / ${Architecture}")
 
 # target os
 if (APPLE)
