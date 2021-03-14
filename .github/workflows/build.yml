@@ -30,6 +30,8 @@ jobs:
         #arch: [arm64, x86, x64]
         #arch: [x86, x64]
         arch: [x86]
+        cc: [gcc]
+        cxx: [g++]
         config: [Release]
         include:
          # - arch: arm64
@@ -38,6 +40,8 @@ jobs:
 
           - arch: x86
             platform: Win32
+            msystem: MINGW32
+            prefix: mingw-w64-i686
 
           #- arch: x64
           #  platform: x64
@@ -101,18 +105,23 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Build
-      run: |
-        cd code
-        mkdir bin
-        cd bin
+    - name: Create Build Directory
+      working-directory: ${{github.workspace}}/code
+      run: cmake -E make_directory ${{github.workspace}}/code/bin
 
+    - name: Configure CMake
+      working-directory: ${{github.workspace}}/code/bin
+      run: |
         if [ ${{ matrix.arch }} == "x86" ]; then
           cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/linux-i686.cmake
         else
           cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
         fi
-        cmake --build . --config ${{ matrix.config }}
+
+    - name: Build
+      working-directory: ${{github.workspace}}/code/bin
+      run: cmake --build . --config ${{ matrix.config }}
+
     - uses: actions/upload-artifact@v2
       if: matrix.cc == 'gcc' && matrix.config == 'Release'
       with:
@@ -144,14 +153,18 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Build
-      run: |
-        cd code
-        mkdir bin
-        cd bin
+    - name: Create Build Directory
+      working-directory: ${{github.workspace}}/code
+      run: cmake -E make_directory ${{github.workspace}}/code/bin
 
-        cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }}
-        cmake --build . --config ${{ matrix.config }}
+    - name: Configure CMake
+      working-directory: ${{github.workspace}}/code/bin
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+
+    - name: Build
+      working-directory: ${{github.workspace}}/code/bin
+      run: cmake --build . --config ${{ matrix.config }}
+
     - uses: actions/upload-artifact@v2
       if: matrix.cc == 'clang' && matrix.config == 'Release'
       with:
