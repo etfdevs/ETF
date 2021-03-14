@@ -49,10 +49,6 @@ jobs:
           #  platform: x64
           #  suffix: .x86_64
 
-    defaults:
-      run:
-        shell: bash
-
     steps:
     - uses: msys2/setup-msys2@v2
       with:
