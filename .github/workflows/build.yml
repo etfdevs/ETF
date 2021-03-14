@@ -1,0 +1,161 @@
+name: build
+
+on:
+  # Run on pushes to tags, the "master" branch, and PR's
+  push:
+    tags-ignore:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+      - '*.txt'
+      - '.gitignore'
+      - 'docs/*'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - '*.txt'
+      - '.gitignore'
+      - 'docs/*'
+
+  workflow_dispatch:
+
+jobs:
+  windows-mingw:
+    name: ${{ matrix.config }} Windows ${{ matrix.arch }}
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        #arch: [arm64, x86, x64]
+        #arch: [x86, x64]
+        arch: [x86]
+        config: [Release]
+        include:
+         # - arch: arm64
+         #   platform: ARM64
+         #   suffix: .arm64
+
+          - arch: x86
+            platform: Win32
+
+          #- arch: x64
+          #  platform: x64
+          #  suffix: .x86_64
+
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Build
+      run: |
+        cd code
+        mkdir bin
+        cd bin
+
+        if [ ${{ matrix.arch }} == "x86" ]; then
+          cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../CMakeModules/Toolchains/i686-w64-mingw32.cmake
+        else
+          cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../CMakeModules/Toolchains/x86_64-w64-mingw32.cmake
+        fi
+        cmake --build . --config ${{ matrix.config }}
+    - uses: actions/upload-artifact@v2
+      if: ${{ matrix.config == 'Release' }}
+      with:
+        name: windows-${{ matrix.arch }}
+        path: |
+          code/bin/*.dll
+        if-no-files-found: error
+        retention-days: 5
+
+  ubuntu-x86:
+    name: ${{ matrix.config }} Ubuntu ${{ matrix.arch }}
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86, x86_64]
+        cc: [gcc]
+        cxx: [g++]
+        config: [Release]
+        include:
+          - config: Release
+            rule: install
+          - arch: x86
+          - arch: x86_64
+
+    steps:
+    - name: Install tools
+      run: |
+        if [ ${{ matrix.arch }} == "x86" ]; then
+          sudo dpkg --add-architecture i386
+          sudo apt-get -qq update
+          sudo apt-get -y install gcc-multilib g++-multilib ninja-build
+        else
+          sudo apt-get -qq update
+          sudo apt-get -y install ninja-build
+        fi
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Build
+      run: |
+        cd code
+        mkdir bin
+        cd bin
+
+        if [ ${{ matrix.arch }} == "x86" ]; then
+          cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../CMakeModules/Toolchains/linux-i686.cmake
+        else
+          cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+        fi
+        cmake --build . --config ${{ matrix.config }}
+    - uses: actions/upload-artifact@v2
+      if: matrix.cc == 'gcc' && matrix.config == 'Release'
+      with:
+        name: linux-${{ matrix.arch }}
+        path: |
+          code/bin/*.so
+        if-no-files-found: error
+        retention-days: 5
+
+  macos-x86:
+    name: ${{ matrix.config }} macOS x86_64
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64]
+        cc: [clang]
+        cxx: [clang++]
+        config: [Release]
+        include:
+          - config: Release
+            rule: install
+
+    steps:
+    - name: Install tools
+      run: brew install coreutils
+
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Build
+      run: |
+        cd code
+        mkdir bin
+        cd bin
+
+        cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+        cmake --build . --config ${{ matrix.config }}
+    - uses: actions/upload-artifact@v2
+      if: matrix.cc == 'clang' && matrix.config == 'Release'
+      with:
+        name: macos-${{ matrix.arch }}
+        path: |
+          src/bin/*.dylib
+          src/bin/*_mac
+        if-no-files-found: error
+        retention-days: 5
