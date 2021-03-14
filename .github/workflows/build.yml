@@ -47,30 +47,20 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Create Build Directory
+      working-directory: ${{github.workspace}}/code
+      run: cmake -E make_directory ${{github.workspace}}/code/bin
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{github.workspace}}/code/bin
+      run: cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/i686-w64-mingw32.cmake
+
     - name: Build
-      run: |
-        cd code
-        mkdir bin
-        cd bin
+      shell: bash
+      working-directory: ${{github.workspace}}/code/bin
+      run: cmake --build . --config ${{ matrix.config }}
 
-        cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../CMakeModules/Toolchains/i686-w64-mingw32.cmake
-        cmake --build . --config ${{ matrix.config }}
-
-
-      #run: |
-      #  cd code
-      #  mkdir bin
-      #  cd bin
-#
-      #  if ( "${{ matrix.arch }}" -eq "x86" )
-      #  {
-      #    cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../CMakeModules/Toolchains/i686-w64-mingw32.cmake
-      #  }
-      #  else
-      #  {
-      #    cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../CMakeModules/Toolchains/x86_64-w64-mingw32.cmake
-      #  }
-      #  cmake --build . --config ${{ matrix.config }}
     - uses: actions/upload-artifact@v2
       if: ${{ matrix.config == 'Release' }}
       with:
@@ -118,7 +108,7 @@ jobs:
         cd bin
 
         if [ ${{ matrix.arch }} == "x86" ]; then
-          cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../CMakeModules/Toolchains/linux-i686.cmake
+          cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/linux-i686.cmake
         else
           cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
         fi
