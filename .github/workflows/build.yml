@@ -42,11 +42,21 @@ jobs:
             platform: Win32
             msystem: MINGW32
             prefix: mingw-w64-i686
+          - config: Release
+            rule: install
 
           #- arch: x64
           #  platform: x64
           #  suffix: .x86_64
     steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        install: ${{ matrix.prefix }}-binutils ${{ matrix.prefix }}-make ${{ matrix.prefix }}-${{ matrix.cc }}
+        msystem: ${{ matrix.msystem }}
+        path-type: minimal
+        release: false
+        update: false
+
     - uses: actions/checkout@v2
       with:
         submodules: recursive
@@ -56,12 +66,12 @@ jobs:
       run: cmake -E make_directory ${{github.workspace}}/code/bin
 
     - name: Configure CMake
-      shell: bash
+      shell: msys2
       working-directory: ${{github.workspace}}/code/bin
       run: cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/i686-w64-mingw32.cmake
 
     - name: Build
-      shell: bash
+      shell: msys2
       working-directory: ${{github.workspace}}/code/bin
       run: cmake --build . --config ${{ matrix.config }}
 
