@@ -132,7 +132,7 @@ option(BOTS				"Enable bot support" OFF)
 
 #set(nix_compiler_options -pipe -Wall -fno-strict-aliasing -Wno-sign-compare -Wno-switch -Wno-format-security)
 
-if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
 	CHECK_C_COMPILER_FLAG("-fvisibility=hidden" c_has_fvisibility)
 	if (NOT c_has_fvisibility)
 		message(FATAL_ERROR "Compiler does not support -fvisibility")
@@ -155,7 +155,7 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	set(compiler_flags_release ${compiler_flags_global} -Winline -ffast-math -fomit-frame-pointer -finline-functions -fschedule-insns2 -fno-unsafe-math-optimizations -fstrength-reduce)
 	endif()
 else()
-message(FATAL_ERROR "Compiler flags not setup for this compiler")
+message(FATAL_ERROR "Compiler flags not setup for this project")
 endif()
 
 #if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
