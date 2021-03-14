@@ -3094,6 +3094,10 @@ void G_Q3F_ForceFieldExtTrace(	trace_t *results, const vec3_t start, const vec3_
 	}
 }
 
+void G_Q3F_ForceFieldTrace( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs,	const vec3_t end, int passEntityNum, int contentmask ) {
+	G_Q3F_ForceFieldExtTrace( results, start, mins, maxs, end, passEntityNum, passEntityNum, contentmask );
+}
+
 void G_Q3F_ForceFieldTouch( gentity_t *ent, gentity_t *other, trace_t *trace )
 {
 	if( !ent->mapdata || !(ent->mapdata->flags & Q3F_FLAG_DETPIPES) )

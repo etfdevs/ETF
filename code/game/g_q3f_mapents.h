@@ -271,9 +271,7 @@ void G_Q3F_CTFCompatAdjust();
 
 // Force-field aware trace function
 void G_Q3F_ForceFieldExtTrace( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int realOwner, int contentmask );
-static QINLINE void G_Q3F_ForceFieldTrace( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs,	const vec3_t end, int passEntityNum, int contentmask ) {
-	G_Q3F_ForceFieldExtTrace( results, start, mins, maxs, end, passEntityNum, passEntityNum, contentmask );
-}
+void G_Q3F_ForceFieldTrace( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs,	const vec3_t end, int passEntityNum, int contentmask );
 
 void SP_Q3F_func_forcefield( gentity_t *ent );
 
