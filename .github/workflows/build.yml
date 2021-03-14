@@ -53,11 +53,14 @@ jobs:
         mkdir bin
         cd bin
 
-        if [ ${{ matrix.arch }} == "x86" ]; then
+        if ( "${{ matrix.arch }}" -eq "x86" )
+        {
           cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../CMakeModules/Toolchains/i686-w64-mingw32.cmake
+        }
         else
+        {
           cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../CMakeModules/Toolchains/x86_64-w64-mingw32.cmake
-        fi
+        }
         cmake --build . --config ${{ matrix.config }}
     - uses: actions/upload-artifact@v2
       if: ${{ matrix.config == 'Release' }}
