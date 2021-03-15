@@ -1,6 +1,6 @@
 # ETF 2.0
 
-[![build](https://github.com/etfdevs/ETF/actions/workflows/build.yml/badge.svg)](https://github.com/etfdevs/ETF/actions/workflows/build.yml) * <a href="https://discord.com/channels/253600486219972608/401475882897899523"><img src="https://img.shields.io/discord/253600486219972608color=7289da&logo=discord&logoColor=white" alt="Discord server" /></a>
+[![build](https://github.com/etfdevs/ETF/actions/workflows/build.yml/badge.svg)](https://github.com/etfdevs/ETF/actions/workflows/build.yml) * <a href="https://discord.com/channels/253600486219972608/401475882897899523"><img src="https://img.shields.io/discord/253600486219972608?color=7289da&logo=discord&logoColor=white" alt="Discord server" /></a>
 
 This is an early upload of the ETF mod post 1.6 release with some experimental code added that was not part of any original release but was my testing purposes.
 
