@@ -436,11 +436,13 @@ void Cmd_Give_f (gentity_t *ent)
 			return;
 	}
 
+#ifdef PENTAGRAM_POWERUP
 	if (Q_stricmp(name, "pent") == 0 || Q_stricmp(name, "pentagram") == 0) {
 		ent->client->ps.powerups[PW_PENTAGRAM] = level.time + 100*1000;
 		if (!give_all)
 			return;
 	}
+#endif
 
 	if (Q_stricmp(name, "excellent") == 0) {
 		ent->client->ps.persistant[PERS_EXCELLENT_COUNT]++;
