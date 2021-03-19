@@ -113,6 +113,10 @@ option(GAME				"Build the qagame dll code" ON)
 option(UI				"Build the ui dll code" ON)
 option(BOTS				"Enable bot support" OFF)
 
+if(BOTS)
+set(CMAKE_BOT_INCLUDE "" CACHE PATH "External Path for Omnibot" FORCE)
+endif()
+
 # target cpu
 #set(cpu ${CMAKE_SYSTEM_PROCESSOR})
 #if (cpu STREQUAL "powerpc")
@@ -152,10 +156,15 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
 	if(APPLE AND X86_64)
 		set(compiler_flags_release ${compiler_flags_global} -Winline -ffast-math -fomit-frame-pointer -finline-functions -fno-unsafe-math-optimizations)
 	elseif(X86_64)
-	set(compiler_flags_release ${compiler_flags_global} -Winline -ffast-math -fomit-frame-pointer -finline-functions -fschedule-insns2 -fno-unsafe-math-optimizations -fstrength-reduce)
+		set(compiler_flags_release ${compiler_flags_global} -Winline -ffast-math -fomit-frame-pointer -finline-functions -fschedule-insns2 -fno-unsafe-math-optimizations -fstrength-reduce)
 	else()
 		set(compiler_flags_release ${compiler_flags_global} -Winline -ffast-math -fomit-frame-pointer -finline-functions -fschedule-insns2 -fno-unsafe-math-optimizations -fstrength-reduce)
 	endif()
+elseif(MSVC)
+set(compiler_flags_global /W4 /wd4100 /wd4127 /wd4224 /wd4245 /wd4714 /wd4996)
+set(compiler_flags_debug ${compiler_flags_global} -D_DEBUG /Od /Zi /MTd)
+set(compiler_flags_relwithdebinfo ${compiler_flags_global} -DNDEBUG /Ox /Oy /Zi /MT)
+set(compiler_flags_release ${compiler_flags_global} -DNDEBUG /Ox /Oy /MT)
 else()
 message(FATAL_ERROR "Compiler flags not setup for this project")
 endif()
@@ -255,27 +264,8 @@ endif()
 #	message(FATAL_ERROR "Unsupported compiler")
 #endif()
 
-# Operating settings
-#if(WIN64)
-#	add_definitions(-DWIN64)
-#endif()
-
-#if (NOT WIN32 AND NOT APPLE)
-#	add_definitions(-DARCH_STRING=\"${Architecture}\")
-#endif()
-
-#set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
-#set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_C_FLAGS_RELEASE})
-#set(CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_C_FLAGS_RELWITHDEBINFO})
-#set(CMAKE_CXX_FLAGS_MINSIZEREL ${CMAKE_C_FLAGS_MINSIZEREL})
-
 # mingw and msvc
 if (WIN32)
-	add_definitions(-DWIN32)
-	add_definitions(-D_WINDOWS)
-	#add_definitions(-DWINVER=0x0501)
-	#add_definitions(-D_WIN32_WINNT=0x0501)
-
 	set(sys_libs
 		winmm
 	)
@@ -388,7 +378,6 @@ if(BOTS)
 	set( cgame_files ${cgame_files} cgame/cg_omnibot.c cgame/Omnibot_Interprocess.cpp )
 endif(BOTS)
 
-
 #set(src_crypto
 #    crypto/sha-1/sha1.c
 #    crypto/sha-1/sha1.h
@@ -457,6 +446,10 @@ set(game_files
 	game/game.def
 )
 
+if(BOTS)
+	set( game_files ${game_files} game/g_bot_interface.cpp ${CMAKE_BOT_INCLUDE}/Common/BotLoadLibrary.cpp)
+endif()
+
 if(LUA_FOUND)
 	message(STATUS, "Found LUA version ${LUA_VERSION_STRING}")
 	#set( src_game ${src_game} game/g_lua.c game/g_lua.h game/lsqlite3.c game/sqlite3.c game/sqlite3.h )
@@ -464,10 +457,6 @@ if(LUA_FOUND)
 else()
 	message(STATUS, "LUA not found, skipping")
 endif()
-
-if(BOTS)
-	set( game_files ${game_files} game/g_bot_interface.cpp)
-endif(BOTS)
 
 set(ui_files
 	game/bg_misc.c
@@ -487,12 +476,9 @@ set(ui_files
 )
 
 if(BOTS)
-	set(CMAKE_BOT_INCLUDE "" CACHE PATH "External Path for Omnibot" FORCE)
-	#if(CGAME)
-	#	set( src_cgame ${src_cgame} cg_omnibot.c cgame/Omnibot_Interprocess.cpp)
-	#endif()
+	
 	if(GAME)
-		set( src_game ${src_game} game/g_bot_interface.cpp ${CMAKE_BOT_INCLUDE}/Common/BotLoadLibrary.cpp)
+		set( game_files ${game_files} game/g_bot_interface.cpp ${CMAKE_BOT_INCLUDE}/Common/BotLoadLibrary.cpp)
 	endif(GAME)
 
 	#include_directories(${CMAKE_SOURCE_DIR}/bot) #FIXME WRONG
@@ -500,27 +486,11 @@ if(BOTS)
 	include_directories(${CMAKE_BOT_INCLUDE}/TeamFortressLib)
 	include_directories(${CMAKE_BOT_INCLUDE}/ETF)
 
-	add_definitions(-DBUILD_BOTS)
 endif()
 
 #if(ETXREAL)
 #	add_definitions(-D_ETXREAL)
 #endif()
-
-#add_definitions(-DAPI_ET)
-#include_directories(${CMAKE_SOURCE_DIR}/api/et)
-#if (NOT MSVC)
-#	include_directories(${CMAKE_BINARY_DIR})
-#endif()
-#include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/cJSON/)
-
-#if(CMAKE_BUILD_TYPE MATCHES "DEBUG" OR CMAKE_BUILD_TYPE MATCHES "Debug")
-#	# CMake already defines _DEBUG for MSVC.
-#	if (NOT MSVC)
-#		add_definitions(-D_DEBUG)
-#	endif()
-#endif()
-
 
 add_library(cgame SHARED "${cgame_files}" "${api_files}")
 target_compile_options(cgame
@@ -535,6 +505,10 @@ set_target_properties(cgame PROPERTIES PREFIX "")
 set_target_properties(cgame PROPERTIES SUFFIX "${LIB_SUFFIX}${Architecture}${DLL_EXT}") #NOTE changeme when multi-platform and multi-arch support is added
 target_compile_definitions(cgame PUBLIC "API_ET" "CGAME" "CGAMEDLL" "WOLF_FLAME" "ARCH_STRING=\"${Architecture}\"")
 target_include_directories(cgame PUBLIC ${SRCDIR}/cgame ${SRCDIR}/game ${SRCDIR}/ui_new ${SRCDIR}/api/et ${SRCDIR}/api/shared )
+if(BOTS)
+	target_compile_definitions(cgame PUBLIC "BUILD_BOTS")
+	target_include_directories(cgame PUBLIC ${CMAKE_BOT_INCLUDE}/Common ${CMAKE_BOT_INCLUDE}/TeamFortressLib ${CMAKE_BOT_INCLUDE}/ETF)
+endif()
 target_link_libraries(cgame PRIVATE ${CMAKE_DL_LIBS} "m")
 
 add_library(qagame SHARED "${game_files}" "${cJSON_files}" "${api_files}")
@@ -550,6 +524,10 @@ set_target_properties(qagame PROPERTIES PREFIX "")
 set_target_properties(qagame PROPERTIES SUFFIX "${LIB_SUFFIX}${Architecture}${DLL_EXT}") #NOTE changeme when multi-platform and multi-arch support is added
 target_compile_definitions(qagame PUBLIC "API_ET" "QAGAME" "NO_BOT_SUPPORT" "ARCH_STRING=\"${Architecture}\"")
 target_include_directories(qagame PUBLIC ${SRCDIR}/game ${SRCDIR}/cJSON ${SRCDIR}/api/et ${SRCDIR}/api/shared )
+if(BOTS)
+	target_compile_definitions(qagame PUBLIC "BUILD_BOTS")
+	target_include_directories(qagame PUBLIC ${CMAKE_BOT_INCLUDE}/Common ${CMAKE_BOT_INCLUDE}/TeamFortressLib ${CMAKE_BOT_INCLUDE}/ETF )
+endif()
 target_link_libraries(qagame PRIVATE ${CMAKE_DL_LIBS} "m")
 
 add_library(ui SHARED "${ui_files}" "${api_files}")
