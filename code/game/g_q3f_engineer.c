@@ -90,6 +90,7 @@ static void BotSendDispenserStatus(gentity_t *station);
 
 #define	Q3F_SUPPLYSTATION_BUILD_TIME	2000	// Milliseconds to build
 #define	Q3F_SUPPLYSTATION_BUILD_CELLS	100		// Cells required to build
+#define Q3F_SUPPLYSTATION_UPGRADE_CELLS	130		// Cells required for upgrade
 #define	Q3F_SUPPLYSTATION_REGEN_TIME	10000	// Milliseconds between ammo regen
 
 #define Q3F_SUPPLYSTATION_SHELLS		400	
@@ -2153,9 +2154,9 @@ void G_Q3F_SupplyStationUpgrade( gentity_t *player, int suppnum )
 	if( !supplystation || !supplystation->s.legsAnim || supplystation->s.legsAnim >= 3 )
 		return;
 
-	if( player->client->ps.ammo[AMMO_CELLS] < Q3F_SUPPLYSTATION_BUILD_CELLS )
+	if( player->client->ps.ammo[AMMO_CELLS] < Q3F_SUPPLYSTATION_UPGRADE_CELLS )
 	{
-		trap_SendServerCommand( player->s.number, va( "print \"You need %d cells to upgrade your supply station.\n\"", Q3F_SUPPLYSTATION_BUILD_CELLS ) );
+		trap_SendServerCommand( player->s.number, va( "print \"You need %d cells to upgrade your supply station.\n\"", Q3F_SUPPLYSTATION_UPGRADE_CELLS ) );
 		return;
 	}
 
@@ -2163,7 +2164,7 @@ void G_Q3F_SupplyStationUpgrade( gentity_t *player, int suppnum )
 	supplystation->timestamp = level.time + G_Q3F_SupplyRegenTime(supplystation->s.legsAnim);
 	if(supplystation->s.legsAnim == 3)
 		supplystation->timestamp2 = level.time + 60000;
-	player->client->ps.ammo[AMMO_CELLS] -= Q3F_SUPPLYSTATION_BUILD_CELLS;
+	player->client->ps.ammo[AMMO_CELLS] -= Q3F_SUPPLYSTATION_UPGRADE_CELLS;
 	
 	supplystation->health = G_Q3F_SupplyStationMaxHealth( supplystation->s.legsAnim );
 
@@ -2522,7 +2523,7 @@ void G_Q3F_SupplyStationDismantle( gentity_t *player, int suppnum )
 
 	cls = BG_Q3F_GetClass( &player->client->ps );
 
-	cells = Q3F_SUPPLYSTATION_BUILD_CELLS / 2;
+	cells = (supplystation->s.legsAnim > 1) ? ( Q3F_SUPPLYSTATION_UPGRADE_CELLS / 2 ): (Q3F_SUPPLYSTATION_BUILD_CELLS / 2);
 	if( player->client->ps.ammo[AMMO_CELLS] > cls->maxammo_cells )	// Ignore if they're 'overcelled'
 		cells = 0;
 	else if( (player->client->ps.ammo[AMMO_CELLS] + cells) > cls->maxammo_cells )
