@@ -165,7 +165,7 @@ jobs:
 
     steps:
     - name: Install tools
-      run: brew install coreutils
+      run: brew install coreutils ninja
 
     - uses: actions/checkout@v2
       with:
@@ -177,7 +177,7 @@ jobs:
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/code/bin
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
 
     - name: Build
       working-directory: ${{github.workspace}}/code/bin
