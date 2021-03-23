@@ -471,7 +471,6 @@ set(ui_files
 	ui_new/ui_shared.c
 	ui_new/ui_shared.h
 	api/et/ui_syscalls.c
-	ui_new/ui_util.c
 	ui_new/ui.def
 )
 
