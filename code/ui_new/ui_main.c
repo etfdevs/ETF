@@ -3459,18 +3459,23 @@ UI_LoadDemos
 ===============
 */
 static void UI_LoadDemos() {
-	char	demolist[3000];
-	char demoExt[32];
+	char	demolist[65536];
+	char	demoExt[32];
 	char	*demoname;
 	int		i = 0;
 	int		j, len;
 	int		olddemocount;
+	qboolean	patternFound = qtrue;
 
-	Com_sprintf(demoExt, sizeof(demoExt), "dm_%d", (int)trap_Cvar_VariableValue("protocol"));
+	uiInfo.demoCount = trap_FS_GetFileList( "demos", "dm_??", demolist, sizeof(demolist) );
 
-	uiInfo.demoCount = trap_FS_GetFileList( "demos", demoExt, demolist, sizeof(demolist) );
+	if( !uiInfo.demoCount ) {
+		patternFound = qfalse;
+		Com_sprintf(demoExt, sizeof(demoExt), "dm_%d", (int)trap_Cvar_VariableValue("protocol"));
+		uiInfo.demoCount = trap_FS_GetFileList( "demos", demoExt, demolist, sizeof(demolist) );
+	}
 
-	Com_sprintf(demoExt, sizeof(demoExt), ".dm_%d", (int)trap_Cvar_VariableValue("protocol"));
+	//Com_sprintf(demoExt, sizeof(demoExt), ".dm_%d", (int)trap_Cvar_VariableValue("protocol"));
 
 	if (uiInfo.demoCount) {
 		if (uiInfo.demoCount > MAX_DEMOS) {
@@ -3488,13 +3493,13 @@ static void UI_LoadDemos() {
 		}
 	}
 
-	if((int)trap_Cvar_VariableValue("protocol") == 84) {
+	if((int)trap_Cvar_VariableValue("protocol") == 84 && !patternFound) {
 		// this can also play dm_83 demos
 		Com_sprintf(demoExt, sizeof(demoExt), "dm_%d", 83);
 
 		olddemocount = trap_FS_GetFileList( "demos", demoExt, demolist, 4096 );
 
-		Com_sprintf(demoExt, sizeof(demoExt), ".dm_%d", 83);
+		//Com_sprintf(demoExt, sizeof(demoExt), ".dm_%d", 83);
 
 		if (olddemocount) {
 			uiInfo.demoCount += olddemocount;
