@@ -51,7 +51,7 @@ void NORETURN QDECL Com_Error( int level, const char *error, ... ) {
 	Q_vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
-	trap_Error( va("%s", text) );
+	trap_Error( text );
 }
 
 void QDECL Com_Printf( const char *msg, ... ) {
@@ -62,7 +62,7 @@ void QDECL Com_Printf( const char *msg, ... ) {
 	Q_vsnprintf (text, sizeof(text), msg, argptr);
 	va_end (argptr);
 
-	trap_Print( va("%s", text) );
+	trap_Print( text );
 }
 
 #endif
@@ -138,7 +138,7 @@ static qboolean UI_AdvancedConsole()
 		else if (buf2[0] == '\0')
 		{
 			trap_Cvar_VariableStringBuffer(buf1, buf2, MAX_STRING_CHARS);
-			trap_Print(va("\"%s\" is:\"%s\"\n", buf1 + 1, buf2));
+			Com_Printf("\"%s\" is:\"%s\"\n", buf1 + 1, buf2);
 			return qtrue;
 		}
 		else
