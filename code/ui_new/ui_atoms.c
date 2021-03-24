@@ -107,7 +107,7 @@ char *UI_Cvar_VariableString( const char *var_name ) {
 	return buffer;
 }
 
-static void	UI_Cache_f() {
+static void	UI_Cache_f( void) {
 	Display_CacheAll();
 }
 
@@ -247,7 +247,7 @@ void UI_AddToTextBox(char* text, char* buffer, int* times, int max, int bufferwi
 	Q_strncpyz(buffer, text, bufferwidth);
 }
 
-void UI_Q3F_MapSelectInit() {
+void UI_Q3F_MapSelectInit(void) {
 	// We've just recieved a configstring from the server, split it up and process it
 	char buffer[512];
 	char *p, *s;
@@ -271,7 +271,7 @@ void UI_Q3F_MapSelectInit() {
 	}
 }
 
-void UI_Q3F_MapSelectTally() {
+void UI_Q3F_MapSelectTally(void) {
 	// Update the tally of votes
 
 	char buffer[512];
@@ -380,25 +380,256 @@ static void UI_ETF_DemoParseString(const char* in, char* out, int size) {
 	}
 }
 
-// for glinfo
-static const char *textureCompressionNames[] = {
-	"None",
-	"S3TC"
+static void UI_HudIngame_f( void ) {
+	char buffer[64];
+	trap_GetConfigString( CS_INTERMISSION, buffer, sizeof(buffer) );
+
+	if ( atoi( buffer ) ) {
+		HUD_Setup_Menu("tab_scores");
+		UI_ShowEndGame();
+	} else {
+		UI_ShowInGame();
+	}
+}
+
+static void UI_RemapShader_f( void ) {
+	if (trap_Argc() == 4) {
+		char shader1[MAX_QPATH];
+		char shader2[MAX_QPATH];
+		Q_strncpyz(shader1, UI_Argv(1), sizeof(shader1));
+		Q_strncpyz(shader2, UI_Argv(2), sizeof(shader2));
+		trap_R_RemapShader(shader1, shader2, UI_Argv(3));
+	}
+}
+
+static void UI_Chat_f( void ) {
+	int i, j;
+	char buffer[256];
+	char chatbuffer[256];
+	char *p, *s;
+
+	*chatbuffer = '\0';
+	for (i = 1, j = trap_Argc(); i < j; i++) {
+		trap_Argv(i, buffer, sizeof(buffer));
+		if(i != 1) {
+			Q_strcat(chatbuffer, sizeof(chatbuffer), " ");
+		}
+		Q_strcat(chatbuffer, sizeof(chatbuffer), buffer);
+	}
+	Q_strcat(chatbuffer, sizeof(chatbuffer), "\n");
+	
+	s = chatbuffer;
+	for( p = s; *p;) {
+		if(*p == '\n') {
+			*p++ = '\0';
+			UI_AddToTextBox(chatbuffer, uiInfo.Q3F_uiChat, uiInfo.Q3F_uiChatTimes, MAX_UICHAT_STRINGS, MAX_SAY_TEXT);
+			s = p;
+		}
+		else {
+			p++;
+		}
+	}
+}
+
+static void UI_ScoreComplete_f( void ) {
+	uiInfo.ScoreFetched = qtrue;
+}
+
+static void UI_UpdateMapVotes_f( void ) {
+	UI_ParseMapInfo();
+	UI_Q3F_MapSelectInit();
+}
+
+static void UI_Q3F_ScreenshotTGA_f( void ) {
+	char buffer[256], str[128];
+
+	trap_Argv(1, str, 128);
+
+	if(!*str) {
+		Q_strncpyz(str, "$Y-$a-$d_$h$m-$s_$l", 128);
+	}
+
+	UI_ETF_DemoParseString(str, buffer, 256);
+	trap_Cmd_ExecuteText(EXEC_APPEND, va("screenshot \"%s\"\n", buffer));
+}
+
+static void UI_Q3F_ScreenshotJPEG_f( void ) {
+	char buffer[256], str[128];
+
+	trap_Argv(1, str, 128);
+
+	if(!*str) {
+		Q_strncpyz(str, "$Y-$a-$d_$h$m-$s_$l", 128);
+	}
+
+	UI_ETF_DemoParseString(str, buffer, 256);
+	trap_Cmd_ExecuteText(EXEC_APPEND, va("screenshotjpeg \"%s\"\n", buffer));
+}
+
+#ifdef _ETXREAL
+static void UI_Q3F_ScreenshotPNG_f( void ) {
+	char buffer[256], str[128];
+
+	trap_Argv(1, str, 128);
+
+	if(!*str) {
+		Q_strncpyz(str, "$Y-$a-$d_$h$m-$s_$l", 128);
+	}
+
+	UI_ETF_DemoParseString(str, buffer, 256);
+	trap_Cmd_ExecuteText(EXEC_APPEND, va("screenshotpng \"%s\"\n", buffer));
+}
+#endif
+
+static void UI_ETFMap_f( void ) {
+	char strmap[MAX_QPATH], index[10];
+	trap_Argv(1, strmap, sizeof(strmap));
+	if(!*strmap) {
+		trap_Print("Usage: etfmap <map name> [game index]\n");
+		return;
+	}
+
+	trap_Argv(2, index, sizeof(index)); 
+	if(!*index) {
+		trap_Print("No gameindex specified, defaulting to 1\n");
+		Q_strncpyz(index, "1", sizeof(index));
+	}
+
+	trap_Cvar_Set("g_gameindex", index);
+	trap_Cmd_ExecuteText(EXEC_APPEND, va("map \"%s\"\n", strmap));
+}
+
+static void UI_ETFDevMap_f( void ) {
+	char strmap[MAX_QPATH], index[10];
+	trap_Argv(1, strmap, sizeof(strmap));
+	if(!*strmap) {
+		trap_Print("Usage: etfdevmap <map name> [game index]\n");
+		return;
+	}
+
+	trap_Argv(2, index, sizeof(index)); 
+	if(!*index) {
+		trap_Print("No gameindex specified, defaulting to 1\n");
+		Q_strncpyz(index, "1", sizeof(index));
+	}
+
+	trap_Cvar_Set("g_gameindex", index);
+	trap_Cmd_ExecuteText(EXEC_APPEND, va("devmap \"%s\"\n", strmap));
+}
+
+/*
+really don't need this, gfxinfo contains everything and glconfig should be safe was probably for testing during migration
+static void UI_GLConfig_f( void ) {
+	const char *tc_table[] =
+	{
+		"None",
+		"GL_S3_s3tc",
+		"GL_EXT_texture_compression_s3tc",
+	};
+
+	const char *dt_table[] = {
+		"Integrated with window system",
+		"Non-3Dfx standalone",
+		"3Dfx standalone"
+	};
+
+	const char *hw_table[] = {
+		"Generic",
+		"Voodoo Banshee or Voodoo3",
+		"Riva 128",
+		"Rage Pro",
+		"Permidia 2"
+	};
+
+	Com_Printf( "vendor: %s\n", uiInfo.uiDC.glconfig.vendor_string );
+	Com_Printf( "renderer: %s\n", uiInfo.uiDC.glconfig.renderer_string );
+	Com_Printf( "version: %s\n", uiInfo.uiDC.glconfig.version_string );
+	Com_Printf( "extensions (likely truncated): %s\n", uiInfo.uiDC.glconfig.extensions_string );
+	Com_Printf( "maxTextureSize: %i\n", uiInfo.uiDC.glconfig.maxTextureSize );
+	Com_Printf( "maxActiveTextures: %i\n", uiInfo.uiDC.glconfig.maxActiveTextures );
+	Com_Printf( "colorBits: %i\n", uiInfo.uiDC.glconfig.colorBits );
+	Com_Printf( "depthBits: %i\n", uiInfo.uiDC.glconfig.depthBits );
+	Com_Printf( "stencilBits: %i\n", uiInfo.uiDC.glconfig.stencilBits );
+	Com_Printf( "driverType: %s\n", dt_table[uiInfo.uiDC.glconfig.driverType] );
+	Com_Printf( "hardwareType: %s\n", hw_table[uiInfo.uiDC.glconfig.hardwareType] );
+	Com_Printf( "deviceSupportsGamma: %s\n", ( uiInfo.uiDC.glconfig.deviceSupportsGamma ? "Yes" : "No" ) );
+	Com_Printf( "textureCompression: %s\n", tc_table[uiInfo.uiDC.glconfig.textureCompression] );
+	Com_Printf( "textureEnvAddAvailable: %s\n", ( uiInfo.uiDC.glconfig.textureEnvAddAvailable ? "Yes" : "No" ) );
+	Com_Printf( "deviceSupportsGamma: %i\n", ( uiInfo.uiDC.glconfig.deviceSupportsGamma ? "Yes" : "No" ) );
+	Com_Printf( "vidWidth: %i\n", uiInfo.uiDC.glconfig.vidWidth );
+	Com_Printf( "vidHeight: %i\n", uiInfo.uiDC.glconfig.vidHeight );
+	Com_Printf( "windowAspect: %f\n", uiInfo.uiDC.glconfig.windowAspect );
+	Com_Printf( "displayFrequency: %i\n", uiInfo.uiDC.glconfig.displayFrequency );
+	Com_Printf( "isFullscreen: %s\n", ( uiInfo.uiDC.glconfig.isFullscreen ? "Yes" : "No" ) );
+	Com_Printf( "stereoEnabled: %s\n", ( uiInfo.uiDC.glconfig.stereoEnabled ? "Yes" : "No" ) );
+}*/
+
+static void UI_Fontinfo_f( void ) {
+	int i;
+	char buff[2];
+
+	Com_Printf( "Font info for: '%s', glyphScale '%f'\n", uiInfo.uiDC.Assets.font.textFont.name, uiInfo.uiDC.Assets.font.textFont.glyphScale );
+
+	buff[1] = 0;
+
+	for ( i = 0; i < GLYPHS_PER_FONT; i++ ) {
+		if ( ( i >= GLYPH_CHARSTART && i <= GLYPH_CHAREND ) || ( i >= GLYPH_CHARSTART2 && i <= GLYPH_CHAREND2 ) ) {
+			buff[0] = i;
+			Com_Printf( "%i: %s :: height: %i top: %i bottom: %i pitch: %i xSkip: %i imageWidth: %i imageHeight: %i s: %f t: %f s2: %f t2: %f glyph: %i shaderName: %s\n",
+								i,
+								buff,
+								uiInfo.uiDC.Assets.font.textFont.glyphs[i].height,			// number of scan lines
+								uiInfo.uiDC.Assets.font.textFont.glyphs[i].top,				// top of glyph in buffer
+								uiInfo.uiDC.Assets.font.textFont.glyphs[i].bottom,			// bottom of glyph in buffer
+								uiInfo.uiDC.Assets.font.textFont.glyphs[i].pitch,			// width for copying
+								uiInfo.uiDC.Assets.font.textFont.glyphs[i].xSkip,			// x adjustment
+								uiInfo.uiDC.Assets.font.textFont.glyphs[i].imageWidth,		// width of actual image
+								uiInfo.uiDC.Assets.font.textFont.glyphs[i].imageHeight,		// height of actual image
+								uiInfo.uiDC.Assets.font.textFont.glyphs[i].s,				// x offset in image where glyph starts
+								uiInfo.uiDC.Assets.font.textFont.glyphs[i].t,				// y offset in image where glyph starts
+								uiInfo.uiDC.Assets.font.textFont.glyphs[i].s2,
+								uiInfo.uiDC.Assets.font.textFont.glyphs[i].t2,
+								uiInfo.uiDC.Assets.font.textFont.glyphs[i].glyph,			// handle to the shader with the glyph
+								uiInfo.uiDC.Assets.font.textFont.glyphs[i].shaderName );
+		}
+	}
+}
+
+typedef struct {
+	const char	*cmd;
+	void	(*function)(void);
+} consoleCommand_t;
+
+static const consoleCommand_t commands[] = {
+	{ "hud_ingame", UI_HudIngame_f },
+	{ "ui_report", UI_Report },
+	{ "ui_load", UI_Load },
+	{ "readbindings", UI_ReadBindings, },
+	{ "remapShader", UI_RemapShader_f },
+	{ "ui_chat", UI_Chat_f },
+	{ "ui_cache", UI_Cache_f },
+	{ "hud_iplist", HUD_BuildPlayerIPList },
+	{ "hud_banlist", HUD_BuildPlayerBANList },
+	{ "ui_scoreclear", HUD_ClearScoreInfo },
+	{ "ui_stats", UI_ParseStats },
+	{ "ui_awards", UI_ParseAwards },
+	{ "ui_teamscoredump", HUD_ParseTeamScoreInfo },
+	{ "ui_scoredump", HUD_ParseScoreInfo },
+	{ "ui_scorecomplete", UI_ScoreComplete_f },
+	{ "ui_updatemapvotes", UI_UpdateMapVotes_f },
+	{ "ui_updatemapvotetally", UI_Q3F_MapSelectTally },
+	{ "screenshot_etf", UI_Q3F_ScreenshotTGA_f },
+	{ "screenshotJPEG_etf", UI_Q3F_ScreenshotJPEG_f },
+#ifdef _ETXREAL
+	{ "screenshotPNG_etf", UI_Q3F_ScreenshotPNG_f },
+#endif
+	{ "etfmap", UI_ETFMap_f },
+	{ "etfdevmap", UI_ETFDevMap_f },
+	//{ "glconfig", UI_GLConfig_f },
+	{ "fontinfo", UI_Fontinfo_f },
 };
 
-static const char *glDriverTypeNames[] = {
-	"Integrated with window system",
-	"Non-3Dfx standalone",
-	"3Dfx standalone"
-};
-
-static const char *glHardwareTypeNames[] = {
-	"generic",
-	"Voodoo Banshee or Voodoo3",
-	"Riva 128",
-	"Rage Pro",
-	"Permidia 2"
-};
+static const size_t numUI_Commands = ARRAY_LEN(commands);
 
 /*
 =================
@@ -406,7 +637,8 @@ UI_ConsoleCommand
 =================
 */
 qboolean UI_ConsoleCommand( int realTime ) {
-	char	*cmd;
+	const char	*cmd;
+	size_t i;
 
 	uiInfo.uiDC.frameTime = realTime - uiInfo.uiDC.realTime;
 	uiInfo.uiDC.realTime = realTime;
@@ -419,276 +651,17 @@ qboolean UI_ConsoleCommand( int realTime ) {
 	// ensure minimum menu data is available
 	//Menu_Cache();
 
-	if( Q_stricmp(cmd, "hud_ingame") == 0 ) {
-		char buffer[64];
-		trap_GetConfigString( CS_INTERMISSION, buffer, 64 );
-
-		if(atoi( buffer )) {
-			HUD_Setup_Menu("tab_scores");
-			UI_ShowEndGame();
-		} else {
-			UI_ShowInGame();
-		}
+	// Unused command but we still want to consume it if it is sent
+	if ( !Q_stricmp( cmd, "ui_cdkey" ) ) {
 		return qtrue;
 	}
 
-	if ( Q_stricmp (cmd, "ui_report") == 0 ) {
-		UI_Report();
-		return qtrue;
-	}
-	
-	if ( Q_stricmp (cmd, "ui_load") == 0 ) {
-		UI_Load();
-		return qtrue;
-	}
-
-	if( Q_stricmp (cmd, "readbindings") == 0) {
-		UI_ReadBindings();
-		return qtrue;
-	}
-
-	if ( Q_stricmp (cmd, "remapShader") == 0 ) {
-		if (trap_Argc() == 4) {
-			char shader1[MAX_QPATH];
-			char shader2[MAX_QPATH];
-			Q_strncpyz(shader1, UI_Argv(1), sizeof(shader1));
-			Q_strncpyz(shader2, UI_Argv(2), sizeof(shader2));
-			trap_R_RemapShader(shader1, shader2, UI_Argv(3));
+	for ( i = 0 ; i < numUI_Commands; i++ ) {
+		if ( !Q_stricmp( cmd, commands[i].cmd ) ) {
+			commands[i].function();
 			return qtrue;
 		}
 	}
-
-	if ( Q_stricmp (cmd, "ui_chat") == 0 ) {
-		int i, j;
-		char buffer[256];
-		char chatbuffer[256];
-		char *p, *s;
-
-		*chatbuffer = '\0';
-		for (i = 1, j = trap_Argc(); i < j; i++) {
-			trap_Argv(i, buffer, 256);
-			if(i != 1) {
-				Q_strcat(chatbuffer, 256, " ");
-			}
-			Q_strcat(chatbuffer, 256, buffer);
-		}
-		Q_strcat(chatbuffer, 256, "\n");
-		
-		s = chatbuffer;
-		for( p = s; *p;) {
-			if(*p == '\n') {
-				*p++ = '\0';
-				UI_AddToTextBox(chatbuffer, uiInfo.Q3F_uiChat, uiInfo.Q3F_uiChatTimes, MAX_UICHAT_STRINGS, MAX_SAY_TEXT);
-				s = p;
-			}
-			else {
-				p++;
-			}
-		}
-	}
-
-	if ( Q_stricmp (cmd, "ui_cache") == 0 ) {
-		UI_Cache_f();
-		return qtrue;
-	}
-
-	if ( Q_stricmp (cmd, "ui_cdkey") == 0 ) {
-		//UI_CDKeyMenu_f();
-		return qtrue;
-	}
-
-	if ( Q_stricmp (cmd, "hud_iplist") == 0 ) {
-		HUD_BuildPlayerIPList();
-		return qtrue;
-	}
-	
-	if ( Q_stricmp (cmd, "hud_banlist") == 0 ) {
-		HUD_BuildPlayerBANList();
-		return qtrue;
-	}
-
-	if ( Q_stricmp (cmd, "ui_scoreclear") == 0 ) {
-		HUD_ClearScoreInfo();
-		return qtrue;
-	}
-
-	if( Q_stricmp(cmd, "ui_stats") == 0) {
-		UI_ParseStats();
-		return qtrue;
-	}
-
-	if( Q_stricmp(cmd, "ui_awards") == 0) {
-		UI_ParseAwards();
-		return qtrue;
-	}
-
-	if ( Q_stricmp (cmd, "ui_teamscoredump") == 0 ) {
-		HUD_ParseTeamScoreInfo();
-		return qtrue;
-	}
-
-	if ( Q_stricmp (cmd, "ui_scoredump") == 0 ) {
-		HUD_ParseScoreInfo();
-		return qtrue;
-	}
-
-	if( Q_stricmp (cmd, "ui_scorecomplete") == 0 ) {
-		uiInfo.ScoreFetched = qtrue;
-		return qtrue;
-	}
-
-	if ( Q_stricmp (cmd, "ui_updatemapvotes") == 0 ) {
-		UI_ParseMapInfo();
-		UI_Q3F_MapSelectInit();
-		return qtrue;
-	}
-
-	if ( Q_stricmp (cmd, "ui_updatemapvotetally") == 0 ) {
-		UI_Q3F_MapSelectTally();
-		return qtrue;
-	}
-
-	if ( Q_stricmp(cmd, "screenshot_etf") == 0) {
-		char buffer[256], str[128];
-		trap_Argv(1, str, 128);
-		memset(buffer, 0, 256);
-		if(!*str) {
-			Q_strncpyz(str, "$Y-$a-$d_$h$m-$s_$l", 128);
-		}
-		UI_ETF_DemoParseString(str, buffer, 256);
-		trap_Cmd_ExecuteText(EXEC_APPEND, va("screenshot \"%s\"\n", buffer));
-		return qtrue;
-	}
-
-	if ( Q_stricmp(cmd, "screenshotJPEG_etf") == 0) {
-		char buffer[256], str[128];
-		trap_Argv(1, str, 128);
-		memset(buffer, 0, 256);
-		if(!*str) {
-			Q_strncpyz(str, "$Y-$a-$d_$h$m-$s_$l", 128);
-		}
-		UI_ETF_DemoParseString(str, buffer, 256);
-		trap_Cmd_ExecuteText(EXEC_APPEND, va("screenshotjpeg \"%s\"\n", buffer));
-		return qtrue;
-	}
-
-#ifdef _ETXREAL
-	if ( Q_stricmp(cmd, "screenshotPNG_etf") == 0) {
-		char buffer[256], str[128];
-		trap_Argv(1, str, 128);
-		memset(buffer, 0, 256);
-		if(!*str) {
-			Q_strncpyz(str, "$Y-$a-$d_$h$m-$s_$l", 128);
-		}
-		UI_ETF_DemoParseString(str, buffer, 256);
-		trap_Cmd_ExecuteText(EXEC_APPEND, va("screenshotpng \"%s\"\n", buffer));
-		return qtrue;
-	}
-#endif
-
-	if (Q_stricmp(cmd, "etfmap") == 0) {
-		char strmap[128], index[128];
-		trap_Argv(1, strmap, 128);
-		if(!*strmap) {
-			trap_Print("Usage: etfmap <map name> [game index]\n");
-			return qtrue;
-		}
-
-		trap_Argv(2, index, 128); 
-		if(!*index) {
-			trap_Print("No gameindex specified, defaulting to 1\n");
-			Q_strncpyz(index, "1", 128);
-		}
-
-		trap_Cvar_Set("g_gameindex", index);
-		trap_Cmd_ExecuteText(EXEC_APPEND, va("map \"%s\"\n", strmap));
-
-		return qtrue;
-	}
-
-	if (Q_stricmp(cmd, "etfdevmap") == 0) {
-		char strmap[128], index[128];
-		trap_Argv(1, strmap, 128);
-		if(!*strmap) {
-			trap_Print("Usage: etfdevmap <map name> [game index]\n");
-			return qtrue;
-		}
-
-		trap_Argv(2, index, 128); 
-		if(!*index) {
-			trap_Print("No gameindex specified, defaulting to 1\n");
-			Q_strncpyz(index, "1", 128);
-		}
-
-		trap_Cvar_Set("g_gameindex", index);
-		trap_Cmd_ExecuteText(EXEC_APPEND, va("devmap \"%s\"\n", strmap));
-
-		return qtrue;
-	}
-
-
-	// RR2DO2: glconfig dump
-	if ( Q_stricmp (cmd, "glconfig") == 0 ) {
-		trap_Print( va( "renderer: %s\n", uiInfo.uiDC.glconfig.renderer_string ) );
-		trap_Print( va( "vendor: %s\n", uiInfo.uiDC.glconfig.vendor_string ) );
-		trap_Print( va( "version: %s\n", uiInfo.uiDC.glconfig.version_string ) );
-		trap_Print( va( "extensions: %s\n", uiInfo.uiDC.glconfig.extensions_string ) );
-		trap_Print( va( "maxTextureSize: %i\n", uiInfo.uiDC.glconfig.maxTextureSize ) );
-		trap_Print( va( "maxActiveTextures: %i\n", uiInfo.uiDC.glconfig.maxActiveTextures ) );
-		trap_Print( va( "colorBits: %i\n", uiInfo.uiDC.glconfig.colorBits ) );
-		trap_Print( va( "depthBits: %i\n", uiInfo.uiDC.glconfig.depthBits ) );
-		trap_Print( va( "stencilBits: %i\n", uiInfo.uiDC.glconfig.stencilBits ) );
-		trap_Print( va( "driverType: %s\n", glDriverTypeNames[uiInfo.uiDC.glconfig.driverType] ) );
-		trap_Print( va( "hardwareType: %s\n", glHardwareTypeNames[uiInfo.uiDC.glconfig.hardwareType] ) );
-		trap_Print( va( "deviceSupportsGamma: %s\n", ( uiInfo.uiDC.glconfig.deviceSupportsGamma ? "Yes" : "No" ) ) );
-		trap_Print( va( "textureCompression: %s\n", textureCompressionNames[uiInfo.uiDC.glconfig.textureCompression] ) );
-		trap_Print( va( "textureEnvAddAvailable: %s\n", ( uiInfo.uiDC.glconfig.textureEnvAddAvailable ? "Yes" : "No" ) ) );
-		trap_Print( va( "deviceSupportsGamma: %i\n", uiInfo.uiDC.glconfig.deviceSupportsGamma ) );
-		trap_Print( va( "vidWidth: %i\n", uiInfo.uiDC.glconfig.vidWidth ) );
-		trap_Print( va( "vidHeight: %i\n", uiInfo.uiDC.glconfig.vidHeight ) );
-		trap_Print( va( "windowAspect: %f\n", uiInfo.uiDC.glconfig.windowAspect ) );
-		trap_Print( va( "displayFrequency: %i\n", uiInfo.uiDC.glconfig.displayFrequency ) );
-		trap_Print( va( "isFullscreen: %s\n", ( uiInfo.uiDC.glconfig.isFullscreen ? "Yes" : "No" ) ) );
-		trap_Print( va( "stereoEnabled: %s\n", ( uiInfo.uiDC.glconfig.stereoEnabled ? "Yes" : "No" ) ) );
-		trap_Print( va( "smpActive: %s\n", ( uiInfo.uiDC.glconfig.smpActive ? "Yes" : "No" ) ) );
-		return qtrue;
-
-	}
-	// RR2DO2
-
-	// RR2DO2: font dump
-	if ( Q_stricmp (cmd, "fontinfo") == 0 ) {
-		int i;
-		char		buff[2];
-
-		trap_Print( va( "Font info for: '%s', glyphScale '%f'\n", uiInfo.uiDC.Assets.font.textFont.name, uiInfo.uiDC.Assets.font.textFont.glyphScale ) );
-
-		buff[1] = 0;
-
-		for ( i = 0; i < GLYPHS_PER_FONT; i++ ) {
-			if ( ( i >= GLYPH_CHARSTART && i <= GLYPH_CHAREND ) || ( i >= GLYPH_CHARSTART2 && i <= GLYPH_CHAREND2 ) ) {
-				buff[0] = i;
-				trap_Print( va( "%i: %s :: height: %i top: %i bottom: %i pitch: %i xSkip: %i imageWidth: %i imageHeight: %i s: %f t: %f s2: %f t2: %f glyph: %i shaderName: %s\n",
-									i,
-									buff,
-									uiInfo.uiDC.Assets.font.textFont.glyphs[i].height,			// number of scan lines
-									uiInfo.uiDC.Assets.font.textFont.glyphs[i].top,				// top of glyph in buffer
-									uiInfo.uiDC.Assets.font.textFont.glyphs[i].bottom,			// bottom of glyph in buffer
-									uiInfo.uiDC.Assets.font.textFont.glyphs[i].pitch,			// width for copying
-									uiInfo.uiDC.Assets.font.textFont.glyphs[i].xSkip,			// x adjustment
-									uiInfo.uiDC.Assets.font.textFont.glyphs[i].imageWidth,		// width of actual image
-									uiInfo.uiDC.Assets.font.textFont.glyphs[i].imageHeight,		// height of actual image
-									uiInfo.uiDC.Assets.font.textFont.glyphs[i].s,				// x offset in image where glyph starts
-									uiInfo.uiDC.Assets.font.textFont.glyphs[i].t,				// y offset in image where glyph starts
-									uiInfo.uiDC.Assets.font.textFont.glyphs[i].s2,
-									uiInfo.uiDC.Assets.font.textFont.glyphs[i].t2,
-									uiInfo.uiDC.Assets.font.textFont.glyphs[i].glyph,			// handle to the shader with the glyph
-									uiInfo.uiDC.Assets.font.textFont.glyphs[i].shaderName ) );
-			}
-		}
-		return qtrue;
-	}
-	// RR2DO2
 
 	return qfalse;
 }

@@ -348,7 +348,7 @@ extern sfxHandle_t	MenuField_Key( menufield_s* m, int* key );
 //
 // ui_main.c
 //
-void UI_Report();
+void UI_Report(void);
 void UI_Load();
 void UI_LoadMenus(const char *menuFile, qboolean reset);
 void _UI_SetActiveMenu( uiMenuCommand_t menu );
@@ -365,16 +365,16 @@ void UI_LoadHudPreview( void );
 void UI_RegisterCvars( void );
 void UI_UpdateCvars( void );
 void UI_DrawConnectScreen( qboolean overlay );
-void HUD_BuildPlayerIPList();
-void HUD_BuildPlayerBANList();
+void HUD_BuildPlayerIPList(void);
+void HUD_BuildPlayerBANList(void);
 void UI_Q3F_BuildServerMaplist();
 qboolean UI_PlayerOnTeam();
 qboolean UI_PlayerHasClass();
-void HUD_ParseScoreInfo();
+void HUD_ParseScoreInfo(void);
 void UI_ParseStats( void );
 void UI_ParseAwards( void );
-void HUD_ParseTeamScoreInfo();
-void HUD_ClearScoreInfo();
+void HUD_ParseTeamScoreInfo(void);
+void HUD_ClearScoreInfo(void);
 void UI_ReadBindings( void );
 
 //

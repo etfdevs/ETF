@@ -1314,7 +1314,7 @@ void Font_Report() {
 	}
 }
 
-void UI_Report() {
+void UI_Report(void) {
 	String_Report();
 }
 
@@ -8639,7 +8639,7 @@ static void HUD_BuildPlayerList() {
 	}
 }
 
-void HUD_BuildPlayerIPList() {
+void HUD_BuildPlayerIPList(void) {
 	int		n, count;
 	char	info[MAX_INFO_STRING];
 
@@ -8658,7 +8658,7 @@ void HUD_BuildPlayerIPList() {
 	}
 }
 
-void HUD_BuildPlayerBANList() {
+void HUD_BuildPlayerBANList(void) {
 	int		n, count;
 	char	info[MAX_INFO_STRING];
 
@@ -8795,12 +8795,12 @@ void HUD_DrawTeamCount( rectDef_t *rect, float scale, vec4_t color, int textStyl
 	Text_Paint(rect->x + text_x, rect->y + text_y, scale, color, buffer, 0, 0, textStyle, font, textalignment);
 }
 
-void HUD_ClearScoreInfo() {
+void HUD_ClearScoreInfo(void) {
 	uiInfo.Q3F_scoreNum = 0;
 //	uiInfo.statsvalid = qfalse;
 }
 
-void HUD_ParseScoreInfo() {
+void HUD_ParseScoreInfo(void) {
 	int k;
 	char buffer[64];
 
@@ -8830,7 +8830,7 @@ void HUD_ParseScoreInfo() {
 	uiInfo.Q3F_scoreNum++;
 }
 
-void HUD_ParseTeamScoreInfo() {
+void HUD_ParseTeamScoreInfo(void) {
 	int i;
 	char buffer[64];
 
