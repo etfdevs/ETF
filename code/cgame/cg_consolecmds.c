@@ -1378,11 +1378,11 @@ void CG_ShowSpecs_f( void ) {
 
 
 typedef struct {
-	char	*cmd;
+	const char	*cmd;
 	void	(*function)(void);
 } consoleCommand_t;
 
-static consoleCommand_t	commands[] = {
+static const consoleCommand_t	commands[] = {
 	{ "testgun", CG_TestGun_f },
 	{ "testmodel", CG_TestModel_f },
 	{ "nextframe", CG_TestModelNextFrame_f },
