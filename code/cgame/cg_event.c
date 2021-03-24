@@ -2254,7 +2254,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		break;
 
 	case EV_VISUAL_NAILFIRE:
-		CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_NAILGREN);
+		//CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_NAILGREN);
 		break;
 
 	case EV_DEBUG_DATA:

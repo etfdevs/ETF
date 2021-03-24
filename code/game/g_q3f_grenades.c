@@ -907,7 +907,7 @@ static void NailThink( gentity_t *grenade )
 	
 	grenade->nextthink = grenade->nextthink + FRAMETIME;
 
-	G_AddEvent(grenade, EV_VISUAL_NAILFIRE, 0);
+	//G_AddEvent(grenade, EV_VISUAL_NAILFIRE, 0);
 }
 
 #define NAILBOMB_SOLID

@@ -644,6 +644,7 @@ static qboolean NailRender( centity_t *cent, refEntity_t *ent )
 				CG_AddWeaponWithPowerups( ent, &cent->currentState, team );
 				//CG_AddRefEntityWithPowerups( ent, &cent->currentState, team );
 			}
+			CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_NAILGREN);
 			//if ( cg_lowEffects.value )
 			//	trap_R_AddRefEntityToScene( ent, cent );
 			//else 
