@@ -1352,6 +1352,7 @@ void G_Q3F_Heal_Armour(struct gentity_s *traceEnt, struct gentity_s *ent)
 
 	if (healam > 0)
 	{
+		struct gentity_s *tent;
 		armour += healam;
 		if (armour > maxarmour)
 			armour = maxarmour;
@@ -1361,7 +1362,8 @@ void G_Q3F_Heal_Armour(struct gentity_s *traceEnt, struct gentity_s *ent)
 		#endif
 		ent->client->ps.ammo[AMMO_CELLS] -= (healam/4);			// Deduct ammo
 		traceEnt->client->ps.stats[STAT_ARMOR] = armour;	// Add armour
-		G_Sound(traceEnt, CHAN_AUTO, G_SoundIndex("sound/misc/ar2_pkup.wav"));
+		tent = G_TempEntity( ent->r.currentOrigin, EV_ARMOR_PERSON);
+		tent->s.eventParm = ent->client->ps.persistant[PERS_TEAM];
 	}
 }
 

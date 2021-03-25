@@ -2309,14 +2309,11 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		cg.kills[clientNum] = 0;
 		break;
 
-	/*
-	Ensiform - Should probably use this for spanner hits instead of server side G_Sound
 	case EV_ARMOR_PERSON:
 		DEBUGNAME("EV_HEAL_PERSON");
 		if ( es->eventParm == cg.predictedPlayerState.persistant[PERS_TEAM])
-			trap_S_StartSound( cent->lerpOrigin, es->number, CHAN_BODY, cgs.media.armorSound ); // sound/misc/ar2_pkup.wav
+			trap_S_StartSound( cent->lerpOrigin, es->number, CHAN_BODY, cgs.media.armorSound );
 		break;
-	*/
 
 	case EV_ETF_FLAMETHROWER_EFFECT:
 		DEBUGNAME("EV_ETF_FLAMETHROWER_EFFECT");

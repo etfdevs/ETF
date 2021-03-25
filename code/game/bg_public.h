@@ -689,7 +689,8 @@ typedef enum {
 
 	EV_SUPPLY_BUILD,
 	EV_PLACE_BUILDING,
-	EV_POWERUP_PENTAGRAM
+	EV_POWERUP_PENTAGRAM,
+	EV_ARMOR_PERSON
 } entity_event_t;
 
 typedef struct animation_s {

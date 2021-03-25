@@ -223,6 +223,7 @@ static initSound_t initSounds[] = {
 	{ &cgs.media.jumpPadSound,				"sound/world/jumppad.wav"					},
 	{ &cgs.media.flightSound,				"sound/items/flight.wav"					},
 	{ &cgs.media.medkitSound,				"sound/items/use_medkit.wav"				},
+	{ &cgs.media.armorSound,				"sound/misc/ar2_pkup.wav"					},
 	{ &cgs.media.quadSound,					"sound/items/damage3.wav"					},
 	{ &cgs.media.sfx_ric1,					"sound/weapons/impact/impact_stone1.wav"	},
 	{ &cgs.media.sfx_ric2,					"sound/weapons/impact/impact_stone1.wav"	},

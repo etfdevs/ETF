@@ -1229,6 +1229,7 @@ typedef struct {
 
 	sfxHandle_t flightSound;
 	sfxHandle_t medkitSound;
+	sfxHandle_t armorSound;
 
 	sfxHandle_t weaponHoverSound;
 
