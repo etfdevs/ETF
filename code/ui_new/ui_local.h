@@ -1082,12 +1082,15 @@ void			trap_S_StartBackgroundTrack( const char *intro, const char *loop, int fad
 // extension interface
 extern  qboolean intShaderTime;
 extern  qboolean linearLight;
+extern	qboolean removeCommand;
 
 qboolean trap_GetValue( char *value, int valueSize, const char *key );
 void trap_R_AddRefEntityToScene2( const refEntity_t *re );
 void trap_R_AddLinearLightToScene( const vec3_t start, const vec3_t end, float intensity, float r, float g, float b );
+void trap_RemoveCommand( const char *cmdName );
 extern int dll_com_trapGetValue;
 extern int dll_trap_R_AddRefEntityToScene2;
 extern int dll_trap_R_AddLinearLightToScene;
+extern int dll_trap_RemoveCommand;
 
 #endif

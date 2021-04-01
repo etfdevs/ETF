@@ -312,10 +312,12 @@ static const char *UI_SelectedMap(int index, int *actual);
 
 qboolean intShaderTime = qfalse;
 qboolean linearLight = qfalse;
+qboolean removeCommand = qfalse;
 
 int dll_com_trapGetValue;
 int dll_trap_R_AddRefEntityToScene2;
 int dll_trap_R_AddLinearLightToScene;
+int dll_trap_RemoveCommand;
 
 /*
 ================
@@ -6686,6 +6688,10 @@ void _UI_Init( qboolean inGameLoad ) {
 		if ( trap_GetValue( ver, sizeof( ver ), "trap_R_AddLinearLightToScene_ETE" ) ) {
 			dll_trap_R_AddLinearLightToScene = atoi( ver );
 			linearLight = qtrue;
+		}
+		if ( trap_GetValue( ver, sizeof( ver ), "trap_RemoveCommand" ) ) {
+			dll_trap_RemoveCommand = atoi( ver );
+			removeCommand = qtrue;
 		}
 	}
 
