@@ -283,7 +283,7 @@ static initGraphic_t initGraphics[] = {
 	{	&cgs.media.botSkillShaders[3],		"menu/art/skill4.tga",					INITRT_SHADER		},
 	{	&cgs.media.botSkillShaders[4],		"menu/art/skill5.tga",					INITRT_SHADER		},*/
 //	{	&cgs.media.viewBloodShader,			"viewBloodBlend",						INITRT_SHADER		},
-//	{	&cgs.media.deferShader,				"gfx/2d/defer.tga",						INITRT_SHADERNOMIP	},
+	{	&cgs.media.deferShader,				"gfx/2d/defer.tga",						INITRT_SHADERNOMIP	},
 /*	{	&cgs.media.scoreboardName,			"menu/tab/name.tga",					INITRT_SHADERNOMIP	},
 	{	&cgs.media.scoreboardPing,			"menu/tab/ping.tga",					INITRT_SHADERNOMIP	},
 	{	&cgs.media.scoreboardScore,			"menu/tab/score.tga",					INITRT_SHADERNOMIP	},

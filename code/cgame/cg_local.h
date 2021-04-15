@@ -1004,7 +1004,7 @@ typedef struct {
 
 	qhandle_t	teamStatusBar;
 
-//	qhandle_t	deferShader;
+	qhandle_t	deferShader;
 
 	// gib explosions
 	qhandle_t	gibAbdomen;

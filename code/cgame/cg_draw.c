@@ -501,7 +501,7 @@ void CG_DrawHead( float x, float y, float w, float h, int clientNum, vec3_t head
 
 	if( !ci->infoValid || ci->cls < Q3F_CLASS_RECON || ci->cls > Q3F_CLASS_CIVILIAN )
 	{
-		CG_DrawPic( x, y, w, h, trap_R_RegisterShaderNoMip("gfx/2d/defer.tga"));
+		CG_DrawPic( x, y, w, h, cgs.media.deferShader);
 		return;
 	}
 
