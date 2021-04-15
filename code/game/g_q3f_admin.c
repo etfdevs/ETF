@@ -230,6 +230,7 @@ void UpdateIPBans (void)
 	}
 
 	trap_Cvar_Set( "g_banIPs", iplist );
+	trap_Cvar_Update( &g_banIPs );
 }
 
 /*
@@ -910,6 +911,7 @@ void G_Q3F_AdminMatchPassword( gentity_t *admin )
 	}
 
 	trap_Cvar_Set( "g_matchPassword", matchpass );
+	trap_Cvar_Update( &g_matchPassword );
 	G_Q3F_AdminPrint( admin, "New match password set.\n" );
 }
 
@@ -927,6 +929,7 @@ void G_Q3F_AdminMatch( gentity_t *admin )
 		if( trap_Argc() > 3 ) {
 			trap_Argv( 3, cmdbuff, sizeof(cmdbuff) );
 			trap_Cvar_Set( "g_warmup", va ( "%i", atoi(cmdbuff)));
+			trap_Cvar_Update( &g_warmup );
 		}
 		G_Q3F_AdminPrint( admin, "Warmup set at %i seconds.\n", g_warmup.integer );
 		return;
@@ -960,6 +963,7 @@ void G_Q3F_AdminMatch( gentity_t *admin )
 				mode |= MATCH_MODE_NOREADYUP;
 		}
 		trap_Cvar_Set( "g_matchMode", va("%i", mode ));
+		trap_Cvar_Update( &g_matchMode );
 		G_Q3F_RestartMap();
 		return;
 	} else if( !Q_stricmp( cmdbuff, "end" ) ) {
@@ -968,6 +972,7 @@ void G_Q3F_AdminMatch( gentity_t *admin )
 			return;
 		}
 		trap_Cvar_Set( "g_matchMode", "0" );
+		trap_Cvar_Update( &g_matchMode );
 		// Stop the match
 		level.ceaseFire = qfalse;
 		trap_SetConfigstring( CS_FORTS_CEASEFIRE, "0" );
@@ -1153,8 +1158,8 @@ void G_Q3F_AdminGameIndex( gentity_t *admin )
 	}
 
 	trap_Cvar_Set("g_gameindex", va("%i", index));
+	trap_Cvar_Update( &g_gameindex );
 }
-
 
 
 void G_ETF_AdminVote( gentity_t *admin )
