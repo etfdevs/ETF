@@ -1077,8 +1077,8 @@ static void PM_LadderMove( void ) {
 	}
 	// Golliwog
 
-	if ( wishspeed > pml.maxSpeed * pm_ladderScale ) {
-		wishspeed = pml.maxSpeed * pm_ladderScale;
+	if ( wishspeed > pml.maxSpeed /** pm_ladderScale*/ ) {
+		wishspeed = pml.maxSpeed /** pm_ladderScale*/;
 	}
 
 	PM_Accelerate (wishdir, wishspeed, pm_ladderAccelerate);
