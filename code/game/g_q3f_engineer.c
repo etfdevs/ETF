@@ -461,7 +461,8 @@ void G_Q3F_SentryBuild( gentity_t *ent )
 
 	vec3_t origin, tracestart, traceend, sentrymin;
 	trace_t trace;
-	int traceoffset, index;
+	int index;
+	float traceoffset;
 	gentity_t *sentry;
 	bg_q3f_playerclass_t *cls;
 
@@ -528,14 +529,14 @@ void G_Q3F_SentryBuild( gentity_t *ent )
 	{
 		switch( index )
 		{
-			case 0: traceoffset = 32;	break;
-			case 1: traceoffset = 0.25;	break;
-			case 2:	traceoffset	= 48;	break;
+			case 0: traceoffset = 32.0f;	break;
+			case 1: traceoffset = 0.25f;	break;
+			case 2:	traceoffset	= 48.0f;	break;
 		}
 		VectorCopy( origin, tracestart );
 		tracestart[2] += traceoffset + q3f_sentry_min[2];
 		VectorCopy( origin, traceend );
-		traceend[2] += traceoffset - 64 + q3f_sentry_min[2];
+		traceend[2] += traceoffset - 64.f + q3f_sentry_min[2];
 
 		G_Q3F_ForceFieldTrace( &trace, tracestart, q3f_sentry_min, q3f_sentry_max, traceend, ent->s.number, MASK_PLAYERSOLID );
 		if( trace.fraction == 1 || /*trace.startsolid ||*/ trace.entityNum < MAX_CLIENTS )//|| trace.startsolid )	// We never hit land, got wedged into something, or landed on a player
@@ -2291,7 +2292,8 @@ void G_Q3F_SupplyStationBuild( gentity_t *ent )
 
 	vec3_t origin, tracestart, traceend, supplystationmin;
 	trace_t trace;
-	int traceoffset, index;
+	int index;
+	float traceoffset;
 	gentity_t *supplystation;
 	bg_q3f_playerclass_t *cls;
 
@@ -2358,14 +2360,14 @@ void G_Q3F_SupplyStationBuild( gentity_t *ent )
 	{
 		switch( index )
 		{
-			case 0: traceoffset = 32;	break;
-			case 1: traceoffset = 0.25;	break;
-			case 2:	traceoffset	= 48;	break;
+			case 0: traceoffset = 32.0f;	break;
+			case 1: traceoffset = 0.25f;	break;
+			case 2:	traceoffset	= 48.0f;	break;
 		}
 		VectorCopy( origin, tracestart );
 		tracestart[2] += traceoffset + q3f_supplystation_min[2];
 		VectorCopy( origin, traceend );
-		traceend[2] += traceoffset - 64 + q3f_supplystation_min[2];
+		traceend[2] += traceoffset - 64.f + q3f_supplystation_min[2];
 
 		G_Q3F_ForceFieldTrace( &trace, tracestart, q3f_supplystation_min, q3f_supplystation_max, traceend, ent->s.number, MASK_PLAYERSOLID );
 		if( trace.fraction == 1 || (trace.entityNum < MAX_CLIENTS ))	// We never hit land, or landed on a player

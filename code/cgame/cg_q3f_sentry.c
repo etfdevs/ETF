@@ -190,7 +190,7 @@ static QINLINE qboolean CG_Q3F_CanUpgrade(void)
 
 static QINLINE qboolean CG_Q3F_CanUpgradeSupply(void)
 {
-	return (cg.snap->ps.ammo[AMMO_CELLS] >= 100) ? qtrue : qfalse;
+	return (cg.snap->ps.ammo[AMMO_CELLS] >= 130) ? qtrue : qfalse;
 }
 
 static QINLINE qboolean CG_Q3F_HasCells(void)
