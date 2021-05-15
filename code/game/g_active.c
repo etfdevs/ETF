@@ -1688,6 +1688,9 @@ void ClientEndFrame( gentity_t *ent ) {
 	//clientPersistant_t	*pers;
 	int			frames;
 
+	if ( !ent->client )
+		return;
+
 	/* Ensiform - FIXME Happens to people randomly for no reason? */
 	if (!ent->client->sess.versionOK && ent->client->pers.enterTime + 5000 < level.time && !g_allowAllVersions.integer ) {
 		G_VersionLogUser( ent );
@@ -1714,8 +1717,10 @@ void ClientEndFrame( gentity_t *ent ) {
 	// don't extrapolate more than two frames
 	if ( frames > 2 ) {
 		// if they missed more than two in a row, show the phone jack
-		ent->client->ps.eFlags |= EF_CONNECTION;
-		ent->s.eFlags |= EF_CONNECTION;
+		if ( !( ent->r.svFlags & SVF_BOT ) ) {
+			ent->client->ps.eFlags |= EF_CONNECTION;
+			ent->s.eFlags |= EF_CONNECTION;
+		}
 	}
 
 	// did the client miss any frames?
@@ -1783,6 +1788,7 @@ void ClientEndFrame( gentity_t *ent ) {
 
 	// mark as not missing updates initially
 	ent->client->ps.eFlags &= ~EF_CONNECTION;
+	ent->s.eFlags &= ~EF_CONNECTION;
 
 	// store the client's position for backward reconciliation later
 	G_StoreHistory( ent );
