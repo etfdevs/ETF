@@ -93,9 +93,6 @@ void BG_Q3F_QuadSpline_ComputeSegments ( Q3F_QuadSpline_t *spline ) {
 float BG_Q3F_QuadSpline_Length ( const Q3F_QuadSpline_t *spline ) {
 	int		s;
 	float	length;
-	
-	if ( !spline->SegmentVtx )
-		return -1;
 
 	length = .0f;
 
@@ -107,9 +104,6 @@ float BG_Q3F_QuadSpline_Length ( const Q3F_QuadSpline_t *spline ) {
 
 // Calculates the two nearest vertexes on the spline, given a relative position on the spline
 void BG_Q3F_QuadSpline_Position( vec3_t src, vec3_t dst, float relpos, const Q3F_QuadSpline_t *spline ) {
-	if ( !spline->SegmentVtx )
-		return;
-
 	VectorCopy( spline->SegmentVtx[(int) (relpos)], src );
 	VectorCopy( spline->SegmentVtx[(int) (relpos + 1.f)], dst );
 
@@ -121,9 +115,6 @@ void BG_Q3F_QuadSpline_Position( vec3_t src, vec3_t dst, float relpos, const Q3F
 // Calculates the angles of the two nearest vertexes on the spline, given a relative position on the spline
 void BG_Q3F_QuadSpline_PositionAngle( vec3_t src_angle, vec3_t dst_angle, float relpos, const Q3F_QuadSpline_t *spline ) {
 	int src_vtx_num, dst_vtx_num;
-
-	if ( !spline->SegmentVtx )
-		return;
 
 	src_vtx_num = (int) (relpos);
 	dst_vtx_num = (int) (relpos + 1.f);
@@ -180,9 +171,6 @@ void BG_Q3F_CubicSpline_ComputeSegments ( Q3F_CubicSpline_t *spline ) {
 float BG_Q3F_CubicSpline_Length ( const Q3F_CubicSpline_t *spline ) {
 	int		s;
 	float	length;
-	
-	if ( !spline->SegmentVtx )
-		return -1;
 
 	length = .0f;
 
@@ -194,9 +182,6 @@ float BG_Q3F_CubicSpline_Length ( const Q3F_CubicSpline_t *spline ) {
 
 // Calculates the two nearest vertexes on the spline, given a relative position on the spline
 void BG_Q3F_CubicSpline_Position( vec3_t src, vec3_t dst, float relpos, const Q3F_CubicSpline_t *spline ) {
-	if ( !spline->SegmentVtx )
-		return;
-
 	VectorCopy( spline->SegmentVtx[(int) (relpos)], src );
 	VectorCopy( spline->SegmentVtx[(int) (relpos + 1.f)], dst );
 
@@ -208,9 +193,6 @@ void BG_Q3F_CubicSpline_Position( vec3_t src, vec3_t dst, float relpos, const Q3
 // Calculates the angles of the two nearest vertexes on the spline, given a relative position on the spline
 void BG_Q3F_CubicSpline_PositionAngle( vec3_t src_angle, vec3_t dst_angle, float relpos, const Q3F_CubicSpline_t *spline ) {
 	int src_vtx_num, dst_vtx_num;
-
-	if ( !spline->SegmentVtx )
-		return;
 
 	src_vtx_num = (int) (relpos);
 	dst_vtx_num = (int) (relpos + 1.f);

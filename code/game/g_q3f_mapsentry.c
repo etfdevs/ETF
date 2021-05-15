@@ -79,7 +79,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_local.h"
 #include "g_q3f_mapents.h"
 #include "g_q3f_playerclass.h"
-#include "bg_q3f_mapsentry.h"
+//#include "bg_q3f_mapsentry.h"
 
 #define	Q3F_MAPSENTRY_ROT_IDLE_SPEED	70
 #define	Q3F_MAPSENTRY_ROT_SPEED			720

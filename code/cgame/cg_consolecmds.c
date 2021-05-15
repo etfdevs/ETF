@@ -292,7 +292,7 @@ static void CG_Q3F_Inventory( void )
 	bg_q3f_playerclass_t *cls;
 	bg_q3f_grenade_t *gren1, *gren2;
 	int buffcount, ammo, index;
-	char *ammoname;
+	const char *ammoname;
 
 	memset( ammobuff, 0, sizeof(ammobuff) );
 	memset( messagebuff, 0, sizeof(messagebuff) );

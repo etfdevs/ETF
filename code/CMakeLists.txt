@@ -142,11 +142,11 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
 		message(FATAL_ERROR "Compiler does not support -fvisibility")
 	endif()
 	if(APPLE AND X86_64)
-		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-missing-field-initializers -fPIC -fno-strict-aliasing -fvisibility=hidden)
+		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-missing-field-initializers -fPIC -fvisibility=hidden) #-fno-strict-aliasing
 	elseif(X86_64)
-		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-old-style-declaration -Wno-missing-field-initializers -fPIC -fno-strict-aliasing -fvisibility=hidden)
+		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-old-style-declaration -Wno-missing-field-initializers -fPIC -fvisibility=hidden) #-fno-strict-aliasing
 	else()
-		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-old-style-declaration -Wno-missing-field-initializers -fPIC -fno-strict-aliasing -fvisibility=hidden -march=pentium -mtune=pentiumpro)
+		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-old-style-declaration -Wno-missing-field-initializers -fPIC -fvisibility=hidden -march=pentium -mtune=pentiumpro) #-fno-strict-aliasing
 	endif()
 	# debug: explicit -Og -D_DEBUG, implicit -g
 	set(compiler_flags_debug ${compiler_flags_global} -Og -D_DEBUG)
@@ -312,7 +312,7 @@ set(cgame_files
 	game/bg_q3f_flyby.c
 	game/bg_q3f_grenades.c
 	game/bg_q3f_info.c
-	game/bg_q3f_mapsentry.c
+	#game/bg_q3f_mapsentry.c
 	game/bg_q3f_permon.c
 	game/bg_q3f_playerclass.c
 	game/bg_q3f_splines.c
@@ -389,7 +389,7 @@ set(game_files
 	game/bg_q3f_controllable.c
 	game/bg_q3f_flyby.c
 	game/bg_q3f_grenades.c
-	game/bg_q3f_mapsentry.c
+	#game/bg_q3f_mapsentry.c
 	game/bg_q3f_permon.c
 	game/bg_q3f_playerclass.c
 	game/bg_q3f_splines.c
@@ -475,15 +475,9 @@ set(ui_files
 )
 
 if(BOTS)
-	
 	if(GAME)
 		set( game_files ${game_files} game/g_bot_interface.cpp ${CMAKE_BOT_INCLUDE}/Common/BotLoadLibrary.cpp)
 	endif(GAME)
-
-	#include_directories(${CMAKE_SOURCE_DIR}/bot) #FIXME WRONG
-	include_directories(${CMAKE_BOT_INCLUDE}/Common)
-	include_directories(${CMAKE_BOT_INCLUDE}/TeamFortressLib)
-	include_directories(${CMAKE_BOT_INCLUDE}/ETF)
 
 endif()
 
@@ -544,6 +538,13 @@ target_compile_definitions(ui PUBLIC "API_ET" "UI_EXPORTS" "ARCH_STRING=\"${Arch
 target_include_directories(ui PUBLIC ${SRCDIR}/cgame ${SRCDIR}/game ${SRCDIR}/ui_new ${SRCDIR}/api/et ${SRCDIR}/api/shared )
 target_link_libraries(ui PRIVATE ${CMAKE_DL_LIBS} "m")
 
+add_custom_target(create_etf_bin_pak COMMAND
+${CMAKE_COMMAND} -E tar "cfv" "mp_bin.pk3" --format=zip
+$<TARGET_FILE:cgame>
+$<TARGET_FILE:ui>
+DEPENDS cgame ui
+)
+
 if(WIN32)
 	install(TARGETS cgame qagame ui
 		RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/etf"
@@ -553,3 +554,6 @@ else()
 		LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/etf"
 	)
 endif()
+install(FILES "${CMAKE_BINARY_DIR}/mp_bin.pk3"
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/etf"
+)

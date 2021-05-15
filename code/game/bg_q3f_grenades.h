@@ -73,7 +73,7 @@ enum {
 typedef struct bg_q3f_grenade_s {
 	int flags;
 	int mod, damage;			// Initial detonation values
-	char *name, *model, *skin;
+	const char *name, *model, *skin;
 //	float light;
 //	vec3_t lightColor;
 } bg_q3f_grenade_t;
