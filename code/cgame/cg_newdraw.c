@@ -4140,6 +4140,11 @@ void CG_KeyEvent(int key, qboolean down) {
 		}
 
 		if( key == K_ENTER || key == K_KP_ENTER ) {
+			if ( cg.q3f_messagemode_buffer[0] == '\0' ) {
+				CG_EventHandling( CGAME_EVENT_NONE, qfalse );
+				return;
+			}
+
 			switch(cg.q3f_messagemode_mode) {
 			case Q3F_SAY_ALL:
 				p = "say";
@@ -4158,7 +4163,7 @@ void CG_KeyEvent(int key, qboolean down) {
 				break;
 			}
 			trap_SendConsoleCommand(va("%s \"%s\"\n", p, cg.q3f_messagemode_buffer));
-			cg.q3f_messagemode_buffer[0] = 0;
+			cg.q3f_messagemode_buffer[0] = '\0';
 			CG_EventHandling(CGAME_EVENT_NONE, qfalse);
 		}
 
