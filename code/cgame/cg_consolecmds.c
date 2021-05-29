@@ -1534,6 +1534,8 @@ qboolean CG_ConsoleCommand( void ) {
 	}
 
 	if( !Q_stricmp(cmd, "UpdateClassinfo") ) {
+		if ( cg.demoPlayback )
+			return qtrue;
 		if((cg.time - cg.classInfoTime) > 3000) {
 			cg.classInfoTime = cg.time;
 			trap_SendConsoleCommand("ClassinfoRequest\n");
