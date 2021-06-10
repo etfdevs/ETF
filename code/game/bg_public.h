@@ -39,10 +39,10 @@ If you have questions concerning this license or the applicable additional terms
 #define _BG_PUBLIC_H
 
 #ifdef DEBUG_CGAME
-#include "../cgame/cg_public.h"
+#include "../api/et/cg_public.h"
 #endif
 #ifdef DEBUG_GAME
-#include "g_public.h"
+#include "../api/et/g_public.h"
 #endif
 
 #include "bg_q3f_controllable.h"

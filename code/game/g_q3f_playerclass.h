@@ -40,7 +40,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __G_Q3F_PLAYERCLASS_H
 #define __G_Q3F_PLAYERCLASS_H
 
-#include "q_shared.h"
+#include "../api/et/q_shared.h"
 #include "g_local.h"
 #include "bg_q3f_playerclass.h"
 

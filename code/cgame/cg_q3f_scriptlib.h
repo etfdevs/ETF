@@ -33,7 +33,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __CG_Q3F_SCRIPTLIB_H
 #define __CG_Q3F_SCRIPTLIB_H
 
-#include "q_shared.h"
 #include "cg_local.h"
 
 //////////////////////////////////////////////////////

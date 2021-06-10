@@ -35,11 +35,11 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef	__G_LOCAL_H
 #define	__G_LOCAL_H
 
-#include "q_shared.h"
+#include "../api/et/q_shared.h"
 #include "bg_public.h"
 #include "bg_q3f_flyby.h"
 #include "bg_q3f_grenades.h"
-#include "g_public.h"
+#include "../api/et/g_public.h"
 #include "g_q3f_mapdata.h"
 
 //disable deprecated warnings

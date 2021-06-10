@@ -41,7 +41,7 @@ If you have questions concerning this license or the applicable additional terms
 #define	__G_Q3F_MAPENTS_H
 
 #include "g_local.h"
-#include "q_shared.h"
+#include "../api/et/q_shared.h"
 #include "g_q3f_mapdata.h"
 
 #define	Q3F_NOBUILD_AUTOSENTRY		0x01

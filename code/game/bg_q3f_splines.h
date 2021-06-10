@@ -39,7 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef	__BG_Q3F_SPLINES_H
 #define	__BG_Q3F_SPLINES_H
 
-#include "q_shared.h"
+#include "../api/et/q_shared.h"
 
 void MirrorVtxInVtx( vec3_t d, const vec3_t p, const vec3_t m );
 

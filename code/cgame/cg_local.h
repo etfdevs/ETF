@@ -33,10 +33,10 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef	__CG_LOCAL_H
 #define	__CG_LOCAL_H
 
-#include "q_shared.h"
-#include "tr_types.h"
+#include "../api/et/q_shared.h"
+#include "../api/et/tr_types.h"
 #include "../game/bg_public.h"
-#include "cg_public.h"
+#include "../api/et/cg_public.h"
 #include "../game/bg_q3f_playerclass.h"
 #include "../game/bg_q3f_splines.h"
 #include "../game/bg_q3f_flyby.h"

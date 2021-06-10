@@ -39,7 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __CG_Q3F_MENU_H
 #define __CG_Q3F_MENU_H
 
-#include "q_shared.h"
+#include "../api/et/q_shared.h"
 #include "../ui_new/ui_shared.h"
 
 void CG_Q3F_MenuDraw();						// Render menu every frame

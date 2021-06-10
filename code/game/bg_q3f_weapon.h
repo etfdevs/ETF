@@ -40,7 +40,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __BG_Q3F_WEAPON_H
 #define __BG_Q3F_WEAPON_H
 
-#include "q_shared.h"
+#include "../api/et/q_shared.h"
 // #include "g_local.h"	 - Not safe on bg_modules.
 
 

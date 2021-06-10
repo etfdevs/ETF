@@ -2,7 +2,7 @@
 
 #ifdef DREVIL_BOT_SUPPORT
 
-#include "q_shared.h"
+#include "../api/et/q_shared.h"
 #include "g_local.h"
 #include "g_q3f_team.h"
 #include "g_q3f_playerclass.h"

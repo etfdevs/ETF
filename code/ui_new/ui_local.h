@@ -33,10 +33,10 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __UI_LOCAL_H__
 #define __UI_LOCAL_H__
 
-#include "q_shared.h"
-#include "tr_types.h"
-#include "ui_public.h"
-#include "keycodes.h"
+#include "../api/et/q_shared.h"
+#include "../api/et/tr_types.h"
+#include "../api/et/ui_public.h"
+#include "../api/et/keycodes.h"
 #include "../game/bg_public.h"
 #include "../game/bg_q3f_playerclass.h"
 #include "../cgame/cg_q3f_f2r.h"

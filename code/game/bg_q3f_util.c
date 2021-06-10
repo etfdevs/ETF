@@ -37,7 +37,7 @@ Clip Handling Functions			-- JT
 */
 
 #include "g_local.h"
-#include "q_shared.h"
+#include "../api/et/q_shared.h"
 #include "bg_public.h"
 #include "bg_q3f_util.h"
 

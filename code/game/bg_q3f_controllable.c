@@ -37,7 +37,7 @@ If you have questions concerning this license or the applicable additional terms
 **	as vehicles or gun turrets.
 */
 
-#include "q_shared.h"
+#include "../api/et/q_shared.h"
 #include "bg_public.h"
 #include "bg_local.h"
 #include "bg_q3f_controllable.h"

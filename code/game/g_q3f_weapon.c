@@ -47,7 +47,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_playerclass.h"
 #include "g_q3f_team.h"
 #include "bg_local.h"
-#include "q_shared.h"
+//#include "q_shared.h"
 #include "g_bot_interface.h"
 
 extern bg_q3f_weapon_t bg_q3f_weapon_none;

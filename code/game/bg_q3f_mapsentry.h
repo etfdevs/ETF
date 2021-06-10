@@ -36,7 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 **	Shared code and data for map sentries.
 */
 
-#include "q_shared.h"
+#include "../api/et/q_shared.h"
 #include "bg_public.h"
 
 

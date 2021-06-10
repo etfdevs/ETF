@@ -33,9 +33,9 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __UI_SHARED_H
 #define __UI_SHARED_H
 
-#include "q_shared.h"
-#include "tr_types.h"
-#include "keycodes.h"
+#include "../api/et/q_shared.h"
+#include "../api/et/tr_types.h"
+#include "../api/et/keycodes.h"
 
 #include "../../ui/menudef.h"
 

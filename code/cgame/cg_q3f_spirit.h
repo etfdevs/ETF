@@ -33,7 +33,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __CG_Q3F_SPIRIT_H
 #define __CG_Q3F_SPIRIT_H
 
-#include "tr_types.h"
+#include "../api/et/tr_types.h"
 
 #define SPIRIT_SCRIPT_LOOPEDSOUND	0x1
 

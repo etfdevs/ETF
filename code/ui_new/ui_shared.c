@@ -37,7 +37,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "../game/bg_q3f_playerclass.h"
 
 #ifdef UI_EXPORTS
-#include "ui_public.h"
+#include "../api/et/ui_public.h"
 void			trap_GetClientState( uiClientState_t *state );
 #endif
 
