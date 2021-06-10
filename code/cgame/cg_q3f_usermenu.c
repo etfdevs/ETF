@@ -53,7 +53,7 @@ static struct {
 } Custom_Items[CUSTOM_ITEM_MAX];
 static int Custom_ItemsUsed;
 
-qboolean G_FS_ReadToken( fileHandle_t handle, int *filedone, int filelen, char *buffer, int size ) {
+static qboolean G_FS_ReadToken( fileHandle_t handle, int *filedone, int filelen, char *buffer, int size ) {
 	char c;
 	int oldsize = size;
 //	qboolean slash = qfalse;

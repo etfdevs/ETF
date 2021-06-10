@@ -2658,6 +2658,6 @@ void CG_IntermissionScoreDump() {
 	trap_SendConsoleCommand("ui_scorecomplete\n");
 }
 
-void CG_SetupIntermissionMenu() {
+void CG_SetupIntermissionMenu( void ) {
 	trap_SendConsoleCommand( "hud_ingame\n" );
 }

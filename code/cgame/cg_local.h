@@ -1835,7 +1835,7 @@ void CG_LoadHudMenu();
 void CG_Q3F_DrawScoreboardTeamScores(rectDef_t *rect, float scale, vec4_t color, int textStyle, 
 									  int textalignment, float text_x, float text_y, fontStruct_t *font);
 
-void CG_SetupIntermissionMenu();
+void CG_SetupIntermissionMenu( void );
 void CG_SortScoreboard();
 
 //

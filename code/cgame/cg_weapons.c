@@ -624,22 +624,22 @@ void CG_RegisterWeapon( int weaponNum ) {
 		}
 	}
 
-	strcpy( path, item->world_model[0] );
+	Q_strncpyz( path, item->world_model[0], sizeof(path) );
 	COM_StripExtension( path, path, sizeof(path) );
-	strcat( path, "_flash.md3" );
+	Q_strcat( path, sizeof(path), "_flash.md3" );
 	weaponInfo->flashModel = trap_R_RegisterModel( path );
 
 	//if ( /*weaponNum == WP_NAILGUN || JT */ weaponNum == WP_MINIGUN || weaponNum == WP_SUPERNAILGUN/*|| weaponNum == WP_AXE JT || weaponNum == WP_BFG */) {
 	if ( weaponNum != WP_AXE ) {
-		strcpy( path, item->world_model[0] );
+		Q_strncpyz( path, item->world_model[0], sizeof(path) );
 		COM_StripExtension( path, path, sizeof(path) );
-		strcat( path, "_barrel.md3" );
+		Q_strcat( path, sizeof(path), "_barrel.md3" );
 		weaponInfo->barrelModel = trap_R_RegisterModel( path );
 	}
 
-	strcpy( path, item->world_model[0] );
+	Q_strncpyz( path, item->world_model[0], sizeof(path) );
 	COM_StripExtension( path, path, sizeof(path) );
-	strcat( path, "_hand.md3" );
+	Q_strcat( path, sizeof(path), "_hand.md3" );
 	//weaponInfo->handsModel = trap_R_RegisterModel( path );
 	CG_Q3F_RegisterHandsModel( weaponInfo, path );
 
