@@ -327,7 +327,7 @@ localEntity_t *CG_Q3F_MakeBeam( const vec3_t origin,
 								int numSubdivisions,
 								float scale,
 								int leFlags,
-								vec3_t colour,
+								vec4_t colour,
 								int duration,
 								float speedscale,
 								qhandle_t hShader ) {
