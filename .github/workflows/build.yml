@@ -90,7 +90,6 @@ jobs:
         name: windows-${{ matrix.arch }}
         path: |
           code/bin/*.dll
-          code/bin/*.pk3
         if-no-files-found: error
         retention-days: 5
 
@@ -148,7 +147,6 @@ jobs:
         name: linux-${{ matrix.arch }}
         path: |
           code/bin/*.so
-          code/bin/*.pk3
         if-no-files-found: error
         retention-days: 5
 
@@ -193,6 +191,5 @@ jobs:
         path: |
           code/bin/*.dylib
           code/bin/*_mac
-          code/bin/*.pk3
         if-no-files-found: error
         retention-days: 5

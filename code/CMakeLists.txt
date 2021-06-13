@@ -538,10 +538,10 @@ target_compile_definitions(ui PUBLIC "API_ET" "UI_EXPORTS" "ARCH_STRING=\"${Arch
 target_include_directories(ui PUBLIC ${SRCDIR}/cgame ${SRCDIR}/game ${SRCDIR}/ui_new ${SRCDIR}/api/et ${SRCDIR}/api/shared )
 target_link_libraries(ui PRIVATE ${CMAKE_DL_LIBS} "m")
 
-add_custom_target(create_etf_bin_pak ALL
-	COMMAND ${CMAKE_COMMAND} -E tar "cfv" "mp_bin.pk3" --format=zip $<TARGET_FILE:cgame> $<TARGET_FILE:ui>
-	DEPENDS cgame ui
-)
+#add_custom_target(create_etf_bin_pak ALL
+#	COMMAND ${CMAKE_COMMAND} -E tar "cfv" "mp_bin.pk3" --format=zip $<TARGET_FILE:cgame> $<TARGET_FILE:ui>
+#	DEPENDS cgame ui
+#)
 
 if(WIN32)
 	install(TARGETS cgame qagame ui
@@ -552,6 +552,6 @@ else()
 		LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/etf"
 	)
 endif()
-install(FILES "${CMAKE_BINARY_DIR}/mp_bin.pk3"
-        DESTINATION "${CMAKE_INSTALL_PREFIX}/etf"
-)
+#install(FILES "${CMAKE_BINARY_DIR}/mp_bin.pk3"
+#        DESTINATION "${CMAKE_INSTALL_PREFIX}/etf"
+#)
