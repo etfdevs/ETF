@@ -2236,9 +2236,10 @@ void G_Q3F_RunGoal( gentity_t *ent )
 	if( ent->s.otherEntityNum < MAX_CLIENTS )
 	{
 		// We're being carried, check we're synced. Nasty bandwidth issues?
+		const gentity_t *flagOwner = &g_entities[ent->s.otherEntityNum];
 
-		if( !VectorCompare( level.gentities[ent->s.otherEntityNum].r.currentOrigin, origin ) ) {
-			VectorCopy( level.gentities[ent->s.otherEntityNum].r.currentOrigin, origin );
+		if( !VectorCompare( flagOwner->r.currentOrigin, ent->r.currentOrigin ) ) {
+			VectorCopy( flagOwner->r.currentOrigin, origin );
 			SnapVector( origin );
 			G_SetOrigin( ent, origin );
 
