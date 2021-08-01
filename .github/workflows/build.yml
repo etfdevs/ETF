@@ -193,3 +193,38 @@ jobs:
           code/bin/*_mac
         if-no-files-found: error
         retention-days: 5
+        
+  create-testing:
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: [windows-mingw, ubuntu-x86, macos-x86]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+
+      - name: Create binary archives
+        run: |
+          mkdir -p etf
+          mv -t  ./etf/ ./linux-x86/*.so
+          mv -t  ./etf/ ./linux-x86_64/*.so
+          mv -t  ./etf/ ./windows-x86/*.dll
+          mv -t  ./etf/ ./macos-x86_64/*.dylib
+          cd etf
+          7z a -r -tzip mp_bin.pk3      ./cgame*.so
+          7z a -r -tzip mp_bin.pk3      ./ui*.so
+          7z a -r -tzip mp_bin.pk3      ./cgame*.dll
+          7z a -r -tzip mp_bin.pk3      ./ui*.dll
+          cd ..
+          7z a -r etf-2.0-all-test-latest.zip      ./etf/*.pk3
+          7z a -r etf-2.0-all-test-latest.zip      ./etf/*.so
+          7z a -r etf-2.0-all-test-latest.zip      ./etf/*.dll
+
+      - name: Create latest build
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: Latest Build
+          files: |
+            *.zip
