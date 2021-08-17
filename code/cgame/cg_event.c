@@ -333,6 +333,14 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[fall]^7", sizeof(cg.obits[cg.numObits].mod));
 			break;
 
+		case MOD_TARGET_LASER:
+			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[laser]^7", sizeof(cg.obits[cg.numObits].mod));
+			break;
+		
+		case MOD_BEAM:
+			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[beam]^7", sizeof(cg.obits[cg.numObits].mod));
+			break;
+
 		case MOD_MIRROR:
 			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[mirror]^7", sizeof(cg.obits[cg.numObits].mod));
 			break;
@@ -457,6 +465,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		}
 		break;
 	case MOD_TARGET_LASER:
+	case MOD_BEAM:
 		r = rand() % 2;
 		switch(r) {
 	case 0:	message = "saw the light"; break;
