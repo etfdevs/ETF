@@ -89,7 +89,8 @@ jobs:
     - name: Configure CMake (x86_64)
       working-directory: ${{github.workspace}}/code/bin
       if: ${{ matrix.arch == 'x86_64' }}
-      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/x86_64-w64-mingw32-github.cmake
+      cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+      #run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/x86_64-w64-mingw32-github.cmake
       
     - name: Build
       working-directory: ${{github.workspace}}/code/bin
