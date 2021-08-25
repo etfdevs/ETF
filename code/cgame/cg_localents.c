@@ -428,7 +428,7 @@ static void CG_AddScaleFade( localEntity_t *le ) {
 CG_AddShrapnel
 =================
 */
-static void CG_AddShrapnel( localEntity_t *le, qboolean scale ) {
+/*static void CG_AddShrapnel( localEntity_t *le, qboolean scale ) {
 	vec3_t		org, org2;
 	vec4_t		rgba;
 	trace_t		tr;
@@ -450,11 +450,13 @@ static void CG_AddShrapnel( localEntity_t *le, qboolean scale ) {
 	CG_Tracer(org, tr.endpos, qfalse, radius, le->refEntity.customShader, rgba); // radius is shader
 	if(tr.fraction < 1.0)
 	{		
+		// fixme the tr.plane.normal size is vec3, expects vec4 projection
+		// this whole function isn't really used for anythhing however
 		if(le->leFlags & LEF_MARK_BLOOD)
 			CG_DecalMark(cgs.media.bloodMarkShader,tr.endpos,tr.plane.normal,Q_flrand(0.0f, 1.0f)*360,radius * 4,colorWhite,cg_markTime.integer,cg_markTime.integer >> 4);
 		CG_FreeLocalEntity(le);
 	}
-}
+}*/
 
 /*
 =================
@@ -964,11 +966,11 @@ void CG_AddLocalEntities( void ) {
 			break;
 
 		case LE_SHRAPNEL:
-			CG_AddShrapnel( le, qfalse );
+		//	CG_AddShrapnel( le, qfalse );
 			break;
 
 		case LE_EXPAND_SHRAPNEL:
-			CG_AddShrapnel( le, qtrue );
+		//	CG_AddShrapnel( le, qtrue );
 			break;
 
 		case LE_EXPAND_FADE_RING:
