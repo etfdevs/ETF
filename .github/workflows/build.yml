@@ -29,7 +29,7 @@ jobs:
       matrix:
         #arch: [arm64, x86, x64]
         #arch: [x86, x64]
-        arch: [x86]
+        arch: [x86, x86_64]
         cc: [gcc]
         cxx: [g++]
         config: [Release]
@@ -42,6 +42,12 @@ jobs:
             platform: Win32
             msystem: MINGW32
             prefix: mingw-w64-i686
+          - arch: x86_64
+            platform: Win64
+            msystem: MINGW64
+            prefix: mingw-w64-x86_64
+            
+            
           - config: Release
             rule: install
 
@@ -77,8 +83,12 @@ jobs:
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/code/bin
-      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/i686-w64-mingw32-github.cmake
-      #run: cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/i686-w64-mingw32-github.cmake
+      run: |
+        if [ ${{ matrix.arch }} == "x86" ]; then
+          cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/i686-w64-mingw32-github.cmake
+        else
+          cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/x86_64-w64-mingw32-github.cmake
+        fi
 
     - name: Build
       working-directory: ${{github.workspace}}/code/bin
@@ -178,11 +188,11 @@ jobs:
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/code/bin
-      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} --parallel
+      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
 
     - name: Build
       working-directory: ${{github.workspace}}/code/bin
-      run: cmake --build . --config ${{ matrix.config }}
+      run: cmake --build . --config ${{ matrix.config }} --parallel
 
     - uses: actions/upload-artifact@v2
       if: matrix.cc == 'clang' && matrix.config == 'Release'
@@ -208,6 +218,7 @@ jobs:
           mv -t  ./etf/ ./linux-x86/*.so
           mv -t  ./etf/ ./linux-x86_64/*.so
           mv -t  ./etf/ ./windows-x86/*.dll
+          mv -t  ./etf/ ./windows-x86_64/*.dll
           mv -t  ./etf/ ./macos-x86_64/*.dylib
           cd etf
           7z a -r -tzip mp_bin.pk3      ./cgame*.so
