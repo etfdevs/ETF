@@ -82,7 +82,7 @@ jobs:
 
     - name: Build
       working-directory: ${{github.workspace}}/code/bin
-      run: cmake --build . --config ${{ matrix.config }}
+      run: cmake --build . --config ${{ matrix.config }} --parallel
 
     - uses: actions/upload-artifact@v2
       if: ${{ matrix.config == 'Release' }}
@@ -139,7 +139,7 @@ jobs:
 
     - name: Build
       working-directory: ${{github.workspace}}/code/bin
-      run: cmake --build . --config ${{ matrix.config }}
+      run: cmake --build . --config ${{ matrix.config }} --parallel
 
     - uses: actions/upload-artifact@v2
       if: matrix.cc == 'gcc' && matrix.config == 'Release'
@@ -178,7 +178,7 @@ jobs:
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/code/bin
-      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} --parallel
 
     - name: Build
       working-directory: ${{github.workspace}}/code/bin
