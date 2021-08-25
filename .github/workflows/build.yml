@@ -80,17 +80,17 @@ jobs:
     - name: Create Build Directory
       working-directory: ${{github.workspace}}/code
       run: cmake -E make_directory ${{github.workspace}}/code/bin
-
-    - name: Configure CMake
+      
+    - name: Configure CMake (x86)
       working-directory: ${{github.workspace}}/code/bin
-      shell: bash
-      run: |
-        if [ ${{ matrix.arch }} == "x86" ]; then
-          cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/i686-w64-mingw32-github.cmake
-        else
-          cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/x86_64-w64-mingw32-github.cmake
-        fi
+      if: ${{ matrix.arch == 'x86' }}
+      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/i686-w64-mingw32-github.cmake
 
+    - name: Configure CMake (x86_64)
+      working-directory: ${{github.workspace}}/code/bin
+      if: ${{ matrix.arch == 'x86_64' }}
+      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/x86_64-w64-mingw32-github.cmake
+      
     - name: Build
       working-directory: ${{github.workspace}}/code/bin
       run: cmake --build . --config ${{ matrix.config }} --parallel
