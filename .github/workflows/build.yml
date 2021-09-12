@@ -28,8 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         #arch: [arm64, x86, x64]
-        #arch: [x86, x64]
-        arch: [x86, x86_64]
+        arch: [x86, x64]
         cc: [gcc]
         cxx: [g++]
         config: [Release]
@@ -42,7 +41,7 @@ jobs:
             platform: Win32
             msystem: MINGW32
             prefix: mingw-w64-i686
-          - arch: x86_64
+          - arch: x64
             platform: Win64
             msystem: MINGW64
             prefix: mingw-w64-x86_64
@@ -86,11 +85,10 @@ jobs:
       if: ${{ matrix.arch == 'x86' }}
       run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/i686-w64-mingw32-github.cmake
 
-    - name: Configure CMake (x86_64)
+    - name: Configure CMake (x64)
       working-directory: ${{github.workspace}}/code/bin
-      if: ${{ matrix.arch == 'x86_64' }}
+      if: ${{ matrix.arch == 'x64' }}
       run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
-      #run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/x86_64-w64-mingw32-github.cmake
       
     - name: Build
       working-directory: ${{github.workspace}}/code/bin
@@ -220,7 +218,7 @@ jobs:
           mv -t  ./etf/ ./linux-x86/*.so
           mv -t  ./etf/ ./linux-x86_64/*.so
           mv -t  ./etf/ ./windows-x86/*.dll
-          mv -t  ./etf/ ./windows-x86_64/*.dll
+          mv -t  ./etf/ ./windows-x64/*.dll
           mv -t  ./etf/ ./macos-x86_64/*.dylib
           cd etf
           7z a -r -tzip mp_bin.pk3      ./cgame*.so
