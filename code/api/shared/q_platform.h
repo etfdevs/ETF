@@ -64,7 +64,7 @@ If you have questions concerning this license or the applicable additional terms
 	#if defined(_M_ALPHA)
 		#define ARCH_STRING "AXP"
 	#else
-		#define ARCH_STRING "x86_64"
+		#define ARCH_STRING "x64"
 	#endif
 
 	#define Q3_LITTLE_ENDIAN
