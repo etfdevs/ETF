@@ -188,7 +188,7 @@ jobs:
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/code/bin
-      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_OSX_ARCHITECTURES=arm64;x86_64
+      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
     - name: Build
       working-directory: ${{github.workspace}}/code/bin
