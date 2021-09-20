@@ -181,7 +181,7 @@ static int StandAloneCount = 0;
 typedef struct pgroup_s {
 	vec3_t			origin;
 	vec3_t			axis[3];
-	int				key;
+	intptr_t		key;
 	const SpiritSystem_t	*system;
 	int				count;
 	qboolean		updated;
