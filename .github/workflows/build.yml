@@ -188,11 +188,18 @@ jobs:
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/code/bin
-      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_OSX_ARCHITECTURES=arm64;x86_64
 
     - name: Build
       working-directory: ${{github.workspace}}/code/bin
       run: cmake --build . --config ${{ matrix.config }} --parallel
+
+    - name: Check build
+      working-directory: ${{github.workspace}}/code/bin
+      run: |
+        file cgame_mac
+        file qagame_mac
+        file ui_mac
 
     - uses: actions/upload-artifact@v2
       if: matrix.cc == 'clang' && matrix.config == 'Release'
