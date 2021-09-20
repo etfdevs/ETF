@@ -199,7 +199,6 @@ jobs:
       with:
         name: macos-${{ matrix.arch }}
         path: |
-          code/bin/*.dylib
           code/bin/*_mac
         if-no-files-found: error
         retention-days: 5
@@ -219,16 +218,19 @@ jobs:
           mv -t  ./etf/ ./linux-x86_64/*.so
           mv -t  ./etf/ ./windows-x86/*.dll
           mv -t  ./etf/ ./windows-x64/*.dll
-          mv -t  ./etf/ ./macos-x86_64/*.dylib
+          mv -t  ./etf/ ./macos-x86_64/*_mac
           cd etf
           7z a -r -tzip mp_bin.pk3      ./cgame*.so
           7z a -r -tzip mp_bin.pk3      ./ui*.so
           7z a -r -tzip mp_bin.pk3      ./cgame*.dll
           7z a -r -tzip mp_bin.pk3      ./ui*.dll
+          7z a -r -tzip mp_bin.pk3      ./cgame_mac
+          7z a -r -tzip mp_bin.pk3      ./ui_mac
           cd ..
           7z a -r etf-2.0-all-test-latest.zip      ./etf/*.pk3
           7z a -r etf-2.0-all-test-latest.zip      ./etf/*.so
           7z a -r etf-2.0-all-test-latest.zip      ./etf/*.dll
+          7z a -r etf-2.0-all-test-latest.zip      ./etf/*_mac
 
       - name: Create latest build
         uses: marvinpinto/action-automatic-releases@latest

@@ -495,7 +495,11 @@ target_compile_options(cgame
 			$<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CONFIG:RELWITHDEBINFO>>:${compiler_flags_relwithdebinfo} -w>
 )
 set_target_properties(cgame PROPERTIES PREFIX "")
-set_target_properties(cgame PROPERTIES SUFFIX "${LIB_SUFFIX}${Architecture}${DLL_EXT}") #NOTE changeme when multi-platform and multi-arch support is added
+if(APPLE)
+    set_target_properties(cgame PROPERTIES SUFFIX "${LIB_SUFFIX}")
+else()
+	set_target_properties(cgame PROPERTIES SUFFIX "${LIB_SUFFIX}${Architecture}${DLL_EXT}") #NOTE changeme when multi-platform and multi-arch support is added
+endif()
 target_compile_definitions(cgame PUBLIC "API_ET" "CGAME" "CGAMEDLL" "WOLF_FLAME" "ARCH_STRING=\"${Architecture}\"")
 target_include_directories(cgame PUBLIC ${SRCDIR}/cgame ${SRCDIR}/game ${SRCDIR}/ui_new ${SRCDIR}/api/et ${SRCDIR}/api/shared )
 if(BOTS)
@@ -514,7 +518,11 @@ target_compile_options(qagame
 			$<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CONFIG:RELWITHDEBINFO>>:${compiler_flags_relwithdebinfo} -w>
 )
 set_target_properties(qagame PROPERTIES PREFIX "")
-set_target_properties(qagame PROPERTIES SUFFIX "${LIB_SUFFIX}${Architecture}${DLL_EXT}") #NOTE changeme when multi-platform and multi-arch support is added
+if(APPLE)
+    set_target_properties(qagame PROPERTIES SUFFIX "${LIB_SUFFIX}")
+else()
+	set_target_properties(qagame PROPERTIES SUFFIX "${LIB_SUFFIX}${Architecture}${DLL_EXT}") #NOTE changeme when multi-platform and multi-arch support is added
+endif()
 target_compile_definitions(qagame PUBLIC "API_ET" "QAGAME" "NO_BOT_SUPPORT" "ARCH_STRING=\"${Architecture}\"")
 target_include_directories(qagame PUBLIC ${SRCDIR}/game ${SRCDIR}/cJSON ${SRCDIR}/api/et ${SRCDIR}/api/shared )
 if(BOTS)
@@ -533,7 +541,11 @@ target_compile_options(ui
 			$<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CONFIG:RELWITHDEBINFO>>:${compiler_flags_relwithdebinfo} -w>
 )
 set_target_properties(ui PROPERTIES PREFIX "")
-set_target_properties(ui PROPERTIES SUFFIX "${LIB_SUFFIX}${Architecture}${DLL_EXT}") #NOTE changeme when multi-platform and multi-arch support is added
+if(APPLE)
+    set_target_properties(ui PROPERTIES SUFFIX "${LIB_SUFFIX}")
+else()
+	set_target_properties(ui PROPERTIES SUFFIX "${LIB_SUFFIX}${Architecture}${DLL_EXT}") #NOTE changeme when multi-platform and multi-arch support is added
+endif()
 target_compile_definitions(ui PUBLIC "API_ET" "UI_EXPORTS" "ARCH_STRING=\"${Architecture}\"")
 target_include_directories(ui PUBLIC ${SRCDIR}/cgame ${SRCDIR}/game ${SRCDIR}/ui_new ${SRCDIR}/api/et ${SRCDIR}/api/shared )
 target_link_libraries(ui PRIVATE ${CMAKE_DL_LIBS} "m")
