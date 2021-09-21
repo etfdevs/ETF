@@ -194,13 +194,6 @@ jobs:
       working-directory: ${{github.workspace}}/code/bin
       run: cmake --build . --config ${{ matrix.config }} --parallel
 
-    - name: Check build
-      working-directory: ${{github.workspace}}/code/bin
-      run: |
-        file cgame_mac
-        file qagame_mac
-        file ui_mac
-
     - uses: actions/upload-artifact@v2
       if: matrix.cc == 'clang' && matrix.config == 'Release'
       with:
