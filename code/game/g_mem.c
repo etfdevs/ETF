@@ -40,7 +40,11 @@ If you have questions concerning this license or the applicable additional terms
 
 
 // note, probably should double the size on 64-bit
-#define POOLSIZE		(384 * 1024)
+#if defined(idx64) || defined(arm64)
+#define POOLSIZE    ( 16 * 1024 * 1024 )
+#else
+#define POOLSIZE    ( 4 * 1024 * 1024 )
+#endif
 #define	FREEMEMCOOKIE	((int)0xDEADBE3F)	// Any unlikely to be used value
 #define	ROUNDBITS		31					// Round to 32 bytes
 
@@ -91,7 +95,7 @@ void *G_Alloc( int size )
 	char *endptr;
 	int *ptr;
 
-	allocsize = ( size + sizeof(int) + ROUNDBITS ) & ~ROUNDBITS;		// Round to 32-byte boundary
+	allocsize = ( size + (int)sizeof(int) + ROUNDBITS ) & ~ROUNDBITS;		// Round to 32-byte boundary
 	ptr = NULL;
 
 	G_MemLogPrintf("Attempting Alloc of %i bytes\n", allocsize);
