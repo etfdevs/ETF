@@ -183,7 +183,7 @@ CG_Q3F_RegisterPlayerClass
 qboolean CG_Q3F_RegisterClassModels( int classNum ) {
 	qboolean				noErrors = qtrue;
 	bg_q3f_playerclass_t	*cls;
-	char					filename[MAX_QPATH];
+	char					filename[MAX_QPATH], f2rname[MAX_QPATH];
 	int						skinColourHandle;
 
 	cls = bg_q3f_classlist[classNum];
@@ -202,9 +202,9 @@ qboolean CG_Q3F_RegisterClassModels( int classNum ) {
 		// Find F2RDef_t belonging to this model
 		cgs.media.f2rcache[classNum][0] = F2R_GetForModel( cgs.media.modelcache[classNum][0] );
 		if( !cgs.media.f2rcache[classNum][0] ) {
-			COM_StripExtension( filename, filename, sizeof(filename) );
-			Q_strcat( filename, sizeof(filename), ".f2r" );
-			Com_Printf( "^3Leg model F2R load failure: %s\n", filename );
+			COM_StripExtension( filename, f2rname, sizeof(f2rname) );
+			Q_strcat( f2rname, sizeof(f2rname), ".f2r" );
+			Com_Printf( "^3Leg model F2R load failure: %s\n", f2rname );
 			noErrors = qfalse;
 		}
 	}
@@ -219,9 +219,9 @@ qboolean CG_Q3F_RegisterClassModels( int classNum ) {
 		// Find F2RDef_t belonging to this model
 		cgs.media.f2rcache[classNum][1] = F2R_GetForModel( cgs.media.modelcache[classNum][1] );
 		if( !cgs.media.f2rcache[classNum][1] ) {
-			COM_StripExtension( filename, filename, sizeof(filename) );
-			Q_strcat( filename, sizeof(filename), ".f2r" );
-			Com_Printf( "^3Torso model F2R load failure: %s\n", filename );
+			COM_StripExtension( filename, f2rname, sizeof(f2rname) );
+			Q_strcat( f2rname, sizeof(f2rname), ".f2r" );
+			Com_Printf( "^3Torso model F2R load failure: %s\n", f2rname );
 			noErrors = qfalse;
 		}
 	}

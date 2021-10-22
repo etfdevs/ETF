@@ -100,14 +100,12 @@ tryagain:
 	}
 
 	if ( weaponNum == WP_NAILGUN || weaponNum == WP_AXE /* JT || weaponNum == WP_BFG  */) {
-		Q_strncpyz( path, item->world_model[0], sizeof(path) );
-		COM_StripExtension( path, path, sizeof(path) );
+		COM_StripExtension( item->world_model[0], path, sizeof(path) );
 		Q_strcat( path, sizeof(path), "_barrel.md3" );
 		pi->barrelModel = trap_R_RegisterModel( path );
 	}
 
-	Q_strncpyz( path, item->world_model[0], sizeof(path) );
-	COM_StripExtension( path, path, sizeof(path) );
+	COM_StripExtension( item->world_model[0], path, sizeof(path) );
 	Q_strcat( path, sizeof(path), "_flash.md3" );
 	pi->flashModel = trap_R_RegisterModel( path );
 
@@ -335,7 +333,7 @@ UI_Q3F_RegisterPlayerClass
 qboolean UI_Q3F_RegisterClassModels( int classNum ) {
 	qboolean				noErrors = qtrue;
 	bg_q3f_playerclass_t	*cls;
-	char					filename[MAX_QPATH];
+	char					filename[MAX_QPATH], f2rname[MAX_QPATH];
 	fileHandle_t			skinColourHandle;
 	int						lores;
 
@@ -355,9 +353,9 @@ qboolean UI_Q3F_RegisterClassModels( int classNum ) {
 		// Find F2RDef_t belonging to this model
 		uiInfo.f2rcache[classNum][0] = F2R_GetForModel( uiInfo.modelcache[classNum][0] );
 		if( !uiInfo.f2rcache[classNum][0] ) {
-			COM_StripExtension( filename, filename, sizeof(filename) );
-			Q_strcat( filename, sizeof(filename), ".f2r" );
-			Com_Printf( "^3Leg model F2R load failure: %s\n", filename );
+			COM_StripExtension( filename, f2rname, sizeof(f2rname) );
+			Q_strcat( f2rname, sizeof(f2rname), ".f2r" );
+			Com_Printf( "^3Leg model F2R load failure: %s\n", f2rname );
 			noErrors = qfalse;
 		}
 	}
@@ -372,9 +370,9 @@ qboolean UI_Q3F_RegisterClassModels( int classNum ) {
 		// Find F2RDef_t belonging to this model
 		uiInfo.f2rcache[classNum][1] = F2R_GetForModel( uiInfo.modelcache[classNum][1] );
 		if( !uiInfo.f2rcache[classNum][1] ) {
-			COM_StripExtension( filename, filename, sizeof(filename) );
-			Q_strcat( filename, sizeof(filename), ".f2r" );
-			Com_Printf( "^3Torso model F2R load failure: %s\n", filename );
+			COM_StripExtension( filename, f2rname, sizeof(f2rname) );
+			Q_strcat( f2rname, sizeof(f2rname), ".f2r" );
+			Com_Printf( "^3Torso model F2R load failure: %s\n", f2rname );
 			noErrors = qfalse;
 		}
 	}
@@ -1217,9 +1215,8 @@ void UI_RegisterWeapon( int weaponNum ) {
 	uiInfo.weaponModels[weaponNum] = trap_R_RegisterModel( item->world_model[0] );
 
 	if ( weaponNum != WP_AXE ) {
-		strcpy( path, item->world_model[0] );
-		COM_StripExtension( path, path, sizeof(path) );
-		strcat( path, "_barrel.md3" );
+		COM_StripExtension( item->world_model[0], path, sizeof(path) );
+		Q_strcat( path, sizeof(path), "_barrel.md3" );
 		uiInfo.weaponBarrelModels[weaponNum] = trap_R_RegisterModel( path );
 	}
 }

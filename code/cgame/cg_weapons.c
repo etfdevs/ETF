@@ -460,8 +460,7 @@ static void CG_Q3F_RegisterHandsModel( weaponInfo_t *weaponInfo, const char *fil
 	weaponInfo->F2RScript = F2R_GetForModel( weaponInfo->handsModel );
 	if( !weaponInfo->F2RScript ) {
 		char f2rname[MAX_QPATH];
-		Q_strncpyz( f2rname, filename, sizeof(f2rname) );
-		COM_StripExtension( f2rname, f2rname, sizeof(f2rname) );
+		COM_StripExtension( filename, f2rname, sizeof(f2rname) );
 		Q_strcat( f2rname, sizeof(f2rname), ".f2r" );
 		Com_Printf( "^3Hands model F2R load failure: %s\n", f2rname );
 	}
@@ -624,21 +623,18 @@ void CG_RegisterWeapon( int weaponNum ) {
 		}
 	}
 
-	Q_strncpyz( path, item->world_model[0], sizeof(path) );
-	COM_StripExtension( path, path, sizeof(path) );
+	COM_StripExtension( item->world_model[0], path, sizeof(path) );
 	Q_strcat( path, sizeof(path), "_flash.md3" );
 	weaponInfo->flashModel = trap_R_RegisterModel( path );
 
 	//if ( /*weaponNum == WP_NAILGUN || JT */ weaponNum == WP_MINIGUN || weaponNum == WP_SUPERNAILGUN/*|| weaponNum == WP_AXE JT || weaponNum == WP_BFG */) {
 	if ( weaponNum != WP_AXE ) {
-		Q_strncpyz( path, item->world_model[0], sizeof(path) );
-		COM_StripExtension( path, path, sizeof(path) );
+		COM_StripExtension( item->world_model[0], path, sizeof(path) );
 		Q_strcat( path, sizeof(path), "_barrel.md3" );
 		weaponInfo->barrelModel = trap_R_RegisterModel( path );
 	}
 
-	Q_strncpyz( path, item->world_model[0], sizeof(path) );
-	COM_StripExtension( path, path, sizeof(path) );
+	COM_StripExtension( item->world_model[0], path, sizeof(path) );
 	Q_strcat( path, sizeof(path), "_hand.md3" );
 	//weaponInfo->handsModel = trap_R_RegisterModel( path );
 	CG_Q3F_RegisterHandsModel( weaponInfo, path );
