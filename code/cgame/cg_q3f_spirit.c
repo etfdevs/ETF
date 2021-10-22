@@ -506,7 +506,7 @@ static qboolean Spirit_RunParticle( particle_t *particle, float runTime) {
 
 
 void Spirit_PrepareFrame( void ) {
-	float frameTimeMul = 1.0 / (cg.time - cg.oldTime);
+	float frameTimeMul = ( cg.frametime <= 0 ) ? 1.0f : (1.0f / cg.frametime); // 1.0 / (cg.time - cg.oldTime);
 	int spiritnum;
 
 	for( spiritnum = 0; spiritnum < SpiritSystemCount; spiritnum++ ) {
