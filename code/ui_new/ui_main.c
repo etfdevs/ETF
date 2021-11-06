@@ -1445,7 +1445,7 @@ void UI_LoadMenus(const char *menuFile, qboolean reset) {
 void UI_Load(void) {
 	char lastName[1024];
 	menuDef_t *menu = Menu_GetFocused();
-	char *menuSet;
+	const char *menuSet;
 
 	String_Init();
 
@@ -7784,7 +7784,7 @@ static void UI_StartServerRefresh(qboolean full)
 {
 	int		i;
 	char	buff[64];
-	char	*ptr;
+	const char	*ptr;
 
 	qtime_t q;
 	trap_RealTime(&q);

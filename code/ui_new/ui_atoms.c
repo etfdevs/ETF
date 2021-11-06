@@ -91,7 +91,7 @@ void UI_StartDemoLoop( void ) {
 	trap_Cmd_ExecuteText( EXEC_APPEND, "d1\n" );
 }
 
-char *UI_Argv( int arg ) {
+const char *UI_Argv( int arg ) {
 	static char	buffer[MAX_STRING_CHARS];
 
 	trap_Argv( arg, buffer, sizeof( buffer ) );
@@ -99,7 +99,7 @@ char *UI_Argv( int arg ) {
 	return buffer;
 }
 
-char *UI_Cvar_VariableString( const char *var_name ) {
+const char *UI_Cvar_VariableString( const char *var_name ) {
 	static char	buffer[MAX_STRING_CHARS];
 
 	trap_Cvar_VariableStringBuffer( var_name, buffer, sizeof( buffer ) );
