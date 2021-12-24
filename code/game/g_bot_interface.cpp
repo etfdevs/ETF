@@ -9,19 +9,15 @@
 extern          "C"
 {
 #include "g_bot_interface.h"
+void Bot_Event_EntityCreated(gentity_t *pEnt);
+void Cmd_Kill_f(gentity_t * ent);
 };
 
 #include "BotExports.h"
 #include "ETF_Config.h"
-#include "TF_Messages.h"
+#include "ETF_Messages.h"
 
-extern          "C"
-{
-	void            Bot_Event_EntityCreated(gentity_t * pEnt);
-	void            Cmd_Kill_f(gentity_t * ent);
-}
-
-bool IsBot(gentity_t * e)
+bool IsBot(gentity_t *e)
 {
 	return e->r.svFlags & SVF_BOT ? true : false;
 }
@@ -89,11 +85,11 @@ extern          "C" const char *_GetEntityName(gentity_t * _ent)
 		else if(_ent->targetname)
 			Q_strncpyz(newentname, _ent->targetname, 256);
 		else
-			Com_sprintf(newentname, 256, "%s_%i", _ent->classname, _ent - g_entities);
+			Com_sprintf(newentname, 256, "%s_%i", _ent->classname, (int)(_ent - g_entities));
 
 		return newentname;
 	}
-	return NULL;
+	return nullptr;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -110,7 +106,7 @@ gentity_t      *INDEXENT(const int _gameId)
 				return g_entities[_gameId].inuse ? &g_entities[_gameId] : 0;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 int ENTINDEX(gentity_t * _ent)
@@ -118,27 +114,39 @@ int ENTINDEX(gentity_t * _ent)
 	return _ent - g_entities;
 }
 
-gentity_t      *EntityFromHandle(GameEntity _ent)
+gentity_t *EntityFromHandle(GameEntity _ent)
 {
 	obint16         index = _ent.GetIndex();
 
-	if(m_EntityHandles[index].m_HandleSerial == _ent.GetSerial() && g_entities[index].inuse)
-		return &g_entities[index];
-	if(index == ENTITYNUM_WORLD)
-		return &g_entities[ENTITYNUM_WORLD];
-	return NULL;
+	if ((unsigned)(int)index < MAX_GENTITIES)
+	{
+		if (m_EntityHandles[index].m_HandleSerial == _ent.GetSerial())
+		{
+			gentity_t *pEnt = &g_entities[index];
+			if (pEnt->inuse)
+			{
+				return pEnt;
+			}
+		}
+		if (index == ENTITYNUM_WORLD)
+		{
+			return &g_entities[ENTITYNUM_WORLD];
+		}
+	}
+
+	return nullptr;
 }
 
 GameEntity HandleFromEntity(gentity_t * _ent)
 {
 	if(_ent)
 	{
-		int             index = ENTINDEX(_ent);
+		const int index = ENTINDEX(_ent);
 
 		return GameEntity(index, m_EntityHandles[index].m_HandleSerial);
 	}
 	else
-		return GameEntity();
+		return {};
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -537,20 +545,20 @@ int Bot_TeamGameBitsToBotBits(int teams)
 
 int _GetTeamsFromHoldingFlag(q3f_array_t * array)
 {
-	int             index, index2;
+	intptr_t             index, index2;
 	q3f_keypair_t  *targkp;
 	q3f_array_t    *targarray;
 	q3f_data_t     *data, *data2;
 	gentity_t      *ent;
 
-	for(index = -1; data = G_Q3F_ArrayTraverse(array, &index);)
+	for(index = -1; (data = G_Q3F_ArrayTraverse(array, &index));)
 	{
 		// Locate each target map in the main kparray
 		if(!(targkp = G_Q3F_KeyPairArrayFind(level.targetnameArray, data->d.strdata)))
 			return (qfalse);
 		targarray = targkp->value.d.arraydata;
 		// Check each ent in that hash
-		for(index2 = -1, ent = NULL; data2 = G_Q3F_ArrayTraverse(targarray, &index2);)
+		for(index2 = -1, ent = NULL; (data2 = G_Q3F_ArrayTraverse(targarray, &index2));)
 		{
 			ent = data2->d.entitydata;
 			if(ent->mapdata && ent->mapdata->state != Q3F_STATE_DISABLED && ent->mapdata->state != Q3F_STATE_INVISIBLE)
@@ -616,7 +624,11 @@ static int _GetEntityTeam(gentity_t * _ent)
 	switch (t)
 	{
 		case ET_PLAYER:
-			return Bot_TeamGameToBot(_ent->client->sess.sessionTeam);
+		{
+			if ( _ent->client)
+				return Bot_TeamGameToBot(_ent->client->sess.sessionTeam);
+			break;
+		}
 		case ET_Q3F_SENTRY:
 		case ET_Q3F_SUPPLYSTATION:
 			return _ent->parent &&
@@ -624,9 +636,12 @@ static int _GetEntityTeam(gentity_t * _ent)
 		case ET_MISSILE:
 		{
 			if(_ent->s.otherEntityNum >= 0 && _ent->s.otherEntityNum < ENTITYNUM_MAX_NORMAL)
+			{
 				return &g_entities[_ent->s.otherEntityNum] &&
 					g_entities[_ent->s.otherEntityNum].client ? Bot_TeamGameToBot(g_entities[_ent->s.otherEntityNum].client->sess.
 																				  sessionTeam) : TF_TEAM_NONE;
+			}
+			break;
 		}
 			// Let this fall through
 		default:
@@ -647,7 +662,7 @@ static int _GetEntityClass(gentity_t * _ent)
 
 	if(!hasptr)
 	{
-		G_Q3F_AddString(&teamscoreptr, "teamscore");
+		G_Q3F_AddString(&teamscoreptr, (char *)"teamscore");
 		hasptr = qtrue;
 	}
 
@@ -1470,7 +1485,7 @@ class           ETFInterface:public IEngineInterface
 
 		if(!hasptr)
 		{
-			G_Q3F_AddString(&teamscoreptr, "teamscore");
+			G_Q3F_AddString(&teamscoreptr, (char *)"teamscore");
 			hasptr = qtrue;
 		}
 
@@ -1681,6 +1696,7 @@ class           ETFInterface:public IEngineInterface
 				_category.SetFlag(ENT_CAT_AVOID);
 				_category.SetFlag(ENT_CAT_OBSTACLE);
 				_category.SetFlag(ENT_CAT_STATIC);
+				break;
 			}
 			default:
 				res = InvalidEntity;
@@ -1780,6 +1796,7 @@ class           ETFInterface:public IEngineInterface
 					{
 						_flags.SetFlag(ENT_FLAG_DISABLED);
 					}
+					break;
 				}
 				case ET_MISSILE:
 				{
@@ -2363,11 +2380,11 @@ class           ETFInterface:public IEngineInterface
 
 		if(bot && bot->inuse && bot->client)
 		{
-			int ammoIndex = 0;
+			//int ammoIndex = 0;
 			g_q3f_playerclass_t *cls = G_Q3F_GetClass(&bot->client->ps);
 
 			_weaponId = _weaponBotToGame(_weaponId);
-			ammoIndex = Q3F_GetAmmoTypeForWeapon(_weaponId);
+			//ammoIndex = Q3F_GetAmmoTypeForWeapon(_weaponId);
 			int maxclip = Q3F_GetClipSizeForWeapon(_weaponId);
 
 			int clip = Q3F_GetClipValue(_weaponId, &bot->client->ps);
@@ -2454,7 +2471,7 @@ class           ETFInterface:public IEngineInterface
 
 		if(!hasptr)
 		{
-			G_Q3F_AddString(&teamscoreptr, "teamscore");
+			G_Q3F_AddString(&teamscoreptr, (char *)"teamscore");
 			hasptr = qtrue;
 		}
 
@@ -3117,6 +3134,26 @@ class           ETFInterface:public IEngineInterface
 				}
 				break;
 			}
+			
+            case ETF_MSG_SETCVAR:
+            {
+                OB_GETMSG(ETF_CvarSet);
+                if(pMsg)
+                {
+                    trap_Cvar_Set(pMsg->m_Cvar, pMsg->m_Value);
+                }
+                break;
+            }
+            case ETF_MSG_GETCVAR:
+            {
+                OB_GETMSG(ETF_CvarGet);
+                if(pMsg)
+                {
+                    pMsg->m_Value =
+                        trap_Cvar_VariableIntegerValue(pMsg->m_Cvar);
+                }
+                break;
+            }
 				//////////////////////////////////////////////////////////////////////////
 			default:
 			{
@@ -3199,7 +3236,9 @@ class           ETFInterface:public IEngineInterface
 
 	void            GetMapExtents(AABB & _aabb)
 	{
-		memset(&_aabb, 0, sizeof(AABB));
+		memset(_aabb.m_Mins, 0, 3 * sizeof(float));
+		memset(_aabb.m_Maxs, 0, 3 * sizeof(float));
+		//memset(&_aabb, 0, sizeof(AABB));
 	}
 
 	GameEntity      EntityByName(const char *_name)
@@ -3263,11 +3302,11 @@ class           ETFInterface:public IEngineInterface
 
 		if(!hasptr)
 		{
-			G_Q3F_AddString(&teamscoreptr, "teamscore");
+			G_Q3F_AddString(&teamscoreptr, (char *)"teamscore");
 			hasptr = qtrue;
 		}
 
-		for(int i = MAX_CLIENTS; i < level.num_entities; i++)
+		for(int i = MAX_CLIENTS; i < level.num_entities; ++i)
 		{
 			gentity_t      *e = &g_entities[i];
 
@@ -3278,10 +3317,10 @@ class           ETFInterface:public IEngineInterface
 			_feature[iNumFeatures].m_Type = 0;
 			_feature[iNumFeatures].m_TravelTime = 0;
 			_feature[iNumFeatures].m_ObstacleEntity = false;
-			for(int i = 0; i < 3; ++i)
+			for(int j = 0; j < 3; ++j)
 			{
-				_feature[iNumFeatures].m_Position[i] = e->r.currentOrigin[i];
-				_feature[iNumFeatures].m_TargetPosition[i] = e->r.currentOrigin[i];
+				_feature[iNumFeatures].m_Position[j] = e->r.currentOrigin[j];
+				_feature[iNumFeatures].m_TargetPosition[j] = e->r.currentOrigin[j];
 				_feature[iNumFeatures].m_Bounds.m_Mins[0] = 0.f;
 				_feature[iNumFeatures].m_Bounds.m_Maxs[0] = 0.f;
 				AngleVectors(e->s.angles, _feature[iNumFeatures].m_Facing, NULL, NULL);
@@ -3376,9 +3415,9 @@ class           ETFInterface:public IEngineInterface
 				{
 					GetEntityCenter(e, _feature[iNumFeatures].m_TargetPosition);
 					//GetCenterTop(e, e->pos2, _feature[iNumFeatures].m_TargetPosition);
-					for(int i = 0; i < 2; ++i)
+					for(int j = 0; j < 2; ++j)
 					{
-						_feature[iNumFeatures].m_Position[i] = _feature[iNumFeatures].m_TargetPosition[i];
+						_feature[iNumFeatures].m_Position[j] = _feature[iNumFeatures].m_TargetPosition[j];
 					}
 					// e->pos1[2] will always be negative
 					_feature[iNumFeatures].m_Position[2] = e->pos1[2];//(_feature[iNumFeatures].m_TargetPosition[2] + e->pos1[2]);
