@@ -13,3 +13,41 @@ Notes:
 * Compilation uses CMAKE, use mingw on windows to build for real. MSVC will probably produce incorrect results with movement.
 * Some features I added are WIP and need removing
 * Code is released under GPLv3 terms same as original ET per Splash Damage's request.
+
+
+## Changes over 1.6:
+* Upgrade, Repair, Refill floating icons over engineer buildings
+* Supply stations now have upgrades to level 2 and 3
+    * Level 2 - More health and refills faster
+    * Level 3 - Same health as level 3 sentry, refills faster, and fills 1 grenade (maximum storage 2) every minute. Counter starts at 0 when first at level 3
+* Sniper rifle leg shot affects movement speed again. Obtaining health fixes them or being healed by a paramedic.
+* Melee weapon sounds play correctly for all clients not just client 0
+* Quad colors are matched based on the client owner of missile and client shader now, not just client 0
+* Bugfixes for certain map entities and ceasefire toggle (such as doors)
+* Bugfixes for certain map entities with wait times not handled properly
+* Forcefields properly allow civilians through and prediction is fixed for civilians too
+* Napalm grenades affect func_damage now
+* Maps can now give or remove disease effect such as curing all effects on capture
+* New map entities: func_noannoyances, func_visibility + improved target_blackhole
+* HE Charge timer on HUD support
+* Flags should no longer stick in certain facing walls
+* Tons of other small misc. bugfixes across the codebase, still compiling list from over the years
+* Ladder speeds now same as normal run speed
+* Cured messages no longer show up on capture if you didn't have that ailment active
+* Servers can now set g_spawnFullStats to spawn with full stats except for gren2s
+* Paramedic syringe stab kills now register with their own means of death separate from disease and failed operation
+* Alternative obits improved (could use more with icons in future)
+* Re-enabled flares and sunflares from Q3F2 in some maps, including support for adding them with a .flr file
+* Fixed agent disguise as civilian showing the backpack
+* Improve precaching for all class assets and sounds so there is fewer hitches during gameplay when new assets are used
+* Voice comms are precached for less disk hits/hitching during gameplay
+* Fixed team allies not showing classes for the other teams which are also your allies
+* Fixed forcefield spirit effects rendering black color on invalid entities
+* Fixed nailbomb explosion rendering twice and in wrong position
+* Fixed flamethrower and minigun playing fire windup effects when disguised and attacking to remove disguise
+* Fixed callvote exploits common to Q3 engine in game code
+* Added ignore commands from ETmain
+* Added mute commands for admin and rcon
+* Fixed some commands showing up during intermission in chat box or when using menus after chat text
+* Add worldspawn/mapinfo overrides for "nofallingdmg" and "noselfdmg". Useful for fun/trick/jump maps
+* Flags now remember their original angles when returning to base from drop or capture
