@@ -6,8 +6,9 @@ This is an early upload of the ETF mod post 1.6 release with some experimental c
 
 Notes:
 
-* 64-bit is not supported (yet, code limitations need working around)
-* macOS is not supported (never was)
+* Requires additional assets from [etf-pak6](https://github.com/etfdevs/etf-pak6/releases/tag/latest) as well as full 1.6 release
+* 64-bit is now supported (may not have exactly same results)
+* macOS (64-bits) is now supported in compilation but nobody has tested it
 * Some code is used from other trees like OpenJK q_math and such for convenience this may be replaced or reverted at some point.
 * Compilation uses CMAKE, use mingw on windows to build for real. MSVC will probably produce incorrect results with movement.
 * Some features I added are WIP and need removing
