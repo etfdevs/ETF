@@ -468,7 +468,8 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 			G_AddEvent( self, EV_DROWN, killer );
 		} else if( meansOfDeath == MOD_NAPALMGREN ||
 				   meansOfDeath == MOD_FLAME ||
-				   meansOfDeath == MOD_FLAME_SPLASH ) {
+				   meansOfDeath == MOD_FLAME_SPLASH ||
+				   meansOfDeath == MOD_GASEXPLOSION ) {
 			G_AddEvent( self, EV_BURNTODEATH, killer );
 		} else {
 			G_AddEvent( self, EV_DEATH1 + deathSound, killer );

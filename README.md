@@ -64,3 +64,6 @@ Notes:
 * Callvote capturelimit with + or - adds or subtracts captures from current server capturelimit
 * Fixed weapon icons in weapon select box showing smaller size when out of ammo
 * Godmode cheat is retained across target_respawn respawns
+* cg_simpleItems 1 works for more flag models and pickup objects by default
+* Carried flags use more up to date position for dynamic light glow, should be less out of sync with players now in online games with ping
+* Gas burn explosion is now considered a burn to death event for burn scream sounds instead of normal death sounds
