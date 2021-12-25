@@ -16,15 +16,21 @@ Notes:
 
 
 ## Changes over 1.6:
+* Fixed weapon description menu crash due to utf8 files used in text description files
 * Upgrade, Repair, Refill floating icons over engineer buildings
 * Supply stations now have upgrades to level 2 and 3
     * Level 2 - More health and refills faster
     * Level 3 - Same health as level 3 sentry, refills faster, and fills 1 grenade (maximum storage 2) every minute. Counter starts at 0 when first at level 3
+* Supply stations now show crosshair stats and level when pointed at by friendly engineers similar to autosentries (with color)
+* Fixed supply station ammo overflow if player had used /give cheats to get 999 ammo and then attempted a supply ammo
+* Fixed rare case where recons could attempt to disarm a charge while it was still being planted
+* Fixed ally hitsound playing when detonating pipes on a HE charge
+* Autosentry shell and rocket ammo on crosshair now shows orange and red color respectively
 * Sniper rifle leg shot affects movement speed again. Obtaining health fixes them or being healed by a paramedic.
 * Melee weapon sounds play correctly for all clients not just client 0
 * Quad colors are matched based on the client owner of missile and client shader now, not just client 0
 * Bugfixes for certain map entities and ceasefire toggle (such as doors)
-* Bugfixes for certain map entities with wait times not handled properly
+* Bugfixes for certain map entities with wait times not handled properly (such as shootable buttons)
 * Forcefields properly allow civilians through and prediction is fixed for civilians too
 * Napalm grenades affect func_damage now
 * Maps can now give or remove disease effect such as curing all effects on capture
@@ -41,9 +47,10 @@ Notes:
 * Fixed agent disguise as civilian showing the backpack
 * Improve precaching for all class assets and sounds so there is fewer hitches during gameplay when new assets are used
 * Voice comms are precached for less disk hits/hitching during gameplay
-* Fixed team allies not showing classes for the other teams which are also your allies
-* Fixed forcefield spirit effects rendering black color on invalid entities
+* Fixed team allies not showing classes on scoreboard for the other teams which are also your allies
+* Fixed forcefield spirit effects rendering black color on invalid forcefield surface entities
 * Fixed nailbomb explosion rendering twice and in wrong position
+* Fixed nailbomb nails quad state rendering
 * Fixed flamethrower and minigun playing fire windup effects when disguised and attacking to remove disguise
 * Fixed callvote exploits common to Q3 engine in game code
 * Added ignore commands from ETmain
@@ -51,3 +58,9 @@ Notes:
 * Fixed some commands showing up during intermission in chat box or when using menus after chat text
 * Add worldspawn/mapinfo overrides for "nofallingdmg" and "noselfdmg". Useful for fun/trick/jump maps
 * Flags now remember their original angles when returning to base from drop or capture
+* New chat tokens: $1, $2 - shows string of grenade type in gren1 and gren2 slots respectively for your current class
+* New chat tokens: $z, $x, $v - shows location of sentry, supplystation and HE charge respectively
+* Callvote timelimit with + or - adds or subtracts minutes from current server timelimit
+* Callvote capturelimit with + or - adds or subtracts captures from current server capturelimit
+* Fixed weapon icons in weapon select box showing smaller size when out of ammo
+* Godmode cheat is retained across target_respawn respawns
