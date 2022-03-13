@@ -50,7 +50,7 @@ and tournament restarts.
 static void Q_FSWriteJSON( void *root, fileHandle_t f ) {
 	const char *serialised = NULL;
 
-	serialised = cJSON_Serialize( (cJSON *)root, 1 );
+	serialised = cJSON_Print( (cJSON *)root );
 	trap_FS_Write( serialised, (int)strlen( serialised ), f );
 	trap_FS_FCloseFile( f );
 
@@ -75,16 +75,16 @@ static void G_WriteClientSessionData( const gclient_t *client ) {
 	Com_Printf( "Writing session file %s\n", fileName );
 
 	root = cJSON_CreateObject();
-	cJSON_AddIntegerToObject( root, "spectatorTime", sess->spectatorTime );
-	cJSON_AddIntegerToObject( root, "spectatorState", sess->spectatorState );
-	cJSON_AddIntegerToObject( root, "spectatorClient", sess->spectatorClient );
-	cJSON_AddIntegerToObject( root, "sessionClass", sess->sessionClass );
-	cJSON_AddIntegerToObject( root, "sessionTeam", (int)sess->sessionTeam );
-	cJSON_AddIntegerToObject( root, "adminLevel", sess->adminLevel );
-	cJSON_AddBooleanToObject( root, "muted", !!sess->muted );
-	cJSON_AddBooleanToObject( root, "shoutcaster", !!sess->shoutcaster );
-	cJSON_AddIntegerToObject( root, "ignoreClients0", client->sess.ignoreClients[0] );
-	cJSON_AddIntegerToObject( root, "ignoreClients1", client->sess.ignoreClients[1] );
+	cJSON_AddNumberToObject( root, "spectatorTime", sess->spectatorTime );
+	cJSON_AddNumberToObject( root, "spectatorState", sess->spectatorState );
+	cJSON_AddNumberToObject( root, "spectatorClient", sess->spectatorClient );
+	cJSON_AddNumberToObject( root, "sessionClass", sess->sessionClass );
+	cJSON_AddNumberToObject( root, "sessionTeam", (int)sess->sessionTeam );
+	cJSON_AddNumberToObject( root, "adminLevel", sess->adminLevel );
+	cJSON_AddNumberToObject( root, "muted", !!sess->muted );
+	cJSON_AddNumberToObject( root, "shoutcaster", !!sess->shoutcaster );
+	cJSON_AddNumberToObject( root, "ignoreClients0", client->sess.ignoreClients[0] );
+	cJSON_AddNumberToObject( root, "ignoreClients1", client->sess.ignoreClients[1] );
 	cJSON_AddStringToObject( root, "ipStr", sess->ipStr ? sess->ipStr : "" );
 	cJSON_AddStringToObject( root, "guidStr", *sess->guidStr ? sess->guidStr : "" );
 
@@ -137,40 +137,40 @@ void G_ReadClientSessionData( gclient_t *client ) {
 	}
 
 	if ( (object = cJSON_GetObjectItem( root, "spectatorTime" )) ) {
-		sess->spectatorTime = cJSON_ToInteger( object );
+		sess->spectatorTime = object->valueint;
 	}
 	if ( (object = cJSON_GetObjectItem( root, "spectatorState" )) ) {
-		sess->spectatorState = (spectatorState_t)cJSON_ToInteger( object );
+		sess->spectatorState = (spectatorState_t)object->valueint;
 	}
 	if ( (object = cJSON_GetObjectItem( root, "spectatorClient" )) ) {
-		sess->spectatorClient = cJSON_ToInteger( object );
+		sess->spectatorClient = object->valueint;
 	}
 	if ( (object = cJSON_GetObjectItem( root, "sessionClass" )) ) {
-		sess->sessionClass = cJSON_ToInteger( object );
+		sess->sessionClass = object->valueint;
 	}
 	if ( (object = cJSON_GetObjectItem( root, "sessionTeam" )) ) {
-		sess->sessionTeam = cJSON_ToInteger( object );
+		sess->sessionTeam = object->valueint;
 	}
 	if ( (object = cJSON_GetObjectItem( root, "adminLevel" )) ) {
-		sess->adminLevel = cJSON_ToInteger( object );
+		sess->adminLevel = object->valueint;
 	}
 	if ( (object = cJSON_GetObjectItem( root, "muted" )) ) {
-		sess->muted = cJSON_ToBoolean( object );
+		sess->muted = object->valueint != 0 ? qtrue : qfalse;
 	}
 	if ( (object = cJSON_GetObjectItem( root, "shoutcaster" )) ) {
-		sess->shoutcaster = cJSON_ToBoolean( object );
+		sess->shoutcaster = object->valueint != 0 ? qtrue : qfalse;
 	}
 	if ( (object = cJSON_GetObjectItem( root, "ignoreClients0" )) ) {
-		sess->ignoreClients[0] = cJSON_ToInteger( object );
+		sess->ignoreClients[0] = object->valueint;
 	}
 	if ( (object = cJSON_GetObjectItem( root, "ignoreClients1" )) ) {
-		sess->ignoreClients[1] = cJSON_ToInteger( object );
+		sess->ignoreClients[1] = object->valueint;
 	}
 	if ( (object = cJSON_GetObjectItem( root, "ipStr" )) ) {
 		// Golliwog: This is seriously nasty, but IP Addresses appear not to
 		// be preserved over map changes, so they're stored and extracted here.
 		char *ipstr;
-		if ( (tmp = cJSON_ToString( object )) ) {
+		if ( (tmp = object->valuestring) ) {
 			G_Q3F_AddString( &ipstr, (char *)tmp );
 			G_Q3F_RemString( &sess->ipStr );
 			sess->ipStr = ipstr;
@@ -178,7 +178,7 @@ void G_ReadClientSessionData( gclient_t *client ) {
 		// Golliwog.
 	}
 	if ( (object = cJSON_GetObjectItem( root, "guidStr" )) ) {
-		if ( (tmp = cJSON_ToString( object )) ) {
+		if ( (tmp = object->valuestring) ) {
 			Q_strncpyz( sess->guidStr, tmp, sizeof(sess->guidStr) );
 		}
 	}
@@ -278,7 +278,7 @@ void G_ReadSessionData( void ) {
 	root = cJSON_Parse( buffer );
 
 	// if the gametype changed since the last session, don't use any client sessions
-	if ( g_gametype.integer != cJSON_ToInteger( cJSON_GetObjectItem( root, "gametype" ) ) ) {
+	if ( g_gametype.integer != cJSON_GetObjectItem( root, "gametype" )->valueint ) {
 		level.newSession = qtrue;
 		Com_Printf( "gametype changed, clearing session data..." );
 	}
@@ -301,7 +301,7 @@ void G_WriteSessionData( void ) {
 	const gclient_t *client = NULL;
 	cJSON *root = cJSON_CreateObject();
 
-	cJSON_AddIntegerToObject( root, "gametype", g_gametype.integer );
+	cJSON_AddNumberToObject( root, "gametype", g_gametype.integer );
 
 	Com_Printf( "G_WriteSessionData: writing %s...", metaFileName );
 	trap_FS_FOpenFile( metaFileName, &f, FS_WRITE );
