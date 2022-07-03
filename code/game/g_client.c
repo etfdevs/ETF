@@ -47,6 +47,8 @@ If you have questions concerning this license or the applicable additional terms
 vec3_t	playerMins = {-15, -15, -24};
 vec3_t	playerMaxs = {15, 15, 32};
 
+static char	ban_reason[MAX_CVAR_VALUE_STRING];
+
 /*QUAKED info_player_deathmatch (1 0 1) (-16 -16 -24) (16 16 32) initial
 potential spawning position for deathmatch games.
 The first time a player enters the game, they will be at an 'initial' spot.
@@ -616,7 +618,7 @@ void CopyToBodyQue( gentity_t *ent ) {
 		break;
 	}
 
-	body->r.svFlags = ent->r.svFlags;
+	body->r.svFlags = ent->r.svFlags & ~SVF_BOT;
 	VectorCopy (ent->r.mins, body->r.mins);
 	VectorCopy (ent->r.maxs, body->r.maxs);
 	VectorCopy (ent->r.absmin, body->r.absmin);
@@ -955,9 +957,9 @@ The game can override any of the settings and call trap_SetUserinfo
 if desired.
 ============
 */
-void ClientUserinfoChanged( int clientNum, char * reason ) {
+qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 	gentity_t *ent;
-	char	*s;
+	const char	*s;
 	char	oldname[MAX_STRING_CHARS];
 	gclient_t	*client;
 	//char	c1[MAX_INFO_STRING];
@@ -970,7 +972,17 @@ void ClientUserinfoChanged( int clientNum, char * reason ) {
 
 	// check for malformed or illegal info strings
 	if ( !Info_Validate(userinfo) ) {
-		strcpy (userinfo, "\\name\\badinfo");
+		G_Printf("Client %i Userinfo: %s\n", clientNum, userinfo );
+		Q_strncpyz( ban_reason, "bad userinfo", sizeof(ban_reason) );
+		if ( client && client->pers.connected != CON_DISCONNECTED )
+			trap_DropClient( clientNum, ban_reason, 0 );
+		return qfalse;
+	}
+
+	if ( client->pers.connected == CON_DISCONNECTED ) {
+		// we just checked if connecting player can join server
+		// so quit now as some important data like player team is still not set
+		return qtrue;
 	}
 
 	/*s = Info_ValueForKey (userinfo, "cl_anonymous");
@@ -1106,8 +1118,8 @@ void ClientUserinfoChanged( int clientNum, char * reason ) {
 	trap_SetConfigstring( CS_PLAYERS+clientNum, s );
 
 	// not changed
-	if (Q_stricmp (oldname, s) == 0 ) {
-		return;
+	if ( !Q_stricmp( oldname, s ) ) {
+		return qtrue;
 	}
 
 #ifdef BUILD_LUA
@@ -1117,6 +1129,8 @@ void ClientUserinfoChanged( int clientNum, char * reason ) {
 #endif
 
 	G_LogPrintf( "ClientUserinfoChanged (%s): %i %s\n", reason, clientNum, s );
+
+	return qtrue;
 }
 
 /*
@@ -1193,7 +1207,7 @@ to the server machine, but qfalse on map changes and tournement
 restarts.
 ============
 */
-char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
+const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 {
 	char		*value, *reason, *name, *ip;// , *guid;
 	gclient_t	*client;

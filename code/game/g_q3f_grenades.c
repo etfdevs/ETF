@@ -192,7 +192,7 @@ qboolean FlashExplode( gentity_t *ent )
 			continue;
 
 //		if( player == ent->activator || g_friendlyFire.integer == 1 || !G_Q3F_IsAllied( ent->activator, player ) )
-//		{
+		{
 			// Leave this one effective through forcefields :)
 			trap_Trace( &trace, ent->r.currentOrigin, NULL, NULL, player->r.currentOrigin, (level.gentities-ent), MASK_OPAQUE );
 			effect = 9000 * ( 1.0 - ((distance * distance ) / (FLASHRADIUS * FLASHRADIUS)) );
@@ -208,7 +208,7 @@ qboolean FlashExplode( gentity_t *ent )
 			if(neweffect > player->client->ps.powerups[PW_Q3F_FLASH])
 				player->client->ps.powerups[PW_Q3F_FLASH] = neweffect;
 			BG_PlayerStateToEntityState( &player->client->ps, &player->s, qtrue );
-//		}
+		}
 	}
 
 	temp = G_TempEntity( ent->s.pos.trBase, EV_ETF_GRENADE_EXPLOSION );
@@ -407,7 +407,8 @@ qboolean EmpExplode( gentity_t *emp )
 
 			if( ent->s.time > (level.time + 512) )
 			{
-				if( !Q_stricmp( ent->classname, "charge" ) ) {
+				if ( ent->s.weapon == Q3F_GREN_CHARGE ) {
+					// FIXME needs to be updated to account for new timer system
 					ent->count	= 2 + (rand() % 3);		// Delayed detonation
 					ent->nextthink	= level.time;
 					ent->s.time = level.time + ent->count * 1000;

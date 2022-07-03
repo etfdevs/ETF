@@ -174,31 +174,32 @@ Request current statistics information
 ==================
 */
 void Cmd_Stats_f( gentity_t *ent ) {
-	char		entry[1024];
-	char		string[1400];
-	int			stringlength;
+	char		entry[50];
+	char		string[MAX_STRING_CHARS-1];
+	int			stringlength, prefix;
 	int			i, j;
 
 	// send the latest information on all clients
 	string[0] = 0;
 	stringlength = 0;
 
+	prefix = Com_sprintf( entry, sizeof(entry), "stats \"%i %i %i %i\"", ent->client->pers.stats.caps, ent->client->pers.stats.assists, ent->client->pers.stats.defends, ent->client->pers.stats.teamkills );
+
 	for (i=0 ; i < STATS_NUM ; i++) {
-		Com_sprintf (entry, sizeof(entry),
+		j = Com_sprintf (entry, sizeof(entry),
 			" %i %i %i %i", 
 			ent->client->pers.stats.data[i].shots,
 			ent->client->pers.stats.data[i].hits,
 			ent->client->pers.stats.data[i].kills,
 			ent->client->pers.stats.data[i].deaths
 			);
-		j = strlen(entry);
-		if (stringlength + j >= (int)sizeof(string))
+		if (stringlength + j + prefix >= (int)sizeof(string))
 			break;
 		strcpy (string + stringlength, entry);
 		stringlength += j;
 	}
 
-	trap_SendServerCommand( ent-g_entities, va("stats \"%i %i %i %i %s\"", 
+	trap_SendServerCommand( ent-g_entities, va("stats \"%i %i %i %i%s\"", 
 		ent->client->pers.stats.caps, ent->client->pers.stats.assists, ent->client->pers.stats.defends, ent->client->pers.stats.teamkills,
 		string ) );
 }

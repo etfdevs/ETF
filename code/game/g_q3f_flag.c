@@ -491,9 +491,6 @@ void G_Q3F_DropFlag( gentity_t *ent )
 	q3f_keypair_t *data;
 	float isClipped;
 
-	/* Ensiform - Flag doesn't really bounce when you are up against walls facing south */
-	/* It sticks inside the wall which appears to be due to the scaling up of bounding box code? */
-
 	if( !ent->activator || !ent->mapdata )
 		return;
 

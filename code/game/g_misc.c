@@ -164,10 +164,13 @@ void TeleportPlayer( gentity_t *player, vec3_t origin, vec3_t angles ) {
 	trap_UnlinkEntity (player);
 
 	VectorCopy ( origin, player->client->ps.origin );
-	player->client->ps.origin[2] += 1;
+	player->client->ps.origin[2] += 1.0f;
 
 	// spit the player out
-	AngleVectors( angles, player->client->ps.velocity, NULL, NULL );
+	if ( angles ) {
+		AngleVectors( angles, player->client->ps.velocity, NULL, NULL );
+	}
+
 	VectorScale( player->client->ps.velocity, 400, player->client->ps.velocity );
 	player->client->ps.pm_time = 160;		// hold time
 	player->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
@@ -175,11 +178,13 @@ void TeleportPlayer( gentity_t *player, vec3_t origin, vec3_t angles ) {
 	// toggle the teleport bit so the client knows to not lerp
 	player->client->ps.eFlags ^= EF_TELEPORT_BIT;
 
+	// set angles
+	if ( angles ) {
+		SetClientViewAngle( player, angles );
+	}
+
 	// we don't want players being backward-reconciled back through teleporters
 	G_ResetHistory( player );
-
-	// set angles
-	SetClientViewAngle( player, angles );
 
 	// kill anything at the destination
 	//if ( player->client->sess.sessionTeam != Q3F_TEAM_SPECTATOR ) {

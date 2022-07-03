@@ -550,7 +550,7 @@ int trap_Key_GetKey( const char *binding ) {
 }
 
 
-int trap_PC_AddGlobalDefine( char *define ) {
+int trap_PC_AddGlobalDefine( const char *define ) {
 	return Q_syscall( CG_PC_ADD_GLOBAL_DEFINE, define );
 }
 

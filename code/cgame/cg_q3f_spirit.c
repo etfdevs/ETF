@@ -897,13 +897,13 @@ Keyword Hash
 #define SPIRITKEYWORDHASH_SIZE	512
 
 typedef struct SpiritKeywordHash_s {
-	char *keyword;
+	const char *keyword;
 	qboolean (*func)( SpiritSystem_t *SpiritSystem, int handle );
 	struct SpiritKeywordHash_s *next;
 } SpiritKeywordHash_t;
 
-static int Spirit_KeywordHash_Key( char *keyword ) {
-	int register hash, i;
+static int Spirit_KeywordHash_Key( const char *keyword ) {
+	register int hash, i;
 
 	hash = 0;
 	for (i = 0; keyword[i] != '\0'; i++) {
@@ -929,7 +929,7 @@ static void Spirit_KeywordHash_Add( SpiritKeywordHash_t *table[], SpiritKeywordH
 	table[hash] = key;
 }
 
-static SpiritKeywordHash_t *Spirit_KeywordHash_Find( SpiritKeywordHash_t *table[], char *keyword )
+static SpiritKeywordHash_t *Spirit_KeywordHash_Find( SpiritKeywordHash_t *table[], const char *keyword )
 {
 	SpiritKeywordHash_t *key;
 	int hash;

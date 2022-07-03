@@ -155,7 +155,7 @@ void G_Q3F_ProcessMapField( const char *key, const char *value, gentity_t *ent )
 	// Remove data at entity destruction
 void G_Q3F_FreeMapData( gentity_t *ent );
 	// Copy all extended map data from src to dest
-void G_Q3F_CopyMapData( gentity_t *src, gentity_t *dest );
+void G_Q3F_CopyMapData( const gentity_t *src, gentity_t *dest );
 
 	// Process entity 'touches'
 qboolean G_Q3F_TouchEntity( gentity_t *ent, gentity_t *other, trace_t *trace );
@@ -186,7 +186,7 @@ void G_Q3F_EntityMessage(const char * format, ... );
 	// Check that all the named groups have at least on entity in the specified state
 qboolean G_Q3F_CheckStates( q3f_keypairarray_t *array );
 	// Check that the activator client has all the needed stats
-qboolean G_Q3F_CheckClientStats( gentity_t *activator, q3f_keypairarray_t *array, qboolean or );
+qboolean G_Q3F_CheckClientStats( gentity_t *activator, q3f_keypairarray_t *array, qboolean _or );
 	// Try a criteria check.
 qboolean G_Q3F_CheckCriteria( gentity_t *activator, gentity_t *ent );
 

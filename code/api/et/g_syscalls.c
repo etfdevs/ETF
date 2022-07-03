@@ -298,7 +298,7 @@ int trap_BotLibDefine(char *string) {
 	return Q_syscall( BOTLIB_PC_ADD_GLOBAL_DEFINE, string );
 }
 
-int trap_PC_AddGlobalDefine( char *define ) {
+int trap_PC_AddGlobalDefine( const char *define ) {
 	return Q_syscall( BOTLIB_PC_ADD_GLOBAL_DEFINE, define );
 }
 
@@ -528,7 +528,7 @@ void trap_EA_Gesture(int client) {
 	Q_syscall( BOTLIB_EA_GESTURE, client );
 }
 
-void trap_EA_Command(int client, char *command) {
+void trap_EA_Command(int client, const char *command) {
 	Q_syscall( BOTLIB_EA_COMMAND, client, command );
 }
 

@@ -650,7 +650,7 @@ void SP_Q3F_func_hud( gentity_t *ent )
 
 char *G_AddSpawnVarToken( const char *string );
 void G_SpawnGEntityFromSpawnVars( qboolean fromBSP, gentity_t *usethisent );
-static void AddCTFSpawnVar( char *key, char *value )
+static void AddCTFSpawnVar( const char *key, const char *value )
 {
 	level.spawnVars[level.numSpawnVars][0] = G_AddSpawnVarToken( key );
 	level.spawnVars[level.numSpawnVars][1] = G_AddSpawnVarToken( value );
@@ -3279,7 +3279,7 @@ static int G_Q3F_TargetAccumulatorStateThink( gentity_t *ent, gentity_t *activat
 
 		// Print off any appropriate messages.
 	memset( messagekeys, 0, sizeof(messagekeys) );
-	key = va( "%d", (int)ent->count );
+	key = (char *)va( "%d", (int)ent->count );
 	G_Q3F_StateBroadcast( ent, activator, activator, "_message", &messagekeys[0],	Q3F_BROADCAST_TEXT, key );
 	G_Q3F_StateBroadcast( ent, activator, activator, "_sound", &messagekeys[1],		Q3F_BROADCAST_SOUND, key );
 	G_Q3F_StateBroadcast( ent, activator, activator, "_dict", &messagekeys[2],		Q3F_BROADCAST_DICT, key );
@@ -3293,7 +3293,7 @@ static int G_Q3F_TargetAccumulatorStateThink( gentity_t *ent, gentity_t *activat
 		}
 	}
 
-	key = va( "target_%d", (int)ent->count );
+	key = (char *)va( "target_%d", (int)ent->count );
 	if( (key = G_Q3F_GetString( key )) &&
 		(kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, key)) )
 	{
@@ -3534,7 +3534,7 @@ void G_Q3F_MiscMatchtimerThink( gentity_t *ent )
 
 	//G_Printf( "misc_matchtimer thinking: state %d: count: %d\n", ent->mapdata->state, ent->count );
 
-	key = va( "target_%d", (int)ent->count );
+	key = (char *)va( "target_%d", (int)ent->count );
 	G_Q3F_StateBroadcast( ent, ent, ent, "_message",	&messagekeys[0], Q3F_BROADCAST_TEXT, key );
 	G_Q3F_StateBroadcast( ent, ent, ent, "_sound",		&messagekeys[1], Q3F_BROADCAST_SOUND, key );
 	G_Q3F_StateBroadcast( ent, ent, ent, "_dict",		&messagekeys[2], Q3F_BROADCAST_DICT, key );
@@ -3552,7 +3552,7 @@ void G_Q3F_MiscMatchtimerThink( gentity_t *ent )
 	G_Q3F_StateBroadcast_TeamedNoActivator( ent, "_sound",		Q3F_BROADCAST_SOUND,	key );
 	G_Q3F_StateBroadcast_TeamedNoActivator( ent, "_dict",		Q3F_BROADCAST_DICT,		key );*/
 
-	key = va( "target_%d", (int)ent->count );
+	key = (char *)va( "target_%d", (int)ent->count );
 	if( (key = G_Q3F_GetString( key )) &&
 		(kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, key)) ) {
 

@@ -706,7 +706,7 @@ void G_Q3F_FreeMapData( gentity_t *ent )
 }
 
 
-void G_Q3F_CopyMapData( gentity_t *src, gentity_t *dest )
+void G_Q3F_CopyMapData( const gentity_t *src, gentity_t *dest )
 {
 	// Copy all extended mapdata from src to dest. This is
 	// mostly useful for the likes of doors and platforms
@@ -1572,13 +1572,20 @@ qboolean G_Q3F_CheckStates( q3f_keypairarray_t *array )
 	return( qtrue );		// Everything matched.
 }
 
+#ifdef PENTAGRAM_POWERUP
 #define NUM_CLIENTSTATSSTRINGS 28
+#else
+#define NUM_CLIENTSTATSSTRINGS 27
+#endif
 //renamed haste to speed
 static char *clientstatsstrings[NUM_CLIENTSTATSSTRINGS] = {
 	"health", "armor", "armour", "ammo_shells", "ammo_nails", "ammo_rockets", "ammo_cells",
 	"score", "gren1", "gren2", "quad", "regen", "flight", "battlesuit", "invis", "speed",
 	"ammo_medikit", "ammo_charge", "invuln", "aqualung", "gas", "stun", "flash", "tranq",
-	"fire", "ceasefire", "disease", "pentagram"
+	"fire", "ceasefire", "disease",
+#ifdef PENTAGRAM_POWERUP
+	"pentagram"
+#endif
 };
 static char *clientstatsstringptrs[NUM_CLIENTSTATSSTRINGS];
 static qboolean hasclientstatsstrings;
@@ -1703,9 +1710,13 @@ qboolean G_Q3F_CheckClientStats( gentity_t *activator, q3f_keypairarray_t *array
 			EVALCLIENTSTAT( activator->client->ps.powerups[PW_Q3F_CEASEFIRE], eval, data->value.d.intdata, or );
 		} else if( data->key == clientstatsstringptrs[26] ) {	// disease
 			EVALCLIENTSTAT( activator->client->diseaseTime, eval, (data->value.flags & Q3F_VFLAG_CLSTAT_CM ? Q3F_DISEASE_DAMAGE_EVERY : data->value.d.intdata), or );
+#ifdef PENTAGRAM_POWERUP
 		} else if ( data->key == clientstatsstringptrs[27] ) {	// pentagram of protection
 			EVALCLIENTSTAT( activator->client->ps.powerups[PW_PENTAGRAM], eval, data->value.d.intdata, or );
 		}
+#else
+		}
+#endif
 	}
 
 	if( or )
@@ -1759,7 +1770,11 @@ static int _CalcMaladiesValue( int srcvalue, qboolean add, qboolean force, float
 	}
 }
 
+#ifdef PENTAGRAM_POWERUP
 #define NUMGIVESTRINGS 37
+#else
+#define NUMGIVESTRINGS 36
+#endif
 //keeg renamed haste to speed
 static char *givestrings[NUMGIVESTRINGS] = {
 	"health", "armor", "ammo_shells", "ammo_nails", "ammo_rockets", "ammo_cells",
@@ -1767,7 +1782,9 @@ static char *givestrings[NUMGIVESTRINGS] = {
 	"armortype", "aclass_shell", "aclass_nail", "aclass_explosive", "aclass_shock",
 	"aclass_fire", "aclass_all", "ammo_medikit", "ammo_charge", "invuln", "aqualung", "ceasefire",
 	"aclass_bullet", "ammo_bullets", "damage", "gas", "stun", "flash", "tranq", "fire", "disease",
+#ifdef PENTAGRAM_POWERUP
 	"pentagram"
+#endif
 };
 
 static char *givestringptrs[NUMGIVESTRINGS];
@@ -2238,6 +2255,7 @@ void G_Q3F_RunGoal( gentity_t *ent )
 		// We're being carried, check we're synced. Nasty bandwidth issues?
 		const gentity_t *flagOwner = &g_entities[ent->s.otherEntityNum];
 
+		// assumes inuse and valid client for flagOwner
 		if( !VectorCompare( flagOwner->r.currentOrigin, ent->r.currentOrigin ) ) {
 			VectorCopy( flagOwner->r.currentOrigin, origin );
 			SnapVector( origin );

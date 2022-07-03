@@ -704,6 +704,7 @@ void G_SetMatchState(int state) {
 	const char		*s = va("%i",state);
 
 	trap_Cvar_Set( "g_matchState", s );
+	trap_Cvar_Update( &g_matchState );
 	trap_SetConfigstring( CS_MATCH_STATE, s );
 
 }
@@ -1011,6 +1012,9 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	trap_SetConfigstring(CS_MAPLIST, mapbuffer);
 	trap_SetConfigstring(CS_INTERMISSION, "0");
 
+	// Override potential CS_WOLFINFO (21)
+	trap_SetConfigstring( CS_FORTS_TEAMPINGS, "0 0 0 0 0 0 0 0 0" );
+
 	G_Q3F_UnloadServerConfiguration();											// Unload the config again.
 	if( g_serverConfigMap.string[0] && Q_stricmp( g_serverConfigMap.string, buff ) )
 	{
@@ -1090,7 +1094,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 
 	// Ensiform: Ensures we always have a non-null classname
 	for ( i=0 ; i<MAX_CLIENTS ; i++ ) {
-		g_entities[i].classname = "client";
+		g_entities[i].classname = "clientslot";
 	}
 
 	// let the server system know where the entites are

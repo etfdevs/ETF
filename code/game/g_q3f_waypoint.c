@@ -117,7 +117,7 @@ void G_Q3F_WaypointSend( gentity_t *ent, gentity_t *other, g_q3f_waypoint_t *wp,
 	// Send this waypoint to the client.
 	// Format is: sendernum x y z "message"
 
-	char *cmd;
+	const char *cmd;
 
 	cmd = va(	"waypoint %d %d %d %d \"%s\"\n",
 				ent->s.number,
@@ -166,7 +166,7 @@ void G_Q3F_WaypointCommand( gentity_t *ent )
 		chanptr = G_Q3F_GetString( &location[1] );	// Find a stored copy
 		if( !chanptr ) 
 		{
-			chanptr = va( "print \"Channel '%s' is empty.\"\n", location );
+			chanptr = (char *)va( "print \"Channel '%s' is empty.\"\n", location );
 			trap_SendServerCommand( ent->s.number, chanptr );
 			return;
 		}
@@ -190,7 +190,7 @@ void G_Q3F_WaypointCommand( gentity_t *ent )
 		index < 0 || index >= level.waypointarray->used ||
 		(index == 0 && location[0] != '0') )
 	{
-		chanptr = va( "print \"Invalid waypoint no. '%s'.\"\n", location );
+		chanptr = (char *)va( "print \"Invalid waypoint no. '%s'.\"\n", location );
 		trap_SendServerCommand( ent->s.number, chanptr );
 		return;
 	}

@@ -224,7 +224,8 @@ static qboolean G_Q3F_SSCR_ParseSpeaker( int scriptHandle ) {
 // capabilities.
 
 qboolean G_Q3F_SSCR_ParseSoundScript( char *mapname ) {
-    char	*scriptName, rawmapname[1024];
+    const char	*scriptName;
+	char	rawmapname[1024];
     int		scriptHandle;
 	int		numSpeakers = 0;
 

@@ -56,7 +56,7 @@ static void G_Q3F_ChargeThink( gentity_t *ent )
 	// Think about what we do. We know what we do, of course... :)
 
 	gentity_t *te, *scan;
-	char *str;
+	const char *str;
 	trace_t tr;
 	vec3_t src, dest;
 

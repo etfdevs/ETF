@@ -233,13 +233,13 @@ void CG_Q3F_PanelDrawChar( float x, float y, float width, float height, int ch, 
 	CG_Q3F_PanelDrawPoly( x, y, width, height, fcol, frow, size, size, rgba, cgs.media.charsetShader, clip );
 }
 
-void CG_Q3F_PanelDrawString( char *str, float x, float y, float size, float maxx, float maxy, int flags, vec4_t rgba )
+void CG_Q3F_PanelDrawString( const char *str, float x, float y, float size, float maxx, float maxy, int flags, vec4_t rgba )
 {
 	// Draw a string to the panel.
 
 	float currx, curry, maxwidth, /*maxheight,*/ lastspacewidth;
 	int index, lastspace, numLines;
-	char *wordendptr;
+	const char *wordendptr;
 	float width;
 	vec4_t realrgba;
 	//vec_t *colour;
@@ -774,7 +774,7 @@ static int CG_Q3F_PanelFuncTimer()
 	// Draw a clock or timer.
 
 	centity_t *cent = (centity_t *) panel.data;
-	char *str, *seperator;
+	const char *str, *seperator;
 	int msec;
 	float size;
 	qtime_t qtime;

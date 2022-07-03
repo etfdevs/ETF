@@ -171,7 +171,7 @@ void G_ReadClientSessionData( gclient_t *client ) {
 		// be preserved over map changes, so they're stored and extracted here.
 		char *ipstr;
 		if ( (tmp = object->valuestring) ) {
-			G_Q3F_AddString( &ipstr, (char *)tmp );
+			G_Q3F_AddString( &ipstr, tmp );
 			G_Q3F_RemString( &sess->ipStr );
 			sess->ipStr = ipstr;
 		}

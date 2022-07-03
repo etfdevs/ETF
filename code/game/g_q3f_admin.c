@@ -189,7 +189,7 @@ void UpdateIPBans (void)
 	byte	b[4];
 	char	iplist[MAX_INFO_STRING];
 	fileHandle_t fh;
-	char *str;
+	const char *str;
 
 	// Write to the seperate banlist first
 	if( trap_FS_FOpenFile( Q3F_ADMIN_BANFILE, &fh, FS_WRITE ) >= 0 )
@@ -281,7 +281,7 @@ qboolean G_FilterPacket( char *from, char **reason )
 AddIP
 =================
 */
-void AddIP( gentity_t *admin, char *str, int time, char *reason )
+void AddIP( gentity_t *admin, char *str, int time, const char *reason )
 {
 	g_q3f_extIpFilter_t *filter, *scan;
 	q3f_data_t *data;
@@ -838,7 +838,7 @@ static void G_Q3F_AdminListIPs( gentity_t *admin )
 	q3f_data_t *data;
 	intptr_t index;
 	int time;
-	char		*ipstr, *timestr;
+	const char *ipstr, *timestr;
 	byte ban[4];
 
 	if( !ipFilters )
@@ -1027,7 +1027,7 @@ void G_Q3F_AdminMap( gentity_t *admin )
 	// Restart or change the map
 
 	char mapname[128], buff[128];
-	char *ptr;
+	const char *ptr;
 	fileHandle_t fh;
 
 	trap_Argv( 2, mapname, sizeof(mapname) );
@@ -1497,7 +1497,7 @@ void G_Q3F_AdminCheckBannedPlayers()
 	}
 }
 
-void G_Q3F_AdminTempBan( gentity_t *player, char *reason, int time )
+void G_Q3F_AdminTempBan( gentity_t *player, const char *reason, int time )
 {
 	// Kick a player.
 

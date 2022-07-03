@@ -162,7 +162,7 @@ Broadcasts a command to only a specific team
 ================
 */
 //void G_TeamCommand( team_t team, char *cmd ) {
-void G_TeamCommand( int team, char *cmd ) {	// RR2DO2
+void G_TeamCommand( int team, const char *cmd ) {	// RR2DO2
 	int		i;
 
 	for ( i = 0 ; i < level.maxclients ; i++ ) {

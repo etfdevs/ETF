@@ -311,7 +311,7 @@ void TeamplayInfoMessage( int team ) {
 	int			h, a;
 	int			clients[TEAM_MAXOVERLAY];
 	char*		bufferedData;
-	char*		tinfo;
+	const char*	tinfo;
 
 	// figure out what client should be on the display
 	// we are limited to 8, but we want to use the top eight players

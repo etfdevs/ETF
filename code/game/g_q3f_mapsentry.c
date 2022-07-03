@@ -141,7 +141,7 @@ static void G_Q3F_Misc_MapSentryPosition( gentity_t *ent )
 	ent->think = 0;
 }
 
-static char *G_Q3F_itoa( int num )
+static const char *G_Q3F_itoa( int num )
 	{ return( va( "%i", num ) ); }
 
 

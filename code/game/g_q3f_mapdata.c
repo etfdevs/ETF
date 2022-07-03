@@ -166,7 +166,7 @@ void G_Q3F_ArrayDel( q3f_array_t *array, intptr_t index )
 	}
 }
 
-q3f_data_t *G_Q3F_ArrayTraverse( q3f_array_t *array, intptr_t *index )
+q3f_data_t *G_Q3F_ArrayTraverse( const q3f_array_t *array, intptr_t *index )
 {
 	// Go through the array looking for a non-null entry.
 
@@ -239,7 +239,7 @@ void G_Q3F_ArraySort( q3f_array_t *array )
 	qsort( array->data, array->max, sizeof(q3f_data_t), &AS_SortFunc );
 }
 
-q3f_data_t *G_Q3F_ArrayFind( q3f_array_t *array, intptr_t value )
+q3f_data_t *G_Q3F_ArrayFind( const q3f_array_t *array, intptr_t value )
 {
 	// Find the specified value
 
@@ -264,7 +264,7 @@ q3f_data_t *G_Q3F_ArrayFind( q3f_array_t *array, intptr_t value )
 	return( NULL );
 }
 
-q3f_array_t *G_Q3F_ArrayCopy( q3f_array_t *array )
+q3f_array_t *G_Q3F_ArrayCopy( const q3f_array_t *array )
 {
 	// Copy an array, as well as any strings/arrays/keypairarrays etc.
 
@@ -330,7 +330,7 @@ void G_Q3F_KeyPairArrayDestroy( q3f_keypairarray_t *array )
 	G_Free( array );
 }
 
-int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, char *key, char type, char flags, intptr_t data )
+int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, const char *key, char type, char flags, intptr_t data )
 {
 	// Add a new entry to the array
 
@@ -372,7 +372,7 @@ int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, char *key, char type, char
 	return( -1 );		// Something horrible happened :(
 }
 
-void G_Q3F_KeyPairArrayDel( q3f_keypairarray_t *array, char *key )
+void G_Q3F_KeyPairArrayDel( q3f_keypairarray_t *array, const char *key )
 {
 	// Remove an entry from the array
 
@@ -427,7 +427,7 @@ void G_Q3F_KeyPairArrayDel( q3f_keypairarray_t *array, char *key )
 	}
 }
 
-q3f_keypair_t *G_Q3F_KeyPairArrayTraverse( q3f_keypairarray_t *array, intptr_t *index )
+q3f_keypair_t *G_Q3F_KeyPairArrayTraverse( const q3f_keypairarray_t *array, intptr_t *index )
 {
 	// Go through the array looking for a non-null entry.
 
@@ -500,7 +500,7 @@ void G_Q3F_KeyPairArraySort( q3f_keypairarray_t *array )
 	qsort( array->data, array->max, sizeof(q3f_keypair_t), &KPAS_SortFunc );
 }
 
-q3f_keypair_t *G_Q3F_KeyPairArrayFind( q3f_keypairarray_t *array, char *key )
+q3f_keypair_t *G_Q3F_KeyPairArrayFind( const q3f_keypairarray_t *array, const char *key )
 {
 	// Find the specified value
 
@@ -525,7 +525,7 @@ q3f_keypair_t *G_Q3F_KeyPairArrayFind( q3f_keypairarray_t *array, char *key )
 	return( NULL );
 }
 
-q3f_keypairarray_t *G_Q3F_KeyPairArrayCopy( q3f_keypairarray_t *array )
+q3f_keypairarray_t *G_Q3F_KeyPairArrayCopy( const q3f_keypairarray_t *array )
 {
 	// Copy an array, as well as any strings/arrays/keypairarrays etc.
 

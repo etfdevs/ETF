@@ -916,7 +916,7 @@ void G_Q3F_ExecuteSetting( char *mapexec, int gameindex )
 //	q3f_data_t *data;
 	intptr_t index;
 	const char *directory;
-	char *configname, *str;
+	const char *configname, *str;
 	char mapname[1024];
 	fileHandle_t fhandle;
 
@@ -1078,7 +1078,7 @@ void G_Q3F_UpdateMapHistory( char *mapname )
 	q3f_keypair_t *kp;
 	qhandle_t fileHandle;
 	qboolean foundMap;
-	char *str;
+	const char *str;
 
 	if( sc.errorFound )
 		return;
@@ -1086,7 +1086,7 @@ void G_Q3F_UpdateMapHistory( char *mapname )
 		// Find the current 'bump' value.
 	if( !sc.currSetting )
 		G_Q3F_DetermineSetting();
-	str = (char *) G_Q3F_SC_GetSetting(	G_Q3F_SC_FindKPEntry( sc.settings, sc.currSetting )->value.d.arraydata,
+	str = G_Q3F_SC_GetSetting(	G_Q3F_SC_FindKPEntry( sc.settings, sc.currSetting )->value.d.arraydata,
 										"map_historyUnit" );
 	bumpValue = str ? atoi( str ) : 0;
 	if( bumpValue < 1 || bumpValue > 50 )

@@ -55,10 +55,13 @@ static qboolean FlareRender( centity_t *cent, refEntity_t *ent )
 {
 	// Render the grenade - basically, just the usual grenade plus a light entity.
 
+#ifdef API_Q3
 	int offset;
 	float r, g, b, i;
+#endif
 	cg_q3f_grenade_t *gren;
 
+#ifdef API_Q3
 	offset = cg.time - cent->currentState.time;
 	if( offset < 5000 )
 	{
@@ -102,6 +105,7 @@ static qboolean FlareRender( centity_t *cent, refEntity_t *ent )
 	g /= 3.f;
 	b /= 3.f;
 	i /= 4.f;
+#endif
 
 	gren = CG_Q3F_GetGrenade( cent->currentState.weapon );
 

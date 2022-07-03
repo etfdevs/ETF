@@ -798,7 +798,7 @@ int	G_SoundIndex( const char *name );
 int	G_ShaderIndex( const char *name );		// Much like modelindex
 int G_SpiritScriptIndex( const char *name );
 
-void	G_TeamCommand( int team, char *cmd );	//RR2DO2
+void	G_TeamCommand( int team, const char *cmd );	//RR2DO2
 void	G_KillBox (gentity_t *ent);
 gentity_t *G_Find (gentity_t *from, int fieldofs, const char *match);
 gentity_t *G_PickTarget (char *targetname);
@@ -999,8 +999,8 @@ void G_SetMatchState(int state);
 //
 // g_client.c
 //
-char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot );
-void ClientUserinfoChanged( int clientNum, char *reason );
+const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot );
+qboolean ClientUserinfoChanged( int clientNum, const char *reason );
 void ClientDisconnect( int clientNum );
 void ClientBegin( int clientNum );
 void ClientCommand( int clientNum );
@@ -1044,11 +1044,10 @@ void QDECL G_VersionLogPrintf( const char *fmt, ... ) _attribute( ( format( prin
 // Golliwog: String handling commands
 // g_q3f_string.c
 //
-qboolean G_Q3F_AddString( char **target, char *str );
+qboolean G_Q3F_AddString( char **target, const char *str );
 void G_Q3F_RemString( char **target );
-char *G_Q3F_GetString( char *str );
+char *G_Q3F_GetString( const char *str );
 void Q3F_Svcmd_GameStrings_f( void );
-void G_Q3F_InitStrings();
 // Golliwog.
 
 // Golliwog: Agent commands.
@@ -1472,7 +1471,7 @@ void	trap_EA_DropItem(int client, char *it);
 void	trap_EA_UseInv(int client, char *inv);
 void	trap_EA_DropInv(int client, char *inv);
 void	trap_EA_Gesture(int client);
-void	trap_EA_Command(int client, char *command);
+void	trap_EA_Command(int client, const char *command);
 
 void	trap_EA_SelectWeapon(int client, int weapon);
 void	trap_EA_Talk(int client);
@@ -1584,7 +1583,7 @@ void	trap_SnapVector( float *v );
 
 void trap_PbStat ( int clientNum , char *category , char *values ) ;
 
-int trap_PC_AddGlobalDefine( char *define );
+int trap_PC_AddGlobalDefine( const char *define );
 int trap_PC_LoadSource( const char *filename );
 int trap_PC_FreeSource( int handle );
 int trap_PC_ReadToken( int handle, pc_token_t *pc_token );

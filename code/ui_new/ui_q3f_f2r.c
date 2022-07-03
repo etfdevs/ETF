@@ -37,7 +37,7 @@ int F2RCount = 0;						// how many
 int F2RParseStartCount = 0;				// the F2RCount value at the start of a parse
 int F2RParseDepth = 0;					// it is possible that a model gets loaded inside an F2R script
 
-void PC_SourceError(int handle, char *format, ...);
+void PC_SourceError(int handle, const char *format, ...);
 
 /*
 ===============
@@ -48,13 +48,13 @@ Keyword Hash
 #define F2RKEYWORDHASH_SIZE		512
 
 typedef struct F2RKeywordHash_s {
-	char *keyword;
+	const char *keyword;
 	qboolean (*func)( F2RDef_t *F2RScript, int handle, int animNumber );
 	struct F2RKeywordHash_s *next;
 } F2RKeywordHash_t;
 
-int F2R_KeywordHash_Key( char *keyword ) {
-	int register hash, i;
+int F2R_KeywordHash_Key( const char *keyword ) {
+	register int hash, i;
 
 	hash = 0;
 	for (i = 0; keyword[i] != '\0'; i++) {
@@ -80,7 +80,7 @@ void F2R_KeywordHash_Add( F2RKeywordHash_t *table[], F2RKeywordHash_t *key ) {
 	table[hash] = key;
 }
 
-F2RKeywordHash_t *F2R_KeywordHash_Find( F2RKeywordHash_t *table[], char *keyword )
+F2RKeywordHash_t *F2R_KeywordHash_Find( F2RKeywordHash_t *table[], const char *keyword )
 {
 	F2RKeywordHash_t *key;
 	int hash;

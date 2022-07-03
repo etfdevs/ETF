@@ -410,7 +410,7 @@ static void CG_Q3F_DumpLocation( void )
 		*(buffptr - 1) = 0;
 
 		// Build the entity definition
-	buffptr = va(	"{\n\"classname\" \"target_location\"\n\"origin\" \"%i %i %i\"\n\"message\" \"%s\"\n}\n\n",
+	buffptr = (char*)va(	"{\n\"classname\" \"target_location\"\n\"origin\" \"%i %i %i\"\n\"message\" \"%s\"\n}\n\n",
 					(int) cg.snap->ps.origin[0], (int) cg.snap->ps.origin[1], (int) cg.snap->ps.origin[2], locname );
 
 		// And write out/acknowledge
@@ -1652,6 +1652,8 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand("etfdevmap");
 
 	trap_AddCommand("entitylist");		// list entities on server (only available with server running)
+
+	trap_AddCommand ("bot");
 
 	//trap_AddCommand("showspecs");		// lists spectators in console
 

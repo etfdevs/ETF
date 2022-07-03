@@ -224,7 +224,7 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 	if( CG_Q3F_MI_StoreMapInfoItem( "mapname", rawmapname, _mapInfo, numItems, qfalse ) )
 		foundItems++;
 
-	infoname = va( "%s/%s%s", MAPINFODIR, rawmapname, MAPINFOEXT );
+	infoname = (char *)va( "%s/%s%s", MAPINFODIR, rawmapname, MAPINFOEXT );
 
 	if( (mi.infoHandle = trap_PC_LoadSource( infoname )) )
 	{
@@ -295,7 +295,7 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 		foundItems++;
 
 		// Attempt to load in the old mapinfo file, and parse out player limits.
-	infoname = va( "%s/%s%s", MAPINFODIR, rawmapname, OLDMAPINFOEXT );
+	infoname = (char *)va( "%s/%s%s", MAPINFODIR, rawmapname, OLDMAPINFOEXT );
 	if( (index = trap_FS_FOpenFile( infoname, &mi.infoHandle, FS_READ )) <= 0 )
 	{
 		if( index == 0 )

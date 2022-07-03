@@ -357,7 +357,7 @@ void CG_Menu_Init() {
 PC_SourceWarning
 =================
 */
-void PC_SourceWarning(int handle, char *format, ...) {
+void PC_SourceWarning(int handle, const char *format, ...) {
 	int line;
 	char filename[128];
 	va_list argptr;
@@ -379,7 +379,7 @@ void PC_SourceWarning(int handle, char *format, ...) {
 PC_SourceError
 =================
 */
-void PC_SourceError(int handle, char *format, ...) {
+void PC_SourceError(int handle, const char *format, ...) {
 	int line;
 	char filename[128];
 	va_list argptr;
@@ -3830,7 +3830,7 @@ void Item_Text_Paint(itemDef_t *item) {
 				COM_StripExtension(text, text, sizeof(text));
 				item->textRect.w = 0;	// force recalculation
 			} else if( item->window.flags & WINDOW_TEXTASFLOAT ) {
-				char *s = va( "%.2f", atof(text) );
+				const char *s = va( "%.2f", atof(text) );
 				Q_strncpyz( text, s, sizeof(text) );
 				item->textRect.w = 0;	// force recalculation
 			}
@@ -5300,13 +5300,13 @@ Keyword Hash
 
 typedef struct keywordHash_s
 {
-	char *keyword;
+	const char *keyword;
 	qboolean (*func)(itemDef_t *item, int handle);
 	struct keywordHash_s *next;
 } keywordHash_t;
 
-int KeywordHash_Key(char *keyword) {
-	int register hash, i;
+int KeywordHash_Key(const char *keyword) {
+	register int hash, i;
 
 	hash = 0;
 	for (i = 0; keyword[i] != '\0'; i++) {
@@ -5332,7 +5332,7 @@ void KeywordHash_Add(keywordHash_t *table[], keywordHash_t *key) {
 	table[hash] = key;
 }
 
-keywordHash_t *KeywordHash_Find(keywordHash_t *table[], char *keyword)
+keywordHash_t *KeywordHash_Find(keywordHash_t *table[], const char *keyword)
 {
 	keywordHash_t *key;
 	int hash;
@@ -6987,7 +6987,7 @@ void Menu_PaintAll() {
 	// RR2DO2
 
 	if (debugMode) {
-		char* fps = va("fps: %i", (int)DC->FPS);
+		const char* fps = va("fps: %i", (int)DC->FPS);
 		vec4_t v = {1, 1, 1, 1};
 		DC->drawText(640, 35, .38f, v, fps, 0, 0, 0, NULL, ITEM_ALIGN_RIGHT);
 //		Com_Printf(va("%s\n", fps));

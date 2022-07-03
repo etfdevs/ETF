@@ -90,20 +90,20 @@ q3f_array_t *G_Q3F_ArrayCreate();
 void G_Q3F_ArrayDestroy( q3f_array_t *array );
 int G_Q3F_ArrayAdd( q3f_array_t *array, char type, char flags, intptr_t data );
 void G_Q3F_ArrayDel( q3f_array_t *array, intptr_t index );
-q3f_data_t *G_Q3F_ArrayTraverse( q3f_array_t *array, intptr_t *index );
+q3f_data_t *G_Q3F_ArrayTraverse( const q3f_array_t *array, intptr_t *index );
 void G_Q3F_ArrayConsolidate( q3f_array_t *array );
 void G_Q3F_ArraySort( q3f_array_t *array );
-q3f_data_t *G_Q3F_ArrayFind( q3f_array_t *array, intptr_t value );
-q3f_array_t *G_Q3F_ArrayCopy( q3f_array_t *array );
+q3f_data_t *G_Q3F_ArrayFind( const q3f_array_t *array, intptr_t value );
+q3f_array_t *G_Q3F_ArrayCopy( const q3f_array_t *array );
 
 q3f_keypairarray_t *G_Q3F_KeyPairArrayCreate();
 void G_Q3F_KeyPairArrayDestroy( q3f_keypairarray_t * );
-int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, char *key, char type, char flags, intptr_t data );
-void G_Q3F_KeyPairArrayDel( q3f_keypairarray_t *array, char *key );
-q3f_keypair_t *G_Q3F_KeyPairArrayTraverse( q3f_keypairarray_t *array, intptr_t *index );
+int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, const char *key, char type, char flags, intptr_t data );
+void G_Q3F_KeyPairArrayDel( q3f_keypairarray_t *array, const char *key );
+q3f_keypair_t *G_Q3F_KeyPairArrayTraverse( const q3f_keypairarray_t *array, intptr_t *index );
 void G_Q3F_KeyPairArrayConsolidate( q3f_keypairarray_t *array );
 void G_Q3F_KeyPairArraySort( q3f_keypairarray_t *array );
-q3f_keypair_t *G_Q3F_KeyPairArrayFind( q3f_keypairarray_t *array, char *key );
-q3f_keypairarray_t *G_Q3F_KeyPairArrayCopy( q3f_keypairarray_t *array );
+q3f_keypair_t *G_Q3F_KeyPairArrayFind( const q3f_keypairarray_t *array, const char *key );
+q3f_keypairarray_t *G_Q3F_KeyPairArrayCopy( const q3f_keypairarray_t *array );
 
 #endif//__G_Q3F_MAPDATA_H

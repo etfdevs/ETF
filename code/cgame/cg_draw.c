@@ -1615,7 +1615,7 @@ void CG_demoAviFPSDraw( void ) {
 void CG_demoTimescaleDraw( void ) {
 	if ( cg.demoPlayback && demo_drawTimeScale.integer != 0 ) {
 		if( !cgs.demoPaused && cgs.timescaleUpdate > cg.time ) {
-			char *s = va( "^3TimeScale: ^7%.1f", cg_timescale.value );
+			const char *s = va( "^3TimeScale: ^7%.1f", cg_timescale.value );
 
 			CG_Text_Paint( 42, 400, 0.2f, colorWhite, s, 0, 0, 0, NULL, ITEM_ALIGN_LEFT );
 		} else if( cgs.demoPaused ) {

@@ -50,13 +50,13 @@ extern int g_q3f_banCheckTime;
 qboolean StringToFilter( gentity_t *admin, char *s, g_q3f_extIpFilter_t *f );
 void UpdateIPBans (void);
 qboolean G_FilterPacket( char *from, char **reason );
-void AddIP( gentity_t *admin, char *str, int time, char *reason );
+void AddIP( gentity_t *admin, char *str, int time, const char *reason );
 void G_ProcessIPBans(void);
 void G_Q3F_AdminCommand( gentity_t *admin );
 void G_Q3F_AdminCommand_ClientOnly( gentity_t* admin );
 void G_Q3F_AdminPasswordCommand( gentity_t *admin );
 void G_Q3F_RCONPasswordCommand( gentity_t *ent );
-void G_Q3F_AdminTempBan( gentity_t *player, char *reason, int time );
+void G_Q3F_AdminTempBan( gentity_t *player, const char *reason, int time );
 void G_Q3F_AdminCheckBannedPlayers();
 int G_Q3F_AdminNextExpireBans();
 

@@ -76,8 +76,8 @@ enum {
 	const char *args[MAX_SCRIPT_ARGS];
 } scriptDef_t;*/
 
-void PC_SourceWarning(int handle, char *format, ...);
-void PC_SourceError(int handle, char *format, ...);
+void PC_SourceWarning(int handle, const char *format, ...);
+void PC_SourceError(int handle, const char *format, ...);
 const char *String_Alloc(const char *p);
 void Memory_Init( const int memory );
 void String_Init();
@@ -100,7 +100,7 @@ qboolean PC_Script_Parse(int handle, const char **out);
 void *UI_Alloc( int size );
 qboolean UI_OutOfMemory();
 
-int trap_PC_AddGlobalDefine( char *define );
+int trap_PC_AddGlobalDefine( const char *define );
 int trap_PC_LoadSource( const char *filename );
 int trap_PC_FreeSource( int handle );
 int trap_PC_ReadToken( int handle, pc_token_t *pc_token );

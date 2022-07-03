@@ -136,7 +136,7 @@ q3f_keypairarray_t *G_Q3F_LoadMapInfo( char *mapname )
 	q3f_keypairarray_t *kpa;
 
 	COM_StripExtension( COM_SkipPath( mapname ), rawmapname, sizeof(rawmapname) );
-	infoname = va( "%s/%s%s", MAPINFODIR, rawmapname, MAPINFOEXT );
+	infoname = (char *)va( "%s/%s%s", MAPINFODIR, rawmapname, MAPINFOEXT );
 
 	memset( &mi, 0, sizeof(mi) );
 	kpa = NULL;
@@ -201,7 +201,7 @@ q3f_keypairarray_t *G_Q3F_LoadMapInfo( char *mapname )
 	}
 
 		// Attempt to load in the old mapinfo file, and parse out player limits.
-	infoname = va( "%s/%s%s", MAPINFODIR, rawmapname, OLDMAPINFOEXT );
+	infoname = (char *)va( "%s/%s%s", MAPINFODIR, rawmapname, OLDMAPINFOEXT );
 	if( (index = trap_FS_FOpenFile( infoname, &mi.infoHandle, FS_READ )) <= 0 )
 	{
 		if( index == 0 )

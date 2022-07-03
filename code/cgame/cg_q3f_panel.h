@@ -116,7 +116,7 @@ void CG_Q3F_PanelDrawShader( float x, float y, float width, float height, vec4_t
 void CG_Q3F_PanelDrawChar( float x, float y, float width, float height, int ch, vec4_t rgba, qboolean clip );
 
 	// Draw a string to the panel, with formatting.
-void CG_Q3F_PanelDrawString( char *str, float x, float y, float size, float maxx, float maxy, int flags, vec4_t rgba );
+void CG_Q3F_PanelDrawString( const char *str, float x, float y, float size, float maxx, float maxy, int flags, vec4_t rgba );
 
 	// Calculate the required character size and number of lines to fit the specified string into
 	// the given area.

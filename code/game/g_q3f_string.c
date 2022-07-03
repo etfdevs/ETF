@@ -50,7 +50,7 @@ typedef struct q3f_stringnode_s {
 
 q3f_stringnode_t *stringroot;
 
-qboolean G_Q3F_AddString( char **target, char *str )
+qboolean G_Q3F_AddString( char **target, const char *str )
 {
 	// Add a new string to the array.
 
@@ -193,7 +193,7 @@ void G_Q3F_RemString( char **target )
 	G_Free( defunct );			// And remove it now it's unlinked.
 }
 
-char *G_Q3F_GetString( char *str )
+char *G_Q3F_GetString( const char *str )
 {
 	// Get a string from the tree without adding it.
 
