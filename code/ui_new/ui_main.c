@@ -3763,6 +3763,8 @@ static void UI_ETFReadSystemSettings() {
 	char buf[MAX_STRING_CHARS];
 
 	trap_Cvar_SetValue("ui_r_mode", trap_Cvar_VariableValue("r_mode"));
+	trap_Cvar_VariableStringBuffer( "r_modeFullscreen", buf, sizeof(buf) );
+	trap_Cvar_Set( "ui_r_modeFullscreen", buf );
 	trap_Cvar_SetValue("ui_r_colorbits", trap_Cvar_VariableValue("r_colorbits"));
 	trap_Cvar_SetValue("ui_r_depthbits", trap_Cvar_VariableValue("r_depthbits"));
 	trap_Cvar_SetValue("ui_r_fullscreen", trap_Cvar_VariableValue("r_fullscreen"));
@@ -3778,7 +3780,7 @@ static void UI_ETFReadSystemSettings() {
 	trap_Cvar_SetValue("ui_r_customwidth", trap_Cvar_VariableValue("r_customwidth"));
 	trap_Cvar_SetValue("ui_r_customheight", trap_Cvar_VariableValue("r_customheight"));
 
-	trap_Cvar_VariableStringBuffer( "r_textureMode", buf, MAX_STRING_CHARS );
+	trap_Cvar_VariableStringBuffer( "r_textureMode", buf, sizeof(buf) );
 	trap_Cvar_Set( "ui_r_textureMode", buf );
 /*
 	value = trap_Cvar_VariableValue(configData->command);
@@ -3797,6 +3799,8 @@ static void UI_ETFApplySystemSettings() {
 //	float value;
 	
 	trap_Cvar_SetValue("r_mode", trap_Cvar_VariableValue("ui_r_mode"));
+	trap_Cvar_VariableStringBuffer( "ui_r_modeFullscreen", buf, sizeof(buf) );
+	trap_Cvar_Set( "r_modeFullscreen", buf );
 	trap_Cvar_SetValue("r_colorbits", trap_Cvar_VariableValue("ui_r_colorbits"));
 	trap_Cvar_SetValue("r_depthbits", trap_Cvar_VariableValue("ui_r_depthbits"));
 	trap_Cvar_SetValue("r_fullscreen", trap_Cvar_VariableValue("ui_r_fullscreen"));
@@ -3812,7 +3816,7 @@ static void UI_ETFApplySystemSettings() {
 	trap_Cvar_SetValue("r_customwidth", trap_Cvar_VariableValue("ui_r_customwidth"));
 	trap_Cvar_SetValue("r_customheight", trap_Cvar_VariableValue("ui_r_customheight"));
 
-	trap_Cvar_VariableStringBuffer( "ui_r_textureMode", buf, MAX_STRING_CHARS );
+	trap_Cvar_VariableStringBuffer( "ui_r_textureMode", buf, sizeof(buf) );
 	trap_Cvar_Set( "r_textureMode", buf );
 }
 
@@ -7178,7 +7182,7 @@ to prevent it from blinking away too rapidly on local or lan games.
 ========================
 */
 void UI_DrawConnectScreen( qboolean overlay ) {
-	char			*s;
+	const char *s;
 	uiClientState_t	cstate;
 	char			info[MAX_INFO_VALUE];
 	char text[256];

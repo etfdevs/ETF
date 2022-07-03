@@ -684,7 +684,7 @@ void Controls_SetConfig(qboolean restart);
 void Controls_SetDefaults( void );*/
 void Controls_GetKeyAssignment (const char *command, int *twokeys);
 
-int			trap_PC_AddGlobalDefine( char *define );
+int			trap_PC_AddGlobalDefine( const char *define );
 int			trap_PC_RemoveAllGlobalDefines( void );
 int			trap_PC_LoadSource( const char *filename );
 int			trap_PC_FreeSource( int handle );
