@@ -479,31 +479,23 @@ typedef struct serverFilter_s {
 	const char *basedir;
 } serverFilter_t;
 
-typedef struct {
-	char	adrstr[MAX_ADDRESSLENGTH];
-	int		start;
-} pinglist_t;
-
-
 typedef struct serverStatus_s {
-	pinglist_t pingList[MAX_PINGREQUESTS];
-	int		numqueriedservers;
-	int		currentping;
-	int		nextpingtime;
-	int		maxservers;
-	int		refreshtime;
-	int		numServers;
-	int		sortKey;
-	int		sortDir;
-	int		lastCount;
-	qboolean refreshActive;
-	int		currentServer;
-	int		displayServers[MAX_DISPLAY_SERVERS];
-	int		numDisplayServers;
+	int			refreshtime;
+	int			sortKey;
+	int			sortDir;
+	qboolean	refreshActive;
+	int			currentServer;
+	int			displayServers[MAX_DISPLAY_SERVERS];
+	int			numDisplayServers;
+	int			numInvalidServers; // borked servers
+	int			numIncompatibleServers; // non-ETF servers, or has punkbuster still
+	int			numqueriedservers;
+	
+	int		maxservers;	
+
 	int		numPlayersOnServers;
 	int		numTotalPlayers;
 	int		nextDisplayRefresh;
-	int		nextSortTime;
 	qhandle_t currentServerPreview;
 	int		currentServerCinematic;
 	int		motdLen;

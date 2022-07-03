@@ -393,8 +393,8 @@ static cvarTable_t		gameCvarTable[] = {
 	{ NULL, "sv_pure", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qtrue },
 	{ NULL, "sv_numbots", "0", CVAR_SERVERINFO, 0, qtrue },
 	{ NULL, "g_maxlives", "0", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },	// Slothy: pure info for server browser info
-	{ NULL, "g_heavyWeaponRestriction", "0", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },		// Ensiform: bot count for server browser info
-	{ NULL, "g_balancedteams", FORTS_SHORTVERSION, CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },		// Ensiform: ETF shortversion for server browser info
+	{ NULL, "g_heavyWeaponRestriction", FORTS_SHORTVERSION, CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },		// Ensiform: ETF shortversion for server browser info
+	{ NULL, "g_balancedteams", "0", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },			// Ensiform: bot count for server browser info
 
 #ifdef BUILD_BOTS
 	// Omni-bot user defined path to load bot library from.
@@ -965,7 +965,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 		dll_com_trapGetValue = atoi( value );
 	}
 
-	trap_Cvar_Set("g_balancedteams", FORTS_SHORTVERSION);
+	trap_Cvar_Set("g_heavyWeaponRestriction", FORTS_SHORTVERSION);
 
 	srand( randomSeed );
 

@@ -58,22 +58,6 @@ static const char *netSources[] = {
 };
 static const int numNetSources = (int)ARRAY_LEN(netSources);
 
-/*static const char *Q3FGameJoinTypes[] = {
-	"All",
-	GAME_NAME_CAP,   //keeg used to be "ETF"
-};*/
-
-//static const int numQ3FGameJoinTypes = sizeof(Q3FGameJoinTypes) / sizeof(const char*);
-
-/*static const char *sortKeys[] = {
-	"Server Name",
-	"Map Name",
-	"Open Player Spots",
-//	"Game Type",
-	"Ping Time"
-};*/
-//static const int numSortKeys = sizeof(sortKeys) / sizeof(const char*);
-
 static const char* netnames[] = {
 	"???",
 	"UDP",
@@ -3259,7 +3243,7 @@ static qboolean UI_CheckFavServerVersion( const char *info )
 	const char *val = NULL;
 	//int pure = 0;
 
-	val = Info_ValueForKey(info, "balancedteams");
+	val = Info_ValueForKey(info, "weaprestrict");
 	//pure = atoi(Info_ValueForKey(info, "maxlives")) != 0;
 	if( strcmp(val, FORTS_SHORTVERSION) != 0 /*&& pure*/ )
 	{
@@ -3974,7 +3958,7 @@ static qboolean UI_CheckVersion( void )
 
 	trap_LAN_GetServerInfo(ui_netSource.integer, uiInfo.serverStatus.displayServers[index], info, MAX_STRING_CHARS);
 
-	val = Info_ValueForKey(info, "balancedteams");
+	val = Info_ValueForKey(info, "weaprestrict");
 	//pure = atoi(Info_ValueForKey(info, "maxlives")) != 0;
 	if( strcmp(val, FORTS_SHORTVERSION) != 0 /*&& pure*/ )
 	{
@@ -5097,7 +5081,7 @@ UI_BuildServerDisplayList
 ==================
 */
 static void UI_BuildServerDisplayList(qboolean force) {
-	int i, count, clients, maxClients, ping/*, game*/, len, visible, passw;
+	int i, count, clients, maxClients, ping/*, game*/, len, visible, passw, punkbuster;
 	char *val;
 #ifdef API_ET
 //	int punkbuster, antilag;
@@ -5109,32 +5093,30 @@ static void UI_BuildServerDisplayList(qboolean force) {
 	if (!(force || uiInfo.uiDC.realTime > uiInfo.serverStatus.nextDisplayRefresh)) {
 		return;
 	}
-	// if we shouldn't reset
-	if ( force == 2 ) {
-		force = 0;
-	}
 
 	// do motd updates here too
 	trap_Cvar_VariableStringBuffer( "cl_motdString", uiInfo.serverStatus.motd, sizeof(uiInfo.serverStatus.motd) );
 	len = strlen(uiInfo.serverStatus.motd);
 	if (len == 0) {
-		strcpy(uiInfo.serverStatus.motd, "Welcome to ETF!");
+		Q_strncpyz(uiInfo.serverStatus.motd, "Welcome to " FORTS_VERSION "!", sizeof(uiInfo.serverStatus.motd));
 		len = strlen(uiInfo.serverStatus.motd);
 	} 
 	if (len != uiInfo.serverStatus.motdLen) {
 		uiInfo.serverStatus.motdLen = len;
 		uiInfo.serverStatus.motdWidth = -1;
-	} 
+	}
+
+	uiInfo.serverStatus.numInvalidServers = 0;
 
 	if (force) {
 		numinvisible = 0;
 		// clear number of displayed servers
 		uiInfo.serverStatus.numqueriedservers = 0;
+		uiInfo.serverStatus.numIncompatibleServers = 0;
 		uiInfo.serverStatus.numDisplayServers = 0;
 		uiInfo.serverStatus.maxservers = 0;
 		uiInfo.serverStatus.numPlayersOnServers = 0;
 		uiInfo.serverStatus.numTotalPlayers = 0;
-		uiInfo.serverStatus.nextpingtime = 0;
 		// set list box index to zero
 		Menu_SetFeederSelection(NULL, FEEDER_SERVERS, 0, NULL);
 		// mark all servers as visible so we store ping updates for them
@@ -5147,11 +5129,12 @@ static void UI_BuildServerDisplayList(qboolean force) {
 		// still waiting on a response from the master
 		uiInfo.serverStatus.numqueriedservers = 0;
 		uiInfo.serverStatus.maxservers = 0;
+		uiInfo.serverStatus.numIncompatibleServers = 0;
 		uiInfo.serverStatus.numDisplayServers = 0;
 		uiInfo.serverStatus.numPlayersOnServers = 0;
 		uiInfo.serverStatus.numTotalPlayers = 0;
-		uiInfo.serverStatus.nextpingtime = 0;
 		uiInfo.serverStatus.nextDisplayRefresh = uiInfo.uiDC.realTime + 500;
+		uiInfo.serverStatus.currentServerPreview = 0;
 		return;
 	}
 
@@ -5159,6 +5142,10 @@ static void UI_BuildServerDisplayList(qboolean force) {
 	trap_Cvar_Update( &ui_browserShowFull );
 	trap_Cvar_Update( &ui_browserShowPasswordProtected );
 	trap_Cvar_Update( &ui_browserShowVersion );
+
+	if (!uiInfo.serverStatus.numDisplayServers) {
+		uiInfo.serverStatus.currentServerPreview = 0;
+	}
 
 	uiInfo.serverStatus.maxservers = count;
 	visible = qfalse;
@@ -5175,7 +5162,32 @@ static void UI_BuildServerDisplayList(qboolean force) {
 
 			uiInfo.serverStatus.numqueriedservers++;
 
-			trap_LAN_GetServerInfo(ui_netSource.integer, i, info, MAX_STRING_CHARS);
+			trap_LAN_GetServerInfo(ui_netSource.integer, i, info, sizeof(info));
+
+			// bogus servers
+			maxClients = atoi(Info_ValueForKey(info, "sv_maxclients"));
+			if( maxClients < 0 || maxClients > MAX_CLIENTS) {
+				uiInfo.serverStatus.numIncompatibleServers++;
+				trap_LAN_MarkServerVisible( ui_netSource.integer, i, qfalse );
+				continue;
+			}
+
+			// no punkbuster in GPL ET
+			punkbuster = atoi(Info_ValueForKey(info, "punkbuster"));
+			if( punkbuster ) {
+				uiInfo.serverStatus.numIncompatibleServers++;
+				trap_LAN_MarkServerVisible( ui_netSource.integer, i, qfalse );
+				continue;
+			}
+
+			// RR2DO2
+			// Skip non-ETF servers
+			if ( Q_stricmp( Info_ValueForKey( info, "game" ), GAME_VERSION ) != 0 ) {
+				uiInfo.serverStatus.numIncompatibleServers++;
+				trap_LAN_MarkServerVisible(ui_netSource.integer, i, qfalse);
+				continue;
+			}
+			// RR2DO2
 
 			clients = atoi(Info_ValueForKey(info, "clients"));
 			uiInfo.serverStatus.numTotalPlayers += clients;
@@ -5188,8 +5200,7 @@ static void UI_BuildServerDisplayList(qboolean force) {
 			}
 
 			if ( ui_browserShowFull.integer == 0 ) {
-				maxClients = atoi(Info_ValueForKey(info, "sv_maxclients"));
-				if (clients == maxClients) {
+				if (clients >= maxClients) {
 					trap_LAN_MarkServerVisible(ui_netSource.integer, i, qfalse);
 					continue;
 				}
@@ -5202,9 +5213,9 @@ static void UI_BuildServerDisplayList(qboolean force) {
 					continue;
 				}
 			}
-	// weaprestrict
+	// 
 			if ( ui_browserShowVersion.integer == 0 ) {
-				val = Info_ValueForKey(info, "balancedteams");				// version check, stupid int no decimals allowed
+				val = Info_ValueForKey(info, "weaprestrict");				// version check, stupid int no decimals allowed
 				if(strcmp(val, FORTS_SHORTVERSION))							// only show servers of this ETF version
 				{
 					trap_LAN_MarkServerVisible(ui_netSource.integer, i, qfalse);	
@@ -5212,60 +5223,24 @@ static void UI_BuildServerDisplayList(qboolean force) {
 				}
 			}
 
-#ifdef API_ET
-			/*trap_Cvar_Update( &ui_browserShowPasswordProtected );
-			if( ui_browserShowPasswordProtected.integer ) {
-				password = atoi(Info_ValueForKey( info, "needpass" ) );
-				if( ( password && ui_browserShowPasswordProtected.integer == 2 ) ||
-					( !password && ui_browserShowPasswordProtected.integer == 1 ) ) {
-					trap_LAN_MarkServerVisible( ui_netSource.integer, i, qfalse );
-					continue;
-				}
-			}*/
-
-			/*trap_Cvar_Update( &ui_browserShowPunkBuster );
-			if ( ui_browserShowPunkBuster.integer ) {
-				punkbuster = atoi(Info_ValueForKey(info, "punkbuster"));
-
-				if( ( punkbuster && ui_browserShowPunkBuster.integer == 2 ) ||
-					( !punkbuster && ui_browserShowPunkBuster.integer == 1 ) ) {
-					trap_LAN_MarkServerVisible(ui_netSource.integer, i, qfalse);
-					continue;
-				}
-			}*/
-#endif //API_ET
-
-			// RR2DO2: modified this
-/*			trap_Cvar_Update( &ui_joinGameType );
-			if ( ui_joinGameType.integer != 0) {
-				game = atoi(Info_ValueForKey(info, "gametype"));
-				if (game != ui_joinGameType.integer) {
-					trap_LAN_MarkServerVisible(ui_netSource.integer, i, qfalse);
-					continue;
-				}
-			}*/
-				
-			/*trap_Cvar_Update( &ui_serverFilterType );
-			if (ui_serverFilterType.integer > 0) {
-				if (Q_stricmp(Info_ValueForKey(info, "game"), serverFilters[ui_serverFilterType.integer].basedir) != 0) {
-					trap_LAN_MarkServerVisible(ui_netSource.integer, i, qfalse);
-					continue;
-				}
-			}*/
-
-			// RR2DO2
-			if ( Q_stricmp( Info_ValueForKey( info, "game" ), GAME_VERSION ) != 0 ) {
-				trap_LAN_MarkServerVisible(ui_netSource.integer, i, qfalse);
-				continue;
-			}
-			// RR2DO2
-
 			// make sure we never add a favorite server twice
 			if (ui_netSource.integer == AS_FAVORITES) {
 				UI_RemoveServerFromDisplayList(i);
 			}
 
 			// insert the server into the list
+			if (uiInfo.serverStatus.numDisplayServers == 0) {
+				const char *s = Info_ValueForKey(info, "mapname");
+
+				if (s && *s)
+				{
+					uiInfo.serverStatus.currentServerPreview = trap_R_RegisterShaderNoMip(va("levelshots/%s", Info_ValueForKey(info, "mapname")));
+				}
+				else
+				{
+					uiInfo.serverStatus.currentServerPreview = 0;
+				}
+			}
 			UI_BinaryServerInsertion(i);
 			// done with this server
 			if ( ping > 0 ) {
@@ -5273,6 +5248,9 @@ static void UI_BuildServerDisplayList(qboolean force) {
 				uiInfo.serverStatus.numPlayersOnServers += clients;
 				numinvisible++;
 			}
+		}
+		else {
+			uiInfo.serverStatus.numInvalidServers++;
 		}
 	}
 
@@ -5991,17 +5969,17 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 					//char *s;
 					//s = Info_ValueForKey(info, "punkbuster");
 					//if (atoi(s) != 0) {
-					if (atoi(Info_ValueForKey(info, "punkbuster")) != 0) {
+					/*if (atoi(Info_ValueForKey(info, "punkbuster")) != 0) {
 						*handle = uiInfo.uiDC.Assets.pureon;
 					}
 					else {
 						*handle = uiInfo.uiDC.Assets.pureoff;
-					}
+					}*/
 					return NULL;
 				//}
 #if 0
 				case SORT_VERSION:
-					if (atoi(Info_ValueForKey(info, "balancedteams")) == FORTS_VERSIONINT) {
+					if (atoi(Info_ValueForKey(info, "weaprestrict")) == FORTS_VERSIONINT) {
 						*handle = uiInfo.uiDC.Assets.pureon;
 					}
 					else {
@@ -7686,19 +7664,30 @@ ArenaServers_StopRefresh
 */
 static void UI_StopServerRefresh( void )
 {
-	int count;
+	int count, total;
 
 	if (!uiInfo.serverStatus.refreshActive) {
 		// not currently refreshing
 		return;
 	}
 	uiInfo.serverStatus.refreshActive = qfalse;
+
+	if ( uiInfo.serverStatus.numIncompatibleServers > 0) {
+		Com_Printf( "%i servers not listed (incompatible or fake)\n", uiInfo.serverStatus.numIncompatibleServers );
+	}
+
+	count = trap_LAN_GetServerCount(ui_netSource.integer);
+
+	total = count - uiInfo.serverStatus.numInvalidServers - uiInfo.serverStatus.numIncompatibleServers - uiInfo.serverStatus.numDisplayServers;
+	if ( total > 0 ) {
+		Com_Printf( "%i servers not listed (filtered out by browser settings)\n", total);
+	}
+
 	uiInfo.serverStatus.maxservers = uiInfo.serverStatus.numqueriedservers;
 	Com_Printf("%d servers listed in browser with %d players.\n",
 					uiInfo.serverStatus.numDisplayServers,
 					uiInfo.serverStatus.numPlayersOnServers);
-	count = trap_LAN_GetServerCount(ui_netSource.integer);
-	if (count - uiInfo.serverStatus.numDisplayServers > 0) {
+	if (total > 0) {
 #ifdef API_Q3
 		Com_Printf("%d servers not listed due to packet loss, pings higher than %d or being filtered out\n",
 						count - uiInfo.serverStatus.numDisplayServers,
@@ -7763,20 +7752,13 @@ static void UI_DoServerRefresh( void )
 	if (trap_LAN_UpdateVisiblePings(ui_netSource.integer)) {
 		uiInfo.serverStatus.refreshtime = uiInfo.uiDC.realTime + 1000;
 	} else if (!wait) {	
-		if(!uiInfo.serverStatus.nextpingtime)
-			uiInfo.serverStatus.nextpingtime = uiInfo.uiDC.realTime + 3000;
-
 		// get the last servers in the list
-		UI_BuildServerDisplayList(2);
-
+		UI_BuildServerDisplayList(qtrue);
+		// stop the refresh
+		UI_StopServerRefresh();
 	}
 
 	UI_BuildServerDisplayList(qfalse);
-
-	if(uiInfo.serverStatus.nextpingtime && (uiInfo.serverStatus.nextpingtime < uiInfo.uiDC.realTime))
-	{
-		UI_StopServerRefresh();
-	}
 }
 
 /*
@@ -7786,9 +7768,8 @@ UI_StartServerRefresh
 */
 static void UI_StartServerRefresh(qboolean full)
 {
-	int		i;
+	//int		i;
 	char	buff[64];
-	const char	*ptr;
 
 	qtime_t q;
 	trap_RealTime(&q);
@@ -7806,6 +7787,7 @@ static void UI_StartServerRefresh(qboolean full)
 	// clear number of displayed servers
 	uiInfo.serverStatus.numqueriedservers = 0;
 	uiInfo.serverStatus.maxservers = 0;
+	uiInfo.serverStatus.numIncompatibleServers = 0;
 	uiInfo.serverStatus.numDisplayServers = 0;
 	uiInfo.serverStatus.numPlayersOnServers = 0;
 	uiInfo.serverStatus.numTotalPlayers = 0;
@@ -7822,23 +7804,7 @@ static void UI_StartServerRefresh(qboolean full)
 
 	uiInfo.serverStatus.refreshtime = uiInfo.uiDC.realTime + 5000;
 	if( ui_netSource.integer == AS_GLOBAL ) {
-		if( ui_netSource.integer == AS_GLOBAL ) {
-			i = 0;
-		}
-		else {
-			i = 1;
-		}
-
-		ptr = UI_Cvar_VariableString("protocol");
-		if( *ptr ) {
-			trap_Cmd_ExecuteText( EXEC_APPEND, va( "globalservers %d %s full empty\n", i, ptr));  // \\game\\etf
-			//trap_Cmd_ExecuteText( EXEC_APPEND, va( "globalservers %d %s \\game\\etf\n", i, ptr));  // \\game\\etf
-		}
-		else {
-			trap_Cmd_ExecuteText( EXEC_APPEND, va( "globalservers %d %d full empty\n", i, (int)trap_Cvar_VariableValue( "protocol" ) ) );
-			//trap_Cmd_ExecuteText( EXEC_APPEND, va( "globalservers %d %d \\game\\etf\n", i, (int)trap_Cvar_VariableValue( "protocol" ) ) );
-			//trap_Cmd_ExecuteText( EXEC_APPEND, va( "globalservers %d %d q3f\n", i, (int)trap_Cvar_VariableValue( "protocol" ) ) );
-		}
+		trap_Cmd_ExecuteText( EXEC_APPEND, va( "globalservers 0 %d full empty\n", (int)trap_Cvar_VariableValue( "protocol" ) ) );
 	}
 }
 
