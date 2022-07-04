@@ -1142,12 +1142,17 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	float		shaderalpha;
 	int			agentclass;
 	int			muzzlecontents = 0;
+	qboolean	gasEffect = qfalse;
 	
 	ci = &cgs.clientinfo[ps ? ps->clientNum : cent->currentState.number];
 
+	if ( !ps && cent->currentState.eType != ET_Q3F_CORPSE && cg.gasEndTime && cent->currentState.number < MAX_CLIENTS && cg.gasPlayerClass[cent->currentState.number] != 0xff && cent->currentState.number != cg.snap->ps.clientNum ) {
+		gasEffect = qtrue;
+	}
+
 	if( ps && !agentdata && cg.agentDataEntity && cg.agentDataEntity->currentValid )
 		agentdata = cg.agentDataEntity;
-	if( agentdata )
+	if( agentdata && !gasEffect )
 	{
 		CG_Q3F_CalcAgentVisibility(	&drawmodel, &shaderalpha, &newmodel,
 									1.0f/6.0f, 5.0f/6.0f, &agentdata->currentState );
@@ -1165,9 +1170,12 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	}
 
 	realWeaponNum = weaponNum = cent->currentState.weapon;
-	
+
+	if ( gasEffect ) {
+		weaponNum = BG_Q3F_GetRemappedWeaponFromWeaponNum( ci->cls, cg.gasPlayerClass[cent->currentState.number], weaponNum );
+	}
 	// Golliwog: Agent weapon 'masquerades'
-	if(	agentclass )
+	else if( agentclass )
 	{
 		// Change the weapon we want to render
 		weaponNum = BG_Q3F_GetRemappedWeaponFromWeaponNum( ci->cls, agentclass, weaponNum );
@@ -1189,7 +1197,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	gun.hModel = weapon->weaponModel;				
 	// JT - Custom override for other classes 'axes'.
 	if( weaponNum == WP_AXE )
-		switch( agentclass ? agentclass : cent->currentState.otherEntityNum2 )
+		switch( agentclass ? agentclass : (gasEffect ? cg.gasPlayerClass[cent->currentState.number] : cent->currentState.otherEntityNum2 ) )
 		{
 			case Q3F_CLASS_AGENT:
 				gun.hModel = cg_extendedweapons[Q3F_WP_KNIFE].weaponModel;
@@ -2436,7 +2444,7 @@ static void CG_MinigunPellet( vec3_t start, vec3_t end, int skipNum ) {
 		return;
 	}
 
-	if ( cg_entities[tr.entityNum].currentState.eType == ET_PLAYER ) {
+	if ( cg_entities[tr.entityNum].currentState.eType == ET_PLAYER || cg_entities[tr.entityNum].currentState.eType == ET_Q3F_CORPSE  ) {
 		CG_MissileHitPlayer( WP_SHOTGUN, tr.endpos, tr.plane.normal, skipNum, tr.entityNum );
 	} else {
 		if ( tr.surfaceFlags & SURF_NOIMPACT ) {
@@ -2470,7 +2478,7 @@ static void CG_ShotgunPellet( vec3_t start, vec3_t end, int skipNum ) {
 		return;
 	}
 
-	if ( cg_entities[tr.entityNum].currentState.eType == ET_PLAYER ) {
+	if ( cg_entities[tr.entityNum].currentState.eType == ET_PLAYER || cg_entities[tr.entityNum].currentState.eType == ET_Q3F_CORPSE ) {
 		CG_MissileHitPlayer( WP_SHOTGUN, tr.endpos, tr.plane.normal, skipNum, tr.entityNum );
 	} else {
 		if ( tr.surfaceFlags & SURF_NOIMPACT ) {

@@ -1305,7 +1305,7 @@ void G_Q3F_SentryMove( gentity_t *ent )
 	//Are we falling
 	if ( ent->s.groundEntityNum == ENTITYNUM_NONE ) {
 		BG_EvaluateTrajectory( &ent->s.pos, level.time, origin );
-	} else if( ground->s.eType == ET_PLAYER ) {
+	} else if( ground->s.eType == ET_PLAYER || ground->s.eType == ET_Q3F_CORPSE ) {
 		// RR2DO2 crush any players under the sentry
 		G_Damage( &g_entities[ent->s.groundEntityNum], ent->parent, ent->parent, NULL, NULL, 99999, DAMAGE_NO_PROTECTION, 
 			ent->s.eType == ET_Q3F_SENTRY ? MOD_CRUSHEDBYSENTRY : MOD_CRUSHEDBYSUPPLYSTATION );

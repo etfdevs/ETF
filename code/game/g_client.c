@@ -518,11 +518,18 @@ void InitBodyQue (void) {
 		ent->neverFree = qtrue;
 		level.bodyQue[i] = ent;
 
-		ent = G_Spawn();
-		ent->classname = "bodyqueagentdata";
-		ent->neverFree = qtrue;
-		level.bodyQueAgentData[i] = ent;
+		//ent = G_Spawn();
+		//ent->classname = "bodyqueagentdata";
+		//ent->neverFree = qtrue;
+		//level.bodyQueAgentData[i] = ent;
 	}
+}
+
+static void BodyUnlink( gentity_t *ent ) {
+	// the body ques are never actually freed, they are just unlinked
+	trap_UnlinkEntity( ent );
+	ent->physicsObject = qfalse;
+	ent->classname = "bodyque";
 }
 
 /*
@@ -532,18 +539,28 @@ BodySink
 After sitting around for five seconds, fall into the ground and dissapear
 =============
 */
-void BodySink( gentity_t *ent ) {
-	if ( level.time - ent->timestamp > 11500 ) {
+static void BodySink( gentity_t *ent ) {
+	ent->physicsObject = qfalse;
+	ent->nextthink = level.time + 11500;
+	ent->think = BodyUnlink;
+	ent->s.pos.trType = TR_LINEAR;
+	ent->s.pos.trTime = level.time;
+	VectorCopy( ent->r.currentOrigin, ent->s.pos.trBase );
+	VectorSet( ent->s.pos.trDelta, 0, 0, -8 );
+	/*if ( level.time - ent->timestamp > 11500 ) {
 		// the body ques are never actually freed, they are just unlinked
 		trap_UnlinkEntity( ent );
 		ent->physicsObject = qfalse;
+		ent->classname = "bodyque";
+		//ent->s.eFlags = 0;
+		//ent->s.eType = ET_GENERAL;
 		
 		// Golliwog: Remove agentdata now we're finished with it
-		trap_UnlinkEntity( level.bodyQueAgentData[ent->count] );
+		//trap_UnlinkEntity( level.bodyQueAgentData[ent->count] );
 		return;	
 	}
 	ent->nextthink = level.time + 100;
-	ent->s.pos.trBase[2] -= 1;
+	ent->s.pos.trBase[2] -= 1;*/
 }
 
 /*
@@ -558,7 +575,7 @@ just like the existing corpse to leave behind.
 void CopyToBodyQue( gentity_t *ent ) {
 	// Golliwog: Heavily modified to prevent class changes on death.
 
-	gentity_t	*body, *agentdata;
+	gentity_t	*body;//, *agentdata;
 	int			i, contents;
 
 	trap_UnlinkEntity (ent);
@@ -572,16 +589,21 @@ void CopyToBodyQue( gentity_t *ent ) {
 	if( !ent->client || Q3F_IsSpectator( ent->client ) )
 		return;		// Golliwog: Only gib if they have a body.
 
+	if ( ent->health <= GIB_HEALTH )
+		return;
+
 	// grab a body que and cycle to the next one
 	level.bodyQueIndex = (level.bodyQueIndex + 1) % BODY_QUEUE_SIZE;
 	body		= level.bodyQue[ level.bodyQueIndex ];
-	agentdata	= level.bodyQueAgentData[ level.bodyQueIndex ];
+	//agentdata	= level.bodyQueAgentData[ level.bodyQueIndex ];
 
-	trap_UnlinkEntity( body );
-	trap_UnlinkEntity( agentdata );
+	//trap_UnlinkEntity( body );
+	//trap_UnlinkEntity( agentdata );
 
 	body->s = ent->s;
 	body->s.eFlags = EF_DEAD;		// clear EF_TALK, etc
+	body->s.eType = ET_Q3F_CORPSE;
+	body->classname = "corpse";
 	body->s.extFlags = 0;
 	body->s.powerups = 0;	// clear powerups
 	body->s.loopSound = 0;	// clear lava burning
@@ -589,7 +611,7 @@ void CopyToBodyQue( gentity_t *ent ) {
 	body->timestamp = level.time;
 	body->physicsObject = qtrue;
 	body->physicsBounce = 0;		// don't bounce
-	body->count = level.bodyQueIndex;
+	//body->count = level.bodyQueIndex;
 	if ( body->s.groundEntityNum == ENTITYNUM_NONE ) {
 		body->s.pos.trType = TR_GRAVITY;
 		body->s.pos.trTime = level.time;
@@ -628,6 +650,9 @@ void CopyToBodyQue( gentity_t *ent ) {
 	body->r.contents = CONTENTS_CORPSE;
 	body->r.ownerNum = ent->s.number;
 
+	body->s.modelindex = ent->client->sess.sessionTeam;
+	body->s.modelindex2 = ent->client->ps.persistant[PERS_CURRCLASS];
+
 	body->nextthink = level.time + 10000;
 	body->think = BodySink;
 
@@ -644,21 +669,21 @@ void CopyToBodyQue( gentity_t *ent ) {
 	} else {
 		body->takedamage = qtrue;
 
-		body->s.eFlags |= EF_Q3F_DISGUISE;
-		agentdata->s.eType			= ET_Q3F_AGENTDATA;
-		agentdata->classname		= "agentdata";
-		agentdata->s.time			= level.time - 1;
-		agentdata->s.time2			= level.time - 1;
-		agentdata->s.torsoAnim		= ent->client->ps.persistant[PERS_CURRCLASS];
-		agentdata->s.weapon			= ent->client->sess.sessionTeam;
-		agentdata->activator		= body;
-		agentdata->s.otherEntityNum	= body->s.number;
-		agentdata->nextthink		= 0;		// No think for this ent, it gets freed by BodySink();
-		agentdata->s.modelindex2	= 1;		// Disguise
-		VectorCopy( body->s.pos.trBase, agentdata->s.pos.trBase );
-		SnapVector( ent->s.pos.trBase );
-		G_SetOrigin( agentdata, agentdata->s.pos.trBase );
-		trap_LinkEntity( agentdata );
+		//body->s.eFlags |= EF_Q3F_DISGUISE;
+		//agentdata->s.eType			= ET_Q3F_AGENTDATA;
+		//agentdata->classname		= "agentdata";
+		//agentdata->s.time			= level.time - 1;
+		//agentdata->s.time2			= level.time - 1;
+		//agentdata->s.torsoAnim		= ent->client->ps.persistant[PERS_CURRCLASS];
+		//agentdata->s.weapon			= ent->client->sess.sessionTeam;
+		//agentdata->activator		= body;
+		//agentdata->s.otherEntityNum	= body->s.number;
+		//agentdata->nextthink		= 0;		// No think for this ent, it gets freed by BodySink();
+		//agentdata->s.modelindex2	= 1;		// Disguise
+		//VectorCopy( body->s.pos.trBase, agentdata->s.pos.trBase );
+		//SnapVector( ent->s.pos.trBase );
+		//G_SetOrigin( agentdata, agentdata->s.pos.trBase );
+		//trap_LinkEntity( agentdata );
 	}
 	// Golliwog.
 

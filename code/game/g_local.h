@@ -625,7 +625,7 @@ typedef struct {
 //	gentity_t	*locationHead;			// head of the location list
 	int			bodyQueIndex;			// dead bodies
 	gentity_t	*bodyQue[BODY_QUEUE_SIZE];
-	gentity_t	*bodyQueAgentData[BODY_QUEUE_SIZE];	// Lock the class/team
+	//gentity_t	*bodyQueAgentData[BODY_QUEUE_SIZE];	// Lock the class/team
 
 	q3f_array_t	*locationarray;			// Golliwog: List of locations.
 	q3f_array_t	*waypointarray;			// Golliwog: List of waypoints.

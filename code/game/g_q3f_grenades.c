@@ -498,7 +498,7 @@ void NapalmExplodeThink( gentity_t *napalm )
 		{
 			vec3_t dir;
 
-			if( !ent->inuse || !(ent->s.eType == ET_PLAYER || ent->s.eType == ET_Q3F_SENTRY || ent->s.eType == ET_Q3F_SUPPLYSTATION || ( ent->s.eType == ET_GENERAL && !Q_stricmp( ent->classname, "func_damage" ) ) ) )
+			if( !ent->inuse || !(ent->s.eType == ET_PLAYER || ent->s.eType == ET_Q3F_CORPSE || ent->s.eType == ET_Q3F_SENTRY || ent->s.eType == ET_Q3F_SUPPLYSTATION || ( ent->s.eType == ET_GENERAL && !Q_stricmp( ent->classname, "func_damage" ) ) ) )
 				continue;
 			VectorCopy( napalm->r.currentOrigin, diff );
 			if( !Q_stricmp( ent->classname, "func_damage" ) )
@@ -593,7 +593,7 @@ void HallucinogenicBurnThink( gentity_t * gasgren )
 	}
 
 	for( exp_target = g_entities; exp_target < &g_entities[level.num_entities]; exp_target++ ) {
-		if( !exp_target->inuse || !(exp_target->s.eType == ET_PLAYER || exp_target->s.eType == ET_Q3F_SENTRY || exp_target->s.eType == ET_Q3F_SUPPLYSTATION) )
+		if( !exp_target->inuse || !(exp_target->s.eType == ET_PLAYER || exp_target->s.eType == ET_Q3F_CORPSE || exp_target->s.eType == ET_Q3F_SENTRY || exp_target->s.eType == ET_Q3F_SUPPLYSTATION) )
 			continue;
 		VectorCopy( gasgren->r.currentOrigin, diff );
 		VectorSubtract( diff, exp_target->r.currentOrigin, diff );

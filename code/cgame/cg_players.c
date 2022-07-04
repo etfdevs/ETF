@@ -391,6 +391,28 @@ CG_ColorFromString
 	}
 }*/
 
+
+/*
+===================
+CG_LoadClientInfo
+
+Load it now, taking the disk hits.
+This will usually be deferred to a safe time
+===================
+*/
+static void CG_LoadClientInfo( int clientNum ) {
+	int i;
+
+	// reset any existing players and bodies, because they might be in bad
+	// frames for this new model
+	for ( i = 0 ; i < MAX_GENTITIES ; i++ ) {
+		if ( cg_entities[i].currentState.clientNum == clientNum && cg_entities[i].currentState.eType == ET_PLAYER ) {
+			CG_ResetPlayerEntity( &cg_entities[i] );
+		}
+	}
+}
+
+
 /*
 ======================
 CG_NewClientInfo
@@ -437,22 +459,25 @@ void CG_NewClientInfo( int clientNum ) {
 	v = Info_ValueForKey( configstring, "sc" );
 	newInfo.shoutcaster = atoi( v ) != 0;
 
+	CG_LoadClientInfo( clientNum );
+
 	// replace whatever was there with the new one
 	newInfo.infoValid = qtrue;
 	*ci = newInfo;
 
 	// Update on immediate info change
-	if ( cg.snap && cg.snap->ps.clientNum == clientNum && cgDC.playerClass != newInfo.cls ) {
+	if ( cg.snap && cg.snap->ps.clientNum == clientNum /*&& cgDC.playerClass != newInfo.cls */ ) {
 		char pclass[25];
 
 		pclass[0] = 0;
 		cgDC.playerClass = 0;
-		if (CG_Q3F_IsSpectator(&cg.snap->ps)) {
+		if (CG_Q3F_IsSpectator(&cg.snap->ps) || newInfo.cls == Q3F_CLASS_NULL || newInfo.team == Q3F_TEAM_SPECTATOR) {
 			cgDC.playerClass = CLASS_SPECTATOR;
 			strcpy(pclass, "spectator");
 		}
 		else {
-			switch (cg.snap->ps.persistant[PERS_CURRCLASS])
+			switch(newInfo.cls)
+			//switch (cg.snap->ps.persistant[PERS_CURRCLASS])
 			{
 			case Q3F_CLASS_RECON: cgDC.playerClass = CLASS_RECON; strcpy(pclass, "recon"); break;
 			case Q3F_CLASS_SNIPER: cgDC.playerClass = CLASS_SNIPER; strcpy(pclass, "sniper"); break;
@@ -676,6 +701,7 @@ static void CG_PlayerAnimation( centity_t *cent, refEntity_t *legs, refEntity_t 
 	float			speedScale;
 	F2RDef_t		*F2RScript;
 	int				fakeplayerclass;
+	qboolean		gasEffect = qfalse;
 
 	clientNum = cent->currentState.clientNum;
 
@@ -692,21 +718,34 @@ static void CG_PlayerAnimation( centity_t *cent, refEntity_t *legs, refEntity_t 
 
 	ci = &cgs.clientinfo[ clientNum ];
 
-	// get our disguised information
-	// if we are doing disguise->disguise, grab the old disguise class/team
-	fakeplayerclass = 0;
-	if( agentdata ) {
-		if( ( agentdata->currentState.modelindex2 & Q3F_AGENT_DISGUISE ) && ( agentdata->currentState.legsAnim ) ) {
-			fakeplayerclass = agentdata->currentState.legsAnim;
-		}
-		if( CG_Q3F_UseFakeAgentModel( 0 ) ) {
-			fakeplayerclass = agentdata->currentState.torsoAnim;
-		}
+	if ( cent->currentState.eType != ET_Q3F_CORPSE && cg.gasEndTime && cent->currentState.number < MAX_CLIENTS && cg.gasPlayerClass[cent->currentState.number] != 0xff && cent->currentState.number != cg.snap->ps.clientNum ) {
+		gasEffect = qtrue;
 	}
 
-	F2RScript = fakeplayerclass
-				? CG_Q3F_LegsF2RScript(fakeplayerclass)
-				: CG_Q3F_LegsF2RScript(ci->cls);
+	fakeplayerclass = 0;
+	if ( cent->currentState.eType == ET_Q3F_CORPSE ) {
+		F2RScript = CG_Q3F_LegsF2RScript( cent->currentState.modelindex2 );
+	}
+	else if ( gasEffect ) {
+		F2RScript = CG_Q3F_LegsF2RScript( cg.gasPlayerClass[cent->currentState.number] );
+	}
+	else {
+		// get our disguised information
+		// if we are doing disguise->disguise, grab the old disguise class/team
+
+		if( agentdata ) {
+			if( ( agentdata->currentState.modelindex2 & Q3F_AGENT_DISGUISE ) && ( agentdata->currentState.legsAnim ) ) {
+				fakeplayerclass = agentdata->currentState.legsAnim;
+			}
+			if( CG_Q3F_UseFakeAgentModel( 0 ) ) {
+				fakeplayerclass = agentdata->currentState.torsoAnim;
+			}
+		}
+
+		F2RScript = fakeplayerclass
+					? CG_Q3F_LegsF2RScript(fakeplayerclass)
+					: CG_Q3F_LegsF2RScript(ci->cls);
+	}
 
 	// do the shuffle turn frames locally
 	if ( cent->pe.legs.yawing && ( cent->currentState.legsAnim & ~ANIM_TOGGLEBIT ) == ANI_MOVE_IDLESTAND ) {
@@ -735,13 +774,18 @@ static void CG_PlayerAnimation( centity_t *cent, refEntity_t *legs, refEntity_t 
 
 	// if we are doing disguise->disguise, grab the old disguise class/team
 	fakeplayerclass = 0;
-	if( agentdata ) {
-		if( ( agentdata->currentState.modelindex2 & Q3F_AGENT_DISGUISE ) && ( agentdata->currentState.legsAnim ) ) {
-			fakeplayerclass = agentdata->currentState.legsAnim;
+	if ( cent->currentState.eType != ET_Q3F_CORPSE && !gasEffect ) {
+		if( agentdata ) {
+			if( ( agentdata->currentState.modelindex2 & Q3F_AGENT_DISGUISE ) && ( agentdata->currentState.legsAnim ) ) {
+				fakeplayerclass = agentdata->currentState.legsAnim;
+			}
+			if( CG_Q3F_UseFakeAgentModel( 1 ) ) {
+				fakeplayerclass = agentdata->currentState.torsoAnim;
+			}
 		}
-		if( CG_Q3F_UseFakeAgentModel( 1 ) ) {
-			fakeplayerclass = agentdata->currentState.torsoAnim;
-		}
+	}
+	if ( cent->currentState.eType != ET_Q3F_CORPSE && gasEffect ) {
+		fakeplayerclass = cg.gasPlayerClass[cent->currentState.number];
 	}
 
 	// remap torso anims if needed
@@ -761,7 +805,10 @@ static void CG_PlayerAnimation( centity_t *cent, refEntity_t *legs, refEntity_t 
 		CG_RunLerpFrame( F2RScript, &cent->pe.torso, animNumber, speedScale );
 		torso->animNumber = animNumber;
 	} else {
-		F2RScript = CG_Q3F_TorsoF2RScript( ci->cls );
+		if ( cent->currentState.eType == ET_Q3F_CORPSE )
+			F2RScript = CG_Q3F_TorsoF2RScript( cent->currentState.modelindex2 );
+		else
+			F2RScript = CG_Q3F_TorsoF2RScript( ci->cls );
 		CG_RunLerpFrame( F2RScript, &cent->pe.torso, cent->currentState.torsoAnim, speedScale );
 		torso->animNumber = cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT;
 	}
@@ -885,6 +932,7 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 	vec3_t		velocity;
 	float		speed;
 	int			dir;
+	int			cls;
 
 
 	VectorCopy( cent->lerpAngles, headAngles );
@@ -892,11 +940,22 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 	VectorClear( legsAngles );
 	VectorClear( torsoAngles );
 
+	if ( cent->currentState.eType == ET_Q3F_CORPSE ) {
+		cls = cent->currentState.modelindex2;
+	}
+	else {
+		if ( cg.gasEndTime && cent->currentState.number < MAX_CLIENTS && cg.gasPlayerClass[cent->currentState.number] != 0xff && cent->currentState.number != cg.snap->ps.clientNum ) {
+			cls = cg.gasPlayerClass[cent->currentState.number];
+		}
+		else
+			cls = cent->currentState.otherEntityNum2;
+	}
+
 	// --------- yaw -------------
 
 	// allow yaw to drift a bit
 	if ( ( cent->currentState.legsAnim & ~ANIM_TOGGLEBIT ) != ANI_MOVE_IDLESTAND 
-		|| ( cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT ) != PM_GetIdleAnim( cent->currentState.weapon, cgs.clientinfo[ cent->currentState.number ].cls ) ) {
+		|| ( cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT ) != PM_GetIdleAnim( cent->currentState.weapon, cls ) ) {
 		// if not standing still, always point all in the same direction
 		cent->pe.torso.yawing = qtrue;	// always center
 		cent->pe.torso.pitching = qtrue;	// always center
@@ -1795,6 +1854,11 @@ void CG_Q3F_AddBackPack( centity_t *cent, clientInfo_t *ci, int renderfx ) {
 	if (ci->cls == Q3F_CLASS_CIVILIAN)
 		return;
 
+	if (  cg.gasEndTime && cent->currentState.number < MAX_CLIENTS && cg.gasPlayerClass[cent->currentState.number] != 0xff && cent->currentState.number != cg.snap->ps.clientNum ) {
+		if ( cg.gasPlayerClass[cent->currentState.number] == Q3F_CLASS_CIVILIAN )
+			return;
+	}
+
 	if( agentdata )
 	{
 		int agentclass = 0;
@@ -1941,9 +2005,11 @@ void CG_Player( centity_t *cent ) {
 	refEntity_t		head;
 	int				clientNum;
 	int				renderfx;
-	qboolean		shadow, newModel = qfalse;
+	qboolean		shadow;//, newModel = qfalse;
 	float			shadowPlane;
-	centity_t		hallucination;
+	//centity_t		hallucination;
+	qboolean		corpse;
+	int				team, cls;
 
 	// the client number is stored in clientNum.  It can't be derived
 	// from the entity number, because a single client may have
@@ -1954,19 +2020,30 @@ void CG_Player( centity_t *cent ) {
 	}
 	ci = &cgs.clientinfo[ clientNum ];
 
+	if ( cent->currentState.eType == ET_Q3F_CORPSE ) {
+		corpse = qtrue;
+		team = cent->currentState.modelindex;
+		cls = cent->currentState.modelindex2;
+	}
+	else {
+		corpse = qfalse;
+		team = ci->team;
+		cls = cent->currentState.otherEntityNum2; // ci->cls?
+	}
+
 	// it is possible to see corpses from disconnected players that may
 	// not have valid clientinfo (Golliwog: Or unteamed players)
-	if ( !ci->infoValid || !(cgs.teams & (1 << ci->team)) || (cent->currentState.eFlags & EF_Q3F_NOSPAWN) )
+	if ( !ci->infoValid || !(cgs.teams & (1 << team)) || (cent->currentState.eFlags & EF_Q3F_NOSPAWN) )
 	{
 		if( cg_debugAnim.integer && !ci->infoValid )
 			CG_Printf( BOX_PRINT_MODE_CHAT, "Invalid clientinfo for %d\n.", clientNum );
 		return;
 	}
 	// Golliwog: Check the class is valid too
-	if( !(cgs.classes & (1 << cent->currentState.otherEntityNum2)) )
+	if( !(cgs.classes & (1 << cls)) )
 	{
 		if( cg_debugAnim.integer )
-			CG_Printf( BOX_PRINT_MODE_CHAT, "Invalid class (%d) for %d\n.", cent->currentState.otherEntityNum2, clientNum );
+			CG_Printf( BOX_PRINT_MODE_CHAT, "Invalid class (%d) for %d\n.", cls, clientNum );
 		return;
 	}
 
@@ -1988,62 +2065,75 @@ void CG_Player( centity_t *cent ) {
 		lastflags[clientNum] = cent->currentState.eFlags;
 	}
 */
-	if( cent->currentState.eFlags & (EF_Q3F_DISGUISE|EF_Q3F_INVISIBLE) ) {
-		// We don't draw, but we might want a agent effect instead.
+	if ( !corpse ) {
+		if( cent->currentState.eFlags & (EF_Q3F_DISGUISE|EF_Q3F_INVISIBLE) ) {
+			// We don't draw, but we might want a agent effect instead.
 
-		for( renderfx = 0; renderfx < MAX_ENTITIES; renderfx++ ) {
-			agentdata = &cg_entities[renderfx];
+			for( renderfx = 0; renderfx < MAX_ENTITIES; renderfx++ ) {
+				agentdata = &cg_entities[renderfx];
 
-			if( (agentdata->currentState.eType == ET_Q3F_AGENTDATA) &&
-				agentdata->currentValid &&
-				(agentdata->currentState.otherEntityNum == cent->currentState.number) )
-				break;		// We've found one.
+				if( (agentdata->currentState.eType == ET_Q3F_AGENTDATA) &&
+					agentdata->currentValid &&
+					(agentdata->currentState.otherEntityNum == cent->currentState.number) )
+					break;		// We've found one.
+			}
+
+			if( renderfx == MAX_ENTITIES )
+				agentdata = NULL;	// We might not have the control ent yet, or it's finished
+		} else {
+			agentdata = NULL;
 		}
 
-		if( renderfx == MAX_ENTITIES )
-			agentdata = NULL;	// We might not have the control ent yet, or it's finished
-	} else {
+		if ( cent->currentState.number == cg.snap->ps.clientNum )
+			cg.agentDataEntity = agentdata;
+
+		if ( cg.gasEndTime && cent->currentState.number < MAX_CLIENTS && cent->currentState.number != cg.snap->ps.clientNum ) {
+			if ( cg.gasPlayerClass[cent->currentState.number] != 0xFF ) {
+				cls = cg.gasPlayerClass[cent->currentState.number];
+			}
+			if ( cg.gasPlayerTeam[cent->currentState.number] != 0xFF ) {
+				team = cg.gasPlayerTeam[cent->currentState.number];
+			}
+		}
+
+		/*if( cg.gasEndTime &&
+			cent->currentState.number < MAX_CLIENTS &&
+			cg.gasPlayerClass[cent->currentState.number] != 0xFF &&
+			cent->currentState.number != cg.snap->ps.clientNum ) {
+			// We're hallucinating, create an 'agentdata' for the occasion.
+
+			if(	agentdata &&
+				//(agentdata->currentState.modelindex2 & 12) == 4 &&
+				//agentdata->currentState.origin2[0] < (cg.time + 4000) )
+				(agentdata->currentState.modelindex2 & 12) == Q3F_AGENT_INVIS &&
+				agentdata->currentState.origin2[0] < (cg.time + Q3F_AGENT_INVISIBLE_TIME) )
+				return;		// They're invisible
+			memset( &hallucination, 0, sizeof(hallucination) );
+			hallucination.currentState.eType = ET_Q3F_AGENTDATA;
+			hallucination.currentState.otherEntityNum = cent->currentState.number;
+			hallucination.currentState.modelindex2 = 1;
+			hallucination.currentState.time = cg.time - 1001;
+			hallucination.currentState.time2 = cg.time - 1;
+			hallucination.currentState.torsoAnim = cg.gasPlayerClass[cent->currentState.number];
+			hallucination.currentState.weapon = cg.gasPlayerTeam[cent->currentState.number];
+			// RR2DO2: FIXME: set .frame to a random valid team
+			hallucination.currentValid = qtrue;
+			agentdata = &hallucination;
+		} else {
+			hallucination.currentValid = qfalse;
+		}*/
+
+		if( agentdata &&
+			(agentdata->currentState.eType != ET_Q3F_AGENTDATA ||
+			!agentdata->currentValid ||
+			!(agentdata->currentState.otherEntityNum == cent->currentState.number)) ) {
+	//		CG_Printf( "Invalid Agentdata.\n" );
+	//		return;
+			agentdata = NULL;
+		}
+	}
+	else
 		agentdata = NULL;
-	}
-
-	if ( cent->currentState.number == cg.snap->ps.clientNum )
-		cg.agentDataEntity = agentdata;
-
-	if( cg.gasEndTime &&
-		cent->currentState.number < MAX_CLIENTS &&
-		cg.gasPlayerClass[cent->currentState.number] != 0xFF &&
-		cent->currentState.number != cg.snap->ps.clientNum ) {
-		// We're hallucinating, create an 'agentdata' for the occasion.
-
-		if(	agentdata &&
-			//(agentdata->currentState.modelindex2 & 12) == 4 &&
-			//agentdata->currentState.origin2[0] < (cg.time + 4000) )
-			(agentdata->currentState.modelindex2 & 12) == Q3F_AGENT_INVIS &&
-			agentdata->currentState.origin2[0] < (cg.time + Q3F_AGENT_INVISIBLE_TIME) )
-			return;		// They're invisible
-		memset( &hallucination, 0, sizeof(hallucination) );
-		hallucination.currentState.eType = ET_Q3F_AGENTDATA;
-		hallucination.currentState.otherEntityNum = cent->currentState.number;
-		hallucination.currentState.modelindex2 = 1;
-		hallucination.currentState.time = cg.time - 1001;
-		hallucination.currentState.time2 = cg.time - 1;
-		hallucination.currentState.torsoAnim = cg.gasPlayerClass[cent->currentState.number];
-		hallucination.currentState.weapon = cg.gasPlayerTeam[cent->currentState.number];
-		// RR2DO2: FIXME: set .frame to a random valid team
-		hallucination.currentValid = qtrue;
-		agentdata = &hallucination;
-	} else {
-		hallucination.currentValid = qfalse;
-	}
-
-	if( agentdata &&
-		(agentdata->currentState.eType != ET_Q3F_AGENTDATA ||
-		!agentdata->currentValid ||
-		!(agentdata->currentState.otherEntityNum == cent->currentState.number)) ) {
-//		CG_Printf( "Invalid Agentdata.\n" );
-//		return;
-		agentdata = NULL;
-	}
 
 	// get the player model information
 	renderfx = 0;
@@ -2067,7 +2157,8 @@ void CG_Player( centity_t *cent ) {
 	// get the animation state (after rotation, to allow feet shuffle)
 	CG_PlayerAnimation( cent, &legs, &torso );
 
-	CG_PlayerSprites( cent, agentdata );
+	if ( !corpse )
+		CG_PlayerSprites( cent, agentdata );
 
 	// no shadows when invisible (Golliwog: That includes agent invisible)
 	if ( (cent->currentState.powerups & ( 1 << PW_INVIS )) || (cent->currentState.eFlags & EF_Q3F_INVISIBLE) ) {
@@ -2087,8 +2178,8 @@ void CG_Player( centity_t *cent ) {
 	//
 	// add the legs
 	//
-	legs.hModel = *CG_Q3F_LegsModel( ci->cls );
-	legs.customSkin = *CG_Q3F_LegsSkin( ci->cls );
+	legs.hModel = *CG_Q3F_LegsModel( cls );
+	legs.customSkin = *CG_Q3F_LegsSkin( cls );
 
 	VectorCopy( cent->lerpOrigin, legs.origin );
 	VectorCopy( legs.origin, legs.oldorigin );
@@ -2098,13 +2189,13 @@ void CG_Player( centity_t *cent ) {
 	legs.renderfx = renderfx;
 	VectorCopy (legs.origin, legs.oldorigin);	// don't positionally lerp at all
 
-	memcpy( legs.shaderRGBA, CG_Q3F_LegsColour( ci->cls, ci->team ), 3 );
+	memcpy( legs.shaderRGBA, CG_Q3F_LegsColour( cls, team ), 3 );
 	legs.shaderRGBA[3] = 255.0;
 
 	if( agentdata ) {
 		CG_Q3F_AddRefEntityWithAgentEffect( &legs, cent, &cent->currentState, ci->team, 0 );
 	} else {
-		CG_AddRefEntityWithPowerups( &legs, &cent->currentState, ci->team );
+		CG_AddRefEntityWithPowerups( &legs, &cent->currentState, team );
 	}
 
 
@@ -2116,12 +2207,12 @@ void CG_Player( centity_t *cent ) {
 	//
 	// add the torso
 	//
-	torso.hModel = *CG_Q3F_TorsoModel( ci->cls );
+	torso.hModel = *CG_Q3F_TorsoModel( cls );
 	if (!torso.hModel) {
 		return;
 	}
 
-	torso.customSkin = *CG_Q3F_TorsoSkin( ci->cls );
+	torso.customSkin = *CG_Q3F_TorsoSkin( cls );
 
 	VectorCopy( cent->lerpOrigin, torso.lightingOrigin );
 
@@ -2131,13 +2222,13 @@ void CG_Player( centity_t *cent ) {
 	torso.shadowPlane = shadowPlane;
 	torso.renderfx = renderfx;
 
-	memcpy( torso.shaderRGBA, CG_Q3F_TorsoColour( ci->cls, ci->team ), 3 );
+	memcpy( torso.shaderRGBA, CG_Q3F_TorsoColour( cls, team ), 3 );
 	torso.shaderRGBA[3] = 255.0;
 
 	if( agentdata ) {
-		newModel = CG_Q3F_AddRefEntityWithAgentEffect( &torso, cent, &cent->currentState, ci->team, 1 );
+		/*newModel = */CG_Q3F_AddRefEntityWithAgentEffect( &torso, cent, &cent->currentState, ci->team, 1 );
 	} else {
-		CG_AddRefEntityWithPowerups( &torso, &cent->currentState, ci->team );
+		CG_AddRefEntityWithPowerups( &torso, &cent->currentState, team );
 	}
 
 	// RR2DO2: get tag_pack for usage with attached goal objects
@@ -2153,7 +2244,7 @@ void CG_Player( centity_t *cent ) {
 	//
 	// add the head
 	//
-	head.hModel = *CG_Q3F_HeadModel( ci->cls );
+	head.hModel = *CG_Q3F_HeadModel( cls );
 	if (!head.hModel) {
 		return;
 	}
@@ -2168,7 +2259,7 @@ void CG_Player( centity_t *cent ) {
 	head.shadowPlane = shadowPlane;
 	head.renderfx = renderfx;
 
-	memcpy( head.shaderRGBA, CG_Q3F_HeadColour( ci->cls, ci->team ), 3 );
+	memcpy( head.shaderRGBA, CG_Q3F_HeadColour( cls, team ), 3 );
 	head.shaderRGBA[3] = 255.0;
 
 	if( agentdata )
@@ -2185,14 +2276,16 @@ void CG_Player( centity_t *cent ) {
 	}
 
 	// add powerups floating behind the player
-	CG_PlayerPowerups( cent, &torso );
-	CG_AddPlayerEffects( cent, &torso, &head);
+	if ( !corpse ) {
+		CG_PlayerPowerups( cent, &torso );
+		CG_AddPlayerEffects( cent, &torso, &head);
+	}
 
 	// Golliwog: Store velocity and apparent team for later reference by sniper
-	cent->pe.visibleTeam	=	(agentdata != NULL && agentdata->currentState.weapon)
-								? agentdata->currentState.weapon : ci->team;
+	/*cent->pe.visibleTeam	=	(agentdata != NULL && agentdata->currentState.weapon)
+								? agentdata->currentState.weapon : team;
 	cent->pe.visibleClass	=	(agentdata != NULL && newModel)
-								? agentdata->currentState.torsoAnim : ci->cls;
+								? agentdata->currentState.torsoAnim : cls;*/
 	// Golliwog.
 
 	// add backpack if the player is alive
@@ -2217,7 +2310,7 @@ A player just came into view or teleported, so reset all animation info
 */
 void CG_ResetPlayerEntity( centity_t *cent ) {
 	cent->errorTime = -99999;		// guarantee no error decay added
-	cent->extrapolated = qfalse;	
+	cent->extrapolated = qfalse;
 
 	CG_ClearLerpFrame( cgs.media.f2rcache[cgs.clientinfo[ cent->currentState.clientNum ].cls][0], &cent->pe.legs, cent->currentState.legsAnim );
 	CG_ClearLerpFrame( cgs.media.f2rcache[cgs.clientinfo[ cent->currentState.clientNum ].cls][1], &cent->pe.torso, cent->currentState.torsoAnim );

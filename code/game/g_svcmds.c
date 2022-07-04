@@ -375,6 +375,7 @@ static const char* entityTypeNames[] = {
 	"ET_Q3F_SKYPORTAL",
 	"ET_Q3F_FLAMER",
 	"ET_Q3F_VISIBILITY",
+	"ET_Q3F_CORPSE",
 	"ET_EVENTS"
 };
 

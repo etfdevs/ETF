@@ -875,7 +875,7 @@ void Blocked_Door( gentity_t *ent, gentity_t *other ) {
 	// remove anything other than a client (Golliwog: or charge... :)
 	gentity_t *slave;
 	if ( other ) {
-		if ( other->client ) {
+		if ( other->client || other->s.eType == ET_Q3F_CORPSE ) {
 			if (ent->health <= 0 )
 				G_Damage( other, ent, ent, NULL, NULL, 10000, 0, MOD_CRUSH );
 			if (ent->damage )

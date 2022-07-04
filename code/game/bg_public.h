@@ -921,6 +921,8 @@ typedef enum {
 
 	ET_Q3F_VISIBILITY,		// Ensiform : Simple Criteria and/or range based rendered brush (should be non-solid)
 
+	ET_Q3F_CORPSE,
+
 	ET_EVENTS				// any of the EV_* events can be added freestanding
 							// by setting eType to ET_EVENTS + eventNum
 							// this avoids having to set eFlags and eventNum

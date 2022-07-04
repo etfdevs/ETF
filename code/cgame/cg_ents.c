@@ -1972,6 +1972,7 @@ static void CG_AddCEntity( centity_t *cent ) {
 			CG_Flame(cent);
 		break;
 	case ET_PLAYER:
+	case ET_Q3F_CORPSE:
 		if( !cg.renderingSkyPortal ) {
 			CG_Player( cent );
 		}
