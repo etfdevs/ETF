@@ -431,6 +431,7 @@ void G_Q3F_MapSelectQuery()
 						if( *ptr == '+' ) {
 							trap_Cvar_Set( "g_gameindex", ptr + 1 );
 							trap_Cvar_Update( &g_gameindex );
+							trap_Cvar_Set("g_antilag", ptr + 1 );
 						}
 						*ptr = 0;
 						trap_Cvar_Set( "nextmap", va( "map %s", map ) );

@@ -3552,6 +3552,7 @@ void UI_SetupGameIndexMulti() {
 	menuDef_t *menu;
 
 	trap_Cvar_Set( "g_gameindex", "1" );
+	trap_Cvar_Set("g_antilag", "1");
 	trap_Cvar_Set( "hud_admingameindex", "1");
 
 	menu = Menus_FindByName(uiInfo.mapMenuName);
@@ -3619,6 +3620,7 @@ void UI_ChangeGameIndex(void) {
 			value = 0;
 
 		trap_Cvar_Set("g_gameindex", va("%i", uiInfo.mapList[ui_currentNetMap.integer].gameIndiciesInfo[value].number));
+		trap_Cvar_Set("g_antilag", va("%i", uiInfo.mapList[ui_currentNetMap.integer].gameIndiciesInfo[value].number));
 		trap_Cvar_Set("hud_admingameindex", va("%i", uiInfo.mapList[ui_currentNetMap.integer].gameIndiciesInfo[value].number));
 	}
 }
@@ -4003,6 +4005,7 @@ static void UI_RunMenuScript(char **args) {
 			//float skill;
 
 			trap_Cvar_Set("g_gameindex", UI_Cvar_VariableString("hud_admingameindex"));
+			trap_Cvar_Set("g_antilag", UI_Cvar_VariableString("hud_admingameindex"));
 			trap_Cvar_Set("cg_thirdPerson", "0");
 			trap_Cvar_Set("cg_cameraOrbit", "0");
 			trap_Cvar_SetValue( "dedicated", Com_Clamp( 0, 2, ui_dedicated.integer ) );

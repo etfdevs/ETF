@@ -1159,6 +1159,7 @@ void G_Q3F_AdminGameIndex( gentity_t *admin )
 
 	trap_Cvar_Set("g_gameindex", va("%i", index));
 	trap_Cvar_Update( &g_gameindex );
+	trap_Cvar_Set("g_antilag", va("%i", index));
 }
 
 

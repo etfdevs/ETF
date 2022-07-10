@@ -496,6 +496,7 @@ static void UI_ETFMap_f( void ) {
 	}
 
 	trap_Cvar_Set("g_gameindex", index);
+	trap_Cvar_Set("g_antilag", index);
 	trap_Cmd_ExecuteText(EXEC_APPEND, va("map \"%s\"\n", strmap));
 }
 
@@ -514,6 +515,7 @@ static void UI_ETFDevMap_f( void ) {
 	}
 
 	trap_Cvar_Set("g_gameindex", index);
+	trap_Cvar_Set("g_antilag", index);
 	trap_Cmd_ExecuteText(EXEC_APPEND, va("devmap \"%s\"\n", strmap));
 }
 

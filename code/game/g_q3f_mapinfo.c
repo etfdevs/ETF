@@ -275,4 +275,5 @@ void G_Q3F_CheckGameIndex()
 	}
 	trap_Cvar_Set( "g_gameindex", "1" );
 	trap_Cvar_Update( &g_gameindex );
+	trap_Cvar_Set("g_antilag", "1" );
 }

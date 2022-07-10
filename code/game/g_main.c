@@ -395,6 +395,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ NULL, "g_maxlives", "0", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },	// Slothy: pure info for server browser info
 	{ NULL, "g_heavyWeaponRestriction", FORTS_SHORTVERSION, CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },		// Ensiform: ETF shortversion for server browser info
 	{ NULL, "g_balancedteams", "0", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },			// Ensiform: bot count for server browser info
+	{ NULL, "g_antilag", "1", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qfalse }, // gameindex for server browser
 
 #ifdef BUILD_BOTS
 	// Omni-bot user defined path to load bot library from.
@@ -977,6 +978,8 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_InitMemory();
 
 	G_RegisterCvars();
+
+	trap_Cvar_Set("g_antilag", va("%i", g_gameindex.integer));
 
 	G_ProcessIPBans();
 #if 0
