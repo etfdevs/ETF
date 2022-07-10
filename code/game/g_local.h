@@ -87,6 +87,12 @@ typedef enum {
 	MOVER_2TO1
 } moverState_t;
 
+typedef enum goalType_e {
+	GOALTYPE_NONE = 0,
+	GOALTYPE_GOALITEM,
+	GOALTYPE_GOALINFO
+} goalType_t;
+
 //============================================================================
 
 typedef struct gentity_s gentity_t;
@@ -218,6 +224,8 @@ struct gentity_s {
 	int			spawnIndex;
 
 	vec3_t		oldOrigin;
+
+	goalType_t	goalType;
 };
 
 // Golliwog: Admin levels

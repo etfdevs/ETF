@@ -84,6 +84,8 @@ extern          "C" const char *_GetEntityName(gentity_t * _ent)
 			Q_strncpyz(newentname, _ent->mapdata->groupname->data->d.strdata, 256);
 		else if(_ent->targetname)
 			Q_strncpyz(newentname, _ent->targetname, 256);
+		else if(_ent->mapdata && _ent->mapdata->holding && _ent->mapdata->holding->data->d.strdata)
+			Q_strncpyz(newentname, _ent->mapdata->holding->data->d.strdata, 256);
 		else
 			Com_sprintf(newentname, 256, "%s_%i", _ent->classname, (int)(_ent - g_entities));
 
@@ -629,13 +631,18 @@ static int _GetEntityTeam(gentity_t * _ent)
 				return Bot_TeamGameToBot(_ent->client->sess.sessionTeam);
 			break;
 		}
+		case ET_Q3F_CORPSE:
+			return Bot_TeamGameToBot(_ent->s.modelindex);
 		case ET_Q3F_SENTRY:
 		case ET_Q3F_SUPPLYSTATION:
 			return _ent->parent &&
 				_ent->parent->client ? Bot_TeamGameToBot(_ent->parent->client->sess.sessionTeam) : TF_TEAM_NONE;
+		case ET_Q3F_GRENADE:
+			return _ent->activator &&
+				_ent->activator->client ? Bot_TeamGameToBot(_ent->activator->client->sess.sessionTeam) : TF_TEAM_NONE;
 		case ET_MISSILE:
 		{
-			if(_ent->s.otherEntityNum >= 0 && _ent->s.otherEntityNum < ENTITYNUM_MAX_NORMAL)
+			if(_ent->s.otherEntityNum >= 0 && _ent->s.otherEntityNum < MAX_CLIENTS)
 			{
 				return &g_entities[_ent->s.otherEntityNum] &&
 					g_entities[_ent->s.otherEntityNum].client ? Bot_TeamGameToBot(g_entities[_ent->s.otherEntityNum].client->sess.
@@ -662,7 +669,7 @@ static int _GetEntityClass(gentity_t * _ent)
 
 	if(!hasptr)
 	{
-		G_Q3F_AddString(&teamscoreptr, (char *)"teamscore");
+		G_Q3F_AddString(&teamscoreptr, "teamscore");
 		hasptr = qtrue;
 	}
 
@@ -672,6 +679,10 @@ static int _GetEntityClass(gentity_t * _ent)
 	// This entity isn't valid this gameindex
 	if(_ent->mapdata && _ent->mapdata->gameindex && !(_ent->mapdata->gameindex & (1 << g_gameindex.integer)))
 		return 0;
+
+	// Goalinfos are set to invisible during hideactive state
+	if ( t == ET_INVISIBLE && _ent->mapdata && _ent->mapdata->origetype != -1 )
+		t = _ent->mapdata->origetype;
 
 	switch (t)
 	{
@@ -706,10 +717,10 @@ static int _GetEntityClass(gentity_t * _ent)
 
 			return Bot_PlayerClassGameToBot(_ent->client->ps.persistant[PERS_CURRCLASS]);
 		}
-/*	case ET_CORPSE:
+		case ET_Q3F_CORPSE:
 		{
-			return ET_CLASSEX_CORPSE;
-		}*/
+			return ETF_CLASSEX_CORPSE;
+		}
 		case ET_Q3F_SENTRY:
 		{
 			return TF_CLASSEX_SENTRY;
@@ -769,9 +780,16 @@ static int _GetEntityClass(gentity_t * _ent)
 		}
 		case ET_Q3F_GOAL:
 		{
-			if(!Q_stricmp(_ent->classname, "func_goalinfo") && _ent->mapdata && _ent->mapdata->give)	/* func_goalinfo */
+			if(_ent->goalType == GOALTYPE_GOALINFO && _ent->model && _ent->model[0] && _ent->mapdata && _ent->mapdata->give)
 				return TF_CLASSEX_BACKPACK;
-			if((!Q_stricmp(_ent->classname, "func_goalitem") || !Q_stricmp(_ent->classname, "func_flag")) && _ent->model && _ent->model[0] && _ent->mapdata && _ent->mapdata->groupname)	/* func_goalitem */ /* func_flag */
+			if(_ent->goalType == GOALTYPE_GOALINFO && !_ent->model && !_ent->model[0] && _ent->mapdata && _ent->mapdata->give && _ent->mapdata->other)	/* trigger_multiple */
+			{
+				q3f_keypair_t  *data = G_Q3F_KeyPairArrayFind(_ent->mapdata->other, teamscoreptr);
+
+				if(data && data->value.d.intdata)
+					return ENT_CLASS_GENERIC_FLAGCAPPOINT;
+			}
+			if(_ent->goalType == GOALTYPE_GOALITEM && _ent->model && _ent->model[0] && _ent->mapdata && _ent->mapdata->groupname)
 				return ENT_CLASS_GENERIC_FLAG;
 			break;
 		}
@@ -1237,7 +1255,7 @@ class           ETFInterface:public IEngineInterface
 
 	void            BotCommand(int _client, const char *_cmd)
 	{
-		trap_EA_Command(_client, (char *)_cmd);
+		trap_EA_Command(_client, _cmd);
 	}
 
 	obBool          IsInPVS(const float _pos[3], const float _target[3])
@@ -1485,7 +1503,7 @@ class           ETFInterface:public IEngineInterface
 
 		if(!hasptr)
 		{
-			G_Q3F_AddString(&teamscoreptr, (char *)"teamscore");
+			G_Q3F_AddString(&teamscoreptr, "teamscore");
 			hasptr = qtrue;
 		}
 
@@ -1536,36 +1554,47 @@ class           ETFInterface:public IEngineInterface
 					break;
 				}
 
-				_category.SetFlag(ENT_CAT_SHOOTABLE);
-				_category.SetFlag(ENT_CAT_PLAYER);
-				if(pEnt->client->ps.eFlags & EF_Q3F_DISEASED)
+				// Special case for dead players that haven't respawned.
+				if (pEnt->health <= GIB_HEALTH)
 				{
-					_category.SetFlag(ENT_CAT_AVOID);
-					_category.SetFlag(ENT_CAT_OBSTACLE);
+					_category.SetFlag(ENT_CAT_MISC);
+					break;
+				}
+
+				if (pEnt->health > GIB_HEALTH)
+				{
+					_category.SetFlag(ENT_CAT_SHOOTABLE);
+					_category.SetFlag(ENT_CAT_PLAYER);
+
+					if(pEnt->client->ps.eFlags & EF_Q3F_DISEASED)
+					{
+						_category.SetFlag(ENT_CAT_AVOID);
+						_category.SetFlag(ENT_CAT_OBSTACLE);
+					}
 				}
 				break;
 			}
-			case ET_INVISIBLE:
+			/*case ET_INVISIBLE:
 			{
+				if (pEnt->goaltype == GOALTYPE_GOALINFO)
 				//if(!Q_stricmp(pEnt->classname, "func_goalinfo") && (pEnt->mapdata && pEnt->mapdata->give))
-				if((!Q_stricmp(pEnt->classname, "func_goalinfo") && (pEnt->mapdata && pEnt->mapdata->give)) || (!Q_stricmp(pEnt->classname, "func_goalitem") && pEnt->model && pEnt->model[0]))	/* func_goalinfo */ /* func_goalitem */
+				//if((!Q_stricmp(pEnt->classname, "func_goalinfo") && (pEnt->mapdata && pEnt->mapdata->give)) || (!Q_stricmp(pEnt->classname, "func_goalitem") && pEnt->model && pEnt->model[0]))
 				{
 					res = InvalidEntity;
 					//_category.SetFlag(ENT_CAT_PICKUP);
 					//_category.SetFlag(ENT_CAT_STATIC);
 				}
 				break;
-			}
+			}*/
 			case ET_Q3F_GOAL:
 			{
-				// Will be ET_INVISIBLE if hidden
-				//if(!Q_stricmp(pEnt->classname, "func_goalinfo") && (pEnt->mapdata && pEnt->mapdata->give))
-				if((!Q_stricmp(pEnt->classname, "func_goalinfo") && (pEnt->mapdata && pEnt->mapdata->give)) || (!Q_stricmp(pEnt->classname, "func_goalitem") && pEnt->model && pEnt->model[0]))	/* func_goalinfo */ /* func_goalitem */
+				// goalinfo will be ET_INVISIBLE if hidden
+				if(pEnt->goalType == GOALTYPE_GOALINFO || pEnt->goalType == GOALTYPE_GOALITEM)
 				{
 					_category.SetFlag(ENT_CAT_PICKUP);
 					_category.SetFlag(ENT_CAT_STATIC);
 					// Assume it's everything for now
-					if(!Q_stricmp(pEnt->classname, "func_goalinfo") && (pEnt->mapdata && pEnt->mapdata->give))
+					if(pEnt->goalType == GOALTYPE_GOALINFO && (pEnt->mapdata && pEnt->mapdata->give))
 					{
 						_category.SetFlag(ENT_CAT_PICKUP_AMMO);
 						_category.SetFlag(ENT_CAT_PICKUP_HEALTH);
@@ -1633,11 +1662,11 @@ class           ETFInterface:public IEngineInterface
 				//_category.SetFlag(ENT_CAT_STATIC);
 				break;
 			}
-				/*case ET_CORPSE:
-				   {
+			case ET_Q3F_CORPSE:
+			{
 				   _category.SetFlag(ENT_CAT_MISC);
 				   break;
-				   } */
+			}
 			case ET_MISSILE:
 			{
 				// Register certain weapons as threats to avoid or whatever.
@@ -1780,12 +1809,27 @@ class           ETFInterface:public IEngineInterface
 					}
 					break;
 				}
+				case ET_Q3F_CORPSE:
+				{
+					_flags.SetFlag(ENT_FLAG_VISTEST);
+					if(!pEnt->r.linked || pEnt->health < GIB_HEALTH)
+						_flags.SetFlag(ENT_FLAG_DISABLED);
+					break;
+				}
 				case ET_INVISIBLE:
 				case ET_Q3F_GOAL:
 				{
-					if((!Q_stricmp(pEnt->classname, "func_goalinfo") && (pEnt->mapdata && pEnt->mapdata->give)) || (!Q_stricmp(pEnt->classname, "func_goalitem") && pEnt->model && pEnt->model[0]))	/* func_goalinfo */ /* func_goalitem */
+					if(pEnt->goalType == GOALTYPE_GOALINFO || pEnt->goalType == GOALTYPE_GOALITEM)
 					{
-						_flags.SetFlag(ENT_FLAG_DISABLED);
+						_flags.SetFlag(ENT_FLAG_VISTEST);
+						if ( pEnt->goalType == GOALTYPE_GOALINFO && t == ET_INVISIBLE )
+						{
+							_flags.SetFlag(ENT_FLAG_DISABLED);
+						}
+						if ( pEnt->goalType == GOALTYPE_GOALITEM && !(pEnt->r.contents & CONTENTS_TRIGGER) )
+						{
+							_flags.SetFlag(ENT_FLAG_DISABLED);
+						}
 					}
 					break;
 				}
@@ -2466,12 +2510,12 @@ class           ETFInterface:public IEngineInterface
 	void            GetGoals()
 	{
 		const int       iAllTeams = (1 << TF_TEAM_BLUE) | (1 << TF_TEAM_RED) | (1 << TF_TEAM_YELLOW) | (1 << TF_TEAM_GREEN);
-		int             iNumFlags = 0;
-		int             iNumCaptures = 0;
+		//int             iNumFlags = 0;
+		//int             iNumCaptures = 0;
 
 		if(!hasptr)
 		{
-			G_Q3F_AddString(&teamscoreptr, (char *)"teamscore");
+			G_Q3F_AddString(&teamscoreptr, "teamscore");
 			hasptr = qtrue;
 		}
 
@@ -2517,14 +2561,31 @@ class           ETFInterface:public IEngineInterface
 				switch (e->s.eType)
 				{
 				case ET_Q3F_GOAL:
-					if(!Q_stricmp(e->classname, "func_goalitem") || !Q_stricmp(e->classname, "func_flag"))
+					if(e->goalType == GOALTYPE_GOALITEM)
 					{
 						// This is going to be a flag.
 						if(e->model && e->model[0] && e->mapdata->groupname)
 						{
 							Bot_Util_AddGoal("flag", e, teams, pGoalName);
-							++iNumFlags;
+							//++iNumFlags;
 							//Bot_Util_AddGoal(e, GOAL_CTF_FLAG, teams, pGoalName);
+						}
+					}
+					if(e->goalType == GOALTYPE_GOALINFO && !e->model && !e->model[0])
+					{
+						// This is going to be a flag-cap.
+						if(e->mapdata->give && e->mapdata->other)
+						{
+							q3f_keypair_t *data = G_Q3F_KeyPairArrayFind(e->mapdata->other, teamscoreptr);
+
+							if(data && data->value.d.intdata)
+							{
+								if(e->mapdata->team == 0)
+									teams = _GetTeamsFromHoldingFlag(e->mapdata->holding);
+								Bot_Util_AddGoal("cappoint", e, teams, pGoalName);
+								//++iNumCaptures;
+								//Bot_Util_AddGoal(e, GOAL_CTF_FLAGCAP, teams, pGoalName);
+							}
 						}
 					}
 					break;
@@ -2541,7 +2602,7 @@ class           ETFInterface:public IEngineInterface
 								if(e->mapdata->team == 0)
 									teams = _GetTeamsFromHoldingFlag(e->mapdata->holding);
 								Bot_Util_AddGoal("cappoint", e, teams, pGoalName);
-								++iNumCaptures;
+								//++iNumCaptures;
 								//Bot_Util_AddGoal(e, GOAL_CTF_FLAGCAP, teams, pGoalName);
 							}
 						}
@@ -3202,7 +3263,7 @@ class           ETFInterface:public IEngineInterface
 			return qtrue;
 
 		//if(_pos)
-			return qfalse;
+		return qfalse;
 
 #if 0
 		gentity_t      *pEnt = EntityFromHandle(GetLocalGameEntity());
@@ -3228,9 +3289,10 @@ class           ETFInterface:public IEngineInterface
 
 	const char     *GetMapName()
 	{
-		static char     strMapName[MAX_QPATH] = { 0 };
-		trap_Cvar_VariableStringBuffer("mapname", strMapName, sizeof(strMapName));
-		COM_StripExtension(COM_SkipPath(strMapName), strMapName, sizeof(strMapName));
+		static char strMapName[MAX_QPATH] = { 0 };
+		char cs[MAX_INFO_STRING];
+		trap_GetServerinfo(cs, sizeof(cs));
+		Q_strncpyz(strMapName, Info_ValueForKey(cs, "mapname"), sizeof(strMapName));
 		return strMapName;
 	}
 
@@ -3302,7 +3364,7 @@ class           ETFInterface:public IEngineInterface
 
 		if(!hasptr)
 		{
-			G_Q3F_AddString(&teamscoreptr, (char *)"teamscore");
+			G_Q3F_AddString(&teamscoreptr, "teamscore");
 			hasptr = qtrue;
 		}
 
@@ -3585,7 +3647,7 @@ void Bot_Interface_Update()
 				g_OmniBotPlaying.integer = iNumBots;
 				trap_Cvar_Set("omnibot_playing", va("%i", iNumBots));
 				trap_Cvar_Set("sv_numbots", va("%i", iNumBots));
-				trap_Cvar_Set("g_heavyWeaponRestriction", va("%i", iNumBots));
+				trap_Cvar_Set("g_balancedteams", va("%i", iNumBots));
 			}
 		}
 		else
@@ -3595,7 +3657,7 @@ void Bot_Interface_Update()
 				g_OmniBotPlaying.integer = -1;
 				trap_Cvar_Set("omnibot_playing", "-1");
 				trap_Cvar_Set("sv_numbots", "0");
-				trap_Cvar_Set("g_heavyWeaponRestriction", "0");
+				trap_Cvar_Set("g_balancedteams", "0");
 			}
 		}
 
@@ -4400,12 +4462,13 @@ extern          "C"
 			{
 				Event_EntityCreated d;
 
-				int             index = ENTINDEX(pEnt);
-				d.m_Entity = GameEntity(index, m_EntityHandles[index].m_HandleSerial);
+				const int iEntNum = ENTINDEX(pEnt);
+				d.m_Entity = GameEntity(iEntNum, m_EntityHandles[iEntNum].m_HandleSerial);
 
 				d.m_EntityClass = iClass;
 				g_InterfaceFunctions->GetEntityCategory(ent, d.m_EntityCategory);
 				g_BotFunctions.pfnSendGlobalEvent(MessageHelper(GAME_ENTITYCREATED, &d, sizeof(d)));
+				m_EntityHandles[iEntNum].m_Used = true;
 			}
 		}
 	}

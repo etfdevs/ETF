@@ -203,6 +203,7 @@ void SP_Q3F_func_flag( gentity_t *ent )
 
 	ent->r.contents		= CONTENTS_TRIGGER;			// We want to know if it's touched
 	ent->s.eType		= ET_Q3F_GOAL;				// And it's just, well, general ;)
+	ent->goalType		= GOALTYPE_GOALITEM;
 	ent->physicsObject	= qfalse;
 	ent->s.modelindex	= G_ModelIndex( ent->model );
 	ent->s.otherEntityNum = MAX_CLIENTS;			// 'not held'.
