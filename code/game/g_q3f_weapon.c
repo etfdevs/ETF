@@ -1696,6 +1696,18 @@ void G_Q3F_Heal_Person(struct gentity_s *target, struct gentity_s *attacker)
 		#endif
 		return;
 	}
+
+	// JT: From TF2.5 Source. Seems a little odd to me.
+	if (target->client->legwounds)
+	{
+		target->client->legwounds  = 0;
+
+		trap_SendServerCommand( target->s.number, va("print \"%s" S_COLOR_WHITE " has repaired your damaged legs!\n\"",
+			attacker->client->pers.netname) );
+		trap_SendServerCommand( attacker->s.number, va("print \"You have repaired %s" S_COLOR_WHITE "'s damaged legs.\n\"",
+			target->client->pers.netname) );
+	}
+
 	if(attacker->client->ps.ammo[AMMO_MEDIKIT] < 1)
 		return;													// Are we out of ammo?
 
@@ -1744,19 +1756,6 @@ void G_Q3F_Heal(struct gentity_s *target, int amount, qboolean ignore)
 	desthealth += amount;
 	if(!ignore && desthealth > maxhealth)
 		desthealth = maxhealth;
-
-	// JT: From TF2.5 Source. Seems a little odd to me.
-
-	if (target->client->legwounds)
-	{
-		if (desthealth > 95)
-			target->client->legwounds  = 0;
-		else
-			target->client->legwounds = target->client->legwounds - (desthealth/20);
-
-		if (target->client->legwounds < 1)
-			target->client->legwounds = 0;
-	}
 
 	target->health = desthealth;
 	target->client->ps.stats[STAT_HEALTH] = desthealth;
