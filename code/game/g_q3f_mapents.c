@@ -196,9 +196,9 @@ q3f_array_t *G_Q3F_ProcessStrings( const char *value )
 
 typedef struct g_q3f_pfsmap_s {
 	int flags;
-	char *str;
+	const char *str;
 } g_q3f_pfsmap_t;
-static g_q3f_pfsmap_t pfsmap[] = {
+static const g_q3f_pfsmap_t pfsmap[] = {
 	{ Q3F_FLAG_HIDEACTIVE,		"hideactive"		},
 	{ Q3F_FLAG_AFFECTTEAM,		"affectteam"		},
 	{ Q3F_FLAG_AFFECTNONTEAM,	"affectnonteam"		},
@@ -234,7 +234,7 @@ int G_Q3F_ProcessFlagString( const char *value )
 	q3f_data_t *data;
 	intptr_t index;
 	int flags;
-	g_q3f_pfsmap_t *pfsptr;
+	const g_q3f_pfsmap_t *pfsptr;
 
 	array = G_Q3F_ProcessStrings( value );
 	flags = 0;
@@ -535,9 +535,9 @@ q3f_keypairarray_t *G_Q3F_ProcessClientStatsString( const char *value )
 
 typedef struct g_q3f_bhtmap_s {
 	int type;
-	char *str;
+	const char *str;
 } g_q3f_bhtmap_t;
-static g_q3f_bhtmap_t bhtmap[] = {
+static const g_q3f_bhtmap_t bhtmap[] = {
 	{ Q3F_BHT_AUTOSENTRY,		"autosentry"	},
 	{ Q3F_BHT_SUPPLYSTATION,	"supplystation"	},
 	{ Q3F_BHT_PROJECTILES,		"projectiles"	},
@@ -554,7 +554,7 @@ int G_Q3F_ProcessBlackHoleTypeString( const char *value )
 	q3f_data_t *data;
 	intptr_t index;
 	int types;
-	g_q3f_bhtmap_t *bhtptr;
+	const g_q3f_bhtmap_t *bhtptr;
 
 	array = G_Q3F_ProcessStrings( value );
 	types = 0;
@@ -1578,7 +1578,7 @@ qboolean G_Q3F_CheckStates( q3f_keypairarray_t *array )
 #define NUM_CLIENTSTATSSTRINGS 27
 #endif
 //renamed haste to speed
-static char *clientstatsstrings[NUM_CLIENTSTATSSTRINGS] = {
+static const char *clientstatsstrings[NUM_CLIENTSTATSSTRINGS] = {
 	"health", "armor", "armour", "ammo_shells", "ammo_nails", "ammo_rockets", "ammo_cells",
 	"score", "gren1", "gren2", "quad", "regen", "flight", "battlesuit", "invis", "speed",
 	"ammo_medikit", "ammo_charge", "invuln", "aqualung", "gas", "stun", "flash", "tranq",
@@ -1776,7 +1776,7 @@ static int _CalcMaladiesValue( int srcvalue, qboolean add, qboolean force, float
 #define NUMGIVESTRINGS 36
 #endif
 //keeg renamed haste to speed
-static char *givestrings[NUMGIVESTRINGS] = {
+static char *const givestrings[NUMGIVESTRINGS] = {
 	"health", "armor", "ammo_shells", "ammo_nails", "ammo_rockets", "ammo_cells",
 	"score", "gren1", "gren2", "quad", "regen", "flight", "battlesuit", "invis", "speed",
 	"armortype", "aclass_shell", "aclass_nail", "aclass_explosive", "aclass_shock",

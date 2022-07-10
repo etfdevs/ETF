@@ -43,7 +43,7 @@ const char *String_Alloc(const char *p);
 
 typedef struct mapInfoKeyHandler_s
 {
-	char *keyname;
+	const char *keyname;
 	qboolean (*func)(mapInfo* info, char* value, char** buf);
 } mapInfoKeyHandler_t;
 
@@ -107,7 +107,7 @@ static qboolean GameInDex_KeyHandlerMapinfo(gameIndexInfo_t* info, char* value, 
 
 typedef struct gameIndexKeyHandler_s
 {
-	char *keyname;
+	const char *keyname;
 	qboolean (*func)(gameIndexInfo_t* info, char* value, char** buf);
 } gameIndexKeyHandler_t;
 
