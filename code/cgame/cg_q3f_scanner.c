@@ -201,7 +201,7 @@ void CG_Q3F_ScannerDraw()
 		x +=188;		// JT - disabled to move HUD to center
 		y +=172;			// JT - used to be 128
 
-		if(abs(scannerdata[i].z - cent->currentState.pos.trBase[2]) < 5)
+		if(fabs(scannerdata[i].z - cent->currentState.pos.trBase[2]) < 5)
 			hModel = cgs.media.scannerblipShader;
 		else if(cent->currentState.pos.trBase[2] < scannerdata[i].z)
 			hModel = cgs.media.scannerupShader;
@@ -329,7 +329,7 @@ void CG_DrawScanner( rectDef_t *rect ) {
 		x = rect->x + ( rect->w / 2.f ) - ( dest[1] * scannerScaleX );
 		y = rect->y + ( rect->h / 2.f ) - ( dest[0] * scannerScaleY );		// JT - Flip Axes
 
-		if( abs( scannerdata[i].z - cent->currentState.pos.trBase[2] ) < 5 )
+		if( fabs( scannerdata[i].z - cent->currentState.pos.trBase[2] ) < 5 )
 			hModel = cgs.media.scannerblipShader;
 		else if( cent->currentState.pos.trBase[2] < scannerdata[i].z )
 			hModel = cgs.media.scannerupShader;

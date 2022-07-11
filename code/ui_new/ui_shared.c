@@ -1445,10 +1445,10 @@ void Menu_TransitionItemByName(menuDef_t *menu, const char *p, rectDef_t rectFro
       item->window.offsetTime = time;
 			memcpy(&item->window.rectClient, &rectFrom, sizeof(rectDef_t));
 			memcpy(&item->window.rectEffects, &rectTo, sizeof(rectDef_t));
-			item->window.rectEffects2.x = abs(rectTo.x - rectFrom.x) / amt;
-			item->window.rectEffects2.y = abs(rectTo.y - rectFrom.y) / amt;
-			item->window.rectEffects2.w = abs(rectTo.w - rectFrom.w) / amt;
-			item->window.rectEffects2.h = abs(rectTo.h - rectFrom.h) / amt;
+			item->window.rectEffects2.x = fabs(rectTo.x - rectFrom.x) / amt;
+			item->window.rectEffects2.y = fabs(rectTo.y - rectFrom.y) / amt;
+			item->window.rectEffects2.w = fabs(rectTo.w - rectFrom.w) / amt;
+			item->window.rectEffects2.h = fabs(rectTo.h - rectFrom.h) / amt;
       Item_UpdatePosition(item);
     }
   }
@@ -1897,6 +1897,10 @@ int Item_ListBox_MaxScroll(itemDef_t *item) {
 	listBoxDef_t *listPtr = (listBoxDef_t*)item->typeData;
 	int count = DC->feederCount(item->special, item);
 	int max;
+
+	if (count == 0) {
+		return 0;
+	}
 
 /*	if (item->window.flags & WINDOW_HORIZONTAL) {
 		max = count - (item->window.rect.w / listPtr->elementWidth) + 1;
@@ -3626,7 +3630,7 @@ void Item_SetTextExtents(itemDef_t *item, int *width, int *height, const char *t
 
 	// keeps us from computing the widths and heights more than once
 	if (*width == 0 || (item->type == ITEM_TYPE_OWNERDRAW && item->textalignment == ITEM_ALIGN_CENTER)) {
-		int originalWidth = DC->textWidth(item->text, item->textscale, 0, &parent->font);
+		//int originalWidth = DC->textWidth(item->text, item->textscale, 0, &parent->font);
 
 		// FIXME: djbob: think this is b0rking something up, need to review later
 		if (item->type == ITEM_TYPE_OWNERDRAW/* && (item->textalignment == ITEM_ALIGN_CENTER || item->textalignment == ITEM_ALIGN_RIGHT)*/) {
@@ -3634,7 +3638,7 @@ void Item_SetTextExtents(itemDef_t *item, int *width, int *height, const char *t
 		} else if (item->type == ITEM_TYPE_EDITFIELD && item->textalignment == ITEM_ALIGN_CENTER && item->cvar) {
 			char buff[256];
 			DC->getCVarString(item->cvar, buff, 256);
-			originalWidth += DC->textWidth(buff, item->textscale, 0, &parent->font);
+			//originalWidth += DC->textWidth(buff, item->textscale, 0, &parent->font);
 		}
 
 		*width = DC->textWidth(textPtr, item->textscale, 0, parentfont);

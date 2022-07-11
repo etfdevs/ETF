@@ -486,10 +486,9 @@ static void CG_General( centity_t *cent ) {
 
 	s1 = &cent->currentState;
 
-	
 	// if set to invisible, skip
 	if (!s1->modelindex) {
-	return;
+		return;
 	}
 
 	memset (&ent, 0, sizeof(ent));

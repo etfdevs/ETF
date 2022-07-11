@@ -118,8 +118,8 @@ int G_Q3F_FindNextMovingClient(struct gentity_s *ent, int lastnum, struct gclien
 		{
 			if(client->sess.sessionTeam != Q3F_TEAM_SPECTATOR && client->ps.pm_type != PM_DEAD && VectorLength(client->ps.velocity) != 0 && client != ignore)	// Is it alive, and moving (and not me)?
 			{
-				if(abs((client->ps.origin[0] - ent->client->ps.origin[0])/Q3F_SCANNER_RANGE_DIVISOR) < 128 &&
-					abs((client->ps.origin[1] - ent->client->ps.origin[1])/Q3F_SCANNER_RANGE_DIVISOR) < 128)
+				if(fabs((client->ps.origin[0] - ent->client->ps.origin[0])/Q3F_SCANNER_RANGE_DIVISOR) < 128 &&
+					fabs((client->ps.origin[1] - ent->client->ps.origin[1])/Q3F_SCANNER_RANGE_DIVISOR) < 128)
 						return lastnum;
 			}
 		}

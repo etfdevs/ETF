@@ -1308,7 +1308,7 @@ void G_Q3F_Weapon_Knife_Fire(struct gentity_s *ent)
 
 	if(traceEnt->client)
 	{
-		if(abs(AngleSubtract(ent->client->ps.viewangles[1],traceEnt->client->ps.viewangles[1])) > 90)
+		if(fabs(AngleSubtract(ent->client->ps.viewangles[1],traceEnt->client->ps.viewangles[1])) > 90)
 		{
 			// They're facing towards me.
 			damage = 40;
