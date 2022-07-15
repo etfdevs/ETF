@@ -530,6 +530,7 @@ static void BodyUnlink( gentity_t *ent ) {
 	trap_UnlinkEntity( ent );
 	ent->physicsObject = qfalse;
 	ent->classname = "bodyque";
+	ent->s.eType = ET_GENERAL;
 }
 
 /*
