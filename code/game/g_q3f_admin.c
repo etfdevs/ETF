@@ -868,7 +868,7 @@ static void G_Q3F_AdminListIPs( gentity_t *admin )
 	G_Q3F_AdminPrint( admin, "Complete.\n" );
 }
 
-void G_Q3F_AdminMatchPassword( gentity_t *admin )
+static void G_Q3F_AdminMatchPassword( gentity_t *admin )
 {
 	// Setup a match admin, with no control over other
 	// admins, but capable of temporarily doing most
@@ -915,7 +915,7 @@ void G_Q3F_AdminMatchPassword( gentity_t *admin )
 	G_Q3F_AdminPrint( admin, "New match password set.\n" );
 }
 
-void G_Q3F_AdminMatch( gentity_t *admin )
+static void G_Q3F_AdminMatch( gentity_t *admin )
 {
 	// Match admin functions - start and stop
 
@@ -983,7 +983,7 @@ void G_Q3F_AdminMatch( gentity_t *admin )
 	}
 }
 
-void G_Q3F_AdminCeaseFire( gentity_t *admin )
+static void G_Q3F_AdminCeaseFire( gentity_t *admin )
 {
 	// Start/stop the ceasefire
 
@@ -1022,7 +1022,7 @@ void G_Q3F_AdminCeaseFire( gentity_t *admin )
 	}
 }
 
-void G_Q3F_AdminMap( gentity_t *admin )
+static void G_Q3F_AdminMap( gentity_t *admin )
 {
 	// Restart or change the map
 
@@ -1076,7 +1076,7 @@ void G_Q3F_AdminMap( gentity_t *admin )
 	}
 }
 
-void G_Q3F_AdminTimelimit( gentity_t *admin )
+static void G_Q3F_AdminTimelimit( gentity_t *admin )
 {
 	// View timelimit or change the timelimit
 
@@ -1106,7 +1106,7 @@ void G_Q3F_AdminTimelimit( gentity_t *admin )
 	G_Q3F_AdminPrint( admin, "Time limit set at %i minutes.\n", g_timelimit.integer );
 }
 
-void G_Q3F_AdminCapturelimit( gentity_t *admin )
+static void G_Q3F_AdminCapturelimit( gentity_t *admin )
 {
 	// View capturelimit or change the capturelimit
 
@@ -1136,7 +1136,7 @@ void G_Q3F_AdminCapturelimit( gentity_t *admin )
 	G_Q3F_AdminPrint( admin, "Capture limit set at %i.\n", g_capturelimit.integer );
 }
 
-void G_Q3F_AdminGameIndex( gentity_t *admin )
+static void G_Q3F_AdminGameIndex( gentity_t *admin )
 {
 	// Restart or change the map
 
@@ -1163,7 +1163,7 @@ void G_Q3F_AdminGameIndex( gentity_t *admin )
 }
 
 
-void G_ETF_AdminVote( gentity_t *admin )
+static void G_ETF_AdminVote( gentity_t *admin )
 {
 	// admin overrides vote
 	char param[8];
@@ -1189,7 +1189,7 @@ void G_ETF_AdminVote( gentity_t *admin )
 	trap_SetConfigstring( CS_VOTE_TIME, "" );
 }
 
-void G_ETF_AdminPunish( gentity_t *admin )
+static void G_ETF_AdminPunish( gentity_t *admin )
 {
 	// kick player to spectator for x minutes
 	char minutes[8];
@@ -1228,7 +1228,7 @@ void G_ETF_AdminPunish( gentity_t *admin )
 	ent->client->ps.persistant[PERS_FLAGS] |= PF_JOINEDTEAM;
 }
 
-void G_ETF_AdminMute( gentity_t *admin )
+static void G_ETF_AdminMute( gentity_t *admin )
 {
 	// mute player
 	char player[8];
@@ -1273,7 +1273,7 @@ void G_ETF_AdminMute( gentity_t *admin )
 	G_Q3F_AdminPrint( admin, "Invalid player index\n");
 }
 
-void G_ETF_AdminUnMute( gentity_t *admin )
+static void G_ETF_AdminUnMute( gentity_t *admin )
 {
 	// mute player
 	char player[8];
@@ -1312,7 +1312,7 @@ void G_ETF_AdminUnMute( gentity_t *admin )
 	G_Q3F_AdminPrint( admin, "Invalid player index\n");
 }
 
-void G_ETF_AdminWarn( gentity_t *admin )
+static void G_ETF_AdminWarn( gentity_t *admin )
 {
 	char text[128];
 	char player[8];
@@ -1326,6 +1326,89 @@ void G_ETF_AdminWarn( gentity_t *admin )
 	}
 
 	trap_SendServerCommand( atoi(player), va("cp \"^1Warning from admin!\n^3%s\"", text ));
+}
+
+static void G_ETF_AdminTeamName( gentity_t *admin ) {
+	char teamselect[128];
+	char teamname[MAX_CVAR_VALUE_STRING];
+	int team = Q3F_TEAM_FREE;
+	const char *cvarStr = NULL;
+	vmCvar_t *cv = NULL;
+	const char *displayTeam = NULL;
+
+	trap_Argv( 2, teamselect, sizeof(teamselect) );
+	trap_Argv( 3, teamname, sizeof(teamname) );
+
+	if(!*teamselect) {
+		G_Q3F_AdminPrint( admin, "Usage: admin teamname color \"team name\"\n");
+		return;
+	}
+
+	if (teamselect[0] >= '1' && teamselect[0] <= '4' && teamselect[1] == '\0')
+		team = atoi(teamselect);
+	else
+		team = G_Q3F_GetTeamNum( teamselect );
+
+	if ( team <= Q3F_TEAM_FREE || team >= Q3F_TEAM_SPECTATOR ) {
+		G_Q3F_AdminPrint( admin, "Invalid team string\n");
+		return;
+	}
+
+	if(	!(g_q3f_allowedteams & (1 << team)) ) {
+		G_Q3F_AdminPrint( admin, "Team not enabled\n");
+	}
+
+	switch( team ) {
+		case Q3F_TEAM_RED:
+			cvarStr = "g_etf_redteam";
+			displayTeam = "Red";
+			cv = &g_redteam;
+			break;
+		case Q3F_TEAM_BLUE:
+			cvarStr = "g_etf_blueteam";
+			displayTeam = "Blue";
+			cv = &g_blueteam;
+			break;
+		case Q3F_TEAM_YELLOW:
+			cvarStr = "g_etf_yellowteam";
+			displayTeam = "Yellow";
+			cv = &g_yellowteam;
+			break;
+		case Q3F_TEAM_GREEN:
+			cvarStr = "g_etf_greenteam";
+			displayTeam = "Green";
+			cv = &g_greenteam;
+			break;
+		default:
+			break; // Won't reach
+	}
+
+	if ( cv == NULL || cvarStr == NULL || cvarStr[0] == '\0' || displayTeam == NULL || displayTeam[0] == '\0' ) {
+		return;
+	}
+
+	if ( teamname[0] == '\0' ) {
+		G_Q3F_AdminPrint( admin, "Current %s team name is '%s^7'\n", displayTeam, cv->string );
+		return;
+	}
+
+	trap_Cvar_Set( cvarStr, teamname );
+	trap_Cvar_Update( cv );
+	G_Q3F_AdminPrint( admin, "%s team name set to '%s^7'.\n", displayTeam, teamname );
+	trap_SendServerCommand( -1, va("print \"%s team name has been changed to '%s^7'\n\"", displayTeam, teamname ) );
+}
+
+static void G_ETF_AdminBot( gentity_t *admin ) {
+#ifdef BUILD_BOTS
+	Bot_Interface_ConsoleCommand(0);
+	return;
+#endif
+
+#ifdef DREVIL_BOT_SUPPORT
+	Bot_Interface_ConsoleCommand();
+	return;
+#endif
+	G_Q3F_AdminPrint( admin, "Bot support disabled in this build\n");
 }
 
 
@@ -1381,10 +1464,35 @@ void G_Q3F_AdminPasswordCommand( gentity_t *admin )
 	}
 }
 
+static const g_q3f_adminCmd_t adminCmds[] = {
+	{ "addip", G_Q3F_AdminAddIP },
+	{ "bot", G_ETF_AdminBot },
+	{ "capturelimit", G_Q3F_AdminCapturelimit },
+	{ "ceasefire", G_Q3F_AdminCeaseFire },
+	{ "gameindex", G_Q3F_AdminGameIndex },
+	{ "listips", G_Q3F_AdminListIPs },
+	{ "map", G_Q3F_AdminMap },
+	{ "match", G_Q3F_AdminMatch },
+	{ "matchpassword", G_Q3F_AdminMatchPassword },
+	{ "mute", G_ETF_AdminMute },
+	{ "punish", G_ETF_AdminPunish },
+	{ "removeip", G_Q3F_AdminRemoveIP },
+	{ "status", G_Q3F_AdminStatus },
+	{ "teamname", G_ETF_AdminTeamName },
+	{ "timelimit", G_Q3F_AdminTimelimit },
+	{ "unmute", G_ETF_AdminUnMute },
+	{ "vote", G_ETF_AdminVote },
+	{ "warn", G_ETF_AdminWarn },
+};
+
+static const int numAdminCmds = (int)ARRAY_LEN(adminCmds);
+static const int numUsageColumns = 3;
+static const int numUsageRows = (numAdminCmds / numUsageColumns) + ((numAdminCmds % numUsageColumns) ? 1 : 0);
+
 void G_Q3F_AdminCommand( gentity_t *admin )
 {
 	// User wants to do an admin command
-
+	int i;
 	char command[64];
 
 	if( admin && !(admin->client->sess.adminLevel >= ADMIN_MATCH) )
@@ -1394,48 +1502,28 @@ void G_Q3F_AdminCommand( gentity_t *admin )
 	}
 
 	trap_Argv( 1, command, sizeof(command) );
-	if( !Q_stricmp( "status", command ) )
-		G_Q3F_AdminStatus( admin );
-	else if( !Q_stricmp( "addip", command ) )
-		G_Q3F_AdminAddIP( admin );
-	else if( !Q_stricmp( "removeip", command ) )
-		G_Q3F_AdminRemoveIP( admin );
-	else if( !Q_stricmp( "listips", command ) )
-		G_Q3F_AdminListIPs( admin );
-	else if( !Q_stricmp( "match", command ) )
-		G_Q3F_AdminMatch( admin );
-	else if( !Q_stricmp( "matchpassword", command ) )
-		G_Q3F_AdminMatchPassword( admin );
-	else if( !Q_stricmp( "ceasefire", command ) )
-		G_Q3F_AdminCeaseFire( admin );
-	else if( !Q_stricmp( "map", command ) )
-		G_Q3F_AdminMap( admin );
-	else if( !Q_stricmp( "gameindex", command ) )
-		G_Q3F_AdminGameIndex( admin );
-	else if( !Q_stricmp( "timelimit", command ) )
-		G_Q3F_AdminTimelimit( admin );
-	else if( !Q_stricmp( "capturelimit", command ) )
-		G_Q3F_AdminCapturelimit( admin );
-	else if ( !Q_stricmp( "vote", command ) )
-		G_ETF_AdminVote( admin );
-	else if ( !Q_stricmp( "warn", command ) )
-		G_ETF_AdminWarn( admin );
-	else if ( !Q_stricmp( "punish", command ) )
-		G_ETF_AdminPunish( admin );
-	else if ( !Q_stricmp( "mute", command ) )
-		G_ETF_AdminMute( admin );
-	else if ( !Q_stricmp( "unmute", command ) )
-		G_ETF_AdminUnMute( admin );
-#ifdef DREVIL_BOT_SUPPORT
-	else if( !Q_stricmp( "bot", command ) )
-		Bot_Interface_ConsoleCommand();
-#endif
-	else {
-#ifdef DREVIL_BOT_SUPPORT
-		G_Q3F_AdminPrint( admin, "Usage: admin status|addip|removeip|listips|map|gameindex|timelimit|capturelimit|vote|mute|unmute|bot\n" );	// match|matchpassword
-#else
-		G_Q3F_AdminPrint( admin, "Usage: admin status|addip|removeip|listips|map|gameindex|timelimit|capturelimit|vote|mute|unmute\n" );	// match|matchpassword
-#endif
+	for( i = 0; i < numAdminCmds; i++ ) {
+		if ( !Q_stricmp( command, adminCmds[i].cmdName ) ) {
+			adminCmds[i].func( admin );
+			return;
+		}
+	}
+
+	G_Q3F_AdminPrint( admin, "Usage: admin <command> <arguments>\n" );
+	G_Q3F_AdminPrint( admin, "Available command list:\n" );
+	for (i = 0; i < numUsageRows; i++) {
+		if ( i + numUsageRows * 2 + 1 <= numAdminCmds ) {
+			G_Q3F_AdminPrint( admin, "%-16s%-16s%-16s\n", adminCmds[i].cmdName, 
+					adminCmds[i + numUsageRows].cmdName,
+					adminCmds[i + numUsageRows * 2].cmdName );
+		}
+		else if ( i + numUsageRows + 1 <= numAdminCmds ) {
+			G_Q3F_AdminPrint( admin, "%-16s%-16s\n", adminCmds[i].cmdName, 
+					adminCmds[i + numUsageRows].cmdName );
+		}
+		else {
+			G_Q3F_AdminPrint( admin, "%-16s\n", adminCmds[i].cmdName );
+		}
 	}
 }
 

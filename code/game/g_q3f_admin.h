@@ -41,6 +41,12 @@ typedef struct g_q3f_extIpFilter_s {
 	char *reason;
 } g_q3f_extIpFilter_t;
 
+typedef void (*adminCmdFunc_t) (gentity_t *admin);
+typedef struct g_q3f_adminCmd_s {
+	const char *cmdName;
+	adminCmdFunc_t func;
+} g_q3f_adminCmd_t;
+
 extern q3f_array_t *ipFilters;
 extern int g_q3f_banCheckTime;
 
