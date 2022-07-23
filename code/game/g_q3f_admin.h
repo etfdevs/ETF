@@ -50,9 +50,6 @@ typedef struct g_q3f_adminCmd_s {
 extern q3f_array_t *ipFilters;
 extern int g_q3f_banCheckTime;
 
-//extern q3f_array_t *ipMute;
-//extern int g_q3f_muteCheckTime;
-
 qboolean StringToFilter( gentity_t *admin, char *s, g_q3f_extIpFilter_t *f );
 void UpdateIPBans (void);
 qboolean G_FilterPacket( char *from, char **reason );
@@ -65,18 +62,6 @@ void G_Q3F_RCONPasswordCommand( gentity_t *ent );
 void G_Q3F_AdminTempBan( gentity_t *player, const char *reason, int time );
 void G_Q3F_AdminCheckBannedPlayers();
 int G_Q3F_AdminNextExpireBans();
-
-#if 0
-void UpdateIPMutes (void);
-qboolean G_PlayerIPIsMuted( char *from );
-qboolean G_PlayerIsMuted( gentity_t *ent );
-void AddIPMute( gentity_t *admin, char *str, int time );
-void G_ProcessIPMutes(void);
-void G_Q3F_AdminCheckMutedPlayers();
-int G_Q3F_AdminNextExpireMutes();
-
-#define	Q3F_ADMIN_MUTEFILE		"mutelist.txt"		// Where to store mutes
-#endif
 
 #define	Q3F_ADMIN_BANFILE		"banlist.txt"		// Where to store bans
 //#define	Q3F_ADMIN_FILE			"adminlist.txt"		// Where to store admins

@@ -982,11 +982,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	trap_Cvar_Set("g_antilag", va("%i", g_gameindex.integer));
 
 	G_ProcessIPBans();
-#if 0
-	G_ProcessIPMutes();
-#endif
-
-	//G_Q3F_InitStrings();
 
 	// set some level globals
 	memset( &level, 0, sizeof( level ) );
