@@ -110,6 +110,23 @@ void Q3F_CapClips(playerState_t *playstate)
 	}
 }
 
+void Q3F_CapClipsForAmmoType(int ammotype, playerState_t *playstate)
+{
+	int i;
+	if(ammotype < AMMO_SHELLS || ammotype>AMMO_CELLS)		// Safety
+	{
+		return;
+	}
+
+	i=0;
+	while(Q3F_AmmoClips[ammotype][i] !=-1)
+	{
+		if(Q3F_GetClipValue(Q3F_AmmoClips[ammotype][i], playstate) > playstate->ammo[ammotype])
+			Q3F_SetClipValue(Q3F_AmmoClips[ammotype][i], playstate->ammo[ammotype], playstate);
+		i++;
+	}
+}
+
 int Q3F_GetAmmoNumInClip(int ammotype, playerState_t *playstate)
 {
 	int i, temp;

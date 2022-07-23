@@ -47,6 +47,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_team.h"
 #include "g_q3f_weapon.h" /* Ensiform - Included for disease code */
 #include "g_bot_interface.h"
+#include "bg_q3f_util.h"
 
 /*
 **	Static entity parsing functions
@@ -1762,7 +1763,7 @@ static int _CalcPowerupValue( int srcvalue, qboolean add, qboolean force, float 
 }
 
 static int _CalcMaladiesValue( int srcvalue, qboolean add, qboolean force, float factor, int newvalue ) {
-	if (srcvalue <= level.time && force && newvalue == 0) {
+	if (srcvalue <= level.time && /*force &&*/ newvalue == 0) {
 		return 0;
 	}
 	else {
@@ -1989,20 +1990,26 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 			}
 
 			else if( data->key == givestringptrs[2] )	// Alter player ammo_shells
+			{
 				current->client->ps.ammo[AMMO_SHELLS] =
 					_CalcGiveValue(	current->client->ps.ammo[AMMO_SHELLS], add,
 									(force ? 999 : cls->maxammo_shells), 0,
 									effectfactor, data->value.d.intdata );
+				Q3F_CapClipsForAmmoType( AMMO_SHELLS, &current->client->ps );
+			}
 			else if( data->key == givestringptrs[3] || data->key == givestringptrs[28] )	// Alter player ammo_nails
 				current->client->ps.ammo[AMMO_NAILS] =
 					_CalcGiveValue(	current->client->ps.ammo[AMMO_NAILS], add,
 									(force ? 999 : cls->maxammo_nails), 0,
 									effectfactor, data->value.d.intdata );
 			else if( data->key == givestringptrs[4] )	// Alter player ammo_rockets
+			{
 				current->client->ps.ammo[AMMO_ROCKETS] =
 					_CalcGiveValue(	current->client->ps.ammo[AMMO_ROCKETS], add,
 									(force ? 999 : cls->maxammo_rockets), 0,
 									effectfactor, data->value.d.intdata );
+				Q3F_CapClipsForAmmoType( AMMO_ROCKETS, &current->client->ps );
+			}
 			else if( data->key == givestringptrs[5] )	// Alter player ammo_cells
 				current->client->ps.ammo[AMMO_CELLS] =
 					_CalcGiveValue(	current->client->ps.ammo[AMMO_CELLS], add,
