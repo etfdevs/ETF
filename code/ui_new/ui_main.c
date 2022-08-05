@@ -7346,7 +7346,6 @@ vmCvar_t	ui_realWarmUp;
 vmCvar_t	ui_serverStatusTimeOut;
 // RR2DO2
 //vmCvar_t	ui_menuRotateSpeed;
-vmCvar_t	r_vertexLight;
 // RR2DO2
 // djbob
 vmCvar_t	hud_chosenClass;
@@ -7481,7 +7480,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &ui_serverStatusTimeOut,	"ui_serverStatusTimeOut",	"7000",								CVAR_ARCHIVE},
 // RR2DO2
 //	{ &ui_menuRotateSpeed,		"ui_menuRotateSpeed",		"1",								CVAR_ARCHIVE },	// range 0 - 10
-	{ &r_vertexLight,			"r_vertexLight",			"0",								CVAR_TEMP },
 // RR2DO2
 // djbob
 

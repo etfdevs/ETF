@@ -1667,7 +1667,6 @@ extern	vmCvar_t		r_gamma;
 extern	vmCvar_t		r_showNormals;
 extern	vmCvar_t		r_showTris;
 extern	vmCvar_t		r_fastSky;
-extern	vmCvar_t		r_vertexLight;
 extern	vmCvar_t		r_loresskins;
 extern	vmCvar_t		r_singleShader;
 extern	vmCvar_t		r_fullBright;

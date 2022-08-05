@@ -102,7 +102,6 @@ extern vmCvar_t ui_serverStatusTimeOut;
 
 // RR2DO2
 //extern vmCvar_t ui_menuRotateSpeed;
-extern vmCvar_t	r_vertexLight;
 // RR2DO2
 
 // djbob

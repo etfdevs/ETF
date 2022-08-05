@@ -65,16 +65,10 @@ void CG_Q3F_RegisterSentry( void )
 	cgs.media.sentryBuildSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_build.wav", qtrue );
 	cgs.media.sentryUpgradeSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_upgrade.wav", qtrue );
 	cgs.media.sentryExplodeSound = trap_S_RegisterSound( "sound/weapons/deploy/sentry_explode.wav", qtrue );
-	// start hack of the year!
-	if ( r_vertexLight.integer )
-		trap_Cvar_Set( "r_vertexlight", "0" );
 	cgs.media.sentryConstruct_Base = trap_R_RegisterShader( "models/objects/sentry/texture_sentry_base_construct" );
 	cgs.media.sentryConstructShader_1 = trap_R_RegisterShader( "models/objects/sentry/texture_sentry_level1_construct" );
 	cgs.media.sentryConstructShader_2 = trap_R_RegisterShader( "models/objects/sentry/texture_sentry_level2_construct" );
 	cgs.media.sentryTvFx = trap_R_RegisterShader( "gfx/sfx/sentryCamTvBlur" );
-	// exit hack of the year!
-	if ( r_vertexLight.integer )
-		trap_Cvar_Set( "r_vertexlight", "1" );
 }
 
 void CG_Q3F_RegisterSupplyStation( void )
@@ -90,14 +84,8 @@ void CG_Q3F_RegisterSupplyStation( void )
 	cgs.media.supplyRetract = trap_S_RegisterSound( "sound/weapons/deploy/supply_in.wav", qfalse );
 	cgs.media.supplyExplodeSound = trap_S_RegisterSound( "sound/weapons/deploy/supply_explode.wav", qtrue );
 
-	// start hack of the year!
-	if ( r_vertexLight.integer )
-		trap_Cvar_Set( "r_vertexlight", "0" );
 	cgs.media.supplystationConstruct_Base = trap_R_RegisterShader( "models/objects/supplystation/base_construct" );
 	cgs.media.supplystationConstruct_Screen = trap_R_RegisterShader( "models/objects/supplystation/screen_construct" );
-	// exit hack of the year!
-	if ( r_vertexLight.integer )
-		trap_Cvar_Set( "r_vertexlight", "1" );
 }
 
 /*

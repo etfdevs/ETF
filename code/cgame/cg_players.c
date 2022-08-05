@@ -238,10 +238,6 @@ qboolean CG_Q3F_RegisterClassModels( int classNum ) {
 	// Load skins
 	//
 
-	// start hack of the year!
-	if( r_vertexLight.integer )
-		trap_Cvar_Set( "r_vertexlight", "0" );
-
 	// Load legs skin
 	//Com_sprintf( filename, sizeof( filename ), "models/classes/%s/lower%s.skin", cls->commandstring, ( r_vertexLight.integer ? "_vertex" : "" ) );
 	Com_sprintf( filename, sizeof( filename ), r_loresskins.integer ? "models/classes/%s/lower_lores.skin" : "models/classes/%s/lower.skin", cls->commandstring );
@@ -267,10 +263,6 @@ qboolean CG_Q3F_RegisterClassModels( int classNum ) {
 		Com_Printf( "^3Head skin load failure: %s\n", filename );
 		noErrors = qfalse;
 	}*/
-
-	// exit hack of the year!
-	if( r_vertexLight.integer )
-		trap_Cvar_Set( "r_vertexlight", "1" );
 
 	//
 	// Load icon

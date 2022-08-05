@@ -92,7 +92,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 	int			target, attacker;
 	char		*message = NULL;
 	char		*message2;
-	char		*obit;
+	const char	*obit;
 	const char	*targetInfo;
 	const char	*attackerInfo;
 	char		targetName[34];

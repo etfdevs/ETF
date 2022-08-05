@@ -235,7 +235,6 @@ vmCvar_t	r_gamma;
 vmCvar_t	r_showNormals;
 vmCvar_t	r_showTris;
 vmCvar_t	r_fastSky;
-vmCvar_t	r_vertexLight;
 vmCvar_t	r_loresskins;
 vmCvar_t	r_fullBright;
 vmCvar_t	cg_shadows;
@@ -524,7 +523,6 @@ static cvarTable_t		cvarTable[] = {
 	// Changing the default here to 0 to keep it in sync with ui code
 	{ &r_loresskins,				"r_loresskins",				"0",		CVAR_ARCHIVE | CVAR_LATCH },
 	{ &cg_classicinit,				"cg_classicInit",			"1",		CVAR_ARCHIVE | CVAR_LATCH },
-	{ &r_vertexLight,				"r_vertexLight",			"0",		CVAR_ARCHIVE | CVAR_LATCH },
 	{ &com_hunkmegs,				"com_hunkmegs",				"128",		CVAR_ARCHIVE | CVAR_LATCH },
 
 	{ &cg_drawSkyPortal,			"cg_drawSkyPortal",			"1",		CVAR_ARCHIVE },

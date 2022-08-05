@@ -389,9 +389,6 @@ qboolean UI_Q3F_RegisterClassModels( int classNum ) {
 	// Load skins
 	//
 
-	// start hack of the year!
-	if( r_vertexLight.integer )
-		trap_Cvar_Set( "r_vertexlight", "0" );
 
 	lores = trap_Cvar_VariableValue("r_loresskins");
 
@@ -420,10 +417,6 @@ qboolean UI_Q3F_RegisterClassModels( int classNum ) {
 		Com_Printf( "^3Head skin load failure: %s\n", filename );
 		noErrors = qfalse;
 	}*/
-
-	// exit hack of the year!
-	if( r_vertexLight.integer )
-		trap_Cvar_Set( "r_vertexlight", "1" );
 
 	//
 	// Load icon
