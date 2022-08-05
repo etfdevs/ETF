@@ -501,7 +501,7 @@ void G_Q3F_Engineer_Term_Cleanup( gentity_t *ent )
 **	Commands
 */
 
-qboolean G_Q3F_Grenadier_Command( struct gentity_s *ent, char *cmd )
+qboolean G_Q3F_Grenadier_Command( struct gentity_s *ent, const char *cmd )
 {
 	if(Q_stricmp("det",cmd) == 0 || Q_stricmp("detpipe", cmd) == 0 || Q_stricmp( "special", cmd) == 0)	// JT - Allow various aliases
 	{
@@ -524,7 +524,7 @@ qboolean G_Q3F_Grenadier_Command( struct gentity_s *ent, char *cmd )
 
 }
 
-qboolean G_Q3F_Recon_Command( struct gentity_s *ent, char *cmd )
+qboolean G_Q3F_Recon_Command( struct gentity_s *ent, const char *cmd )
 {
 	if(Q_stricmp("scanner",cmd) == 0 || Q_stricmp("special", cmd) == 0)	// JT - Allow various aliases
 	{
@@ -639,13 +639,13 @@ void G_Q3F_ToggleScanner(gentity_t *ent)
 	}
 }
 
-qboolean G_Q3F_ChangeClassCommand( struct gentity_s *ent, char *cmd )
+qboolean G_Q3F_ChangeClassCommand( struct gentity_s *ent, const char *cmd )
 {
 	// Check the array of classes, see if this is a command to change
 	// into one. Also (at some point), check to see class limits etc.
 
 	int index;
-	char *synptr;
+	const char *synptr;
 	qboolean matched;
 	bg_q3f_playerclass_t *cls;
 

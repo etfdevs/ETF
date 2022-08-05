@@ -2344,6 +2344,11 @@ void G_Q3F_DiscardCommand( gentity_t *ent )
 	if( !ent->client || ent->health <= 0 || level.ceaseFire || ent->client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING) )
 		return;
 
+	if ( ent->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_CIVILIAN ) {
+		trap_SendServerCommand( ent->s.number, "print \"Sorry, you have no ammo to discard.\n\"" );
+		return;
+	}
+
 		// Work out what we don't need
 	ps = &ent->client->ps;
 	cls = BG_Q3F_GetClass( ps );
@@ -2539,6 +2544,11 @@ void G_Q3F_DropAmmoToCommand( gentity_t *ent ) {
 		return;
 	}
 
+	if ( ent->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_CIVILIAN ) {
+		trap_SendServerCommand( ent->s.number, "print \"Sorry, you have no ammo to drop.\n\"" );
+		return;
+	}
+
 		// Work out what they actually want.
 	index = 1;
 	type = 0;
@@ -2680,6 +2690,11 @@ void G_Q3F_DropAmmoCommand( gentity_t *ent )
 		return;
 
 	if( ent->client->NextAmmoBoxDropTime > level.time ) {
+		return;
+	}
+
+	if ( ent->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_CIVILIAN ) {
+		trap_SendServerCommand( ent->s.number, "print \"Sorry, you have no ammo to drop.\n\"" );
 		return;
 	}
 

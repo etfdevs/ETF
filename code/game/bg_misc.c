@@ -1273,7 +1273,7 @@ void BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t resu
 }
 
 // these are just for logging, the client prints its own messages
-char *modNames[MOD_LASTONE] = {
+const char *modNames[MOD_LASTONE] = {
 	"MOD_UNKNOWN",
 	"MOD_SHOTGUN",
 	"MOD_AXE",

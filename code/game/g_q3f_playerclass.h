@@ -47,7 +47,6 @@ If you have questions concerning this license or the applicable additional terms
 #define G_Q3F_PARAMEDIC_HEAL_INTERVAL	3000
 #define G_Q3F_PARAMEDIC_HEAL_AMOUNT		2
 
-
 typedef struct g_q3f_playerclass_s {
 	bg_q3f_playerclass_t *s;
 
@@ -57,7 +56,7 @@ typedef struct g_q3f_playerclass_s {
 	void	(*DeathCleanup)( struct gentity_s *ent );
 
 	// Client command
-	qboolean (*ClientCommand)( struct gentity_s *ent, char *cmd );
+	qboolean (*ClientCommand)( struct gentity_s *ent, const char *cmd );
 
 } g_q3f_playerclass_t;
 
@@ -68,8 +67,7 @@ extern g_q3f_playerclass_t *g_q3f_classlist[];			// Array of pointers to class s
 g_q3f_playerclass_t *G_Q3F_GetClass( const playerState_t *ps );	// Get a pointer to a class structure
 
 	// Server only functions
-qboolean G_Q3F_ChangeClassCommand( struct gentity_s *ent, char *cmd );
-qboolean G_Q3F_GlobalCommand( struct gentity_s *ent, char *cmd );
+qboolean G_Q3F_ChangeClassCommand( struct gentity_s *ent, const char *cmd );
 void Q3F_SetupClass(struct gentity_s *ent);
 qboolean Q3F_IsSpectator(struct gclient_s *client);
 int G_Q3F_SelectRandomClass( int teamnum, gentity_t *ent );
@@ -79,8 +77,8 @@ void G_Q3F_MuteClient( gentity_t *ent, qboolean mute );
 void G_Q3F_SetClassMaskString(void);
 
 	// Class Specific Functions
-qboolean G_Q3F_Grenadier_Command( struct gentity_s *ent, char *cmd );
-qboolean G_Q3F_Recon_Command( struct gentity_s *ent, char *cmd );
+qboolean G_Q3F_Grenadier_Command( struct gentity_s *ent, const char *cmd );
+qboolean G_Q3F_Recon_Command( struct gentity_s *ent, const char *cmd );
 void G_Q3F_ToggleScanner(struct gentity_s *ent);
 
 // Cleanup functions

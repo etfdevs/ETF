@@ -217,7 +217,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 	int			contents;
 	int			killer;
 	int			i;
-	char		*killerName, *obit;
+	const char	*killerName, *obit;
 	g_q3f_playerclass_t *cls;
 	//qboolean	tkban;
 

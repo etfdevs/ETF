@@ -1301,7 +1301,12 @@ static void CG_Q3F_Discard_f( void ) {
 	int cells, shells, rockets;
 	char buffer[256];
 	bg_q3f_playerclass_t* cls = bg_q3f_classlist[cg.predictedPlayerState.persistant[PERS_CURRCLASS]];
-	
+
+	if ( cg.predictedPlayerState.persistant[PERS_CURRCLASS] == Q3F_CLASS_CIVILIAN ) {
+		CG_Printf( BOX_PRINT_MODE_CHAT, "Sorry, you have no ammo to discard.\n" );
+		return;
+	}
+
 	trap_Cvar_VariableStringBuffer(va("discard_%s_cells", cls->commandstring), buffer, 256);
 	cells = atoi(buffer);
 
@@ -1546,6 +1551,71 @@ qboolean CG_ConsoleCommand( void ) {
 	return qfalse;
 }
 
+static const char *cg_gcmds[] = {
+	"admin", // Execute an admin command.
+	"admin2", // Execute an admin command. (client only)
+	"adminpassword", // Authenticate yourself as an admin
+	"alias", // tjh's aliasing command
+	"armorme", // "Armor me" command.
+	"authrc", // Check rcon is valid, for hud display
+	"banClient",
+	"banUser",
+	"bot",
+	"build", // Build options
+	"callvote",
+	"changeclass", // Show class menu
+	"changeteam", // Show team menu
+	"channel", // The 'channel' command for team comms.
+	"charge", // Lay charge.
+	"chase",
+	"chasenext",
+	"chaseprev",
+	"clientkick",
+	"destroy", // Building destruction options
+	"detpipe", // Detonate pipes.
+	"disguise", // Agent disguises.
+	"dropammo", // Drop specified ammo.
+	"dropammoto", // Drop ammo, leaving specified amount.
+	"dropflag", // Command to drop the flag
+	"entitylist", // list entities on server (only available with server running)
+	"etfdevmap",
+	"etfmap",
+	"flaginfo", // Flag information.
+	"follow",
+	"follownext",
+	"followprev",
+	"give",
+	"god",
+	"ignore",
+	"invisible", // Agent becomes invisible.
+	"kick",
+	"kickall",
+	"kickbots",
+	"kill",
+	"levelshot",
+	"loaddefered",	// spelled wrong, but not changing for demo
+	"mute",
+	"noclip",
+	"notarget",
+	"playerstatus",
+	"randompc",
+	"ready", // Ready...
+	"reload", // Reload weapon.
+	"saveme", // "Save me" command.
+	"say_team",
+	"say",
+	"scanner", // Toggle scanner
+	"setviewpos",
+	"special", // Assorted 'special' functions
+	"team",
+	"tell",
+	"unalias", // tjh's un-aliasing command
+	"unignore",
+	"unmute",
+	"unready", // Unready...
+	"waypoint", // Add a waypoint.
+};
+
 
 /*
 =================
@@ -1557,7 +1627,6 @@ so it can perform tab completion
 */
 void CG_InitConsoleCommands( void ) {
 	size_t i;
-	char *str;
 
 	for ( i = 0 ; i < numCG_Commands; i++ ) {
 		trap_AddCommand( commands[i].cmd );
@@ -1567,111 +1636,17 @@ void CG_InitConsoleCommands( void ) {
 	// the game server will interpret these commands, which will be automatically
 	// forwarded to the server after they are not recognized locally
 	//
-	trap_AddCommand ("kill");
-	trap_AddCommand ("say");
-	trap_AddCommand ("say_team");
-	trap_AddCommand ("tell");
-//	trap_AddCommand ("vsay");
-//	trap_AddCommand ("vsay_team");
-//	trap_AddCommand ("vtell");
-//	trap_AddCommand ("vtaunt");
-//	trap_AddCommand ("vosay");
-//	trap_AddCommand ("vosay_team");
-//	trap_AddCommand ("votell");
-	trap_AddCommand ("give");
-	trap_AddCommand ("god");
-	trap_AddCommand ("notarget");
-	trap_AddCommand ("noclip");
-	trap_AddCommand ("team");
-	//trap_AddCommand ("flyby"); // RR2DO2
-	trap_AddCommand ("follow");
-	trap_AddCommand ("follownext" );
-	trap_AddCommand ("followprev" );
-	trap_AddCommand ("levelshot");
-//	trap_AddCommand ("addbot");
-	trap_AddCommand ("setviewpos");
-	trap_AddCommand ("callvote");
-	trap_AddCommand ("vote");
-	trap_AddCommand ("loaddefered");	// spelled wrong, but not changing for demo
 
-	// slothy
-	trap_AddCommand ("kick");
-	trap_AddCommand ("clientkick");
-
-	trap_AddCommand ("kickall");
-	trap_AddCommand ("kickbots");
-	trap_AddCommand ("banUser");
-	trap_AddCommand ("banClient");
-
-	trap_AddCommand ("mute");
-	trap_AddCommand ("unmute");
-
-	trap_AddCommand ("ignore");
-	trap_AddCommand ("unignore");
-
-	// Golliwog: Custom commands
-	trap_AddCommand( "channel" );		// The 'channel' command for team comms.
-	trap_AddCommand( "disguise" );		// Agent disguises.
-	trap_AddCommand( "invisible" );		// Agent becomes invisible.
-	trap_AddCommand( "flaginfo" );		// Flag information.
-	trap_AddCommand( "charge" );		// Lay charge.
-	trap_AddCommand( "reload" );		// Reload weapon.
-//	trap_AddCommand( "discard" );		// Discard worthless ammo. djbob: client intercepts now
-	trap_AddCommand( "dropammo" );		// Drop specified ammo.
-	trap_AddCommand( "dropammoto" );	// Drop ammo, leaving specified amount.
-	trap_AddCommand( "saveme" );		// "Save me" command.
-	trap_AddCommand( "armorme" );		// "Armor me" command.
-	trap_AddCommand( "detpipe" );		// Detonate pipes.
-	trap_AddCommand( "special" );		// Assorted 'special' functions
-	trap_AddCommand( "scanner" );		// Toggle scanner
-	trap_AddCommand( "changeclass" );	// Show class menu
-	trap_AddCommand( "build" );			// Build options
-	trap_AddCommand( "destroy" );		// Building destruction options
-	trap_AddCommand( "changeteam" );	// Show team menu
-	trap_AddCommand( "alias" );			// tjh's aliasing command
-	trap_AddCommand( "unalias" );		// tjh's un-aliasing command
-	trap_AddCommand( "dropflag" );		// Command to drop the flag
-	trap_AddCommand( "adminpassword" );	// Authenticate yourself as an admin
-	trap_AddCommand( "admin" );			// Execute an admin command.
-	trap_AddCommand( "admin2" );		// Execute an admin command. (client only)
-	trap_AddCommand( "playerstatus" );
-	trap_AddCommand( "chase" );
-	trap_AddCommand( "chasenext" );
-	trap_AddCommand( "chaseprev" );
-	trap_AddCommand( "waypoint" );		// Add a waypoint.
-	// Golliwog.
-
-	// djbob
-	trap_AddCommand( "authrc" );		// Check rcon is valid, for hud display
-	// djbob
-
-	trap_AddCommand( "ready" );			// Ready...
-	trap_AddCommand( "unready" );		// Unready...
-
-	trap_AddCommand("etfmap");
-	trap_AddCommand("etfdevmap");
-
-	trap_AddCommand("entitylist");		// list entities on server (only available with server running)
-
-	trap_AddCommand ("bot");
-
-	//trap_AddCommand("showspecs");		// lists spectators in console
+	for ( i = 0 ; i < ARRAY_LEN(cg_gcmds); i++ ) {
+		trap_AddCommand( cg_gcmds[i] );
+	}
 
 	// Golliwog: Add all the class changing commands
 	for( i = 0; i < Q3F_CLASS_MAX; i++ )
 	{
-		str = bg_q3f_classlist[i]->commandstring;
+		const char *str = bg_q3f_classlist[i]->commandstring;
 		if( str && *str )
 			trap_AddCommand( str );
 	}
-	trap_AddCommand( "randompc" );
-
-	// Golliwog.
-	// Golliwog: Force key bindings to weapon select values (also performed
-	// in UI, but the overkill is good, no doubt).
-//	for( i = 1; i <= 10; i++ )
-//		trap_SendConsoleCommand( va( "bind %d weapon %d\n", (i % 10), i ) );
-
-	// Golliwog
 }
 

@@ -48,8 +48,8 @@ If you have questions concerning this license or the applicable additional terms
 #define Q3F_NUM_WEAPONMAPSLOTS	4
 typedef struct bg_q3f_playerclass_s {
 	// Text fields - title, description, 'command' (i.e. "become this class") strings.
-	char *title, *description, *commandstring;
-	char *sound[2], *commandsynonyms;
+	const char *title, *description, *commandstring;
+	const char *sound[2], *commandsynonyms;
 
 	// Class maximums
 	int maxhealth, maxspeed, maxarmour;

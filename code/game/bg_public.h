@@ -1106,7 +1106,7 @@ int BG_GetTracemapGroundFloor( void );
 int BG_GetTracemapGroundCeil( void );
 #endif  //API_ET
 
-extern	char	*modNames[MOD_LASTONE];
+extern const char *modNames[MOD_LASTONE];
 char *_MS_FixColour( char *ptr, int colour );
 
 #endif
