@@ -447,7 +447,7 @@ typedef struct {
 	int				invulnerabilityStartTime;
 	int				invulnerabilityStopTime;
 
-	int				breathPuffTime;
+	//int				breathPuffTime;
 
 	gender_t		gender;			// from model
 	int				flashtagnumber;
@@ -2387,6 +2387,8 @@ void		trap_SendConsoleCommand( const char *text );
 // register a command name so the console can perform command completion.
 // FIXME: replace this with a normal console command "defineCommand"?
 void		trap_AddCommand( const char *cmdName );
+
+void		trap_RemoveCommand( const char *cmdName );
 
 // send a string to the server over the network
 void		trap_SendClientCommand( const char *s );

@@ -50,12 +50,12 @@ int PASSFLOAT( float x ) {
 
 #include "../shared/g_shared_syscalls.c"
 
-void	trap_Printf( const char *fmt ) {
-	Q_syscall( G_PRINT, fmt );
+void	trap_Print( const char *str ) {
+	Q_syscall( G_PRINT, str );
 }
 
-void NORETURN trap_Error( const char *fmt ) {
-	Q_syscall( G_ERROR, fmt );
+void NORETURN trap_Error( const char *str ) {
+	Q_syscall( G_ERROR, str );
 	exit( 1 );
 }
 

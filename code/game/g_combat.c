@@ -534,7 +534,7 @@ float CheckArmor (gentity_t *ent, float damage, int dflags, float adamagescale )
 RaySphereIntersections
 ================
 */
-int RaySphereIntersections( vec3_t origin, float radius, vec3_t point, vec3_t dir, vec3_t intersections[2] ) {
+/*int RaySphereIntersections( vec3_t origin, float radius, vec3_t point, vec3_t dir, vec3_t intersections[2] ) {
 	float b, c, d, t;
 
 	//	| origin - (point + t * dir) | = radius
@@ -564,11 +564,11 @@ int RaySphereIntersections( vec3_t origin, float radius, vec3_t point, vec3_t di
 		return 1;
 	}
 	return 0;
-}
+}*/
 
 /*
 ============
-T_Damage
+G_Damage
 
 targ		entity that is being damaged
 inflictor	entity that is causing the damage

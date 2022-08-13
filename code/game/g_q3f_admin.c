@@ -101,7 +101,7 @@ static void G_Q3F_AdminPrint( gentity_t *admin, const char *fmt, ... )
 		trap_SendServerCommand( admin->s.number, va( "print \"%s\"\n", text ) );
 	}
 	else {
-		trap_Printf( text );
+		trap_Print( text );
 	}
 }
 
@@ -940,7 +940,7 @@ static void G_ETF_AdminPunish( gentity_t *admin )
 	trap_Argv( 3, minutes, 8 );
 
 	if(!*player) {
-		G_Q3F_AdminPrint( admin, "Usage: admin punish playerid [minutes (defaults to 1)]\n");
+		G_Q3F_AdminPrint( admin, "Usage: admin punish <playerid> [minutes (defaults to 1)]\n");
 		return;
 	}
 
@@ -952,9 +952,6 @@ static void G_ETF_AdminPunish( gentity_t *admin )
 			mins = 1;
 	}
 
-	level.clients[clientNum].punishTime = level.time + (60 * 1000 * mins);
-	trap_SendServerCommand( clientNum, va("punished %d", mins));
-
 	ent = g_entities + clientNum;
 	// RR2DO2: if in flyby, reset the flyby
 	if( /*ent->client &&*/ ent->client->inFlyBy )
@@ -963,7 +960,11 @@ static void G_ETF_AdminPunish( gentity_t *admin )
 	if( SetTeam(ent , "spectator" ) ) {
 		ent->client->switchTeamTime = level.time + 5000;
 	}
+
 	ent->client->ps.persistant[PERS_FLAGS] |= PF_JOINEDTEAM;
+
+	level.clients[clientNum].punishTime = level.time + (60 * 1000 * mins);
+	trap_SendServerCommand( clientNum, va("punished %d", mins));
 }
 
 static void G_ETF_AdminMute( gentity_t *admin )

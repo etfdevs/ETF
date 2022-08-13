@@ -1343,7 +1343,7 @@ extern	vmCvar_t	lua_allowedModules;
 extern	vmCvar_t	g_spawnFullStats;
 
 #ifdef API_ET
-void	trap_Printf( const char *fmt );
+void	trap_Print( const char *fmt );
 void	NORETURN trap_Error( const char *fmt );
 int		trap_Milliseconds( void );
 int		trap_Argc( void );

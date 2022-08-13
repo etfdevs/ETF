@@ -133,6 +133,10 @@ void	trap_AddCommand( const char *cmdName ) {
 	Q_syscall( CG_ADDCOMMAND, cmdName );
 }
 
+void	trap_RemoveCommand( const char *cmdName ) {
+	Q_syscall( CG_REMOVECOMMAND, cmdName );
+}
+
 void	trap_SendClientCommand( const char *s ) {
 	Q_syscall( CG_SENDCLIENTCOMMAND, s );
 }

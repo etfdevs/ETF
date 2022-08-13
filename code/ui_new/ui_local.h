@@ -129,228 +129,12 @@ extern vmCvar_t ui_checkversion;
 qboolean UI_Q3F_RegisterClassModels( int classNum );
 
 //
-// ui_qmenu.c
-//
-
-#define RCOLUMN_OFFSET			( BIGCHAR_WIDTH )
-#define LCOLUMN_OFFSET			(-BIGCHAR_WIDTH )
-
-#define SLIDER_RANGE			10
-#define	MAX_EDIT_LINE			256
-
-#define MAX_MENUDEPTH			8
-//#define MAX_MENUITEMS			96
-
-#define MTYPE_NULL				0
-#define MTYPE_SLIDER			1	
-#define MTYPE_ACTION			2
-#define MTYPE_SPINCONTROL		3
-#define MTYPE_FIELD				4
-#define MTYPE_RADIOBUTTON		5
-#define MTYPE_BITMAP			6	
-#define MTYPE_TEXT				7
-#define MTYPE_SCROLLLIST		8
-#define MTYPE_PTEXT				9
-#define MTYPE_BTEXT				10
-
-#define QMF_BLINK				0x00000001
-#define QMF_SMALLFONT			0x00000002
-#define QMF_LEFT_JUSTIFY		0x00000004
-#define QMF_CENTER_JUSTIFY		0x00000008
-#define QMF_RIGHT_JUSTIFY		0x00000010
-#define QMF_NUMBERSONLY			0x00000020	// edit field is only numbers
-#define QMF_HIGHLIGHT			0x00000040
-#define QMF_HIGHLIGHT_IF_FOCUS	0x00000080	// steady focus
-#define QMF_PULSEIFFOCUS		0x00000100	// pulse if focus
-#define QMF_HASMOUSEFOCUS		0x00000200
-#define QMF_NOONOFFTEXT			0x00000400
-#define QMF_MOUSEONLY			0x00000800	// only mouse input allowed
-#define QMF_HIDDEN				0x00001000	// skips drawing
-#define QMF_GRAYED				0x00002000	// grays and disables
-#define QMF_INACTIVE			0x00004000	// disables any input
-#define QMF_NODEFAULTINIT		0x00008000	// skip default initialization
-#define QMF_OWNERDRAW			0x00010000
-#define QMF_PULSE				0x00020000
-#define QMF_LOWERCASE			0x00040000	// edit field is all lower case
-#define QMF_UPPERCASE			0x00080000	// edit field is all upper case
-#define QMF_SILENT				0x00100000
-
-// callback notifications
-#define QM_GOTFOCUS				1
-#define QM_LOSTFOCUS			2
-#define QM_ACTIVATED			3
-
-typedef struct _tag_menuframework
-{
-	int	cursor;
-	int cursor_prev;
-
-	int	nitems;
-	void *items[MAX_MENUITEMS];
-
-	void (*draw) (void);
-	sfxHandle_t (*key) (int key);
-
-	qboolean	wrapAround;
-	qboolean	fullscreen;
-	qboolean	showlogo;
-} menuframework_s;
-
-typedef struct
-{
-	int type;
-	const char *name;
-	int	id;
-	int x, y;
-	int left;
-	int	top;
-	int	right;
-	int	bottom;
-	menuframework_s *parent;
-	int menuPosition;
-	unsigned flags;
-
-	void (*callback)( void *self, int event );
-	void (*statusbar)( void *self );
-	void (*ownerdraw)( void *self );
-} menucommon_s;
-
-typedef struct {
-	int		cursor;
-	int		scroll;
-	int		widthInChars;
-	char	buffer[MAX_EDIT_LINE];
-	int		maxchars;
-} mfield_t;
-
-typedef struct
-{
-	menucommon_s	generic;
-	mfield_t		field;
-} menufield_s;
-
-typedef struct 
-{
-	menucommon_s generic;
-
-	float minvalue;
-	float maxvalue;
-	float curvalue;
-
-	float range;
-} menuslider_s;
-
-typedef struct
-{
-	menucommon_s generic;
-
-	int	oldvalue;
-	int curvalue;
-	int	numitems;
-	int	top;
-		
-	const char **itemnames;
-
-	int width;
-	int height;
-	int	columns;
-	int	seperation;
-} menulist_s;
-
-typedef struct
-{
-	menucommon_s generic;
-} menuaction_s;
-
-typedef struct
-{
-	menucommon_s generic;
-	int curvalue;
-} menuradiobutton_s;
-
-typedef struct
-{
-	menucommon_s	generic;
-	char*			focuspic;	
-	char*			errorpic;
-	qhandle_t		shader;
-	qhandle_t		focusshader;
-	int				width;
-	int				height;
-	float*			focuscolor;
-} menubitmap_s;
-
-typedef struct
-{
-	menucommon_s	generic;
-	char*			string;
-	int				style;
-	float*			color;
-} menutext_s;
-
-extern void			Menu_Cache( void );
-extern void			Menu_Focus( menucommon_s *m );
-extern void			Menu_AddItem( menuframework_s *menu, void *item );
-extern void			Menu_AdjustCursor( menuframework_s *menu, int dir );
-extern void			Menu_Draw( menuframework_s *menu );
-extern void			*Menu_ItemAtCursor( menuframework_s *m );
-extern sfxHandle_t	Menu_ActivateItem( menuframework_s *s, menucommon_s* item );
-extern void			Menu_SetCursor( menuframework_s *s, int cursor );
-extern void			Menu_SetCursorToItem( menuframework_s *m, void* ptr );
-extern sfxHandle_t	Menu_DefaultKey( menuframework_s *s, int key );
-extern void			Bitmap_Init( menubitmap_s *b );
-extern void			Bitmap_Draw( menubitmap_s *b );
-extern void			ScrollList_Draw( menulist_s *l );
-extern sfxHandle_t	ScrollList_Key( menulist_s *l, int key );
-extern sfxHandle_t	menu_in_sound;
-extern sfxHandle_t	menu_move_sound;
-extern sfxHandle_t	menu_out_sound;
-extern sfxHandle_t	menu_buzz_sound;
-extern sfxHandle_t	menu_null_sound;
-extern sfxHandle_t	weaponChangeSound;
-extern vec4_t		menu_text_color;
-extern vec4_t		menu_grayed_color;
-extern vec4_t		menu_dark_color;
-extern vec4_t		menu_highlight_color;
-extern vec4_t		menu_red_color;
-extern vec4_t		menu_black_color;
-extern vec4_t		menu_dim_color;
-extern vec4_t		color_black;
-extern vec4_t		color_white;
-extern vec4_t		color_yellow;
-extern vec4_t		color_blue;
-extern vec4_t		color_orange;
-extern vec4_t		color_red;
-extern vec4_t		color_dim;
-extern vec4_t		name_color;
-extern vec4_t		list_color;
-extern vec4_t		listbar_color;
-extern vec4_t		text_color_disabled; 
-extern vec4_t		text_color_normal;
-extern vec4_t		text_color_highlight;
-
-extern char	*ui_medalNames[];
-extern char	*ui_medalPicNames[];
-extern char	*ui_medalSounds[];
-
-//
-// ui_mfield.c
-//
-extern void			MField_Clear( mfield_t *edit );
-extern void			MField_KeyDownEvent( mfield_t *edit, int key );
-extern void			MField_CharEvent( mfield_t *edit, int ch );
-extern void			MField_Draw( mfield_t *edit, int x, int y, int style, vec4_t color );
-extern void			MenuField_Init( menufield_s* m );
-extern void			MenuField_Draw( menufield_s *f );
-extern sfxHandle_t	MenuField_Key( menufield_s* m, int* key );
-
-//
 // ui_main.c
 //
 void UI_Report(void);
 void UI_Load();
 void UI_LoadMenus(const char *menuFile, qboolean reset);
-void _UI_SetActiveMenu( uiMenuCommand_t menu );
+void UI_SetActiveMenu( uiMenuCommand_t menu );
 int UI_AdjustTimeByGame(int time);
 void UI_ShowPostGame(qboolean newHigh);
 void UI_ShowInGame();
@@ -881,42 +665,37 @@ typedef struct {
 } playerInfo_t;
 
 
-extern void			UI_Init( void );
-extern void			UI_Shutdown( void );
-extern void			UI_KeyEvent( int key );
-extern void			UI_MouseEvent( int dx, int dy );
-extern void			UI_Refresh( int realtime );
-extern qboolean		UI_ConsoleCommand( int realTime );
-extern float		UI_ClampCvar( float min, float max, float value );
-extern void			UI_DrawNamedPic( float x, float y, float width, float height, const char *picname );
-extern void			UI_DrawHandlePic( float x, float y, float w, float h, qhandle_t hShader ); 
-extern void			UI_DrawAdjustedPic( float x, float y, float w, float h, qhandle_t hShader );
-extern void			UI_FillRect( float x, float y, float width, float height, const float *color );
-extern void			UI_DrawRect( float x, float y, float width, float height, const float *color );
-extern void			UI_DrawTopBottom(float x, float y, float w, float h);
-extern void			UI_DrawSides(float x, float y, float w, float h);
-extern void			UI_UpdateScreen( void );
-extern void			UI_SetColor( const float *rgba );
-extern void			UI_LerpColor(vec4_t a, vec4_t b, vec4_t c, float t);
-extern void			UI_DrawBannerString( int x, int y, const char* str, int style, vec4_t color );
-extern float		UI_ProportionalSizeScale( int style );
-extern void			UI_DrawProportionalString( int x, int y, const char* str, int style, vec4_t color );
-extern int			UI_ProportionalStringWidth( const char* str );
-extern void			UI_DrawString( int x, int y, const char* str, int style, vec4_t color );
-extern void			UI_DrawChar( int x, int y, int ch, int style, vec4_t color );
-extern qboolean 	UI_CursorInRect (int x, int y, int width, int height);
-extern void			UI_AdjustFrom640( float *x, float *y, float *w, float *h );
-//extern void			UI_DrawTextBox (int x, int y, int width, int lines);
-extern const char			*UI_Argv( int arg );
-extern const char			*UI_Cvar_VariableString( const char *var_name );
-extern void			UI_Refresh( int time );
-extern void			UI_KeyEvent( int key );
-extern void			UI_StartDemoLoop( void );
-extern qboolean		m_entersound;
+void			UI_Init( void );
+void			UI_Shutdown( void );
+void			UI_KeyEvent( int key, qboolean down );
+void			UI_MouseEvent( int dx, int dy );
+void			UI_Refresh( int realtime );
+qboolean		UI_ConsoleCommand( int realTime );
+float			UI_ClampCvar( float min, float max, float value );
+void			UI_DrawNamedPic( float x, float y, float width, float height, const char *picname );
+void			UI_DrawHandlePic( float x, float y, float w, float h, qhandle_t hShader ); 
+void			UI_DrawAdjustedPic( float x, float y, float w, float h, qhandle_t hShader );
+void			UI_FillRect( float x, float y, float width, float height, const float *color );
+void			UI_DrawRect( float x, float y, float width, float height, const float *color );
+void			UI_DrawTopBottom(float x, float y, float w, float h);
+void			UI_DrawSides(float x, float y, float w, float h);
+void			UI_UpdateScreen( void );
+void			UI_SetColor( const float *rgba );
+void			UI_LerpColor(vec4_t a, vec4_t b, vec4_t c, float t);
+void			UI_DrawBannerString( int x, int y, const char* str, int style, vec4_t color );
+float			UI_ProportionalSizeScale( int style );
+void			UI_DrawProportionalString( int x, int y, const char* str, int style, vec4_t color );
+int				UI_ProportionalStringWidth( const char* str );
+void			UI_DrawString( int x, int y, const char* str, int style, vec4_t color );
+void			UI_DrawChar( int x, int y, int ch, int style, vec4_t color );
+qboolean 		UI_CursorInRect (int x, int y, int width, int height);
+void			UI_AdjustFrom640( float *x, float *y, float *w, float *h );
+const char			*UI_Argv( int arg );
+const char			*UI_Cvar_VariableString( const char *var_name );
 void UI_SetEventHandling(int mode);
 void UI_LoadBestScores(const char *map, int game);
 // RR2DO2
-extern void			UI_Q3F_DrawProgress( rectDef_t *rect, int value, int maxvalue, vec4_t color, qhandle_t shader );
+void			UI_Q3F_DrawProgress( rectDef_t *rect, int value, int maxvalue, vec4_t color, qhandle_t shader );
 // RR2DO2
 
 void	HUD_LoadLanguageData();

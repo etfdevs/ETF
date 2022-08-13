@@ -520,7 +520,7 @@ void QDECL G_Printf( const char *fmt, ... ) {
 	G_LuaHook_Print(GPRINT_TEXT, text);
 #endif
 
-	trap_Printf( text );
+	trap_Print( text );
 }
 //bani
 void QDECL G_Printf( const char *fmt, ... ) __attribute__( ( format( printf,1,2 ) ) );

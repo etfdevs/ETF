@@ -38,8 +38,6 @@ If you have questions concerning this license or the applicable additional terms
 **********************************************************************/
 #include "ui_local.h"
 
-qboolean		m_entersound;		// after a frame, so caching won't disrupt the sound
-
 // these are here so the functions in q_shared.c can link
 #ifndef UI_HARD_LINKED
 
@@ -80,15 +78,6 @@ float UI_ClampCvar( float min, float max, float value )
 	if ( value < min ) return min;
 	if ( value > max ) return max;
 	return value;
-}
-
-/*
-=================
-UI_StartDemoLoop
-=================
-*/
-void UI_StartDemoLoop( void ) {
-	trap_Cmd_ExecuteText( EXEC_APPEND, "d1\n" );
 }
 
 const char *UI_Argv( int arg ) {
@@ -666,14 +655,6 @@ qboolean UI_ConsoleCommand( int realTime ) {
 	}
 
 	return qfalse;
-}
-
-/*
-=================
-UI_Shutdown
-=================
-*/
-void UI_Shutdown( void ) {
 }
 
 /*

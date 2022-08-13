@@ -311,15 +311,13 @@ This is the only way control passes into the module.
 This must be the very first function compiled into the .qvm file
 ================
 */
-vmCvar_t  ui_debug;
-vmCvar_t  ui_initialized;
 
-void _UI_Init( qboolean );
-void _UI_Shutdown( void );
-void _UI_KeyEvent( int key, qboolean down );
-void _UI_MouseEvent( int dx, int dy );
-void _UI_Refresh( int realtime );
-qboolean _UI_IsFullscreen( void );
+void UI_Init( void );
+void UI_Shutdown( void );
+void UI_KeyEvent( int key, qboolean down );
+void UI_MouseEvent( int dx, int dy );
+void UI_Refresh( int realtime );
+qboolean UI_IsFullscreen( void );
 
 Q_EXPORT intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intptr_t arg3, intptr_t arg4,
 	intptr_t arg5, intptr_t arg6, intptr_t arg7, intptr_t arg8, intptr_t arg9, intptr_t arg10, intptr_t arg11 ) {
@@ -328,23 +326,23 @@ Q_EXPORT intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t ar
 		  return UI_API_VERSION;
 
 	  case UI_INIT:
-		  _UI_Init((qboolean)arg0);
+		  UI_Init();
 		  return 0;
 
 	  case UI_SHUTDOWN:
-		  _UI_Shutdown();
+		  UI_Shutdown();
 		  return 0;
 
 	  case UI_KEY_EVENT:
-		  _UI_KeyEvent( arg0, (qboolean)arg1 );
+		  UI_KeyEvent( arg0, (qboolean)arg1 );
 		  return 0;
 
 	  case UI_MOUSE_EVENT:
-		  _UI_MouseEvent( arg0, arg1 );
+		  UI_MouseEvent( arg0, arg1 );
 		  return 0;
 
 	  case UI_REFRESH:
-		  _UI_Refresh( arg0 );
+		  UI_Refresh( arg0 );
 		  return 0;
 
 	  case UI_IS_FULLSCREEN:
@@ -374,7 +372,7 @@ Q_EXPORT intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t ar
 				}
 			}
 		}
-		_UI_SetActiveMenu( (uiMenuCommand_t)arg0 );
+		UI_SetActiveMenu( (uiMenuCommand_t)arg0 );
 		return 0;
 
 	  case UI_CONSOLE_COMMAND:
@@ -1003,15 +1001,15 @@ static void Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4_t 
 	trap_Cvar_Set("cg_thirdPerson", "0");
 	trap_Cvar_Set( "sv_killserver", "1" );
 	uiInfo.soundHighScore = newHigh;
-  _UI_SetActiveMenu(UIMENU_POSTGAME);
+  UI_SetActiveMenu(UIMENU_POSTGAME);
 }*/
 
 void UI_ShowEndGame() {
-	_UI_SetActiveMenu(UIMENU_ENDGAME);
+	UI_SetActiveMenu(UIMENU_ENDGAME);
 }
 
 void UI_ShowInGame() {
-	_UI_SetActiveMenu(UIMENU_INGAME);  
+	UI_SetActiveMenu(UIMENU_INGAME);  
 }
 
 /*
@@ -1031,7 +1029,7 @@ int frameCount = 0;
 int startTime;
 
 #define	UI_FPS_FRAMES	4
-void _UI_Refresh( int realtime )
+void UI_Refresh( int realtime )
 {
 	static int index;
 	static int	previousTimes[UI_FPS_FRAMES];
@@ -1056,8 +1054,6 @@ void _UI_Refresh( int realtime )
 		}
 		uiInfo.uiDC.FPS = 1000 * UI_FPS_FRAMES / total;
 	}
-
-
 
 	UI_UpdateCvars();
 
@@ -1106,10 +1102,10 @@ void _UI_Refresh( int realtime )
 
 /*
 =================
-_UI_Shutdown
+UI_Shutdown
 =================
 */
-void _UI_Shutdown( void ) {
+void UI_Shutdown( void ) {
 	trap_LAN_SaveCachedServers();
 }
 
@@ -4031,36 +4027,9 @@ static void UI_RunMenuScript(char **args) {
 			trap_Cvar_Set("com_introPlayed", "1" );
 			trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart\n" );
 		} else if (Q_stricmp(name, "getCDKey") == 0) {
-			char out[17];
-			trap_GetCDKey(buff, 17);
-			trap_Cvar_Set("cdkey1", "");
-			trap_Cvar_Set("cdkey2", "");
-			trap_Cvar_Set("cdkey3", "");
-			trap_Cvar_Set("cdkey4", "");
-			if (strlen(buff) == CDKEY_LEN) {
-				Q_strncpyz(out, buff, 5);
-				trap_Cvar_Set("cdkey1", out);
-				Q_strncpyz(out, buff + 4, 5);
-				trap_Cvar_Set("cdkey2", out);
-				Q_strncpyz(out, buff + 8, 5);
-				trap_Cvar_Set("cdkey3", out);
-				Q_strncpyz(out, buff + 12, 5);
-				trap_Cvar_Set("cdkey4", out);
-			}
-
+			// do nothing
 		} else if (Q_stricmp(name, "verifyCDKey") == 0) {
-			buff[0] = '\0';
-			Q_strcat(buff, 1024, UI_Cvar_VariableString("cdkey1")); 
-			Q_strcat(buff, 1024, UI_Cvar_VariableString("cdkey2")); 
-			Q_strcat(buff, 1024, UI_Cvar_VariableString("cdkey3")); 
-			Q_strcat(buff, 1024, UI_Cvar_VariableString("cdkey4")); 
-			trap_Cvar_Set("cdkey", buff);
-			if (trap_VerifyCDKey(buff, UI_Cvar_VariableString("cdkeychecksum"))) {
-				trap_Cvar_Set("ui_cdkeyvalid", "CD Key Appears to be valid.");
-				trap_SetCDKey(buff);
-			} else {
-				trap_Cvar_Set("ui_cdkeyvalid", "CD Key does not appear to be valid.");
-			}
+			// do nothing
 		} else if (Q_stricmp(name, "loadArenas") == 0) {
 			const char *menuname;
 //			
@@ -4240,15 +4209,15 @@ static void UI_RunMenuScript(char **args) {
 				trap_Cmd_ExecuteText( EXEC_APPEND, va("callvote map %s\n",uiInfo.mapList[ui_currentNetMap.integer].mapLoadName) );
 			}*/
 		} else if (Q_stricmp(name, "voteKick") == 0) {
-			if (uiInfo.Q3F_playerindex >= 0 && uiInfo.Q3F_playerindex < uiInfo.playerCount) {
+			if (uiInfo.Q3F_playerindex >= 0 && uiInfo.Q3F_playerindex < uiInfo.Q3F_playercount) {
 				trap_Cmd_ExecuteText( EXEC_APPEND, va("callvote clientkick %d\n", uiInfo.Q3F_clientNumber[uiInfo.Q3F_playerindex]));
 			}
 		} else if (Q_stricmp(name, "voteMute") == 0) {
-			if (uiInfo.Q3F_playerindex >= 0 && uiInfo.Q3F_playerindex < uiInfo.playerCount) {
+			if (uiInfo.Q3F_playerindex >= 0 && uiInfo.Q3F_playerindex < uiInfo.Q3F_playercount) {
 				trap_Cmd_ExecuteText( EXEC_APPEND, va("callvote mute %d\n", uiInfo.Q3F_clientNumber[uiInfo.Q3F_playerindex]));
 			}
 		} else if (Q_stricmp(name, "voteUnMute") == 0) {
-			if (uiInfo.Q3F_playerindex >= 0 && uiInfo.Q3F_playerindex < uiInfo.playerCount) {
+			if (uiInfo.Q3F_playerindex >= 0 && uiInfo.Q3F_playerindex < uiInfo.Q3F_playercount) {
 				trap_Cmd_ExecuteText( EXEC_APPEND, va("callvote unmute %d\n", uiInfo.Q3F_clientNumber[uiInfo.Q3F_playerindex]));
 			}
 		} else if (Q_stricmp(name, "voteLeader") == 0) {
@@ -4894,12 +4863,12 @@ static void UI_RunMenuScript(char **args) {
 			trap_Cvar_VariableStringBuffer("hud_voteTimelimit", buffer, 64);
 
 			trap_Cmd_ExecuteText(EXEC_APPEND, va("callvote timelimit %s\n", buffer));
-		} else if (Q_stricmp(name, "VoteFraglimit") == 0) {
+		} else if (Q_stricmp(name, "VoteCapturelimit") == 0) {
 			char buffer[64];
 
-			trap_Cvar_VariableStringBuffer("hud_voteFraglimit", buffer, 64);
+			trap_Cvar_VariableStringBuffer("hud_voteCapturelimit", buffer, 64);
 
-			trap_Cmd_ExecuteText(EXEC_APPEND, va("callvote fraglimit %s\n", buffer));
+			trap_Cmd_ExecuteText(EXEC_APPEND, va("callvote capturelimit %s\n", buffer));
 		} else if (Q_stricmp(name, "SendUIChat") == 0) {
 			char buffer[MAX_SAY_TEXT];
 
@@ -6654,7 +6623,7 @@ void UI_Q3F_SetVersion(void);
 UI_Init
 =================
 */
-void _UI_Init( qboolean inGameLoad ) {
+void UI_Init( void ) {
 	char ver[MAX_CVAR_VALUE_STRING];
 	const char *menuSet;
 	//int start;
@@ -6844,7 +6813,7 @@ void _UI_Init( qboolean inGameLoad ) {
 UI_KeyEvent
 =================
 */
-void _UI_KeyEvent( int key, qboolean down ) {
+void UI_KeyEvent( int key, qboolean down ) {
 	switch(uiInfo.eventHandling) {
 	default:
 		if (menuCount > 0) {
@@ -6873,7 +6842,7 @@ void _UI_KeyEvent( int key, qboolean down ) {
 UI_MouseEvent
 =================
 */
-void _UI_MouseEvent( int dx, int dy )
+void UI_MouseEvent( int dx, int dy )
 {
 	// update mouse screen position
 	uiInfo.uiDC.cursorx += dx;
@@ -6906,7 +6875,7 @@ void UI_LoadNonIngame() {
 	uiInfo.inGameLoad = qfalse;
 }
 
-void _UI_SetActiveMenu( uiMenuCommand_t menu ) {
+void UI_SetActiveMenu( uiMenuCommand_t menu ) {
 	char buf[512];
 
 	// this should be the ONLY way the menu system is brought up
