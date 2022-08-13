@@ -7423,8 +7423,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &ui_server15,				"server15",					"",									CVAR_ARCHIVE },
 	{ &ui_server16,				"server16",					"",									CVAR_ARCHIVE },
 	{ &ui_cdkeychecked,			"ui_cdkeychecked",			"0",								CVAR_ROM },
-	{ &ui_debug,				"ui_debug",					"0",								CVAR_TEMP },
-	{ &ui_initialized,			"ui_initialized",			"0",								CVAR_TEMP },
 	{ &ui_currentMap,			"ui_currentMap",			"0",								CVAR_TEMP },
 	{ &ui_currentNetMap,		"ui_currentNetMap",			"0",								CVAR_TEMP },
 	{ &ui_mapIndex,				"ui_mapIndex",				"0",								CVAR_TEMP },
