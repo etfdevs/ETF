@@ -181,9 +181,9 @@ static void G_Q3F_ChargePain( gentity_t *self, gentity_t *attacker, int damage )
 		return;
 
 	VectorCopy( player->client->ps.velocity, movevec );
-	movevec[0] += Q_flrand(-1.0f, 1.0f) * damage;
-	movevec[1] += Q_flrand(-1.0f, 1.0f) * damage;
-	movevec[2] = 10 + Q_flrand(0.0f, 1.0f) * damage * 0.5;
+	movevec[0] += ETF_crandom() * damage;
+	movevec[1] += ETF_crandom() * damage;
+	movevec[2] = 10 + ETF_random() * damage * 0.5;
 
 	BG_EvaluateTrajectory( &self->s.pos, level.time, currpos );
 	currpos[2] += 4;

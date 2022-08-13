@@ -616,7 +616,7 @@ void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace) {
 
 	// random can be used to vary the respawn time
 	if ( ent->random ) {
-		respawn += Q_flrand(-1.0f, 1.0f) * ent->random;
+		respawn += ETF_crandom() * ent->random;
 		if ( respawn < 1 ) {
 			respawn = 1;
 		}
@@ -759,7 +759,7 @@ gentity_t *Drop_Item( gentity_t *ent, gitem_t *item, float angle ) {
 
 	AngleVectors( angles, velocity, NULL, NULL );
 	VectorScale( velocity, 150, velocity );
-	velocity[2] += 200 + Q_flrand(-1.0f, 1.0f) * 50;
+	velocity[2] += 200 + ETF_crandom() * 50;
 	
 	itement = LaunchItem( item, ent->s.pos.trBase, velocity );
 	return( itement );
@@ -846,7 +846,7 @@ void FinishSpawningItem( gentity_t *ent ) {
 	if ( ent->item->giType == IT_POWERUP ) {
 		float	respawn;
 
-		respawn = 45 + Q_flrand(-1.0f, 1.0f) * 15;
+		respawn = 45 + ETF_crandom() * 15;
 		ent->s.eFlags |= EF_NODRAW;
 		ent->r.contents = 0;
 		ent->nextthink = level.time + respawn * 1000;

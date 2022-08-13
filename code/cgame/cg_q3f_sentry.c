@@ -474,7 +474,7 @@ void CG_Q3F_Sentry( centity_t *cent )
 
 		if( cent->currentState.weapon && (cent->currentState.frame & 1) && !(cent->miscTime & 1) && cent->currentState.otherEntityNum )
 		{
-			angles[ROLL] = Q_flrand(-1.0f, 1.0f) * 10;
+			angles[ROLL] = ETF_crandom() * 10;
 			AnglesToAxis( angles, flash.axis );
 			flash.hModel = cgs.media.sentryFlash;
 			flash.renderfx = RF_NOCELSHADING;
@@ -513,7 +513,7 @@ void CG_Q3F_Sentry( centity_t *cent )
 
 		if( cent->currentState.weapon && (cent->currentState.frame & 1) && !(cent->miscTime & 1) && cent->currentState.otherEntityNum )
 		{
-			angles[ROLL] = Q_flrand(-1.0f, 1.0f) * 10;
+			angles[ROLL] = ETF_crandom() * 10;
 			AnglesToAxis( angles, flash.axis );
 			flash.hModel = cgs.media.sentryFlash;
 			flash.renderfx = RF_NOCELSHADING;
@@ -531,7 +531,7 @@ void CG_Q3F_Sentry( centity_t *cent )
 
 		if( cent->currentState.weapon && !(cent->currentState.frame & 1) && (cent->miscTime & 1) && cent->currentState.otherEntityNum  )
 		{
-			angles[ROLL] = Q_flrand(-1.0f, 1.0f) * 10;
+			angles[ROLL] = ETF_crandom() * 10;
 			AnglesToAxis( angles, flash.axis );
 			flash.hModel = cgs.media.sentryFlash;
 			flash.renderfx = RF_NOCELSHADING;
@@ -567,7 +567,7 @@ void CG_Q3F_Sentry( centity_t *cent )
 
 		if( cent->currentState.weapon && (cent->currentState.frame & 1) && !(cent->miscTime & 1) && cent->currentState.otherEntityNum )
 		{
-			angles[ROLL] = Q_flrand(-1.0f, 1.0f) * 10;
+			angles[ROLL] = ETF_crandom() * 10;
 			AnglesToAxis( angles, flash.axis );
 			flash.hModel = cgs.media.sentryFlash;
 			flash.renderfx = RF_NOCELSHADING;
@@ -585,7 +585,7 @@ void CG_Q3F_Sentry( centity_t *cent )
 
 		if( cent->currentState.weapon && !(cent->currentState.frame & 1) && (cent->miscTime & 1) && cent->currentState.otherEntityNum )
 		{
-			angles[ROLL] = Q_flrand(-1.0f, 1.0f) * 10;
+			angles[ROLL] = ETF_crandom() * 10;
 			AnglesToAxis( angles, flash.axis );
 			flash.hModel = cgs.media.sentryFlash;
 			flash.renderfx = RF_NOCELSHADING;
@@ -636,9 +636,9 @@ static void LaunchBit( const vec3_t origin, qhandle_t model ) {
 
 	VectorCopy( origin, le->pos.trBase );
 
-	velocity[0] = Q_flrand(-1.0f, 1.0f);
-	velocity[1] = Q_flrand(-1.0f, 1.0f);
-	velocity[2] = 0.8+Q_flrand(0.0f, 1.0f);
+	velocity[0] = ETF_crandom();
+	velocity[1] = ETF_crandom();
+	velocity[2] = 0.8+ETF_random();
 
 	VectorNormalizeFast( velocity );
 	

@@ -739,7 +739,7 @@ void G_SpawnGEntityFromSpawnVars( qboolean fromBSP, gentity_t *usethisent ) {
 										ent->mapdata->state = Q3F_STATE_INACTIVE;
 										break;
 			case Q3F_STATE_ACTIVE:		// Put in a wait time
-										ent->mapdata->waittime = level.time + ent->wait + Q_flrand(-1.0f, 1.0f) * ent->random;
+										ent->mapdata->waittime = level.time + ent->wait + ETF_crandom() * ent->random;
 										break;
 		}
 	}

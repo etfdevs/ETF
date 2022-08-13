@@ -726,7 +726,7 @@ gentity_t *fire_rocket (gentity_t *self, vec3_t start, vec3_t dir) {
 	//Unlagged client check
 	bolt->s.otherEntityNum = self->s.number;
 	bolt->parent = self;
-	bolt->damage = 92+Q_flrand(0.0f, 1.0f)*20;
+	bolt->damage = 92+ETF_random()*20;
 	bolt->splashDamage = 92;
 	bolt->methodOfDeath = MOD_ROCKET;
 	bolt->splashMethodOfDeath = MOD_ROCKET_SPLASH;

@@ -74,7 +74,7 @@ void CG_BubbleTrail( vec3_t start, vec3_t end, float spacing ) {
 	len = VectorNormalize (vec);
 
 	// advance a random amount first
-	i = Q_flrand(0.0f, 1.0f) * spacing;
+	i = ETF_random() * spacing;
 	VectorMA( move, i, vec, move );
 
 	VectorScale (vec, spacing, vec);
@@ -105,9 +105,9 @@ void CG_BubbleTrail( vec3_t start, vec3_t end, float spacing ) {
 		le->pos.trType = TR_LINEAR;
 		le->pos.trTime = cg.time;
 		VectorCopy( move, le->pos.trBase );
-		le->pos.trDelta[0] = Q_flrand(-1.0f, 1.0f)*5;
-		le->pos.trDelta[1] = Q_flrand(-1.0f, 1.0f)*5;
-		le->pos.trDelta[2] = Q_flrand(-1.0f, 1.0f)*5 + 6;
+		le->pos.trDelta[0] = ETF_crandom()*5;
+		le->pos.trDelta[1] = ETF_crandom()*5;
+		le->pos.trDelta[2] = ETF_crandom()*5 + 6;
 
 		VectorAdd (move, vec, move);
 	}
@@ -148,7 +148,7 @@ localEntity_t *CG_SmokePuff( const vec3_t p, const vec3_t vel,
 	le->radiusrate = (endradius - startradius) / duration;
 
 	re = &le->refEntity;
-	re->rotation = Q_flrand(0.0f, 1.0f) * 360;
+	re->rotation = ETF_random() * 360;
 	re->radius = startradius;
 	le->leType = LE_MOVE_SCALE_FADE;
 
@@ -306,7 +306,7 @@ localEntity_t *CG_Q3F_MakeRing( const vec3_t origin,
 	le->fadeRate = (fadedelay < 0) ? 2000 : 1.0 / (duration - fadedelay);
 
 	re = &le->refEntity;
-	re->rotation = Q_flrand(0.0f, 1.0f) * 360;
+	re->rotation = ETF_random() * 360;
 	le->leType = LE_EXPAND_FADE_RING;
 	VectorCopy( angles, le->angles.trBase );
 
@@ -430,9 +430,9 @@ void CG_GibPlayer( vec3_t playerOrigin ) {
 	}
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
+	velocity[0] = ETF_crandom()*GIB_VELOCITY;
+	velocity[1] = ETF_crandom()*GIB_VELOCITY;
+	velocity[2] = GIB_JUMP + ETF_crandom()*GIB_VELOCITY;
 	if ( rand() & 1 ) {
 		CG_LaunchGib( origin, velocity, cgs.media.gibSkull );
 	} else {
@@ -445,57 +445,57 @@ void CG_GibPlayer( vec3_t playerOrigin ) {
 	}
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
+	velocity[0] = ETF_crandom()*GIB_VELOCITY;
+	velocity[1] = ETF_crandom()*GIB_VELOCITY;
+	velocity[2] = GIB_JUMP + ETF_crandom()*GIB_VELOCITY;
 	CG_LaunchGib( origin, velocity, cgs.media.gibAbdomen );
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
+	velocity[0] = ETF_crandom()*GIB_VELOCITY;
+	velocity[1] = ETF_crandom()*GIB_VELOCITY;
+	velocity[2] = GIB_JUMP + ETF_crandom()*GIB_VELOCITY;
 	CG_LaunchGib( origin, velocity, cgs.media.gibArm );
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
+	velocity[0] = ETF_crandom()*GIB_VELOCITY;
+	velocity[1] = ETF_crandom()*GIB_VELOCITY;
+	velocity[2] = GIB_JUMP + ETF_crandom()*GIB_VELOCITY;
 	CG_LaunchGib( origin, velocity, cgs.media.gibChest );
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
+	velocity[0] = ETF_crandom()*GIB_VELOCITY;
+	velocity[1] = ETF_crandom()*GIB_VELOCITY;
+	velocity[2] = GIB_JUMP + ETF_crandom()*GIB_VELOCITY;
 	CG_LaunchGib( origin, velocity, cgs.media.gibFist );
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
+	velocity[0] = ETF_crandom()*GIB_VELOCITY;
+	velocity[1] = ETF_crandom()*GIB_VELOCITY;
+	velocity[2] = GIB_JUMP + ETF_crandom()*GIB_VELOCITY;
 	CG_LaunchGib( origin, velocity, cgs.media.gibFoot );
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
+	velocity[0] = ETF_crandom()*GIB_VELOCITY;
+	velocity[1] = ETF_crandom()*GIB_VELOCITY;
+	velocity[2] = GIB_JUMP + ETF_crandom()*GIB_VELOCITY;
 	CG_LaunchGib( origin, velocity, cgs.media.gibForearm );
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
+	velocity[0] = ETF_crandom()*GIB_VELOCITY;
+	velocity[1] = ETF_crandom()*GIB_VELOCITY;
+	velocity[2] = GIB_JUMP + ETF_crandom()*GIB_VELOCITY;
 	CG_LaunchGib( origin, velocity, cgs.media.gibIntestine );
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
+	velocity[0] = ETF_crandom()*GIB_VELOCITY;
+	velocity[1] = ETF_crandom()*GIB_VELOCITY;
+	velocity[2] = GIB_JUMP + ETF_crandom()*GIB_VELOCITY;
 	CG_LaunchGib( origin, velocity, cgs.media.gibLeg );
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + Q_flrand(-1.0f, 1.0f)*GIB_VELOCITY;
+	velocity[0] = ETF_crandom()*GIB_VELOCITY;
+	velocity[1] = ETF_crandom()*GIB_VELOCITY;
+	velocity[2] = GIB_JUMP + ETF_crandom()*GIB_VELOCITY;
 	CG_LaunchGib( origin, velocity, cgs.media.gibLeg );
 }
 
@@ -508,7 +508,7 @@ void CG_LaunchExplode( vec3_t origin, vec3_t velocity, qhandle_t hModel ) {
 	localEntity_t	*le;
 	refEntity_t		*re;
 
-	le = CG_AllocLocalEntity( 10000 + Q_flrand(0.0f, 1.0f) * 6000 );
+	le = CG_AllocLocalEntity( 10000 + ETF_random() * 6000 );
 	re = &le->refEntity;
 
 	le->leType = LE_FRAGMENT;
@@ -543,33 +543,33 @@ void CG_BigExplode( vec3_t playerOrigin ) {
 	}
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY;
-	velocity[2] = EXP_JUMP + Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY;
+	velocity[0] = ETF_crandom()*EXP_VELOCITY;
+	velocity[1] = ETF_crandom()*EXP_VELOCITY;
+	velocity[2] = EXP_JUMP + ETF_crandom()*EXP_VELOCITY;
 	CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY;
-	velocity[2] = EXP_JUMP + Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY;
+	velocity[0] = ETF_crandom()*EXP_VELOCITY;
+	velocity[1] = ETF_crandom()*EXP_VELOCITY;
+	velocity[2] = EXP_JUMP + ETF_crandom()*EXP_VELOCITY;
 	CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY*1.5;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY*1.5;
-	velocity[2] = EXP_JUMP + Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY;
+	velocity[0] = ETF_crandom()*EXP_VELOCITY*1.5;
+	velocity[1] = ETF_crandom()*EXP_VELOCITY*1.5;
+	velocity[2] = EXP_JUMP + ETF_crandom()*EXP_VELOCITY;
 	CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY*2.0;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY*2.0;
-	velocity[2] = EXP_JUMP + Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY;
+	velocity[0] = ETF_crandom()*EXP_VELOCITY*2.0;
+	velocity[1] = ETF_crandom()*EXP_VELOCITY*2.0;
+	velocity[2] = EXP_JUMP + ETF_crandom()*EXP_VELOCITY;
 	CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
 
 	VectorCopy( playerOrigin, origin );
-	velocity[0] = Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY*2.5;
-	velocity[1] = Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY*2.5;
-	velocity[2] = EXP_JUMP + Q_flrand(-1.0f, 1.0f)*EXP_VELOCITY;
+	velocity[0] = ETF_crandom()*EXP_VELOCITY*2.5;
+	velocity[1] = ETF_crandom()*EXP_VELOCITY*2.5;
+	velocity[2] = EXP_JUMP + ETF_crandom()*EXP_VELOCITY;
 	CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
 
 }
@@ -674,7 +674,7 @@ void CG_SpawnSmokeSprite(const vec3_t origin, int life,
 	smokesprite->radius = startradius;
 	smokesprite->radiusrate = (endradius - startradius) / life;
 
-	smokesprite->rotation = Q_flrand(0.0f, 1.0f) * 360;
+	smokesprite->rotation = ETF_random() * 360;
 };
 
 static qboolean CG_GasSpritePhysics( gassprite_t *gassprite, const int time ) {

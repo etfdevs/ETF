@@ -796,7 +796,7 @@ qboolean G_Q3F_UseEntity( gentity_t *ent, gentity_t *other, gentity_t *attacker 
 			/* Ensiform - FIXME This appears to break buttons with health applied, */
 			/* I'm assuming that it is due to the code in g_mover.c though */
 		if( ent->mapdata && ent->mapdata->waittime >= 0 && ent->mapdata->waittime <= level.time )
-			ent->mapdata->waittime = level.time + ent->wait + ent->random * Q_flrand(-1.0f, 1.0f);
+			ent->mapdata->waittime = level.time + ent->wait + ent->random * ETF_crandom();
 	}
 	return( allowuse );
 }
@@ -875,7 +875,7 @@ qboolean G_Q3F_TouchEntity( gentity_t *ent, gentity_t *other, trace_t *trace )
 		if( G_Q3F_TriggerEntity( other, ent, targetstate, trace, 0 ) )
 		{
 			if( targetstate == Q3F_STATE_ACTIVE && mapdata->waittime >= 0 && mapdata->waittime <= level.time )
-				mapdata->waittime = level.time + other->wait + other->random * Q_flrand(-1.0f, 1.0f);
+				mapdata->waittime = level.time + other->wait + other->random * ETF_crandom();
 			return( qtrue );
 		}
 		return( qfalse );
@@ -1222,7 +1222,7 @@ qboolean G_Q3F_TriggerEntity( gentity_t *ent, gentity_t *activator, int state, t
 		}
 		else {
 			// Some ents have no use or touch, but expect to fall inactive again
-			ent->mapdata->waittime = level.time + ent->wait + Q_flrand(-1.0f, 1.0f) * ent->random;
+			ent->mapdata->waittime = level.time + ent->wait + ETF_crandom() * ent->random;
 		}
 	}
 	else if( state == Q3F_STATE_INACTIVE || state == Q3F_STATE_DISABLED || state == Q3F_STATE_INVISIBLE )
@@ -2674,7 +2674,7 @@ static void G_Q3F_func_goalinfo_touch( gentity_t *self, gentity_t *other, trace_
 {
 	// We need a touch function to be able to trigger.
 
-	self->nextthink = level.time + ( self->wait + Q_flrand(-1.0f, 1.0f) * self->random );
+	self->nextthink = level.time + ( self->wait + ETF_crandom() * self->random );
 }
 static void G_Q3F_func_goalinfo_think( gentity_t *self )
 {

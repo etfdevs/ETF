@@ -1175,7 +1175,7 @@ static void G_Q3F_Sentry_RocketFire( gentity_t *ent, AimBlock_t *aim ) {
 	bolt->s.weapon = WP_ROCKET_LAUNCHER;
 	bolt->r.ownerNum = ent->s.number;			// Owned by sentry, will hit sentry owner
 	bolt->parent = ent->parent;
-	bolt->damage = 92+Q_flrand(0.0f, 1.0f)*20;
+	bolt->damage = 92+ETF_random()*20;
 	bolt->splashDamage = 92;
 	bolt->methodOfDeath = MOD_AUTOSENTRY_ROCKET;
 	bolt->splashMethodOfDeath = MOD_AUTOSENTRY_ROCKET;
@@ -1602,8 +1602,8 @@ ceasefire_target:
 			if (!(rand() & 7)) {
 				ent->splashDamage = 1;
 				G_AddEvent( ent, EV_SENTRY_IDLESTART, 0 );
-				ent->movedir[YAW] = ent->s.angles[YAW] + Q_flrand(-1.0f, 1.0f) * 45;
-				ent->movedir[PITCH] = ent->s.angles[PITCH] + Q_flrand(-1.0f, 1.0f) * 15;
+				ent->movedir[YAW] = ent->s.angles[YAW] + ETF_crandom() * 45;
+				ent->movedir[PITCH] = ent->s.angles[PITCH] + ETF_crandom() * 15;
 			} else {
 				ent->splashDamage = 0;
 				VectorCopy( ent->s.angles, ent->movedir );

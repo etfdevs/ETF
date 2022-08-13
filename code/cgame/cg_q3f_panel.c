@@ -743,7 +743,7 @@ static int CG_Q3F_PanelFuncLocation()
 		VectorMA( panel.origin, 1, panel.forward, locOrigin );
 		if( !(locStr = CG_Q3F_GetLocation( locOrigin, qtrue )) )
 			locStr = "This location waiting for a competent mapper.";
-		cent->miscTime = cg.time + 500 + Q_flrand(0.0f, 1.0f) * 100;	// Wait a while before updating again.
+		cent->miscTime = cg.time + 500 + ETF_random() * 100;	// Wait a while before updating again.
 		CG_Q3F_PanelFitString(	&numLines, &size,
 								locStr, PANEL_STR_WRAP,
 								640 - 2*cent->currentState.angles2[0], 480 - 2*cent->currentState.angles2[1] );

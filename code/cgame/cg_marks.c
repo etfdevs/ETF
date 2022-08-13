@@ -400,6 +400,6 @@ void CG_BulletMark(qhandle_t shader,vec3_t origin,vec3_t dir,float radius,vec4_t
 	VectorMA( origin, -0.5f, projection, markOrigin );
 
 	CG_DecalMark( shader, origin, projection, 
-		Q_flrand(0.0f, 1.0f)*360, radius,color,totaltime,fadetime);
+		ETF_random()*360, radius,color,totaltime,fadetime);
 }
 

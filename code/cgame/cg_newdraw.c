@@ -194,21 +194,21 @@ static void CG_DrawPlayerHead(rectDef_t *rect, qboolean draw2D) {
 
 		cg.headStartYaw = 180 + cg.damageX * 45;
 
-		cg.headEndYaw = 180 + 20 * cos( Q_flrand(-1.0f, 1.0f)*M_PI );
-		cg.headEndPitch = 5 * cos( Q_flrand(-1.0f, 1.0f)*M_PI );
+		cg.headEndYaw = 180 + 20 * cos( ETF_crandom()*M_PI );
+		cg.headEndPitch = 5 * cos( ETF_crandom()*M_PI );
 
 		cg.headStartTime = cg.time;
-		cg.headEndTime = cg.time + 100 + Q_flrand(0.0f, 1.0f) * 2000;
+		cg.headEndTime = cg.time + 100 + ETF_random() * 2000;
 	} else {
 		if ( cg.time >= cg.headEndTime ) {
 			// select a new head angle
 			cg.headStartYaw = cg.headEndYaw;
 			cg.headStartPitch = cg.headEndPitch;
 			cg.headStartTime = cg.headEndTime;
-			cg.headEndTime = cg.time + 100 + Q_flrand(0.0f, 1.0f) * 2000;
+			cg.headEndTime = cg.time + 100 + ETF_random() * 2000;
 
-			cg.headEndYaw = 180 + 20 * cos( Q_flrand(-1.0f, 1.0f)*M_PI );
-			cg.headEndPitch = 5 * cos( Q_flrand(-1.0f, 1.0f)*M_PI );
+			cg.headEndYaw = 180 + 20 * cos( ETF_crandom()*M_PI );
+			cg.headEndPitch = 5 * cos( ETF_crandom()*M_PI );
 		}
 
 		size = rect->w;

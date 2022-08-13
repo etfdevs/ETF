@@ -80,7 +80,7 @@ void G_Q3F_CommandPointThink( gentity_t *ent )
 		return;			// Bad pulse?
 	if( ent->mapdata->state == Q3F_STATE_DISABLED || ent->mapdata->state == Q3F_STATE_INVISIBLE )
 	{
-		ent->nextthink = level.time + ent->wait + ent->random * Q_flrand(-1.0f, 1.0f);
+		ent->nextthink = level.time + ent->wait + ent->random * ETF_crandom();
 		return;			// Can't pulse, we've been disabled
 	}
 
@@ -187,7 +187,7 @@ void G_Q3F_CommandPointThink( gentity_t *ent )
 		return;
 	}
 
-	ent->nextthink = level.time + ent->wait + ent->random * Q_flrand(-1.0f, 1.0f);
+	ent->nextthink = level.time + ent->wait + ent->random * ETF_crandom();
 }
 
 void G_Q3F_CommandPointTouch( gentity_t *ent, gentity_t *other, trace_t *trace )
@@ -257,7 +257,7 @@ void G_Q3F_CommandPointTouch( gentity_t *ent, gentity_t *other, trace_t *trace )
 
 		// Set up this ent for the current pulse cycle.
 	ent->activator = other;
-	ent->nextthink = level.time + ent->wait + ent->random * Q_flrand(-1.0f, 1.0f);
+	ent->nextthink = level.time + ent->wait + ent->random * ETF_crandom();
 	ent->mapdata->waittime = level.time + FRAMETIME;		// Can be retriggered almost instantly
 	ent->mapdata->state = Q3F_STATE_INACTIVE;				// Ready to be reactivated immediately
 	ent->mapdata->ownerteam = teamnum;
@@ -2737,7 +2737,7 @@ void G_Q3F_FuncExplosionTouch( gentity_t *self, gentity_t *other, trace_t *tr )
 	G_AddEvent( self, EV_ETF_EXPLOSION, 0 );
 	trap_LinkEntity( self );
 	self->unlinkAfterEvent = qtrue;
-	self->mapdata->waittime = level.time + self->wait + Q_flrand(-1.0f, 1.0f) * self->random;
+	self->mapdata->waittime = level.time + self->wait + ETF_crandom() * self->random;
 }
 
 void SP_Q3F_func_explosion( gentity_t *self )
@@ -3414,7 +3414,7 @@ qboolean G_Q3F_PositionDynamicSpawn( gentity_t *ent, vec3_t origin, vec3_t angle
 		// For each ent, attempt to 'spot' the player around it.
 	for( index = 0; index < numEnts; index++ )
 	{
-		angle = Q_flrand(0.0f, 1.0f) * 2*M_PI;
+		angle = ETF_random() * 2*M_PI;
 		curr = ents[index];
 		if( curr->mapdata && (curr->mapdata->flags & Q3F_FLAG_CARRYABLE) &&
 			curr->mapdata->state == Q3F_STATE_CARRIED && curr->activator && curr->activator->client )
@@ -3442,7 +3442,7 @@ qboolean G_Q3F_PositionDynamicSpawn( gentity_t *ent, vec3_t origin, vec3_t angle
 			dir[0] = cos( angle );
 			dir[1] = sin( angle );
 			dir[2] = 0;
-			VectorMA( spotOrigin, 32 + Q_flrand(0.0f, 1.0f) * (ent->speed - 32), dir, dest );
+			VectorMA( spotOrigin, 32 + ETF_random() * (ent->speed - 32), dir, dest );
 			trap_Trace( &trace, top, playerMins, playerMaxs, dest, ignoreEnt->s.number, MASK_PLAYERSOLID );
 			VectorCopy( trace.endpos, dest );
 
@@ -4117,7 +4117,7 @@ void G_Q3F_MiscFlamerThink (gentity_t *self) {
 
 	if( self->mapdata->state == Q3F_STATE_DISABLED || self->mapdata->state == Q3F_STATE_INVISIBLE )
 	{
-		ent->nextthink = level.time + ent->wait + ent->random * Q_flrand(-1.0f, 1.0f);
+		ent->nextthink = level.time + ent->wait + ent->random * ETF_crandom();
 		return;			// Can't pulse, we've been disabled
 	}
 

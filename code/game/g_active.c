@@ -1505,7 +1505,7 @@ void ClientThink( int clientNum ) {
 	if ( ent->client->pers.plOut ) {
 		// see if a random value is below the threshhold
 		float thresh = (float)ent->client->pers.plOut / 100.0f;
-		if ( Q_flrand(0.0f, 1.0f) < thresh ) {
+		if ( ETF_random() < thresh ) {
 			usercmd_t	cmd;
 			/* Get the command but don't handle it */
 			trap_GetUsercmd( clientNum, &cmd );

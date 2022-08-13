@@ -290,7 +290,7 @@ void CG_FireFlameChunks( centity_t *cent, vec3_t origin, vec3_t angles, qboolean
 			VectorNormalize( f->velDir );
 			f->velSpeed = FLAME_START_SPEED * (0.5+0.5*speedScale) * (firing ? 1.0 : 4.5);
 			f->ownerCent = cent->currentState.number;
-			f->rollAngle = Q_flrand(-1.0f, 1.0f)*179;
+			f->rollAngle = ETF_crandom()*179;
 			f->ignitionOnly = !firing;
 
 			if (!firing) {
@@ -353,7 +353,7 @@ void CG_FireFlameChunks( centity_t *cent, vec3_t origin, vec3_t angles, qboolean
 		VectorCopy( fwd, f->startVelDir );
 		f->velSpeed = FLAME_START_SPEED * (0.5+0.5*speedScale);
 		f->ownerCent = cent->currentState.number;
-		f->rollAngle = Q_flrand(-1.0f, 1.0f)*179;
+		f->rollAngle = ETF_crandom()*179;
 		f->ignitionOnly = !firing;
 		f->speedScale = speedScale;
 		if (!firing) {

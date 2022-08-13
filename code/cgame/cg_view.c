@@ -400,7 +400,7 @@ static void CG_Q3F_GasEffect( void )
 			cg.gasTime = cg.gasEndTime;
 			memcpy( cg.gasColour, cg.gasEndColour, sizeof(cg.gasColour) );
 		}
-		cg.gasEndTime = cg.time + 3450 + Q_flrand(0.0f, 1.0f) * 3450;
+		cg.gasEndTime = cg.time + 3450 + ETF_random() * 3450;
 		if( (cg.time + 3450) >= gastime || cg.gasEndTime >= gastime )
 		{
 			// Effect is ending
@@ -416,10 +416,10 @@ static void CG_Q3F_GasEffect( void )
 			}
 		}
 		else {
-			cg.gasEndColour[0] = Q_flrand(0.0f, 1.0f);
-			cg.gasEndColour[1] = Q_flrand(0.0f, 1.0f);
-			cg.gasEndColour[2] = Q_flrand(0.0f, 1.0f);
-			cg.gasEndColour[3] = 0.34 + Q_flrand(0.0f, 1.0f) * 0.3 * (((float)(gastime - cg.time)) / 20000);
+			cg.gasEndColour[0] = ETF_random();
+			cg.gasEndColour[1] = ETF_random();
+			cg.gasEndColour[2] = ETF_random();
+			cg.gasEndColour[3] = 0.34 + ETF_random() * 0.3 * (((float)(gastime - cg.time)) / 20000);
 			if( cg.gasEndColour[3] > 0.7f )
 				cg.gasEndColour[3] = 0.7f;
 
@@ -441,7 +441,7 @@ static void CG_Q3F_GasEffect( void )
 				}
 				while( 1 )
 				{
-					cg.gasPlayerTeam[index] = Q3F_TEAM_RED + (int) (Q_flrand(0.0f, 1.0f) * 4);
+					cg.gasPlayerTeam[index] = Q3F_TEAM_RED + (int) (ETF_random() * 4);
 					//if( cgs.media.skincache[cg.gasPlayerClass[index]][cg.gasPlayerTeam[index]-Q3F_TEAM_RED][0] )
 					if( cgs.media.skincache[cg.gasPlayerClass[index]][0] )
 						break;	// This skin is cached

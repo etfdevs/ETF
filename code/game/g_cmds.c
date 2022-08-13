@@ -2481,7 +2481,7 @@ void G_Q3F_DiscardCommand( gentity_t *ent )
 		VectorScale( velocity, 400, velocity );
 		VectorScale( ent->client->ps.velocity, 0.25, pvel );
 		VectorAdd( pvel, velocity, velocity ); // RR2DO2: add player velocity
-		velocity[2] += 100 + Q_flrand(-1.0f, 1.0f) * 50;
+		velocity[2] += 100 + ETF_crandom() * 50;
 
 		drop = LaunchItem( item, ent->r.currentOrigin, velocity );
 		drop->activator = ent;
@@ -2622,7 +2622,7 @@ void G_Q3F_DropAmmoToCommand( gentity_t *ent ) {
 	VectorScale( velocity, 400, velocity );
 	VectorScale( ent->client->ps.velocity, 0.25, pvel );
 	VectorAdd( pvel, velocity, velocity ); // RR2DO2: add player velocity
-	velocity[2] += 100 + Q_flrand(-1.0f, 1.0f) * 50;
+	velocity[2] += 100 + ETF_crandom() * 50;
 
 	// allocate a new ammobox slot, if needed, free the other one
 	for ( index = 0; index < Q3F_MAX_AMMOBOXES; index++ ) {
@@ -2859,7 +2859,7 @@ void G_Q3F_DropAmmoCommand( gentity_t *ent )
 	VectorScale( velocity, 400, velocity );
 	VectorScale( ent->client->ps.velocity, 0.25, pvel );
 	VectorAdd( pvel, velocity, velocity ); // RR2DO2: add player velocity
-	velocity[2] += 100 + Q_flrand(-1.0f, 1.0f) * 50;
+	velocity[2] += 100 + ETF_crandom() * 50;
 
 	// allocate a new ammobox slot, if needed, free the other one
 	for ( index = 0; index < Q3F_MAX_AMMOBOXES; index++ ) {

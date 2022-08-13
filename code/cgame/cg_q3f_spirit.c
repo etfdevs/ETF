@@ -228,8 +228,8 @@ static int SpiritRunTime = 0;
 
 static QINLINE float Spirit_Random( const rnd_val_t *rnd ) {
 	if (!rnd->range) return rnd->base;
-	else if (rnd->range>0) return rnd->base + rnd->range*Q_flrand(0.0f, 1.0f);
-	else return ((int)((rand()&2)-1)) * (rnd->base - rnd->range*Q_flrand(0.0f, 1.0f));
+	else if (rnd->range>0) return rnd->base + rnd->range*ETF_random();
+	else return ((int)((rand()&2)-1)) * (rnd->base - rnd->range*ETF_random());
 }
 
 static QINLINE float Spirit_GetWave(const SpiritWave_t * wave, const float fraction, const float index ) {

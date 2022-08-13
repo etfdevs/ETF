@@ -541,7 +541,7 @@ void G_Q3F_MapSentryRocketFire( gentity_t *ent )
 	bolt->s.weapon = WP_ROCKET_LAUNCHER;
 	bolt->r.ownerNum = ent->s.number;			// Owned by sentry, will hit sentry owner
 	bolt->parent = ent->parent;
-	bolt->damage = 92+Q_flrand(0.0f, 1.0f)*20;
+	bolt->damage = 92+ETF_random()*20;
 	bolt->splashDamage = 92;
 	bolt->methodOfDeath = MOD_MAPSENTRY_ROCKET;
 	bolt->splashMethodOfDeath = MOD_MAPSENTRY_ROCKET;

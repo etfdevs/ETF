@@ -453,7 +453,7 @@ CG_AddShrapnel
 		// fixme the tr.plane.normal size is vec3, expects vec4 projection
 		// this whole function isn't really used for anythhing however
 		if(le->leFlags & LEF_MARK_BLOOD)
-			CG_DecalMark(cgs.media.bloodMarkShader,tr.endpos,tr.plane.normal,Q_flrand(0.0f, 1.0f)*360,radius * 4,colorWhite,cg_markTime.integer,cg_markTime.integer >> 4);
+			CG_DecalMark(cgs.media.bloodMarkShader,tr.endpos,tr.plane.normal,ETF_random()*360,radius * 4,colorWhite,cg_markTime.integer,cg_markTime.integer >> 4);
 		CG_FreeLocalEntity(le);
 	}
 }*/

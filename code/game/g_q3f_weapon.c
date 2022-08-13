@@ -518,10 +518,10 @@ void Weapon_Napalm_Fire(struct gentity_s *ent) {
 	//Unlagged client check
 	bolt->s.otherEntityNum = ent->s.number;
 	bolt->parent = ent;
-	//bolt->damage = 10+Q_flrand(0.0f, 1.0f)*20; // RR2DO2: 1e
-	//bolt->damage = 12+Q_flrand(0.0f, 1.0f)*20; // RR2DO2: 1f
-	//bolt->damage = 25+Q_flrand(0.0f, 1.0f)*10; // RR2DO2: 1h
-	bolt->damage = 40+Q_flrand(0.0f, 1.0f)*10; // djbob: 2.2
+	//bolt->damage = 10+ETF_random()*20; // RR2DO2: 1e
+	//bolt->damage = 12+ETF_random()*20; // RR2DO2: 1f
+	//bolt->damage = 25+ETF_random()*10; // RR2DO2: 1h
+	bolt->damage = 40+ETF_random()*10; // djbob: 2.2
 	//bolt->splashDamage = 20; // RR2DO2: 1e
 //	bolt->splashDamage = 22; // RR2DO2: 1f
 	bolt->splashDamage = 37; // djbob: 2.2
@@ -906,9 +906,9 @@ void G_Q3F_Flame_Think(struct gentity_s *ent)
 		return;
 	}
 	VectorCopy(ent->target_ent->s.pos.trBase, temp_vec);
-	temp_vec[0] += (Q_flrand(0.0f, 1.0f) * 10) - 5;
-	temp_vec[1] += (Q_flrand(0.0f, 1.0f) * 10) - 5;
-	temp_vec[2] += (Q_flrand(0.0f, 1.0f) * 10) - 5;
+	temp_vec[0] += (ETF_random() * 10) - 5;
+	temp_vec[1] += (ETF_random() * 10) - 5;
+	temp_vec[2] += (ETF_random() * 10) - 5;
 	SnapVector( temp_vec );
 	G_SetOrigin(ent,temp_vec);	// No longer needed.
 

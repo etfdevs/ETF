@@ -101,6 +101,7 @@ If you have questions concerning this license or the applicable additional terms
 #endif
 
 #include "../shared/q_math.h"
+#include "../shared/q_rand.h"
 #include "../shared/q_bit.h"
 #include "../shared/q_color.h"
 #include "../shared/q_string.h"

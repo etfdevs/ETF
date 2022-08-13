@@ -105,7 +105,7 @@ void Think_Target_Delay( gentity_t *ent ) {
 }
 
 void Use_Target_Delay( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
-	ent->nextthink = level.time + ( ent->wait + ent->random * Q_flrand(-1.0f, 1.0f) ) * 1000;
+	ent->nextthink = level.time + ( ent->wait + ent->random * ETF_crandom() ) * 1000;
 	ent->think = Think_Target_Delay;
 	ent->activator = activator;
 }

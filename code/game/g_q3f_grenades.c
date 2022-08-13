@@ -269,12 +269,12 @@ qboolean ClusterExplode( gentity_t *cluster )
 		G_SetOrigin( segment, cluster->r.currentOrigin );
 
 		// set aiming directions
-//		segment->s.pos.trDelta[0]	= Q_flrand(-1.0f, 1.0f) * 230;
-//		segment->s.pos.trDelta[1]	= Q_flrand(-1.0f, 1.0f) * 230;
-//		segment->s.pos.trDelta[2]	= 230 + Q_flrand(0.0f, 1.0f) * 115;
-		segment->s.pos.trDelta[0]	= Q_flrand(-1.0f, 1.0f) * 100;
-		segment->s.pos.trDelta[1]	= Q_flrand(-1.0f, 1.0f) * 100;
-		segment->s.pos.trDelta[2]	= 350 + Q_flrand(0.0f, 1.0f) * 100;
+//		segment->s.pos.trDelta[0]	= ETF_crandom() * 230;
+//		segment->s.pos.trDelta[1]	= ETF_crandom() * 230;
+//		segment->s.pos.trDelta[2]	= 230 + ETF_random() * 115;
+		segment->s.pos.trDelta[0]	= ETF_crandom() * 100;
+		segment->s.pos.trDelta[1]	= ETF_crandom() * 100;
+		segment->s.pos.trDelta[2]	= 350 + ETF_random() * 100;
 
 		segment->s.pos.trType		= TR_GRAVITY;
 		segment->s.pos.trTime		= level.time;
@@ -532,8 +532,8 @@ qboolean NapalmExplode( gentity_t *napalm )
 	gentity_t *temp;
 
 	napalm->s.pos.trTime = level.time;
-	napalm->s.pos.trDelta[0] = Q_flrand(-1.0f, 1.0f) * 10;
-	napalm->s.pos.trDelta[1] = Q_flrand(-1.0f, 1.0f) * 10;
+	napalm->s.pos.trDelta[0] = ETF_crandom() * 10;
+	napalm->s.pos.trDelta[1] = ETF_crandom() * 10;
 	napalm->s.pos.trType = TR_GRAVITY;
 	napalm->soundLoop = 1;				//Tag the grenade as having exploded
 	NapalmExplodeThink( napalm );
@@ -1264,7 +1264,7 @@ qboolean G_Q3F_GrenadeCommand( gentity_t *ent )
 		VectorScale( velocity, 650, velocity );		// Forward
 //		VectorMA( velocity, g_grenadeZvel.value, up, velocity );	// Up (by a third)
 		VectorMA( velocity, 150, up, velocity );	// Up (by a third)
-		VectorMA( velocity, Q_flrand(-1.0f, 1.0f) * 5, side, grenent->s.pos.trDelta );	// Left/right
+		VectorMA( velocity, ETF_crandom() * 5, side, grenent->s.pos.trDelta );	// Left/right
 		if( ent->health <= 0 )
 			VectorScale( velocity, 0.1, velocity );	// Only throw a little if dead
 
@@ -1272,8 +1272,8 @@ qboolean G_Q3F_GrenadeCommand( gentity_t *ent )
 		grenent->s.apos.trBase[YAW]		= ent->client->ps.viewangles[YAW];
 		grenent->s.apos.trBase[PITCH]	= 0;
 		grenent->s.apos.trBase[ROLL]	= 0;
-		grenent->s.apos.trDelta[YAW]	= Q_flrand(-1.0f, 1.0f) * 5;
-		grenent->s.apos.trDelta[PITCH]	= 360 + Q_flrand(-1.0f, 1.0f) * 10;
+		grenent->s.apos.trDelta[YAW]	= ETF_crandom() * 5;
+		grenent->s.apos.trDelta[PITCH]	= 360 + ETF_crandom() * 10;
 		grenent->s.apos.trDelta[ROLL]	= 0;
 		grenent->s.apos.trTime			= level.time;
 		grenent->s.apos.trType			= TR_LINEAR;

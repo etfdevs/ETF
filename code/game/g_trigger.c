@@ -79,7 +79,7 @@ void multi_trigger( gentity_t *ent, gentity_t *activator ) {
 		if( (ent->wait * 1000) >= FRAMETIME )
 		{
 			ent->think = multi_wait;
-			ent->nextthink = level.time + ( ent->wait + ent->random * Q_flrand(-1.0f, 1.0f) ) * 1000;
+			ent->nextthink = level.time + ( ent->wait + ent->random * ETF_crandom() ) * 1000;
 		}
 		// Golliwog.
 	} else {
@@ -471,7 +471,7 @@ so, the basic time between firing is a random time between
 void func_timer_think( gentity_t *self ) {
 	G_UseTargets (self, self->activator);
 	// set time before next firing
-	self->nextthink = level.time + 1000 * ( self->wait + Q_flrand(-1.0f, 1.0f) * self->random );
+	self->nextthink = level.time + 1000 * ( self->wait + ETF_crandom() * self->random );
 }
 
 void func_timer_use( gentity_t *self, gentity_t *other, gentity_t *activator ) {

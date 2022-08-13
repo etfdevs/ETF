@@ -418,7 +418,7 @@ void Q3F_func_flag_think( gentity_t *self )
 		{
 			// If some pudding has set to active from disabled/invisible, we'll pretend it's "just been dropped"
 			if( !self->mapdata->waittime )
-				self->mapdata->waittime = level.time + self->wait + Q_flrand(-1.0f, 1.0f) * self->random;
+				self->mapdata->waittime = level.time + self->wait + ETF_crandom() * self->random;
 			self->nextthink = self->mapdata->waittime;	// This is a kludge to fix a bug, possibly caused by frame hitches
 		}
 		else G_Q3F_DropFlag( self );
@@ -565,17 +565,17 @@ void G_Q3F_DropFlag( gentity_t *ent )
 	ent->physicsBounce	= data ? atof( data->value.d.strdata ) : 0.3;		// Bit of a bounce
 
 	VectorCopy( ent->activator->s.apos.trBase, angles );
-	angles[YAW] += Q_flrand(-1.0f, 1.0f) * 30;
+	angles[YAW] += ETF_crandom() * 30;
 	angles[PITCH] = 0;	// always forward
 	if ( ent->activator && ent->activator->client && ent->activator->client->ps.stats[STAT_HEALTH]> 0 ) {
 		AngleVectors( ent->activator->client->ps.viewangles, velocity, NULL, NULL );
 		VectorScale( velocity, 280, velocity );
 		VectorMA( velocity, 0.25, ent->activator->client->ps.velocity, velocity );
-		velocity[2] += 150 + Q_flrand(-1.0f, 1.0f) * 50;
+		velocity[2] += 150 + ETF_crandom() * 50;
 	} else {
 		AngleVectors( angles, velocity, NULL, NULL );
 		VectorScale( velocity, 200, velocity );
-		velocity[2] += 200 + Q_flrand(-1.0f, 1.0f) * 50;
+		velocity[2] += 200 + ETF_crandom() * 50;
 	}
 	ent->s.pos.trType		= TR_GRAVITY;
 	ent->s.pos.trTime		= level.time;

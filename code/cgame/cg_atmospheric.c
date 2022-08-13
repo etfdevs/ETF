@@ -261,8 +261,8 @@ static qboolean CG_RainParticleGenerate( cg_atmosphericParticle_t *particle, vec
 
 //	n_generatetime++;
 	
-	angle = Q_flrand(0.0f, 1.0f) * 2*M_PI;
-	distance = 20 + MAX_ATMOSPHERIC_DISTANCE * Q_flrand(0.0f, 1.0f);
+	angle = ETF_random() * 2*M_PI;
+	distance = 20 + MAX_ATMOSPHERIC_DISTANCE * ETF_random();
 
 	particle->pos[0] = cg.refdef_current->vieworg[0] + sin(angle) * distance;
 	particle->pos[1] = cg.refdef_current->vieworg[1] + cos(angle) * distance;
@@ -274,7 +274,7 @@ static qboolean CG_RainParticleGenerate( cg_atmosphericParticle_t *particle, vec
 	groundHeight = BG_GetSkyGroundHeightAtPoint( particle->pos );
 	if( groundHeight >= skyHeight )
 		return qfalse;
-	particle->pos[2] = groundHeight + Q_flrand(0.0f, 1.0f) * (skyHeight - groundHeight);
+	particle->pos[2] = groundHeight + ETF_random() * (skyHeight - groundHeight);
 
 	// make sure it doesn't fall from too far cause it then will go over our heads ('lower the ceiling')
 	if( cg_atmFx.baseHeightOffset > 0 ) {
@@ -298,17 +298,17 @@ static qboolean CG_RainParticleGenerate( cg_atmosphericParticle_t *particle, vec
 	}
 	
 	CG_SetParticleActive( particle, ACT_FALLING );
-	particle->colour[0] = 0.6 + 0.2 * Q_flrand(0.0f, 1.0f) * 0xFF;
-	particle->colour[1] = 0.6 + 0.2 * Q_flrand(0.0f, 1.0f) * 0xFF;
-	particle->colour[2] = 0.6 + 0.2 * Q_flrand(0.0f, 1.0f) * 0xFF;
+	particle->colour[0] = 0.6 + 0.2 * ETF_random() * 0xFF;
+	particle->colour[1] = 0.6 + 0.2 * ETF_random() * 0xFF;
+	particle->colour[2] = 0.6 + 0.2 * ETF_random() * 0xFF;
 	VectorCopy( currvec, particle->delta );
-	particle->delta[2] += Q_flrand(-1.0f, 1.0f) * 100;
+	particle->delta[2] += ETF_crandom() * 100;
 	VectorCopy( particle->delta, particle->deltaNormalized );
 	VectorNormalizeFast( particle->deltaNormalized );
-	particle->height = ATMOSPHERIC_RAIN_HEIGHT + Q_flrand(-1.0f, 1.0f) * 100;
+	particle->height = ATMOSPHERIC_RAIN_HEIGHT + ETF_crandom() * 100;
 	particle->weight = currweight;
 	particle->effectshader = &cg_atmFx.effectshaders[0];
-//	particle->effectshader = &cg_atmFx.effectshaders[ (int) (Q_flrand(0.0f, 1.0f) * ( cg_atmFx.numEffectShaders - 1 )) ];
+//	particle->effectshader = &cg_atmFx.effectshaders[ (int) (ETF_random() * ( cg_atmFx.numEffectShaders - 1 )) ];
 
 //	generatetime += trap_Milliseconds() - msec;
 	return( qtrue );
@@ -468,8 +468,8 @@ static qboolean CG_SnowParticleGenerate( cg_atmosphericParticle_t *particle, vec
 
 //	n_generatetime++;
 
-	angle = Q_flrand(0.0f, 1.0f) * 2*M_PI;
-	distance = 20 + MAX_ATMOSPHERIC_DISTANCE * Q_flrand(0.0f, 1.0f);
+	angle = ETF_random() * 2*M_PI;
+	distance = 20 + MAX_ATMOSPHERIC_DISTANCE * ETF_random();
 
 	particle->pos[0] = cg.refdef_current->vieworg[0] + sin(angle) * distance;
 	particle->pos[1] = cg.refdef_current->vieworg[1] + cos(angle) * distance;
@@ -481,7 +481,7 @@ static qboolean CG_SnowParticleGenerate( cg_atmosphericParticle_t *particle, vec
 	groundHeight = BG_GetSkyGroundHeightAtPoint( particle->pos );
 	if( groundHeight >= skyHeight )
 		return qfalse;
-	particle->pos[2] = groundHeight + Q_flrand(0.0f, 1.0f) * (skyHeight - groundHeight);
+	particle->pos[2] = groundHeight + ETF_random() * (skyHeight - groundHeight);
 	
 	// make sure it doesn't fall from too far cause it then will go over our heads ('lower the ceiling')
 	if( cg_atmFx.baseHeightOffset > 0 )
@@ -496,13 +496,13 @@ static qboolean CG_SnowParticleGenerate( cg_atmosphericParticle_t *particle, vec
 
 	CG_SetParticleActive( particle, ACT_FALLING );
 	VectorCopy( currvec, particle->delta );
-	particle->delta[2] += Q_flrand(-1.0f, 1.0f) * 25;
+	particle->delta[2] += ETF_crandom() * 25;
 	VectorCopy( particle->delta, particle->deltaNormalized );
 	VectorNormalizeFast( particle->deltaNormalized );
-	particle->height = ATMOSPHERIC_SNOW_HEIGHT + Q_flrand(0.0f, 1.0f) * 2;
+	particle->height = ATMOSPHERIC_SNOW_HEIGHT + ETF_random() * 2;
 	particle->weight = particle->height * 0.5f;
 	particle->effectshader = &cg_atmFx.effectshaders[0];
-//	particle->effectshader = &cg_atmFx.effectshaders[ (int) (Q_flrand(0.0f, 1.0f) * ( cg_atmFx.numEffectShaders - 1 )) ];
+//	particle->effectshader = &cg_atmFx.effectshaders[ (int) (ETF_random() * ( cg_atmFx.numEffectShaders - 1 )) ];
 
 //	generatetime += trap_Milliseconds() - msec;
 	return( qtrue );
@@ -547,7 +547,7 @@ static qboolean CG_SnowParticleCheckVisible( cg_atmosphericParticle_t *particle 
 		skyHeight = BG_GetSkyHeightAtPoint( particle->pos );
 		if( skyHeight == MAX_ATMOSPHERIC_HEIGHT )
 			return CG_SetParticleActive( particle, ACT_NOT );
-		particle->pos[ 2 ] = groundHeight + Q_flrand(0.0f, 1.0f) * (skyHeight - groundHeight);
+		particle->pos[ 2 ] = groundHeight + ETF_random() * (skyHeight - groundHeight);
 		
 		// ydnar: valid spot?
 		if( particle->pos[ 2 ] <= groundHeight || particle->pos[ 2 ] >= skyHeight )

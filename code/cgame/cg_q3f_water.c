@@ -208,8 +208,8 @@ void CG_Q3F_RenderWater() {
 
 	// every second, cause a distortion at a random point
 	/*if( lastwaterpoketime < cg.time ) {
-		x = Q_flrand(0.0f, 1.0f) * watersurf.sub[0];
-		y = Q_flrand(0.0f, 1.0f) * watersurf.sub[1];
+		x = ETF_random() * watersurf.sub[0];
+		y = ETF_random() * watersurf.sub[1];
 		watersurf.verts[x][y].xyz[2] = 8;
 		watersurf.verts[x][y+1].xyz[2] = 8;
 		watersurf.verts[x+1][y].xyz[2] = 8;

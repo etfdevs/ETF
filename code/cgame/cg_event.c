@@ -1148,7 +1148,7 @@ void CG_Q3F_Vibrate( int val, vec3_t position )
 	if( cg.vibrateMagnitude < 0 )
 		cg.vibrateMagnitude = 0;
 
-	cg.vibrateOffset	= Q_flrand(0.0f, 1.0f) * 360;	// Always on the 'up' half
+	cg.vibrateOffset	= ETF_random() * 360;	// Always on the 'up' half
 	cg.vibrateTime		= cg.time;
 }
 

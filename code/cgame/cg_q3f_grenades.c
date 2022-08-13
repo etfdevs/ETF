@@ -161,7 +161,7 @@ static qboolean NapalmRender( centity_t *cent, refEntity_t *ent )
 		le->radiusrate = (40.0 - 10.0) / 1000.0;
 
 		re = &le->refEntity;
-		re->rotation = Q_flrand(0.0f, 1.0f) * 360;
+		re->rotation = ETF_random() * 360;
 		le->leType = LE_NAPALM_FLAME;
 
 		le->pos.trType = TR_LINEAR;
@@ -285,7 +285,7 @@ void CG_PulseExplosion(vec3_t base_origin) {
 								  PULSEDURATION*0.8,
 								  0.6,
 								  cgs.media.pulseBeamShader );
-			CG_OldMark(cgs.media.energyMarkShader,trace.endpos, trace.plane.normal,Q_flrand(0.0f, 1.0f)*360,7,colorWhite,cg_markTime.integer >> 1,LEMFT_ALPHA);
+			CG_OldMark(cgs.media.energyMarkShader,trace.endpos, trace.plane.normal,ETF_random()*360,7,colorWhite,cg_markTime.integer >> 1,LEMFT_ALPHA);
 		}
 	} else {
 		/*le = */CG_MakeExplosion(	origin, 800, 2, 4,
@@ -304,7 +304,7 @@ static qboolean PulseRender( centity_t *cent, refEntity_t *ent ) {
 
 		trap_S_StartSound( ent->origin, ENTITYNUM_WORLD, CHAN_AUTO, cgs.media.sfx_pulseexp );
 		CG_PulseExplosion( cent->lerpOrigin);
-		CG_OldMark(cgs.media.energyMarkShader,cent->lerpOrigin,dir,Q_flrand(0.0f, 1.0f)*360,gren->g->damage / 2,colorWhite,cg_markTime.integer >> 1,LEMFT_ALPHA);
+		CG_OldMark(cgs.media.energyMarkShader,cent->lerpOrigin,dir,ETF_random()*360,gren->g->damage / 2,colorWhite,cg_markTime.integer >> 1,LEMFT_ALPHA);
 		CG_Q3F_Vibrate( gren->g->damage, ent->origin );
 	}
 	return( qtrue );
@@ -593,7 +593,7 @@ static qboolean NailRender( centity_t *cent, refEntity_t *ent )
 								{
 									// Adding this extra check prevents nailbomb nails from creating explosion marks on sky
 									// and other noimpact surfaces
-									trace.endpos[2] += Q_flrand(-1.0f, 1.0f) * 6;
+									trace.endpos[2] += ETF_crandom() * 6;
 									CG_BulletExplosion( trace.endpos, trace.plane.normal );
 									CG_BulletMark(cgs.media.bulletMarkShader,trace.endpos,trace.plane.normal,8,colorWhite);
 								}

@@ -298,6 +298,8 @@ set(api_files
 	api/shared/q_math.h
 	api/shared/q_path.c
 	api/shared/q_path.h
+	api/shared/q_rand.c
+	api/shared/q_rand.h
 	api/shared/q_string.c
 	api/shared/q_string.h
 	api/et/q_shared.c

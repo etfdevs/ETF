@@ -87,13 +87,13 @@ static void CG_MiniGunEjectBrass( centity_t *cent, refEntity_t *parent ) {
 	}
 
 	for ( i = 0; i < 2; i++ ) {
-		le = CG_AllocLocalEntity(cg_brassTime.integer + ( cg_brassTime.integer / 4 ) * Q_flrand(0.0f, 1.0f));
+		le = CG_AllocLocalEntity(cg_brassTime.integer + ( cg_brassTime.integer / 4 ) * ETF_random());
 		re = &le->refEntity;
 		re->frame = re->oldframe = 0;
 
-		velocity[0] = -20 + 25 * Q_flrand(-1.0f, 1.0f);
-		velocity[1] = -80 + 30 * Q_flrand(-1.0f, 1.0f);
-		velocity[2] = 50 + 15 * Q_flrand(-1.0f, 1.0f);
+		velocity[0] = -20 + 25 * ETF_crandom();
+		velocity[1] = -80 + 30 * ETF_crandom();
+		velocity[2] = 50 + 15 * ETF_crandom();
 
 		le->leType = LE_FRAGMENT;
 
@@ -156,16 +156,16 @@ static void CG_SingleShotgunEjectBrass( centity_t *cent, refEntity_t *parent ) {
 	for ( i = 0; i < 1; i++ ) {
 		float	waterScale = 1.0f;
 
-		le = CG_AllocLocalEntity( cg_brassTime.integer*3 + cg_brassTime.integer * Q_flrand(0.0f, 1.0f) );
+		le = CG_AllocLocalEntity( cg_brassTime.integer*3 + cg_brassTime.integer * ETF_random() );
 		re = &le->refEntity;
 
-		velocity[0] = 60 + 60 * Q_flrand(-1.0f, 1.0f);
+		velocity[0] = 60 + 60 * ETF_crandom();
 		if ( i == 0 ) {
-			velocity[1] = 40 + 10 * Q_flrand(-1.0f, 1.0f);
+			velocity[1] = 40 + 10 * ETF_crandom();
 		} else {
-			velocity[1] = -40 + 10 * Q_flrand(-1.0f, 1.0f);
+			velocity[1] = -40 + 10 * ETF_crandom();
 		}
-		velocity[2] = 100 + 50 * Q_flrand(-1.0f, 1.0f);
+		velocity[2] = 100 + 50 * ETF_crandom();
 
 		le->leType = LE_FRAGMENT;
 
@@ -230,16 +230,16 @@ static void CG_ShotgunEjectBrass( centity_t *cent, refEntity_t *parent ) {
 	for ( i = 0; i < 2; i++ ) {
 		float	waterScale = 1.0f;
 
-		le = CG_AllocLocalEntity( cg_brassTime.integer*3 + cg_brassTime.integer * Q_flrand(0.0f, 1.0f) );
+		le = CG_AllocLocalEntity( cg_brassTime.integer*3 + cg_brassTime.integer * ETF_random() );
 		re = &le->refEntity;
 
-		velocity[0] = 60 + 60 * Q_flrand(-1.0f, 1.0f);
+		velocity[0] = 60 + 60 * ETF_crandom();
 		if ( i == 0 ) {
-			velocity[1] = 40 + 10 * Q_flrand(-1.0f, 1.0f);
+			velocity[1] = 40 + 10 * ETF_crandom();
 		} else {
-			velocity[1] = -40 + 10 * Q_flrand(-1.0f, 1.0f);
+			velocity[1] = -40 + 10 * ETF_crandom();
 		}
-		velocity[2] = 100 + 50 * Q_flrand(-1.0f, 1.0f);
+		velocity[2] = 100 + 50 * ETF_crandom();
 
 		le->leType = LE_FRAGMENT;
 
@@ -1432,7 +1432,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	}
 	angles[YAW] = 0;
 	angles[PITCH] = 0;
-	angles[ROLL] = Q_flrand(-1.0f, 1.0f) * 10;
+	angles[ROLL] = ETF_crandom() * 10;
 	AnglesToAxis( angles, flash.axis );
 
 	ci = &cgs.clientinfo[ cent->currentState.clientNum ];
@@ -2455,7 +2455,7 @@ static void CG_MinigunPellet( vec3_t start, vec3_t end, int skipNum ) {
 		//CG_Tracer(start, tr.endpos, qfalse);
 		rgba[0]=rgba[1]=rgba[2]=rgba[3]=1.f;
 
-		if ( Q_flrand(0.0f, 1.0f) > 0.8f )
+		if ( ETF_random() > 0.8f )
 			CG_Tracer(start, tr.endpos, qfalse, 1, cgs.media.tracerShader, rgba);
 	}
 	CG_Q3F_Vibrate( 1, tr.endpos );	// Golliwog: Each pellet does a single point of vibration
@@ -2730,7 +2730,7 @@ void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, 
 		if ( CG_CalcMuzzlePoint( sourceEntityNum, start, NULL ) ) {
 			CG_BubbleTrail( start, end, 32 );	
 			// draw a tracer
-			if ( Q_flrand(0.0f, 1.0f) < cg_tracerChance.value ) {
+			if ( ETF_random() < cg_tracerChance.value ) {
 				//CG_Tracer( start, end, qtrue );
 				rgba[0]=rgba[1]=rgba[2]=rgba[3]=1.f;
 				CG_Tracer(start, end, qtrue, 1, cgs.media.tracerShader, rgba);
@@ -2762,7 +2762,7 @@ void CG_SniperBullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean f
 		if ( CG_CalcMuzzlePoint( sourceEntityNum, start, NULL ) ) {
 			CG_BubbleTrail( start, end, 32 );	
 			// draw a tracer
-			if ( Q_flrand(0.0f, 1.0f) < cg_tracerChance.value ) {
+			if ( ETF_random() < cg_tracerChance.value ) {
 				//CG_Tracer( start, end, qtrue );
 				rgba[0]=rgba[1]=rgba[2]=rgba[3]=1.f;
 				CG_Tracer(start, end, qtrue, 1, cgs.media.tracerShader, rgba);
