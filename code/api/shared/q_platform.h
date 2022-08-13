@@ -107,7 +107,7 @@ If you have questions concerning this license or the applicable additional terms
 		#define MACOS_X
 	#endif
 
-	#define OS_STRING "macosx"
+	#define OS_STRING "macOS"
 	#define QINLINE /*inline*/
 	#define	PATH_SEP '/'
 
@@ -121,9 +121,13 @@ If you have questions concerning this license or the applicable additional terms
 		#define idx64
 		#define ARCH_STRING "x86_64"
 		#define Q3_LITTLE_ENDIAN
+	#elif defined(__aarch64__)
+		#define arm64
+		#define ARCH_STRING "arm64"
+		#define Q3_LITTLE_ENDIAN
 	#endif
 
-    #define DLL_EXT ".dylib"
+    #define DLL_EXT "_mac"
 
 // Linux
 #elif defined(__linux__) || defined(__FreeBSD_kernel__)
