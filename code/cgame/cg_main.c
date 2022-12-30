@@ -1172,20 +1172,36 @@ void NORETURN QDECL CG_Error( const char *msg, ... ) {
 #ifndef CGAME_HARD_LINKED
 // this is only here so the functions in q_shared.c and bg_*.c can link (FIXME)
 
+#define CG_MAXPRINTMSG 8192
+void QDECL Com_DPrintf( const char *fmt, ... ) {
+	va_list argptr;
+	char msg[CG_MAXPRINTMSG];
+
+	if ( !developer.integer ) {
+		return;
+	}
+
+	va_start( argptr, fmt );
+	Q_vsnprintf( msg, sizeof( msg ), fmt, argptr );
+	va_end( argptr );
+
+	trap_Print( msg );
+}
+
 void NORETURN QDECL Com_Error( int level, const char *error, ... ) {
 	va_list		argptr;
-	char		text[1024];
+	char		text[CG_MAXPRINTMSG];
 
 	va_start (argptr, error);
 	Q_vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
-	CG_Error( "%s", text);
+	trap_Error( text);
 }
 
 void QDECL Com_Printf( const char *msg, ... ) {
 	va_list		argptr;
-	char		text[1024];
+	char		text[CG_MAXPRINTMSG];
 
 	va_start (argptr, msg);
 	Q_vsnprintf (text, sizeof(text), msg, argptr);
@@ -1676,8 +1692,7 @@ void CG_LoadMenus(const char *menuFile, qboolean resetHud) {
 		}
 	}
 
-	Com_Printf("UI menu load time = %d milli seconds\n", trap_Milliseconds() - start);
-
+	Com_DPrintf("CG menu load time = %d milli seconds\n", trap_Milliseconds() - start);
 }
 
 

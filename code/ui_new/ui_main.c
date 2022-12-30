@@ -1304,7 +1304,7 @@ void UI_ParseMenu(const char *menuFile) {
 	int handle;
 	pc_token_t token;
 
-	Com_Printf("Parsing menu file:%s\n", menuFile);
+	Com_DPrintf("Parsing menu file: %s\n", menuFile);
 
 	handle = trap_PC_LoadSource(menuFile);
 	if (!handle) {
@@ -1391,6 +1391,7 @@ void UI_LoadMenus(const char *menuFile, qboolean reset) {
 		if (!handle) {
 			trap_Error( S_COLOR_RED "default menu file not found: ui/menus.txt, unable to continue!^7" );
 		}
+		menuFile = "ui/menus.txt";
 	}
 
 	if (reset) {
@@ -1417,7 +1418,7 @@ void UI_LoadMenus(const char *menuFile, qboolean reset) {
 		}
 	}
 
-	Com_Printf("UI menu load time = %d milli seconds\n", trap_Milliseconds() - start);
+	Com_DPrintf("UI menu (%s) load time = %d milli seconds\n", menuFile, trap_Milliseconds() - start);
 
 	trap_PC_FreeSource( handle );
 }

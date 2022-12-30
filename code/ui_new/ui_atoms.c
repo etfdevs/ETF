@@ -41,9 +41,27 @@ If you have questions concerning this license or the applicable additional terms
 // these are here so the functions in q_shared.c can link
 #ifndef UI_HARD_LINKED
 
+#define UI_MAXPRINTMSG 8192
+void QDECL Com_DPrintf( const char *fmt, ... ) {
+	va_list argptr;
+	char msg[UI_MAXPRINTMSG];
+	int developer;
+
+	developer = trap_Cvar_VariableValue( "developer" );
+	if ( !developer ) {
+		return;
+	}
+
+	va_start( argptr, fmt );
+	Q_vsnprintf( msg, sizeof( msg ), fmt, argptr );
+	va_end( argptr );
+
+	trap_Print( msg );
+}
+
 void NORETURN QDECL Com_Error( int level, const char *error, ... ) {
 	va_list		argptr;
-	char		text[1024];
+	char		text[UI_MAXPRINTMSG];
 
 	va_start (argptr, error);
 	Q_vsnprintf (text, sizeof(text), error, argptr);
@@ -54,7 +72,7 @@ void NORETURN QDECL Com_Error( int level, const char *error, ... ) {
 
 void QDECL Com_Printf( const char *msg, ... ) {
 	va_list		argptr;
-	char		text[1024];
+	char		text[UI_MAXPRINTMSG];
 
 	va_start (argptr, msg);
 	Q_vsnprintf (text, sizeof(text), msg, argptr);

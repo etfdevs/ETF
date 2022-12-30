@@ -1230,28 +1230,44 @@ void G_ShutdownGame( int restart )
 #ifndef GAME_HARD_LINKED
 // this is only here so the functions in q_shared.c and bg_*.c can link
 
+#define G_MAXPRINTMSG 8192
+void QDECL Com_DPrintf( const char *fmt, ... ) {
+	va_list argptr;
+	char msg[G_MAXPRINTMSG];
+
+	if ( !trap_Cvar_VariableIntegerValue("developer") ) {
+		return;
+	}
+
+	va_start( argptr, fmt );
+	Q_vsnprintf( msg, sizeof( msg ), fmt, argptr );
+	va_end( argptr );
+
+	trap_Print( msg );
+}
+
 void QDECL Com_Error ( int _level, const char *error, ... ) {
 	va_list		argptr;
-	char		text[1024];
+	char		text[G_MAXPRINTMSG];
 
 	va_start (argptr, error);
 	Q_vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
-	G_Error( "%s", text);
+	trap_Error( text );
 }
 //bani
 void QDECL Com_Error( int _level, const char *error, ... ) __attribute__( ( format( printf,2,3 ) ) );
 
 void QDECL Com_Printf( const char *msg, ... ) {
 	va_list		argptr;
-	char		text[1024];
+	char		text[G_MAXPRINTMSG];
 
 	va_start (argptr, msg);
 	Q_vsnprintf (text, sizeof(text), msg, argptr);
 	va_end (argptr);
 
-	G_Printf ("%s", text);
+	trap_Print( text );
 }
 //bani
 void QDECL Com_Printf( const char *msg, ... ) __attribute__( ( format( printf,1,2 ) ) );
