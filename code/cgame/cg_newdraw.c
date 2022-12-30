@@ -1625,11 +1625,15 @@ static void CG_Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4
 		count = 0;
 	
 		while (s && *s && count < len) {
-			glyph = &font->glyphs[(int)*s]; // TTimo: FIXME: getting nasty warnings without the cast, hopefully this doesn't break the VM build
+			glyph = &font->glyphs[(unsigned char)*s];
 	
 			if ( Q_IsColorStringPtr( s ) ) {
-				memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
-				newColor[3] = color[3];
+				if ( *( s + 1 ) == COLOR_NULL ) {
+					memcpy( &newColor[0], &color[0], sizeof( vec4_t ) );
+				} else {
+					memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
+					newColor[3] = color[3];
+				}
 				trap_R_SetColor( newColor );
 				s += 2;
 				continue;

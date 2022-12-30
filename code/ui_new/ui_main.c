@@ -694,8 +694,12 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, f
 				//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
 
 				if ( Q_IsColorStringPtr( s ) ) {
-					memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
-					newColor[3] = color[3];
+					if ( *( s + 1 ) == COLOR_NULL ) {
+						memcpy( &newColor[0], &color[0], sizeof( vec4_t ) );
+					} else {
+						memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
+						newColor[3] = color[3];
+					}
 					trap_R_SetColor( newColor );
 					s += 2;
 					continue;
@@ -845,8 +849,12 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 		//int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
 		//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
 				if ( Q_IsColorStringPtr( s ) ) {
-					memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
-					newColor[3] = color[3];
+					if ( *( s + 1 ) == COLOR_NULL ) {
+						memcpy( &newColor[0], &color[0], sizeof( vec4_t ) );
+					} else {
+						memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
+						newColor[3] = color[3];
+					}
 					trap_R_SetColor( newColor );
 					s += 2;
 					continue;
@@ -962,8 +970,12 @@ static void Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4_t 
 			if (*s >= GLYPH_CHARSTART) {
 				glyph = &font->glyphs[(unsigned char)*s];
 				if ( Q_IsColorStringPtr( s ) ) {
-					memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
-					newColor[3] = color[3];
+					if ( *( s + 1 ) == COLOR_NULL ) {
+						memcpy( &newColor[0], &color[0], sizeof( vec4_t ) );
+					} else {
+						memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
+						newColor[3] = color[3];
+					}
 					trap_R_SetColor( newColor );
 					s += 2;
 					continue;
