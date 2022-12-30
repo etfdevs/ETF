@@ -2133,8 +2133,11 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 
 				if( newvalue == 0 ) {
 					// Remove Disease
+					qboolean previousInfection = (current->client->diseaseTime > level.time) ? qtrue : qfalse;
 					current->client->diseaseTime = 0;		// Remove the disease.
 					current->client->diseaseEnt = 0;
+					if ( previousInfection )
+						trap_SendServerCommand( current->s.number, "print \"Your infection has been cured.\n\"" );
 				} else {
 					// Give Non-Client Attacker Disease
 					G_Q3F_Disease2_Person(current, other, qfalse);
