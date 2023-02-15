@@ -1206,10 +1206,6 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 	cgs.media.charsetPropB			= trap_R_RegisterShaderNoMip( "menu/art/font2_prop.tga" );
 	//cgs.media.logodisc				= trap_R_RegisterModel( "ui/models/logodisc.md3" );
 
-	if ( !cgs.media.grenadePrimeSound &&
-		*cg_grenadePrimeSound.string )
-		cgs.media.grenadePrimeSound = trap_S_RegisterSound( cg_grenadePrimeSound.string, qfalse );
-
 	//keeg 
 	CG_ClearTrails();
 	CG_InitSmokeSprites();

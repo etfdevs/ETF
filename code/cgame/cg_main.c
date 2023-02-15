@@ -779,11 +779,17 @@ void CG_RegisterCvars( void ) {
 	trap_Cvar_VariableStringBuffer( "sv_running", var, sizeof( var ) );
 	cgs.localServer = atoi( var );
 
+	cgs.grenadePrimeSoundModificationCount = cg_grenadePrimeSound.modificationCount;
 	drawSkyPortalModificationCount = cg_drawSkyPortal.modificationCount;
 
    //keeg set crosshair colors, taken from ET code
 	BG_setCrosshair(cg_crosshairColor.string, cg.xhairColor, cg_crosshairAlpha.value, "cg_crosshairColor");
 	BG_setCrosshair(cg_crosshairColorAlt.string, cg.xhairColorAlt, cg_crosshairAlphaAlt.value, "cg_crosshairColorAlt");
+
+	if ( *cg_grenadePrimeSound.string )
+		cgs.media.grenadePrimeSound = trap_S_RegisterSound( cg_grenadePrimeSound.string, qfalse );
+	else
+		cgs.media.grenadePrimeSound = NULL_SOUND;
 
 	// limit cvars
 	CG_LimitCvars();
@@ -846,7 +852,11 @@ void CG_UpdateCvars( void ) {
 	// check for modications here
 
 	if( cg_grenadePrimeSound.modificationCount != cgs.grenadePrimeSoundModificationCount ) {
-		cgs.media.grenadePrimeSound = 0;
+		cgs.grenadePrimeSoundModificationCount = cg_grenadePrimeSound.modificationCount;
+		if ( *cg_grenadePrimeSound.string )
+			cgs.media.grenadePrimeSound = trap_S_RegisterSound( cg_grenadePrimeSound.string, qfalse );
+		else
+			cgs.media.grenadePrimeSound = NULL_SOUND;
 	}
 
 	// if cg_drawSkyPortal changed, update skybox shader remapping
