@@ -1784,9 +1784,10 @@ void CG_DrawBoundingBox( vec3_t origin, vec3_t mins,vec3_t maxs, vec3_t color );
 //
 // cg_main.c
 //
+extern displayContextDef_t cgDC;
 const char *CG_ConfigString( int index );
 const char *CG_Argv( int arg );
-void CG_Q3F_UpdateCvarLimits( );
+void CG_Q3F_UpdateCvarLimits(void);
 void CG_Q3F_RemapSkyShader( void );
 
 #define BOX_PRINT_MODE_CHAT			0
@@ -1820,22 +1821,22 @@ void CG_MouseEvent(int x, int y);
 void CG_EventHandling(int type, qboolean fForced);
 void CG_RankRunFrame( void );
 void CG_SetScoreSelection(void *menu);
-score_t *CG_GetSelectedScore();
-void CG_BuildSpectatorString();
-void Menu_Reset();
+score_t *CG_GetSelectedScore(void);
+void CG_BuildSpectatorString(void);
+void Menu_Reset(void);
 
 char *CG_Q3F_AddString( const char *str );
 void *CG_Q3F_AddBlock( int size, int alignment );
 char *CG_Q3F_GetLocation( vec3_t origin, qboolean doTrace );
 
-void CG_AssetCache();
-void CG_LoadHudMenu();
+void CG_AssetCache(void);
+void CG_LoadHudMenu(void);
 
 void CG_Q3F_DrawScoreboardTeamScores(rectDef_t *rect, float scale, vec4_t color, int textStyle, 
 									  int textalignment, float text_x, float text_y, fontStruct_t *font);
 
 void CG_SetupIntermissionMenu( void );
-void CG_SortScoreboard();
+void CG_SortScoreboard(void);
 
 //
 // cg_view.c
@@ -1903,23 +1904,23 @@ void CG_Text_Paint_MaxWidth(float x, float y, float scale, vec4_t color, const c
 void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment);
 int CG_Text_Width(const char *text, float scale, int limit, fontStruct_t *parentfont);
 int CG_Text_Height(const char *text, float scale, int limit, fontStruct_t *parentfont);
-void CG_SelectPrevPlayer();
-void CG_SelectNextPlayer();
+void CG_SelectPrevPlayer(void);
+void CG_SelectNextPlayer(void);
 float CG_GetValue(int ownerDraw);
 qboolean CG_OwnerDrawVisible(int flags);
-void CG_RunMenuScript(char **args);
-void CG_ShowResponseHead();
+void CG_RunMenuScript(const char **args);
+void CG_ShowResponseHead(void);
 void CG_SetPrintString(int type, const char *p);
-void CG_InitTeamChat();
+void CG_InitTeamChat(void);
 void CG_GetTeamColor(vec4_t *color);
-const char *CG_Q3F_TeamStatus();
-const char *CG_GetKillerText();
+const char *CG_Q3F_TeamStatus(void);
+const char *CG_GetKillerText(void);
 void CG_Draw3DModel( float x, float y, float w, float h, qhandle_t model, qhandle_t skin, vec3_t origin, vec3_t angles );
 void CG_Text_PaintChar(float x, float y, float width, float height, float scale, float s, float t, float s2, float t2, qhandle_t hShader);
-void CG_CheckOrderPending();
-const char *CG_GameTypeString();
-qboolean CG_YourTeamHasFlag();
-qboolean CG_OtherTeamHasFlag();
+void CG_CheckOrderPending(void);
+const char *CG_GameTypeString(void);
+qboolean CG_YourTeamHasFlag(void);
+qboolean CG_OtherTeamHasFlag(void);
 qhandle_t CG_StatusHandle(int task);
 // RR2DO2
 //float CG_DrawOldLagometer( );	// put here to be found
@@ -2045,10 +2046,8 @@ void CG_Bullet( vec3_t origin, int sourceEntityNum, vec3_t normal, qboolean fles
 void CG_Sniper_Bullet( vec3_t origin, int sourceEntityNum, vec3_t normal, qboolean flesh, int fleshEntityNum );
 
 //void CG_RailTrail( clientInfo_t *ci, vec3_t start, vec3_t end );
-void CG_GrappleTrail( centity_t *ent, const weaponInfo_t *wi );
 void CG_AddViewWeapon (playerState_t *ps);
 void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent, int team, centity_t *agentdata );
-void CG_DrawWeaponSelect( void );
 void CG_BotDebugLine(vec3_t start, vec3_t end, vec3_t color);
 void CG_OutOfAmmoChange( void );	// should this be in pmove?
 
@@ -2239,11 +2238,11 @@ void CG_Q3F_MapSentry( centity_t *cent );
 //
 #ifdef API_ET
 void CG_EffectParse( const char *effectstr );
-void CG_AddAtmosphericEffects();
+void CG_AddAtmosphericEffects(void);
 
 // brought in from cg_view and added to atmospheric
 void CG_SetupFrustum( void );
-qboolean CG_CullPoint( vec3_t pt );
+qboolean CG_CullPoint( const vec3_t pt );
 qboolean CG_CullPointAndRadius( const vec3_t pt, vec_t radius);
 #endif
 
@@ -2263,7 +2262,7 @@ void CG_Q3F_Panel( centity_t *cent );
 //
 // cg_q3f_spawn.c
 //
-void CG_Q3F_ParseEntities();
+void CG_Q3F_ParseEntities(void);
 
 //
 // cg_q3f_mapinfo.c
@@ -2283,10 +2282,10 @@ void CG_SetFlareRenderer( refdef_t *refdef, vec4_t *flareblind );
 //
 // cg_q3f_waypoint.c
 //
-void CG_Q3F_Waypoint();
-void CG_Q3F_WaypointInit();
-void CG_Q3F_WaypointMaintain();
-void CG_Q3F_WaypointCommand();
+void CG_Q3F_Waypoint(void);
+void CG_Q3F_WaypointInit(void);
+void CG_Q3F_WaypointMaintain(void);
+void CG_Q3F_WaypointCommand(void);
 
 //
 // cg_q3f_rendereffects.c
@@ -2508,16 +2507,16 @@ void		trap_R_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs );
 void		trap_R_RemapShader( const char *oldShader, const char *newShader, const char *timeOffset );
 
 // Save out the old render info so we don't kill the LOD system here
-void trap_R_SaveViewParms();
+void trap_R_SaveViewParms(void);
 
 // Reset the view parameters
-void trap_R_RestoreViewParms();
+void trap_R_RestoreViewParms(void);
 
 // Save out the old render info so we don't kill the LOD system here
-void trap_R_SaveViewParms();
+void trap_R_SaveViewParms(void);
 
 // Reset the view parameters
-void trap_R_RestoreViewParms();
+void trap_R_RestoreViewParms(void);
 
 // Set fog
 void	trap_R_SetFog( int fogvar, int var1, int var2, float r, float g, float b, float density);

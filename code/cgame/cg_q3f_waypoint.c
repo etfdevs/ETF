@@ -38,8 +38,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "cg_local.h"
 
-extern displayContextDef_t cgDC;
-
 typedef struct cg_q3f_waypoint_s {
 	int time, highlightStart, highlightEnd;
 	vec3_t pos;
@@ -215,7 +213,7 @@ float CG_Q3F_AngleToCoord( float angle, int coordRange, float fov, qboolean reve
 }
 
 
-void CG_Q3F_Waypoint()
+void CG_Q3F_Waypoint(void)
 {
 	// Draw each waypoint on screen as a 2d sprite.
 
@@ -320,7 +318,7 @@ void CG_Q3F_Waypoint()
 ***** Waypoint handling functions
 ****/
 
-void CG_Q3F_WaypointInit()
+void CG_Q3F_WaypointInit(void)
 {
 	// Clear out the waypoint table before use.
 
@@ -341,7 +339,7 @@ void CG_Q3F_WaypointExpire( int index )
 static int wpnexttime;
 static vec3_t	playerMins = {-15, -15, -24};
 static vec3_t	playerMaxs = {15, 15, 32};
-void CG_Q3F_WaypointMaintain()
+void CG_Q3F_WaypointMaintain(void)
 {
 	// Expire and delete reached waypoints.
 
@@ -394,7 +392,7 @@ void CG_Q3F_WaypointMaintain()
 	}
 }
 
-void CG_Q3F_WaypointCommand()
+void CG_Q3F_WaypointCommand(void)
 {
 	// The user has been sent a waypoint by the server.
 	// Format is: sendernum x y z "message"

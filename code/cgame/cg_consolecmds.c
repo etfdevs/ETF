@@ -1210,7 +1210,7 @@ hudCommandDef_t hudCommandList[] =
 	{"scrollup",	&HudScript_ScrollUp},					// group/name
 };
 
-int hudCommandCount = sizeof(hudCommandList) / sizeof(commandDef_t);
+static const int hudCommandCount = (int)ARRAY_LEN(hudCommandList);
 
 static void CG_Q3F_HudScript_f( void ) {
 	char buffer[1024];
@@ -1649,4 +1649,3 @@ void CG_InitConsoleCommands( void ) {
 			trap_AddCommand( str );
 	}
 }
-

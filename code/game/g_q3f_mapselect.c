@@ -305,7 +305,7 @@ static void G_Q3F_MapSelectParseGMapVoteIncludeList( void )
 }*/
 
 void ExitLevel (void);
-void G_Q3F_MapSelectInit()
+void G_Q3F_MapSelectInit(void)
 {
 	// Prepare the list of maps to query
 
@@ -381,7 +381,7 @@ void G_Q3F_MapSelectInit()
 	trap_SetConfigstring( CS_FORTS_MAPVOTETALLY, buff );
 }
 
-void G_Q3F_MapSelectQuery()
+void G_Q3F_MapSelectQuery(void)
 {
 	// Called every frame during intermission.
 	// The query/response phase has been removed, on the assumption that most

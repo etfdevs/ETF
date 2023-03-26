@@ -40,8 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "../game/bg_q3f_playerclass.h"
 #include "cg_q3f_menu.h"
 
-extern displayContextDef_t cgDC;
-
 /*
 ==============
 CG_CheckAmmo

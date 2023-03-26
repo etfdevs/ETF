@@ -44,10 +44,10 @@ const char *String_Alloc(const char *p);
 typedef struct mapInfoKeyHandler_s
 {
 	const char *keyname;
-	qboolean (*func)(mapInfo* info, char* value, char** buf);
+	qboolean (*func)(mapInfo* info, const char* value, const char** buf);
 } mapInfoKeyHandler_t;
 
-static qboolean MapInfo_KeyHandlerMap(mapInfo* info, char* value, char** buf) {
+static qboolean MapInfo_KeyHandlerMap(mapInfo* info, const char* value, const char** buf) {
 	info->mapName = String_Alloc(value);
 	info->imageName = String_Alloc(va("levelshots/%s", value));
 	info->levelShot = -1;
@@ -55,35 +55,35 @@ static qboolean MapInfo_KeyHandlerMap(mapInfo* info, char* value, char** buf) {
 	return qtrue;
 }
 
-static qboolean MapInfo_KeyHandlerLongName(mapInfo* info, char* value, char** buf) {
+static qboolean MapInfo_KeyHandlerLongName(mapInfo* info, const char* value, const char** buf) {
 	info->mapName = String_Alloc(value);
 	return qtrue;
 }
 
-static qboolean MapInfo_KeyHandlerGameIndicies(mapInfo* info, char* value, char** buf) {
+static qboolean MapInfo_KeyHandlerGameIndicies(mapInfo* info, const char* value, const char** buf) {
 	info->gameIndicies = String_Alloc(value);
 	return qtrue;
 }
 
-static qboolean MapInfo_KeyHandlerType(mapInfo* info, char* value, char** buf) {
+static qboolean MapInfo_KeyHandlerType(mapInfo* info, const char* value, const char** buf) {
 	if( strstr( value, MAPINFO_TYPE ) ) {
 		return qtrue;
 	}
 	return qfalse;
 }
 
-static qboolean GameInDex_KeyHandlerLongName(gameIndexInfo_t* info, char* value, char** buf) {
+static qboolean GameInDex_KeyHandlerLongName(gameIndexInfo_t* info, const char* value, const char** buf) {
 	Q_strncpyz(info->name, va("%d: %s", info->number, value), 256);
 
 	return qtrue;
 }
 
-static qboolean GameInDex_KeyHandlerMapinfo(gameIndexInfo_t* info, char* value, char** buf) {
+static qboolean GameInDex_KeyHandlerMapinfo(gameIndexInfo_t* info, const char* value, const char** buf) {
 	char buff[1024];
 	int i;
-	char *p;
+	const char *p;
 	
-	for(i = 0, p = value; *p && i < 1024-1; p++, i++) {
+	for(i = 0, p = value; *p && i < (int)ARRAY_LEN(buff)-1; p++, i++) {
 		if( *p == '\\') {
 			p++;
 			switch(*p) {
@@ -108,19 +108,19 @@ static qboolean GameInDex_KeyHandlerMapinfo(gameIndexInfo_t* info, char* value, 
 typedef struct gameIndexKeyHandler_s
 {
 	const char *keyname;
-	qboolean (*func)(gameIndexInfo_t* info, char* value, char** buf);
+	qboolean (*func)(gameIndexInfo_t* info, const char* value, const char** buf);
 } gameIndexKeyHandler_t;
 
-gameIndexKeyHandler_t gameIndexDefKeyHandlers[] = {
+static const gameIndexKeyHandler_t gameIndexDefKeyHandlers[] = {
 	{"longname",		GameInDex_KeyHandlerLongName},
 	{"mapinfo",			GameInDex_KeyHandlerMapinfo},
 	{NULL, NULL}
 };
 
-static qboolean MapInfo_KeyHandlerGameIndexDef(mapInfo* info, char* value, char** buf) {
-	char	*token;
+static qboolean MapInfo_KeyHandlerGameIndexDef(mapInfo* info, const char* value, const char** buf) {
+	const char	*token;
 	char	key[MAX_TOKEN_CHARS];
-	gameIndexKeyHandler_t* handler;
+	const gameIndexKeyHandler_t* handler;
 
 	info->gameIndiciesInfo[info->numGameIndicies].number = atoi(value);
 	info->gameIndiciesInfo[info->numGameIndicies].description = NULL;
@@ -153,7 +153,7 @@ static qboolean MapInfo_KeyHandlerGameIndexDef(mapInfo* info, char* value, char*
 
 		token = COM_ParseExt( buf, qfalse );
 		if ( !token[0] ) {
-			strcpy( token, "<NULL>" );		
+			token = "<NULL>";
 		}
 
 		for(handler = gameIndexDefKeyHandlers; handler->keyname; handler++) {
@@ -167,7 +167,7 @@ static qboolean MapInfo_KeyHandlerGameIndexDef(mapInfo* info, char* value, char*
 }
 
 
-mapInfoKeyHandler_t mapInfoKeyHandlers[] = {
+static const mapInfoKeyHandler_t mapInfoKeyHandlers[] = {
 	{"map",				MapInfo_KeyHandlerMap},
 	{"longname",		MapInfo_KeyHandlerLongName},
 	{"type",			MapInfo_KeyHandlerType},
@@ -181,10 +181,10 @@ mapInfoKeyHandler_t mapInfoKeyHandlers[] = {
 BG_ParseInfos
 ===============
 */
-qboolean BG_ParseInfos( char *buf, mapInfo* miList, int* index) {
-	char	*token;
+static qboolean BG_ParseInfos( const char *buf, mapInfo* miList, int* index) {
+	const char	*token;
 	char	key[MAX_TOKEN_CHARS];
-	mapInfoKeyHandler_t* handler;
+	const mapInfoKeyHandler_t* handler;
 
 	memset(&miList[*index], 0, sizeof(mapInfo));
 
@@ -225,7 +225,7 @@ qboolean BG_ParseInfos( char *buf, mapInfo* miList, int* index) {
 
 		token = COM_ParseExt( &buf, qfalse );
 		if ( !token[0] ) {
-			strcpy( token, "<NULL>" );		
+			token = "<NULL>";
 		}
 
 		for(handler = mapInfoKeyHandlers; handler->keyname; handler++) {

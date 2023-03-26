@@ -98,7 +98,7 @@ static qboolean G_Q3F_MI_IsSpace( char c )
 	return( c == ' ' || c == '\n' || c == '\t' || c == '\r' );
 }
 
-static char *matchStrings[] = {
+static const char *matchStrings[] = {
 	"-", "and", "to", NULL
 };
 
@@ -107,12 +107,12 @@ static char *matchStrings[] = {
 *****	Main functions
 ****/
 
-char *G_Q3F_GetMapInfoEntry( q3f_keypairarray_t *mpi, char *key, int gameindex, char *defstr )
+char *G_Q3F_GetMapInfoEntry( const q3f_keypairarray_t *mpi, const char *key, int gameindex, const char *defstr )
 {
 	// Find the specified mapinfo key.
 
 	q3f_keypair_t *kp;
-	char *realkey;
+	const char *realkey;
 
 	if( gameindex &&
 		(realkey = G_Q3F_GetString( va( "%s+%d", key, gameindex ) )) &&
@@ -123,20 +123,21 @@ char *G_Q3F_GetMapInfoEntry( q3f_keypairarray_t *mpi, char *key, int gameindex, 
 		(kp = G_Q3F_KeyPairArrayFind( mpi, realkey )) )
 		return( kp->value.d.strdata );
 
-	return( defstr );
+	return( (char *)defstr );
 }
 
-q3f_keypairarray_t *G_Q3F_LoadMapInfo( char *mapname )
+q3f_keypairarray_t *G_Q3F_LoadMapInfo( const char *mapname )
 {
 	// Parse the mapinfo file and generate a set of data.
 
 	char rawmapname[1024], keyname[1024];
-	char *infoname, *rawmpi, *ptr, *ptr2, *ptr3, *ptr4;
+	const char *infoname;
+	char *rawmpi, *ptr, *ptr2, *ptr3, *ptr4;
 	int index, c1, c2;//, gameIndices;
 	q3f_keypairarray_t *kpa;
 
 	COM_StripExtension( COM_SkipPath( mapname ), rawmapname, sizeof(rawmapname) );
-	infoname = (char *)va( "%s/%s%s", MAPINFODIR, rawmapname, MAPINFOEXT );
+	infoname = va( "%s/%s%s", MAPINFODIR, rawmapname, MAPINFOEXT );
 
 	memset( &mi, 0, sizeof(mi) );
 	kpa = NULL;
@@ -201,7 +202,7 @@ q3f_keypairarray_t *G_Q3F_LoadMapInfo( char *mapname )
 	}
 
 		// Attempt to load in the old mapinfo file, and parse out player limits.
-	infoname = (char *)va( "%s/%s%s", MAPINFODIR, rawmapname, OLDMAPINFOEXT );
+	infoname = va( "%s/%s%s", MAPINFODIR, rawmapname, OLDMAPINFOEXT );
 	if( (index = trap_FS_FOpenFile( infoname, &mi.infoHandle, FS_READ )) <= 0 )
 	{
 		if( index == 0 )
@@ -253,7 +254,7 @@ q3f_keypairarray_t *G_Q3F_LoadMapInfo( char *mapname )
 	return( kpa );
 }
 
-void G_Q3F_CheckGameIndex()
+void G_Q3F_CheckGameIndex(void)
 {
 	// Ensure the gameindex is valid, and set to 1 otherwise.
 

@@ -56,9 +56,9 @@ typedef struct cg_q3f_sounddict_s {
 
 extern cg_q3f_sounddict_t cg_q3f_sounddict[MAX_SOUND_DICT]; // Ensiform - Type was missing!
 
-void CG_Q3F_ParseSoundDictionary();
+void CG_Q3F_ParseSoundDictionary(void);
 void CG_Q3F_StartSoundString( const char *str );
-void CG_Q3F_PlaySoundDict();
+void CG_Q3F_PlaySoundDict(void);
 
 #endif
 

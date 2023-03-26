@@ -889,7 +889,7 @@ void CG_Q3F_Grenade( centity_t *cent )
 **	Grenade priming/throwing functions
 */
 
-void CG_Q3F_GrenOnePrime()
+void CG_Q3F_GrenOnePrime(void)
 {
 	// Prime grenade type one.
 
@@ -942,7 +942,7 @@ void CG_Q3F_GrenOnePrime()
 		CG_Printf( BOX_PRINT_MODE_CHAT, "%s primed, four seconds.\n", gren->name );			// JT: Used to say 'three seconds'
 	}
 }
-void CG_Q3F_GrenTwoPrime()
+void CG_Q3F_GrenTwoPrime(void)
 {
 	// Prime grenade type two.
 
@@ -993,7 +993,7 @@ void CG_Q3F_GrenTwoPrime()
 	}
 }
 
-void CG_Q3F_GrenThrow()
+void CG_Q3F_GrenThrow(void)
 {
 	// Send a message to the server that we've thrown, reset the throw timer
 	char commandbuff[64];
@@ -1057,7 +1057,7 @@ void CG_Q3F_GrenTwoThrow( void )
 	cg.grenade2latch = 0;
 }
 
-void CG_Q3F_GrenOneToggle()
+void CG_Q3F_GrenOneToggle(void)
 {
 	// Prime OR throw a type 1 grenade
 
@@ -1066,7 +1066,7 @@ void CG_Q3F_GrenOneToggle()
 	else CG_Q3F_GrenOnePrime();
 }
 
-void CG_Q3F_GrenTwoToggle()
+void CG_Q3F_GrenTwoToggle(void)
 {
 	// Prime OR throw a type 2 grenade
 

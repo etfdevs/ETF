@@ -312,7 +312,7 @@ F2RDef_t *F2R_New( int handle ) {
 F2R_Count
 ===============
 */
-int F2R_Count( ) {
+int F2R_Count(void) {
 	return F2RCount;
 }
 
@@ -346,7 +346,7 @@ int F2R_NumGet( F2RDef_t *F2RScript ) {
 F2R_Reset
 ===============
 */
-void F2R_Reset( ) {
+void F2R_Reset(void) {
 	F2RCount = 0;
 }
 

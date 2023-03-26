@@ -553,7 +553,8 @@ Actions that happen once a second
 void ClientTimerActions( gentity_t *ent, int msec ) {
 	gclient_t *client;
 	bg_q3f_playerclass_t *cls;
-	char userinfo[MAX_INFO_STRING], *dataptr;
+	char userinfo[MAX_INFO_STRING];
+	const char *dataptr;
 	int data;
 
 	client = ent->client;
@@ -1585,7 +1586,7 @@ void SpectatorClientEndFrame( gentity_t *ent ) {
 	}
 }
 
-void G_VersionCheck_Init() {
+void G_VersionCheck_Init(void) {
 	trap_FS_FOpenFile( "version.log", &level.versionLogFile, FS_APPEND );
 	if ( !level.versionLogFile ) {
 		G_Printf( "WARNING: Couldn't open logfile: version.log\n");
@@ -1595,7 +1596,7 @@ void G_VersionCheck_Init() {
 	}
 }
 
-void G_VersionCheck_Close() {
+void G_VersionCheck_Close(void) {
 	if ( !level.versionLogFile ) {
 		return;
 	}
@@ -1638,7 +1639,7 @@ void G_VersionLogUser( gentity_t *ent ) {
 	// Loop through each key/value pair and write them to file with the timestamp
 	while( 1 )
 	{
-		Info_NextPair( &info, key, value );
+		Info_NextPair( info, key, value );
 		if( !*info )
 			return;
 
@@ -1647,7 +1648,7 @@ void G_VersionLogUser( gentity_t *ent ) {
 	}
 }
 
-void QDECL G_VersionLogPrintf( const char *fmt, ... ) {
+void QDECL FORMAT_PRINTF(1,2) G_VersionLogPrintf( const char *fmt, ... ) {
 	va_list		argptr;
 	char		string[1024];
 	int			min, tens, sec;

@@ -205,7 +205,7 @@ qboolean	G_Q3F_SpawnVectorOverride( const char *key, const char *defaultString, 
 }
 // Golliwog.
 
-field_t fields[] = {
+static const field_t fields[] = {
 	{"classname", FOFS(classname), F_STRING},
 	{"origin", FOFS(s.origin), F_VECTOR},
 	{"model", FOFS(model), F_STRING},
@@ -506,21 +506,20 @@ qboolean G_CallSpawn( gentity_t *ent ) {
 
 	// check normal spawn functions
 	for ( s=spawns ; s->name ; s++ ) {
-		if ( !strcmp(s->name, ent->classname) ) {
+		if ( !Q_stricmp(s->name, ent->classname) ) {
 			// found it
 			s->spawn(ent);
 			return qtrue;
 		}
 	}
 
-	// check item spawn functions
-
 	// Golliwog: Don't spawn weapons
 	if( !Q_strncmp( "weapon_", ent->classname, 7 ) )
 		return( qfalse );
 
+	// check item spawn functions after possible conversion
 	for ( item=bg_itemlist+1 ; item->classname ; item++ ) {
-		if ( !strcmp(item->classname, ent->classname) ) {
+		if ( !Q_stricmp(item->classname, ent->classname) ) {
 			if( G_ItemDisabled( item ) )
 				return qfalse;
 			G_SpawnItem( ent, item );
@@ -583,7 +582,7 @@ in a gentity
 ===============
 */
 void G_ParseField( const char *key, const char *value, gentity_t *ent ) {
-	field_t	*f;
+	const field_t	*f;
 	byte	*b;
 	float	v;
 	vec3_t	vec;

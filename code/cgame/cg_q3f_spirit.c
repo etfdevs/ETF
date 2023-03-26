@@ -384,7 +384,7 @@ static void SpawnParticle( const SpiritSystem_t *SpiritSystem, pgroup_t *pgroup,
 
 }
 
-int Particle_Count( ) {
+int Particle_Count(void) {
 	int count = 0;
 	particle_t * particle = usedparticles;
 	while (particle) {
@@ -1429,15 +1429,15 @@ static SpiritSystem_t *Spirit_NewSystem( int handle ) {
 Spirit_Count
 ===============
 */
-int Spirit_SystemCount( ) {
+int Spirit_SystemCount(void) {
 	return SpiritSystemCount;
 }
 
-int Spirit_ScriptCount( ) {
+int Spirit_ScriptCount(void) {
 	return SpiritScriptCount;
 }
 
-void Spirit_Reset( ) {
+void Spirit_Reset(void) {
 	SpiritSystemCount = 0;
 	SpiritSystemDepth = 0;
 	SpiritScriptCount = 0;
@@ -1448,7 +1448,7 @@ void Spirit_Reset( ) {
 
 static SpiritScript_t * Spirit_ParseScript(const char *filename); 
 /* CaNaBiS, This could probably go horribly wrong, but might still be useful */
-void Spirit_Reload( ) {
+void Spirit_Reload(void) {
 	int i, oldcount;
 	char name[256];
 	SpiritScript_t *script;

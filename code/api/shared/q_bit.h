@@ -38,9 +38,9 @@ If you have questions concerning this license or the applicable additional terms
 extern "C" {
 #endif
 
-qboolean COM_BitCheck( const int array[], int bitNum );
-void COM_BitSet( int array[], int bitNum );
-void COM_BitClear( int array[], int bitNum );
+qboolean COM_BitCheck( const int array[], unsigned int bitNum );
+void COM_BitSet( int array[], unsigned int bitNum );
+void COM_BitClear( int array[], unsigned int bitNum );
 
 #if defined(__cplusplus)
 } // extern "C"

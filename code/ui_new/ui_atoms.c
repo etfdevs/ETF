@@ -118,7 +118,7 @@ static void	UI_Cache_f( void) {
 	Display_CacheAll();
 }
 
-static qboolean UI_AdvancedConsole()
+static qboolean UI_AdvancedConsole(void)
 {
 	/*
 	 * tjh:  alias/unalias/+action support added
@@ -706,8 +706,31 @@ void UI_DrawNamedPic( float x, float y, float width, float height, const char *p
 }
 
 void UI_DrawHandlePic( float x, float y, float w, float h, qhandle_t hShader ) {
+	float s0;
+	float s1;
+	float t0;
+	float t1;
+
+	if ( w < 0 ) {   // flip about vertical
+		w  = -w;
+		s0 = 1;
+		s1 = 0;
+	} else {
+		s0 = 0;
+		s1 = 1;
+	}
+
+	if ( h < 0 ) {   // flip about horizontal
+		h  = -h;
+		t0 = 1;
+		t1 = 0;
+	} else {
+		t0 = 0;
+		t1 = 1;
+	}
+
 	UI_AdjustFrom640( &x, &y, &w, &h );
-	trap_R_DrawStretchPic( x, y, w, h, 0.f, 0.f, 1.f, 1.f, hShader );
+	trap_R_DrawStretchPic( x, y, w, h, s0, t0, s1, t1, hShader );
 }
 
 void UI_DrawAdjustedPic( float x, float y, float w, float h, qhandle_t hShader ) {

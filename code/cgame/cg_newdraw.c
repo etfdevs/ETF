@@ -46,7 +46,6 @@ If you have questions concerning this license or the applicable additional terms
 #define	DAMAGE_Q3F_FIRE				0x00000400	// Fire damage
 #define	DAMAGE_Q3F_MASK				(DAMAGE_Q3F_SHELL|DAMAGE_Q3F_NAIL|DAMAGE_Q3F_EXPLOSION|DAMAGE_Q3F_SHOCK|DAMAGE_Q3F_FIRE)
 
-extern displayContextDef_t cgDC;
 extern int menuCount;
 
 /*
@@ -1463,7 +1462,7 @@ static void CG_DrawAreaChat(rectDef_t *rect, float scale, vec4_t color, qhandle_
 	CG_Text_Paint(rect->x + text_x, rect->y + rect->h + text_y, scale, color, teamChat2, 0, 0, textStyle, font, textalignment);
 }*/
 
-const char *CG_GetKillerText() {
+const char *CG_GetKillerText(void) {
 	const char *s = "";
 	if ( cg.killerName[0] ) {
 		s = va("Fragged by %s", cg.killerName );
@@ -1481,7 +1480,7 @@ static void CG_DrawKiller(rectDef_t *rect, float scale, vec4_t color, qhandle_t 
 }
 
 /*
-const char *CG_GetGameStatusText() {
+const char *CG_GetGameStatusText(void) {
 	const char *s = "";
 	if ( cgs.gametype < GT_TEAM) {
 		if (cg.snap->ps.persistant[PERS_TEAM] != TEAM_SPECTATOR ) {
@@ -1584,7 +1583,7 @@ static void CG_DrawGameStatus(rectDef_t *rect, float scale, vec4_t color, qhandl
 	CG_Text_Paint(rect->x + text_x, rect->y + rect->h + text_y, scale, color, CG_Q3F_TeamStatus(), 0, 0, textStyle, font, textalignment);
 }
 
-const char *CG_GameTypeString() {
+const char *CG_GameTypeString(void) {
 	if ( cgs.gametype == GT_FORTS ) {
 		return GAME_NAME_CAP;  //"Q3F"; keeg
 	}
@@ -4236,7 +4235,7 @@ int CG_ClientNumFromName(const char *p) {
 	return -1;
 }
 
-void CG_RunMenuScript(char **args) {
+void CG_RunMenuScript(const char **args) {
 
 }
 

@@ -44,7 +44,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "cg_q3f_mapselect.h"
 #include "../ui_new/ui_shared.h"
 
-extern displayContextDef_t cgDC;
 extern int menuCount;
 
 int drawTeamOverlayModificationCount = -1;
@@ -132,7 +131,7 @@ int CG_Text_Width(const char *text, float scale, int limit, fontStruct_t *parent
 }
 
 void CG_Text_Width_To_Max(char *text, float scale, int max, fontStruct_t *parentfont) {
-	int count;
+	//int count;
 	float out;
 	glyphInfo_t *glyph;
 	float useScale;
@@ -161,7 +160,7 @@ void CG_Text_Width_To_Max(char *text, float scale, int max, fontStruct_t *parent
 
 	out = 0;
 	if (text) {
-		count = 0;
+		//count = 0;
 		if ( out > max ) {
 			*s = '\0';
 			return;
@@ -175,7 +174,7 @@ void CG_Text_Width_To_Max(char *text, float scale, int max, fontStruct_t *parent
 					glyph = &font->glyphs[(unsigned char)*s];
 					out += glyph->xSkip * useScale;
 					s++;
-					count++;
+					//count++;
 				}
 
 				if ( out >= max ) {
@@ -1354,7 +1353,7 @@ CG_Q3F_DrawMapInfo
 ===================
 */
 
-/*void CG_Q3F_DrawMapInfo()
+/*void CG_Q3F_DrawMapInfo(void)
 {
 	// Draw map information if the user hasn't selected their team/class yet
 
@@ -1512,7 +1511,7 @@ static void CG_Q3F_DrawScope( void ) {
 
 //==================================================================================
 
-void CG_DrawObits()
+void CG_DrawObits(void)
 {
 	int x, y, i;
 	int todelete = 0;

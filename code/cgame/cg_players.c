@@ -410,7 +410,6 @@ static void CG_LoadClientInfo( int clientNum ) {
 CG_NewClientInfo
 ======================
 */
-extern displayContextDef_t cgDC;
 qboolean CG_Q3F_IsSpectator(const playerState_t* ps);
 void CG_NewClientInfo( int clientNum ) {
 	clientInfo_t *ci;

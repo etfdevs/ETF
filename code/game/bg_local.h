@@ -32,6 +32,9 @@ If you have questions concerning this license or the applicable additional terms
 
 // bg_local.h -- local definitions for the bg (both games) files
 
+#ifndef _BG_LOCAL_H
+#define _BG_LOCAL_H
+
 #ifdef DEBUG_CGAME
 #include "../cgame/cg_local.h"
 #endif
@@ -112,3 +115,5 @@ void PM_AddEvent( int newEvent );
 
 qboolean	PM_SlideMove( qboolean gravity );
 void		PM_StepSlideMove( qboolean gravity, float stepsize );
+
+#endif

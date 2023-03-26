@@ -1211,8 +1211,6 @@ void G_StripPort( const char *in, char *out, int destsize )
 }
 
 
-void G_Q3F_Flyby( gentity_t *ent, qboolean forceOn );
-
 /*
 ===========
 ClientConnect
@@ -1235,7 +1233,8 @@ restarts.
 */
 const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 {
-	char		*value, *reason, *name, *ip;// , *guid;
+	char		*reason;
+	const char	*value, *name, *ip;// , *guid;
 	gclient_t	*client;
 	char		userinfo[MAX_INFO_STRING];
 	char		con_name[MAX_NETNAME];

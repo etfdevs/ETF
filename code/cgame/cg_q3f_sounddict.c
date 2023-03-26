@@ -70,7 +70,7 @@ static int QDECL PSD_SortFunc( const void *a, const void *b )
 	{ return( strcmp( ((cg_q3f_sounddict_t *) a)->key, ((cg_q3f_sounddict_t *) b)->key ) ); }
 
 static qboolean sounddictionaryparsed;
-void CG_Q3F_ParseSoundDictionary()
+void CG_Q3F_ParseSoundDictionary(void)
 {
 	// Initialise the sound dictionary, and parse the text 'map' file.
 	// This might be better loaded in all at once before parsing...
@@ -212,7 +212,7 @@ static qboolean StartSound( char *soundname )
 	return( qfalse );
 }
 
-void CG_Q3F_PlaySoundDict()
+void CG_Q3F_PlaySoundDict(void)
 {
 	// Play a currently running sample
 

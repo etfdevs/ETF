@@ -44,7 +44,6 @@ const char *teamnames[4] = { "red", "blue", "yellow", "green" };
 int drawSkyPortalModificationCount = -1;
 int delayedSounds = 0;
 
-void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum );
 void CG_Shutdown( void );
 static qboolean CG_CheckExecKey( int key );
 
@@ -1295,7 +1294,7 @@ CG_BuildSpectatorString
 
 =======================
 */
-void CG_BuildSpectatorString() {
+void CG_BuildSpectatorString(void ) {
 	int i;
 	cg.spectatorList[0] = 0;
 	for (i = 0; i < MAX_CLIENTS; i++) {
@@ -1333,11 +1332,11 @@ CG_StartMusic
 ======================
 */
 void CG_StartMusic( void ) {
-	char	*s;
+	const char	*s;
 	char	parm1[MAX_QPATH], parm2[MAX_QPATH];
 
 	// start the background music
-	s = (char *)CG_ConfigString( CS_MUSIC );
+	s = CG_ConfigString( CS_MUSIC );
 	Q_strncpyz( parm1, COM_Parse( &s ), sizeof( parm1 ) );
 	Q_strncpyz( parm2, COM_Parse( &s ), sizeof( parm2 ) );
 
@@ -1557,8 +1556,8 @@ void CG_ParseMenu(const char *menuFile) {
 	trap_PC_FreeSource(handle);
 }
 
-qboolean CG_Load_Menu(char **p) {
-	char *token;
+static qboolean CG_Load_Menu(const char **p) {
+	const char *token;
 
 	token = COM_ParseExt(p, qtrue);
 
@@ -1584,8 +1583,8 @@ qboolean CG_Load_Menu(char **p) {
 }
 
 void CG_LoadMenus(const char *menuFile, qboolean resetHud) {
-	char	*token;
-	char *p;
+	const char	*token;
+	const char *p;
 	int	len, start;
 	fileHandle_t	f;
 	static char buf[MAX_MENUDEFFILE];
@@ -1819,7 +1818,7 @@ static int SB_SortFunc(const void* a, const void* b) {
 	}
 }
 
-void CG_SortScoreboard() {
+void CG_SortScoreboard(void) {
 	int i;
 
 	for(i = 0; i < cg.numScores; i++) {
@@ -2397,7 +2396,7 @@ CG_LoadHudMenu();
 
 =================
 */
-void CG_LoadHudMenu() {
+void CG_LoadHudMenu(void) {
 	char buff[1024];
 
 	cgDC.registerShaderNoMip = &trap_R_RegisterShaderNoMip;
@@ -2474,7 +2473,7 @@ void CG_LoadHudMenu() {
 	CG_LoadMenus(buff, qfalse);
 }
 
-void CG_AssetCache() {
+void CG_AssetCache(void) {
 	cgDC.Assets.fxBasePic =				trap_R_RegisterShaderNoMip( ART_FX_BASE );
 	cgDC.Assets.fxPic[0] =				trap_R_RegisterShaderNoMip( ART_FX_RED );
 	cgDC.Assets.fxPic[1] =				trap_R_RegisterShaderNoMip( ART_FX_YELLOW );
@@ -2650,7 +2649,7 @@ char *CG_Q3F_GetLocation( vec3_t origin, qboolean doTrace )
 	return( best ? best->str : (secondbest ? secondbest->str : NULL) );
 }
 
-void CG_IntermissionScoreDump() {
+void CG_IntermissionScoreDump(void) {
 	int i;
 	char buffer[4096];
 

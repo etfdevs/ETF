@@ -714,7 +714,7 @@ void CG_Q3F_Supplystation_Explode( centity_t *cent ) {
 
 #define Q3F_SUPPLYSTATION_MAXHEALTH CG_Q3F_SupplyStationMaxHealth(cent->currentState.legsAnim)
 
-static int CG_Q3F_SupplystationPanel()
+static int CG_Q3F_SupplystationPanel(void)
 {
 	centity_t *cent = (centity_t *) panel.data;
 	int health, shells, nails, rockets, cells, armour, grenades/*, numLines*/;

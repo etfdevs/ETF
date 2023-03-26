@@ -170,7 +170,7 @@ static void CG_Q3F_AddEntityData( void *data, int datasize, int alignment )
 ***** Entity processing
 ****/
 
-static void SP_WorldSpawn()
+static void SP_WorldSpawn(void)
 {
 	char *s;
 	cg.spawning = qtrue;
@@ -192,12 +192,12 @@ static void SP_WorldSpawn()
 	cg.spawning = qfalse;
 }
 
-static void SP_Target_Location()
+static void SP_Target_Location(void)
 {
 	vec3_t loc;
 	char *s;
 
-	if( cgs.numLocations >= (int)(sizeof(cgs.locations) / sizeof(cg_q3f_location_t)) )
+	if( cgs.numLocations >= (int)ARRAY_LEN(cgs.locations) )
 		return;
 
 	if(	!CG_Q3F_SpawnVector( "origin", "0 0 0", loc ) ||
@@ -210,7 +210,7 @@ static void SP_Target_Location()
 	cgs.numLocations++;
 }
 
-static void SP_Panel_Message()
+static void SP_Panel_Message(void)
 {
 	// Store the message strings for client-side rendering.
 
@@ -263,12 +263,12 @@ shader:		path to shader (default: "flareshader")
 radius:		flare radius (default: 1.0, about 64x64 pixels @ 640x480)
 rotation:	initial rotation of light flare
 */
-static void SP_Misc_Flare() {
+static void SP_Misc_Flare(void) {
 	cg_q3f_flare_t flare;
 	char *s;
 	int spawnflags;
 
-	if( cgs.numFlares >= (int)(sizeof(cgs.flares) / sizeof(cg_q3f_flare_t)) )
+	if( cgs.numFlares >= (int)ARRAY_LEN(cgs.flares) )
 		return;
 
 	memset( &flare, 0, sizeof(cg_q3f_flare_t) );
@@ -321,12 +321,12 @@ shader:		path to shader (default: "flareshader")
 radius:		flare radius (default: 1.0, about 64x64 pixels @ 640x480)
 rotation:	initial rotation of light flare
 */
-static void SP_Misc_SunFlare() {
+static void SP_Misc_SunFlare(void) {
 	cg_q3f_flare_t flare;
 	char *s;
 	int spawnflags;
 
-	if( cgs.numSunFlares >= (int)(sizeof(cgs.sunFlares) / sizeof(cg_q3f_flare_t)) )
+	if( cgs.numSunFlares >= (int)ARRAY_LEN(cgs.sunFlares) )
 		return;
 
 	memset( &flare, 0, sizeof(cg_q3f_flare_t) );
@@ -374,7 +374,7 @@ dir:		directional vector at which to emit particles (equivalent to
 			through F2R)
 rotation:	rotation of the axis
 */
-static void SP_Misc_ParticleSystem() {
+static void SP_Misc_ParticleSystem(void) {
 	vec3_t origin, dir;
 	float rotation;
 	char *s;
@@ -394,7 +394,7 @@ static void SP_Misc_ParticleSystem() {
 }
 
 void CG_Q3F_ParallaxShader( char *spawnVars[], int numSpawnVars, vec3_t entOrigin, float xscale, float yscale, float xoff, float yoff, float angle );
-static void SP_Misc_Parallax()
+static void SP_Misc_Parallax(void)
 {
 	vec3_t org;
 	float xscale, yscale, xoff, yoff, angle;
@@ -411,7 +411,7 @@ static void SP_Misc_Parallax()
 #ifdef Q3F_WATER
 void CG_Q3F_WaterShader( vec3_t entOrigin, int xwidth, int ywidth, int xsub, int ysub, float sscale, float tscale, const char *shader );
 #endif // Q3F_WATER
-static void SP_Misc_Water() {
+static void SP_Misc_Water(void) {
 #ifdef Q3F_WATER
 	vec3_t org;
 
@@ -467,8 +467,8 @@ static void SP_Misc_MapSentry(void) {
 }
 
 typedef struct {
-	char *classname;
-	void (* processor)();
+	const char		*classname;
+	void			(*processor)(void);
 } CG_Q3F_EntityProcessor_t;
 
 static CG_Q3F_EntityProcessor_t processors[] = {
@@ -484,7 +484,7 @@ static CG_Q3F_EntityProcessor_t processors[] = {
 	{	"misc_sunportal",		SP_Misc_SunPortal		},
 	{	"misc_mapsentry",		SP_Misc_MapSentry },		// RR2DO2: Mapsentry
 };
-#define NUMPROCESSORS	(sizeof(processors)/sizeof(CG_Q3F_EntityProcessor_t))
+static const int NUMPROCESSORS = (int)ARRAY_LEN(processors);
 
 
 /******************************************************************************
@@ -505,7 +505,7 @@ static int QDECL LS_SortFunc( const void *a, const void *b )
 		return( la->pos[1] - lb->pos[1] );
 	return( la->pos[2] - lb->pos[2] );
 }
-void CG_Q3F_LocationSort()
+void CG_Q3F_LocationSort(void)
 {
 	// Sort the locations so we can do (slightly) faster lookups.
 
@@ -545,7 +545,7 @@ This does not actually spawn an entity.
 The observant may notice it's basically lifted from g_spawn.c
 ====================
 */
-static qboolean CG_Q3F_ParseSpawnVars()
+static qboolean CG_Q3F_ParseSpawnVars(void)
 {
 	char		keyname[MAX_TOKEN_CHARS];
 	char		token[MAX_TOKEN_CHARS];
@@ -589,7 +589,7 @@ static qboolean CG_Q3F_ParseSpawnVars()
 	return( qtrue );
 }
 
-static qboolean CG_Q3F_CheckSpawnGameIndex()
+static qboolean CG_Q3F_CheckSpawnGameIndex(void)
 {
 	// Check that the entity's gameindex string matches the
 	// current gameindex in use.
@@ -624,7 +624,7 @@ static qboolean CG_Q3F_CheckSpawnGameIndex()
 
 qboolean CG_LoadFlareScript( const char *filename );
 
-void CG_Q3F_ParseEntities()
+void CG_Q3F_ParseEntities(void)
 {
 	// The main entry point, performs all the parse functions.
 	// We will soon (hopefully) get access to a trap that gives direct

@@ -1416,7 +1416,7 @@ void G_Q3F_SendClassMenu( gentity_t *player, int teamnum ) {
 	trap_SendServerCommand( player->s.number, "menu class");
 }
 
-void G_Q3F_ValidateEntities()
+void G_Q3F_ValidateEntities(void)
 {
 	// Attempt to validate all entities that are 'attached' to players - 
 	// scanner, disguise, buildings, etc.

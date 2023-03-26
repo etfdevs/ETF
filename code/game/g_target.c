@@ -530,7 +530,7 @@ static int QDECL LS_SortFunc( const void *a, const void *b )
 		return( la->pos[1] - lb->pos[1] );
 	return( la->pos[2] - lb->pos[2] );
 }
-void G_Q3F_LocationSort()
+void G_Q3F_LocationSort(void)
 {
 	// Consolidate and sort the location data.
 

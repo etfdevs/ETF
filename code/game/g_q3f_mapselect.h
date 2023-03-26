@@ -58,8 +58,8 @@ enum g_q3f_mapselectmode_t {
 	Q3F_MAPSELECT_CHANGEMAP,
 };
 
-void G_Q3F_MapSelectQuery();
-void G_Q3F_MapSelectInit();
+void G_Q3F_MapSelectQuery(void);
+void G_Q3F_MapSelectInit(void);
 
 void G_Q3F_MapSelectResponse( gentity_t *ent );
 void G_Q3F_MapSelectVote( gentity_t *ent );

@@ -211,7 +211,7 @@ qboolean CG_Q3F_MapSelectChoice( int choice )
 	return( qtrue );
 }
 
-/*qboolean CG_Q3F_MapSelectVote()
+/*qboolean CG_Q3F_MapSelectVote(void)
 {
 	// User has decided to vote for their preferred map.
 
@@ -236,7 +236,7 @@ qboolean CG_Q3F_MapSelectChoice( int choice )
 **	Process map query from server
 */
 
-void CG_Q3F_MapSelectRespond()
+void CG_Q3F_MapSelectRespond(void)
 {
 	// Process map query from server
 
@@ -274,7 +274,7 @@ void CG_Q3F_MapSelectRespond()
 // 384 pixel grey background for levelshot / map info. Vertically 288, for 4:3 ratio
 // 8 pixel vertical bar at 512-519 (going from 192 to 479)
 
-/*qboolean CG_Q3F_MapSelectDraw()
+/*qboolean CG_Q3F_MapSelectDraw(void)
 {
 	// Draw the map select overlay, if active
 

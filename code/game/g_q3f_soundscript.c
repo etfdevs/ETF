@@ -223,7 +223,7 @@ static qboolean G_Q3F_SSCR_ParseSpeaker( int scriptHandle ) {
 // way that they can't be toggled, but do have all the looping/random
 // capabilities.
 
-qboolean G_Q3F_SSCR_ParseSoundScript( char *mapname ) {
+qboolean G_Q3F_SSCR_ParseSoundScript( const char *mapname ) {
     const char	*scriptName;
 	char	rawmapname[1024];
     int		scriptHandle;

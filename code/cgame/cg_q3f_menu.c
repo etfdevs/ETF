@@ -66,7 +66,7 @@ static char menu_menuname[MAX_MENUNAME_STRING];
 static float menurange;
 static vec3_t menulocation;
 
-void CG_Q3F_MenuInit()
+void CG_Q3F_MenuInit(void)
 {
 	// Reset a menu to 'off', and clear out the buffers
 
@@ -212,7 +212,7 @@ void CG_Q3F_MenuNumCommand( void ) {
 */
 
 static char colourcodes[4] = { COLOR_RED, COLOR_BLUE, COLOR_YELLOW, COLOR_GREEN };
-static void TeamMenu() {
+static void TeamMenu(void) {
 	// Throw up a list of teams
 
 	int numteams, index;
@@ -278,7 +278,7 @@ void CG_Q3F_StartSpectate(void) {
 	trap_SendConsoleCommand( "team s; wait; stopfollow\n" );
 }
 
-static void SpectatorTeamMenu() {
+static void SpectatorTeamMenu(void) {
 	// Throw up a list of teams
 
 	int numteams, index;
@@ -352,7 +352,7 @@ static void SpectatorTeamMenu() {
 	Q_strncpyz(menu_menuname, "menubox_specteam", sizeof(menu_menuname));
 }
 
-void CG_Q3F_SpectatorTypeMenu() {
+void CG_Q3F_SpectatorTypeMenu(void) {
 	// Throw up a list of teams
 
 	int numteams, index;
@@ -442,7 +442,7 @@ void CG_Q3F_SpectatorTypeMenu() {
 	Q_strncpyz(menu_menuname, "menubox_specopts", sizeof(menu_menuname));
 }
 
-void CG_Q3F_StoreClassinfo() {
+void CG_Q3F_StoreClassinfo(void) {
 	int i, count;
 	char allowClasses[11];
 	char classLimits[21];
@@ -508,7 +508,7 @@ void CG_Q3F_StoreClassinfo() {
 	trap_Cvar_Set("hud_maxClasses",		classLimits);
 }
 
-static void ClassMenu() {
+static void ClassMenu(void) {
 	char allowClasses[11];
 	char classLimits[21];
 	char currentClasses[21];
@@ -560,7 +560,7 @@ static void ClassMenu() {
 	}
 }
 
-static void DisguiseMenu() {
+static void DisguiseMenu(void) {
 	// Throw up a 'disguise' menu
 
 	CG_Q3F_MenuInit();
@@ -574,7 +574,7 @@ static void DisguiseMenu() {
 	Q_strncpyz(menu_menuname, "menubox_agentopts", sizeof(menu_menuname));
 }
 
-static void DisguiseTeamMenu()
+static void DisguiseTeamMenu(void)
 {
 	// Throw up a list of teams
 
@@ -618,7 +618,7 @@ static void DisguiseTeamMenu()
 	Q_strncpyz(menu_menuname, "menubox_agentteam", sizeof(menu_menuname));
 }
 
-static void DisguiseClassMenu()
+static void DisguiseClassMenu(void)
 {
 	// Accepts a bitmask of acceptable classes.
 
@@ -648,7 +648,7 @@ static void DisguiseClassMenu()
 	Q_strncpyz(menu_menuname, "menubox_agentclass", sizeof(menu_menuname));
 }
 
-/*static void MapHelpMenu()
+/*static void MapHelpMenu(void)
 {
 	// Throw up a 'maphelp' menu
 	char buff[1280];
@@ -689,7 +689,7 @@ static void DisguiseClassMenu()
 
 static const unsigned char chargetimes[] = { 5, 10, 20, 30, 60, 120, 180 };
 static const int numchargetimes = (int)ARRAY_LEN(chargetimes);
-void ChargeMenu()
+void ChargeMenu(void)
 {
 	// Menu options to lay a charge
 
@@ -712,7 +712,7 @@ void ChargeMenu()
 	Q_strncpyz(menu_menuname, "menubox_charge", sizeof(menu_menuname));
 }
 
-static void DropammoMenu()
+static void DropammoMenu(void)
 {
 	CG_Q3F_MenuInit();
 
@@ -733,7 +733,7 @@ static void DropammoMenu()
 	Q_strncpyz(menu_menuname, "menubox_drop", sizeof(menu_menuname));
 }
 
-static void ReadyMenu()
+static void ReadyMenu(void)
 {
 	// don't show if another menu is already active
 	if(menustate == Q3F_MENUSTATE_READY)
@@ -747,7 +747,7 @@ static void ReadyMenu()
 	Q_strncpyz(menu_menuname, "menubox_ready", sizeof(menu_menuname));
 }
 
-static void VoteMenu()
+static void VoteMenu(void)
 {
 	CG_Q3F_MenuInit();
 
@@ -771,7 +771,7 @@ void MenuCheckVoteTally()
 		Q_strncpyz(menustrings2[1], buffer, 128);
 }
 
-static void BuildMenu()
+static void BuildMenu(void)
 {
 	// Automatically work out what items can be built based on
 	// cells and current structures.
@@ -807,7 +807,7 @@ static void BuildMenu()
 	Q_strncpyz(menu_menuname, "menubox_build", sizeof(menu_menuname));
 }
 
-qboolean CG_Q3F_ShowingSentryUpgradeMenu()
+qboolean CG_Q3F_ShowingSentryUpgradeMenu(void)
 {
 	// Return true if showing an 'upgrade sentry' menu.
 
@@ -816,7 +816,7 @@ qboolean CG_Q3F_ShowingSentryUpgradeMenu()
 	return( qfalse );
 }
 
-qboolean CG_Q3F_ShowingSupplyStationUpgradeMenu()
+qboolean CG_Q3F_ShowingSupplyStationUpgradeMenu(void)
 {
 	// Return true if showing an 'upgrade supply station' menu.
 
@@ -825,7 +825,7 @@ qboolean CG_Q3F_ShowingSupplyStationUpgradeMenu()
 	return( qfalse );
 }
 
-static void UpgradeSentryMenu()
+static void UpgradeSentryMenu(void)
 {
 	// upgrade options for the sentry.
 
@@ -879,7 +879,7 @@ static void UpgradeSentryMenu()
 	Q_strncpyz(menu_menuname, "menubox_upgrade", sizeof(menu_menuname));
 }
 
-static void SupplyStationMenu()
+static void SupplyStationMenu(void)
 {
 	// Throw some options for users to select
 
@@ -912,7 +912,7 @@ static void SupplyStationMenu()
 	isinvismenu = qtrue;
 }
 
-static void UpgradeSupplyStationMenu()
+static void UpgradeSupplyStationMenu(void)
 {
 	// upgrade options for the supply station.
 
@@ -952,7 +952,7 @@ static void UpgradeSupplyStationMenu()
 ** Automatically invoke a menu if we're in an intermediate state
 */
 
-void CG_Q3F_AutoTeamMenu()
+void CG_Q3F_AutoTeamMenu(void)
 {
 	if ( cg.renderingFlyBy || cg.scoreBoardShowing ) 
 	{
@@ -978,7 +978,7 @@ void CG_Q3F_AutoTeamMenu()
 **	The 'dispatcher' function
 */
 
-void CG_Q3F_MenuCommand()
+void CG_Q3F_MenuCommand(void)
 {
 	// The server has sent a 'menu' command
 
@@ -1030,7 +1030,7 @@ void CG_Q3F_MenuCommand()
 	Q_strncpyz( menuname, cmdbuff, sizeof(menu_menuname) );	// Set the current menu for reference
 }
 
-void CG_Q3F_DrawMenuBox() {
+void CG_Q3F_DrawMenuBox(void) {
 	float alpha = 1.f;
 	menuDef_t *menu;
 
@@ -1169,7 +1169,6 @@ void CG_Q3F_DrawMenuTitle(rectDef_t *rect, float scale, vec4_t color, int textSt
 	CG_Text_Paint( rect->x + text_x, rect->y + text_y, scale, newcolor, text, 0, 0, textStyle, font, textalignment);
 }
 
-int CG_Q3F_GetMenuState() {
+int CG_Q3F_GetMenuState(void) {
 	return menustate;
 }
-

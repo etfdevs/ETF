@@ -30,8 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#ifndef __Q_SHARED_H
-#define __Q_SHARED_H
+#ifndef __Q_SHARED_H__
+#define __Q_SHARED_H__
 
 // q_shared.h -- included first by ALL program modules.
 // A user mod should never modify this file
@@ -68,7 +68,7 @@ If you have questions concerning this license or the applicable additional terms
 #define NEW_ANIMS
 #define	MAX_TEAMNAME	32
 
-#if defined _WIN32 && !defined __GNUC__
+#ifdef _MSC_VER
 
 #pragma warning(disable : 4018)     // signed/unsigned mismatch
 #pragma warning(disable : 4032)
@@ -94,9 +94,9 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma warning(disable : 4706)		// assignment within conditional expression
 
-#if defined (_MSC_VER)
+//#if defined (_MSC_VER)
 #pragma warning(disable : 4996)		// 'function': was declared deprecated
-#endif
+//#endif
 
 #endif
 
@@ -121,28 +121,32 @@ If you have questions concerning this license or the applicable additional terms
 #include <sys/stat.h> // rain
 #include <float.h>
 
-//Ignore __attribute__ on non-gcc platforms
-#if !defined(__GNUC__) && !defined(__attribute__)
-	#define __attribute__(x)
+//Ignore __attribute__ on non-gcc/clang platforms
+#if !defined(__GNUC__) && !defined(__clang__)
+#ifndef __attribute__
+#define __attribute__(x)
+#endif
 #endif
 
-#if defined(__GNUC__)
-	#define UNUSED_VAR __attribute__((unused))
+#if defined(__GNUC__) || defined(__clang__)
+#define UNUSED_VAR __attribute__((unused))
 #else
-	#define UNUSED_VAR
+#define UNUSED_VAR
 #endif
 
 #if (defined _MSC_VER)
-	#define Q_EXPORT __declspec(dllexport)
+#define Q_EXPORT __declspec(dllexport)
 #elif (defined __SUNPRO_C)
-	#define Q_EXPORT __global
+#define Q_EXPORT __global
 #elif ((__GNUC__ >= 3) && (!__EMX__) && (!sun))
-	#define Q_EXPORT __attribute__((visibility("default")))
+#define Q_EXPORT __attribute__((visibility("default")))
+#elif (defined(__clang__))
+#define Q_EXPORT __attribute__((visibility("default")))
 #else
-	#define Q_EXPORT
+#define Q_EXPORT
 #endif
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
 #define NORETURN __attribute__((noreturn))
 #define NORETURN_PTR __attribute__((noreturn))
 #elif defined(_MSC_VER)
@@ -154,6 +158,11 @@ If you have questions concerning this license or the applicable additional terms
 #define NORETURN_PTR /* nothing */
 #endif
 
+#if defined(__GNUC__) || defined(__clang__)
+#define FORMAT_PRINTF(x, y) __attribute__((format (printf, x, y)))
+#else
+#define FORMAT_PRINTF(x, y) /* nothing */
+#endif
 // this is the define for determining if we have an asm version of a C function
 #if (defined _M_IX86 || defined __i386__) && !defined __sun__  && !defined __LCC__
 	#define id386	1
@@ -188,8 +197,10 @@ typedef int32_t qhandle_t, thandle_t, fxHandle_t, sfxHandle_t, fileHandle_t, cli
 
 #define PADP(base, alignment)	((void *) PAD((intptr_t) (base), (alignment)))
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 #define QALIGN(x) __attribute__((aligned(x)))
+#elif defined(_MSC_VER)
+#define QALIGN(x) /* __declspec(align(x)) */
 #else
 #define QALIGN(x)
 #endif
@@ -374,16 +385,16 @@ void Com_Memcpy (void* dest, const void* src, const size_t count);
 #define	FRAMETIME			100					// msec
 
 
-void	COM_BeginParseSession( const char *name );
-void	COM_RestoreParseSession( char **data_p );
-void	COM_SetCurrentParseLine( int line );
-int		COM_GetCurrentParseLine( void );
-char	*COM_Parse( char **data_p );
-char	*COM_ParseExt( char **data_p, qboolean allowLineBreak );
-int		COM_Compress( char *data_p );
-void	COM_ParseError( char *format, ... ) __attribute__( ( format( printf,1,2 ) ) );
-void	COM_ParseWarning( char *format, ... ) __attribute__( ( format( printf,1,2 ) ) );
-int		Com_ParseInfos( char *buf, int max, char infos[][MAX_INFO_STRING] );
+void    COM_BeginParseSession( const char *name );
+void    COM_RestoreParseSession( const char **data_p );
+//void    COM_SetCurrentParseLine( int line );
+int     COM_GetCurrentParseLine( void );
+const char	*COM_Parse( const char **data_p );
+const char	*COM_ParseExt( const char **data_p, qboolean allowLineBreak );
+int     COM_Compress( char *data_p );
+void    COM_ParseError( const char *format, ... ) FORMAT_PRINTF(1, 2);
+void    COM_ParseWarning( const char *format, ... ) FORMAT_PRINTF(1, 2);
+int Com_ParseInfos( const char *buf, int max, char infos[][MAX_INFO_STRING] );
 
 #define MAX_TOKENLENGTH		1024
 
@@ -409,17 +420,14 @@ typedef struct pc_token_s
 
 // data is an in/out parm, returns a parsed out token
 
-void	COM_MatchToken( char**buf_p, char *match );
+qboolean SkipBracedSection( const char **program, int depth );
+void SkipRestOfLine( const char **data );
 
-void SkipBracedSection (char **program);
-void SkipBracedSection_Depth (char **program, int depth); // start at given depth if already 
-void SkipRestOfLine ( char **data );
+void Parse1DMatrix( const char **buf_p, int x, float *m);
+void Parse2DMatrix( const char **buf_p, int y, int x, float *m);
+void Parse3DMatrix( const char **buf_p, int z, int y, int x, float *m);
 
-void Parse1DMatrix (char **buf_p, int x, float *m);
-void Parse2DMatrix (char **buf_p, int y, int x, float *m);
-void Parse3DMatrix (char **buf_p, int z, int y, int x, float *m);
-
-int	QDECL Com_sprintf (char *dest, int size, const char *fmt, ...) __attribute__( ( format( printf,3,4 ) ) );
+int  QDECL Com_sprintf( char *dest, int size, const char *fmt, ... ) FORMAT_PRINTF( 3, 4 );
 
 
 // mode parm for FS_FOpenFile
@@ -436,7 +444,7 @@ typedef enum {
 	FS_SEEK_SET
 } fsOrigin_t;
 
-const char *QDECL va(const char *format, ...) __attribute__( ( format( printf,1,2 ) ) );
+const char *QDECL va( const char *format, ... ) FORMAT_PRINTF(1, 2);
 //float	*tv( float x, float y, float z );
 
 //=============================================
@@ -444,18 +452,20 @@ const char *QDECL va(const char *format, ...) __attribute__( ( format( printf,1,
 //
 // key / value info strings
 //
-char *Info_ValueForKey( const char *s, const char *key );
-void Info_RemoveKey( char *s, const char *key );
-void Info_RemoveKey_big( char *s, const char *key );
-void Info_SetValueForKey( char *s, const char *key, const char *value );
-void Info_SetValueForKey_Big( char *s, const char *key, const char *value );
+const char *Info_ValueForKey( const char *s, const char *key );
+void Info_Tokenize( const char *s );
+const char *Info_ValueForKeyToken( const char *key );
+#define Info_SetValueForKey( buf, key, value ) Info_SetValueForKey_s( (buf), MAX_INFO_STRING, (key), (value) )
+qboolean Info_SetValueForKey_s( char *s, int slen, const char *key, const char *value );
 qboolean Info_Validate( const char *s );
-void Info_NextPair( const char **s, char *key, char *value );
+qboolean Info_ValidateKeyValue( const char *s );
+const char *Info_NextPair( const char *s, char *key, char *value );
+int Info_RemoveKey( char *s, const char *key );
 
 // this is only here so the functions in q_shared.c and bg_*.c can link
-void NORETURN	QDECL Com_Error( int level, const char *error, ... ) __attribute__( ( format( printf,2,3 ) ) );
-void	QDECL Com_Printf( const char *msg, ... ) __attribute__( ( format( printf,1,2 ) ) );
-void	QDECL Com_DPrintf( const char *msg, ... ) __attribute__( ( format( printf,1,2 ) ) );
+void	NORETURN QDECL Com_Error( int level, const char *fmt, ... ) FORMAT_PRINTF(2, 3);
+void	QDECL Com_Printf( const char *msg, ... ) FORMAT_PRINTF(1, 2);
+void	QDECL Com_DPrintf( const char *msg, ... ) FORMAT_PRINTF(1, 2);
 
 /*
 ==========================================================

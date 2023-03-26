@@ -43,6 +43,9 @@ If you have questions concerning this license or the applicable additional terms
 extern "C" {
 #endif
 
+extern const byte locase[ 256 ];
+extern const byte upcase[ 256 ];
+
 int Q_isprint( int c );
 int Q_isprintext( int c );
 int Q_isgraph( int c );
@@ -61,7 +64,6 @@ int	Q_strncmp(const char *s1, const char *s2, int n);
 int	Q_stricmpn(const char *s1, const char *s2, int n);
 char *Q_strlwr( char *s1 );
 char *Q_strupr( char *s1 );
-char *Q_strrchr( const char* string, int c );
 
 // buffer size safe library replacements
 void Q_strncpyz( char *dest, const char *src, int destsize );

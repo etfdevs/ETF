@@ -61,9 +61,9 @@ SpiritScript_t *Spirit_LoadScript( const char *filename );
 void Spirit_AddStandAlone( char * script,vec3_t origin, vec3_t dir, float rotation );
 
 void Spirit_SetupKeywordHash( void );
-int Spirit_ScriptCount( );
-int Spirit_SystemCount( );
-void Spirit_Reset( );
-void Spirit_Reload( );
+int Spirit_ScriptCount(void);
+int Spirit_SystemCount(void);
+void Spirit_Reset(void);
+void Spirit_Reload(void);
 
 #endif

@@ -38,11 +38,11 @@ enum BotFlagOptions
 
 //////////////////////////////////////////////////////////////////////////
 
-int             Bot_Interface_Init();
-void            Bot_Interface_InitHandles();
-void            Bot_Interface_Shutdown();
+int             Bot_Interface_Init(void);
+void            Bot_Interface_InitHandles(void);
+void            Bot_Interface_Shutdown(void);
 
-void            Bot_Interface_Update();
+void            Bot_Interface_Update(void);
 
 int             Bot_Interface_ConsoleCommand(int skiparg);
 
@@ -63,7 +63,7 @@ void            Bot_TeleporterDest(gentity_t * pEnt);
 
 //////////////////////////////////////////////////////////////////////////
 
-void            Bot_Event_GameStarted();
+void            Bot_Event_GameStarted(void);
 void            Bot_Event_GameEnded(int _winningteam);
 
 void            Bot_Event_ClientConnected(gentity_t * _player, qboolean _isbot);

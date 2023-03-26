@@ -1155,7 +1155,6 @@ CG_DrawActiveFrame
 Generates and draws a game scene and status information at the given time.
 =================
 */
-extern displayContextDef_t cgDC; // RR2DO2
 
 //#define DEBUGTIME_ENABLED
 #ifdef DEBUGTIME_ENABLED
@@ -1224,8 +1223,8 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	// update cvars
 	CG_UpdateCvars();
 
-   //Keeger polybus hook
-   CG_PB_ClearPolyBuffers();
+	//Keeger polybus hook
+	CG_PB_ClearPolyBuffers();
 
 	//Prepare the amount of particles to spawn for all systems.
 	Spirit_PrepareFrame();

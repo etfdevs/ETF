@@ -94,7 +94,7 @@ void F2R_Init( F2RDef_t *F2RScript ) {
 	memset(F2RScript, 0, sizeof(F2RDef_t));
 }
 
-void F2R_Reset( ) {
+void F2R_Reset(void) {
 	F2RCount = 0;
 	F2RLinks = 0;
 	Memory_Init( MEM_F2R );
@@ -104,7 +104,7 @@ void F2R_Reset( ) {
 }
 
 /* CaNaBiS, This could probably go horribly wrong, but might still be useful */
-void F2R_Reload( ) {
+void F2R_Reload(void) {
 	int i, oldcount;
 	qhandle_t model;
 	char name[256];
@@ -126,7 +126,7 @@ void F2R_Reload( ) {
 	}
 }
 
-int F2R_Count( ) {
+int F2R_Count(void) {
 	return F2RCount + F2RParseDepth;
 }
 

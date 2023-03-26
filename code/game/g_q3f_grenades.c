@@ -556,7 +556,7 @@ extern void HallucinogenicBurnThink( gentity_t * gasgren );
 void HallucinoGenicCheckFire(vec3_t flamepos,float flameradius,gentity_t * owner) {
 	gentity_t *gasgren;
 
-	for( gasgren = g_entities; gasgren < &g_entities[MAX_GENTITIES]; gasgren++ ) {
+	for( gasgren = &g_entities[MAX_CLIENTS]; gasgren < &g_entities[level.num_entities]; gasgren++ ) {
 		vec3_t vec;
 
 		if( !gasgren->inuse )

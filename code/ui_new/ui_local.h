@@ -132,15 +132,11 @@ qboolean UI_Q3F_RegisterClassModels( int classNum );
 // ui_main.c
 //
 void UI_Report(void);
-void UI_Load();
+void UI_Load(void);
 void UI_LoadMenus(const char *menuFile, qboolean reset);
 void UI_SetActiveMenu( uiMenuCommand_t menu );
-int UI_AdjustTimeByGame(int time);
-void UI_ShowPostGame(qboolean newHigh);
-void UI_ShowInGame();
-void UI_ShowEndGame();
-void UI_ShowCustomMenu();
-void UI_ClearScores();
+void UI_ShowInGame(void);
+void UI_ShowEndGame(void);
 void UI_ParseMapInfo( void );
 void UI_ParseHudInfo( void );
 void UI_ParseHudVariantInfo( void );
@@ -150,9 +146,9 @@ void UI_UpdateCvars( void );
 void UI_DrawConnectScreen( qboolean overlay );
 void HUD_BuildPlayerIPList(void);
 void HUD_BuildPlayerBANList(void);
-void UI_Q3F_BuildServerMaplist();
-qboolean UI_PlayerOnTeam();
-qboolean UI_PlayerHasClass();
+void UI_Q3F_BuildServerMaplist(void);
+qboolean UI_PlayerOnTeam(void);
+qboolean UI_PlayerHasClass(void);
 void HUD_ParseScoreInfo(void);
 void UI_ParseStats( void );
 void UI_ParseAwards( void );
@@ -698,8 +694,8 @@ void UI_LoadBestScores(const char *map, int game);
 void			UI_Q3F_DrawProgress( rectDef_t *rect, int value, int maxvalue, vec4_t color, qhandle_t shader );
 // RR2DO2
 
-void	HUD_LoadLanguageData();
-int		HUD_Q3F_GetChosenClass();
+void	HUD_LoadLanguageData(void);
+int		HUD_Q3F_GetChosenClass(void);
 void	HUD_SetupClassQuoteBuffer(float scale, fontStruct_t* font, float w);
 char*	UI_GetBlurbLine(int i);
 
@@ -788,7 +784,7 @@ int				trap_MemoryRemaining( void );
 qboolean		trap_LAN_UpdateVisiblePings( int source );
 void			trap_LAN_MarkServerVisible(int source, int n, qboolean visible);
 void			trap_LAN_ResetPings(int n);
-void			trap_LAN_SaveCachedServers();
+void			trap_LAN_SaveCachedServers(void);
 int				trap_LAN_CompareServers( int source, int sortKey, int sortDir, int s1, int s2 );
 void			trap_LAN_GetServerAddressString( int source, int n, char *buf, int buflen );
 void trap_LAN_GetServerInfo( int source, int n, char *buf, int buflen );
@@ -797,8 +793,8 @@ void			trap_LAN_RemoveServer(int source, const char *addr);
 int				trap_LAN_GetServerPing( int source, int n );
 int				trap_LAN_ServerIsVisible( int source, int n);
 int				trap_LAN_ServerStatus( const char *serverAddress, char *serverStatus, int maxLen );
-void			trap_LAN_SaveCachedServers();
-void			trap_LAN_LoadCachedServers();
+void			trap_LAN_SaveCachedServers(void);
+void			trap_LAN_LoadCachedServers(void);
 qboolean		trap_LAN_ServerIsInFavoriteList( int source, int n );
 
 void			trap_SetPbClStatus( int status );								// DHM - Nerve

@@ -113,7 +113,7 @@ gentity_t      *INDEXENT(const int _gameId)
 
 int ENTINDEX(gentity_t * _ent)
 {
-	return _ent - g_entities;
+	return static_cast<int>(_ent - g_entities);
 }
 
 gentity_t *EntityFromHandle(GameEntity _ent)
@@ -3539,7 +3539,7 @@ class           ETFInterface:public IEngineInterface
 	}
 };
 
-void Bot_Interface_InitHandles()
+void Bot_Interface_InitHandles(void)
 {
 	for(int i = 0; i < MAX_GENTITIES; ++i)
 	{
@@ -3555,7 +3555,7 @@ void Bot_Interface_InitHandles()
 	}
 }
 
-int Bot_Interface_Init()
+int Bot_Interface_Init(void)
 {
 	if(g_OmniBotEnable.integer == 0)
 	{
@@ -3568,7 +3568,7 @@ int Bot_Interface_Init()
 	return err == BOT_ERROR_NONE;
 }
 
-void Bot_Interface_Shutdown()
+void Bot_Interface_Shutdown(void)
 {
 	if(IsOmnibotLoaded())
 	{
@@ -3577,7 +3577,7 @@ void Bot_Interface_Shutdown()
 	Omnibot_FreeLibrary();
 }
 
-void Bot_Interface_Update()
+void Bot_Interface_Update(void)
 {
 	if(IsOmnibotLoaded())
 	{

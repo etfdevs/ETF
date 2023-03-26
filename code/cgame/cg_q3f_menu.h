@@ -42,19 +42,19 @@ If you have questions concerning this license or the applicable additional terms
 #include "../api/et/q_shared.h"
 #include "../ui_new/ui_shared.h"
 
-void CG_Q3F_MenuDraw();						// Render menu every frame
-void CG_Q3F_MenuInit();						// Prepare a new menu
+void CG_Q3F_MenuDraw(void);						// Render menu every frame
+void CG_Q3F_MenuInit(void);						// Prepare a new menu
 void CG_Q3F_MenuCancel( qboolean command );	// 'Cancel' a menu
-void CG_Q3F_MenuCommand();					// Process a menu command
+void CG_Q3F_MenuCommand(void);					// Process a menu command
 void CG_Q3F_UserMenuCommand( void );		// Display a user menu
 qboolean CG_Q3F_MenuChoice( int choice );	// Select a menu option (called from weapon)
 void CG_Q3F_MenuNumCommand( void );			// Process 'menucmd' command.
-qboolean CG_Q3F_ShowingSentryUpgradeMenu();	// 'Upgrade Autosentry' menu is being shown
-qboolean CG_Q3F_ShowingSupplyStationUpgradeMenu(); // 'Upgrade Supply Station' menu is being shown
-void CG_Q3F_AutoTeamMenu();					// Automatically throw up a menu if required
+qboolean CG_Q3F_ShowingSentryUpgradeMenu(void);	// 'Upgrade Autosentry' menu is being shown
+qboolean CG_Q3F_ShowingSupplyStationUpgradeMenu(void); // 'Upgrade Supply Station' menu is being shown
+void CG_Q3F_AutoTeamMenu(void);					// Automatically throw up a menu if required
 void CG_Q3F_StartSpectate( void );			// start spectating mode (free flight)
-void CG_Q3F_SpectatorTypeMenu();			// Spectator options
-void CG_Q3F_DrawMenuBox();
+void CG_Q3F_SpectatorTypeMenu(void);			// Spectator options
+void CG_Q3F_DrawMenuBox(void);
 void CG_Q3F_Menu_DrawItem(int pos, int optnum, rectDef_t *rect, float scale, vec4_t color, int textStyle, 
 									  int textalignment, float text_x, float text_y, fontStruct_t *font);
 qboolean CG_Q3F_GetMenuAlpha(rectDef_t* in, rectDef_t* out, float* alpha);

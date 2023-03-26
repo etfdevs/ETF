@@ -543,7 +543,7 @@ void G_Q3F_UpdateHUD( gentity_t *ent )
 	PackHudData( ent, playerbuff );
 }
 
-void G_Q3F_UpdateHUDIcons()
+void G_Q3F_UpdateHUDIcons(void)
 {
 	// Update all HUD icons
 
@@ -1067,7 +1067,7 @@ void SP_Q3F_item_pack( gentity_t *ent )
 	G_FreeEntity( ent );
 }
 
-void G_Q3F_CTFCompatAdjust()
+void G_Q3F_CTFCompatAdjust(void)
 {
 	// Perform any adjustments required for CTF/WFA maps
 	// This is no longer needed, since it doesn't import
@@ -1324,7 +1324,7 @@ qboolean G_Q3F_NoBuildCheck( vec3_t mins, vec3_t maxs, int team, int mask )
 	return( qfalse );
 }
 
-void G_Q3F_NoBuildFinish()
+void G_Q3F_NoBuildFinish(void)
 {
 	// Just do some cleanup
 
@@ -1422,7 +1422,7 @@ qboolean G_Q3F_NoAnnoyCheck( vec3_t mins, vec3_t maxs, int team, int mask )
 	return( qfalse );
 }
 
-void G_Q3F_NoAnnoyFinish()
+void G_Q3F_NoAnnoyFinish(void)
 {
 	// Just do some cleanup
 
@@ -1432,7 +1432,7 @@ void G_Q3F_NoAnnoyFinish()
 
 qboolean levelhasnoannoys = qfalse;
 
-qboolean G_Q3F_MapHasNoAnnoys()
+qboolean G_Q3F_MapHasNoAnnoys(void)
 {
 	// Useful for making maps that dont use it, less expensive for calling
 	if( !noannoyarray )
@@ -2384,7 +2384,7 @@ static g_q3f_onkill_t *G_Q3F_OnKillCriteria( gentity_t *ent, char *prefix )
 	return( criteria );
 }
 
-void G_Q3F_LinkOnKillChain()
+void G_Q3F_LinkOnKillChain(void)
 {
 	// Build a chain of onkill entities
 

@@ -480,12 +480,12 @@ typedef struct {
 
 typedef struct {
 	const char *name;
-	void (*handler) (itemDef_t *item, char** args);
+	void (*handler) (itemDef_t *item, const char** args);
 } commandDef_t;
 
 typedef struct {
 	const char *name;
-	void (*handler) ();
+	void (*handler) (void);
 } hudCommandDef_t;
 
 // djbob
@@ -525,7 +525,7 @@ typedef struct {
 	void (*drawRect) ( float x, float y, float w, float h, float size, const vec4_t color );
 	void (*drawSides) (float x, float y, float w, float h, float size );
 	void (*drawTopBottom) (float x, float y, float w, float h, float size) ;
-	void (*clearScene) ();
+	void (*clearScene) (void);
 	void (*addRefEntityToScene) (const refEntity_t *re );
 	void (*addLightToScene) ( const vec3_t org, float radius, float intensity, float r, float g, float b, qhandle_t hShader, int flags );
 	void (*renderScene) ( const refdef_t *fd );
@@ -533,14 +533,14 @@ typedef struct {
 	void (*ownerDrawItem) ( itemDef_t *item, float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle, int textalignment );
 	float (*getValue) (int ownerDraw);
 	qboolean (*ownerDrawVisible) (int flags);
-	void (*runScript)(char **p);
+	void (*runScript)(const char **p);
 	void (*getTeamColor)(vec4_t *color);
 	void (*getCVarString)(const char *cvar, char *buffer, int bufsize);
 	float (*getCVarValue)(const char *cvar);
 	void (*setCVar)(const char *cvar, const char *value);
 	void (*drawTextWithCursor)(float x, float y, float scale, vec4_t color, const char *text, int cursorPos, char cursor, int limit, int style, fontStruct_t *parentfont, int textalignment);
 	void (*setOverstrikeMode)(qboolean b);
-	qboolean (*getOverstrikeMode)();
+	qboolean (*getOverstrikeMode)(void);
 	void (*startLocalSound)( sfxHandle_t sfx, int channelNum );
 	qboolean (*ownerDrawHandleKey)(int ownerDraw, int flags, float *special, int key);
 	int (*feederCount)(float feederID, itemDef_t* item);
@@ -560,7 +560,7 @@ typedef struct {
 	qboolean (*ownerDrawSize)(int ownerDraw, rectDef_t* in, rectDef_t* out, itemDef_t* item, float* alpha);
 	sfxHandle_t (*registerSound)(const char *name, qboolean compressed);
 	void (*startBackgroundTrack)( const char *intro, const char *loop, int fadeupTime );
-	void (*stopBackgroundTrack)();
+	void (*stopBackgroundTrack)(void);
 	int (*playCinematic)(const char *name, float x, float y, float w, float h);
 	void (*stopCinematic)(int handle);
 	void (*drawCinematic)(int handle, float x, float y, float w, float h);
@@ -607,38 +607,36 @@ typedef struct {
 } displayContextDef_t;
 
 const char *String_Alloc(const char *p);
-void String_Init();
+void String_Init(void);
 #ifdef CGAME
-void CG_Menu_Init();
+void CG_Menu_Init(void);
 #endif
-void String_Report();
+void String_Report(void);
 void Init_Display(displayContextDef_t *dc);
 void Display_ExpandMacros(char * buff);
 void Menu_Init(menuDef_t *menu);
 void Item_Init(itemDef_t *item);
 void Menu_UpdatePosition(menuDef_t *menu);
 void Menu_PostParse(menuDef_t *menu);
-menuDef_t *Menu_GetFocused();
+menuDef_t *Menu_GetFocused(void);
 void Menu_HandleKey(menuDef_t *menu, int key, qboolean down);
 void Menu_HandleMouseMove(menuDef_t *menu, float x, float y);
 void Menu_ScrollFeeder(menuDef_t *menu, int feeder, qboolean down);
-qboolean Float_Parse(char **p, float *f);
-qboolean Color_Parse(char **p, vec4_t *c);
-qboolean Int_Parse(char **p, int *i);
-qboolean Rect_Parse(char **p, rectDef_t *r);
-qboolean String_Parse(char **p, const char **out);
-qboolean Script_Parse(char **p, const char **out);
+qboolean Float_Parse(const char **p, float *f);
+qboolean Color_Parse(const char **p, vec4_t *c);
+qboolean Int_Parse(const char **p, int *i);
+qboolean Rect_Parse(const char **p, rectDef_t *r);
+qboolean String_Parse(const char **p, const char **out);
 qboolean PC_Float_Parse(int handle, float *f);
 qboolean PC_Color_Parse(int handle, vec4_t *c);
 qboolean PC_Int_Parse(int handle, int *i);
 qboolean PC_Rect_Parse(int handle, rectDef_t *r);
 qboolean PC_String_Parse(int handle, const char **out);
 qboolean PC_Script_Parse(int handle, const char **out);
-int Menu_Count();
 void Menu_New(int handle);
-void Menu_PaintAll();
+void Menu_PaintAll(void);
 menuDef_t *Menus_ActivateByName(const char *p);
-void Menu_Reset();
+void Menu_Reset(void);
 void  Menus_Activate(menuDef_t *menu);
 // RR2DO2
 menuDef_t *Menu_Get( int menu_num );
@@ -648,13 +646,13 @@ void Menus_MoveToY(menuDef_t *menu, int newY);
 void Item_RunScript(itemDef_t *item, const char *s);
 itemDef_t *Menu_ClearFocus(menuDef_t *menu);
 void Menu_ShowItemByName(menuDef_t *menu, const char *p, qboolean bShow);
-void Script_SetFocus(itemDef_t *item, char **args);
+void Script_SetFocus(itemDef_t *item, const char **args);
 
-displayContextDef_t *Display_GetContext();
+displayContextDef_t *Display_GetContext(void);
 void *Display_CaptureItem(int x, int y);
 qboolean Display_MouseMove(void *p, int x, int y);
 int Display_CursorType(int x, int y);
-qboolean Display_KeyBindPending();
+qboolean Display_KeyBindPending(void);
 void Menus_OpenByName(const char *p);
 menuDef_t *Menus_FindByName(const char *p);
 itemDef_t *Menu_FindItemByName(menuDef_t *menu, const char *p);
@@ -662,19 +660,19 @@ void Menus_ShowByName(const char *p);
 void Menus_CloseByName(const char *p);
 void Display_HandleKey(int key, qboolean down, int x, int y);
 void LerpColor(vec4_t a, vec4_t b, vec4_t c, float t);
-void Menus_CloseAll();
+void Menus_CloseAll(void);
 void Menu_Paint(menuDef_t *menu, qboolean forcePaint);
 int Menu_GetFeederSelection(menuDef_t *menu, int feeder, const char *name);
 void Menu_SetFeederSelection(menuDef_t *menu, int feeder, int index, const char *name);
 void Menus_SetFeederSelection(int feeder, int index);
-void Display_CacheAll();
-qboolean Menus_AnyFullScreenVisible();
+void Display_CacheAll(void);
+qboolean Menus_AnyFullScreenVisible(void);
 
 qboolean IsVisible(int flags);
 
 void *UI_Alloc( int size );
 void UI_InitMemory( void );
-qboolean UI_OutOfMemory();
+qboolean UI_OutOfMemory(void);
 
 // RR2DO2
 void UI_Q3F_LoadFontFile( const char *fontName, int pointSize, fontInfo_t *font );

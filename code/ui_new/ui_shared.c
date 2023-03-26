@@ -86,16 +86,12 @@ int openMenuCount = 0;
 
 qboolean debugMode = qfalse;
 
-static int uimousex = 0;
-static int uimousey = 0;
-
 #define DOUBLE_CLICK_DELAY 300
 static int lastListBoxClickTime = 0;
 
 void Item_RunScript(itemDef_t *item, const char *s);
 void Item_SetupKeywordHash(void);
 void Menu_SetupKeywordHash(void);
-int BindingIDFromName(const char *name);
 //qboolean Item_Bind_HandleKey(itemDef_t *item, int key, qboolean down);
 itemDef_t *Menu_SetPrevCursorItem(menuDef_t *menu);
 itemDef_t *Menu_SetNextCursorItem(menuDef_t *menu);
@@ -202,7 +198,7 @@ void UI_InitMemory( void ) {
 	outOfMemory = qfalse;
 }
 
-qboolean UI_OutOfMemory() {
+qboolean UI_OutOfMemory(void) {
 	return outOfMemory;
 }
 
@@ -297,7 +293,7 @@ const char *String_Alloc(const char *p) {
 	return NULL;
 }
 
-void String_Report() {
+void String_Report(void) {
 	float f;
 	Com_Printf("Memory/String Pool Info\n");
 	Com_Printf("----------------\n");
@@ -318,7 +314,7 @@ String_Init
 */
 extern void F2R_SetupKeywordHash( void );
 
-void String_Init() {
+void String_Init(void) {
 	int i;
 	for (i = 0; i < HASH_TABLE_SIZE; i++) {
 		strHandle[i] = 0;
@@ -337,7 +333,7 @@ void String_Init() {
 #endif
 
 #ifdef CGAME
-void CG_Menu_Init() {
+void CG_Menu_Init(void) {
 
 	// Init some settings
 	menuCount = 0;
@@ -421,8 +417,8 @@ void LerpColor(vec4_t a, vec4_t b, vec4_t c, float t)
 Float_Parse
 =================
 */
-qboolean Float_Parse(char **p, float *f) {
-	char	*token;
+qboolean Float_Parse(const char **p, float *f) {
+	const char	*token;
 	token = COM_ParseExt(p, qfalse);
 	if (token && token[0] != 0) {
 		*f = atof(token);
@@ -464,7 +460,7 @@ qboolean PC_Float_Parse(int handle, float *f) {
 Color_Parse
 =================
 */
-qboolean Color_Parse(char **p, vec4_t *c) {
+qboolean Color_Parse(const char **p, vec4_t *c) {
 	int i;
 	float f;
 
@@ -500,8 +496,8 @@ qboolean PC_Color_Parse(int handle, vec4_t *c) {
 Int_Parse
 =================
 */
-qboolean Int_Parse(char **p, int *i) {
-	char	*token;
+qboolean Int_Parse(const char **p, int *i) {
+	const char	*token;
 	token = COM_ParseExt(p, qfalse);
 
 	if (token && token[0] != 0) {
@@ -543,7 +539,7 @@ qboolean PC_Int_Parse(int handle, int *i) {
 Rect_Parse
 =================
 */
-qboolean Rect_Parse(char **p, rectDef_t *r) {
+qboolean Rect_Parse(const char **p, rectDef_t *r) {
 	if (Float_Parse(p, &r->x)) {
 		if (Float_Parse(p, &r->y)) {
 			if (Float_Parse(p, &r->w)) {
@@ -579,8 +575,8 @@ qboolean PC_Rect_Parse(int handle, rectDef_t *r) {
 String_Parse
 =================
 */
-qboolean String_Parse(char **p, const char **out) {
-	char *token;
+qboolean String_Parse(const char **p, const char **out) {
+	const char *token;
 
 	token = COM_ParseExt(p, qfalse);
 	if (token && token[0] != 0) {
@@ -1027,7 +1023,7 @@ itemDef_t *Menu_GetMatchingItemByNumber(menuDef_t *menu, int index, const char *
 
 
 
-void Script_SetColor(itemDef_t *item, char **args) {
+void Script_SetColor(itemDef_t *item, const char **args) {
   const char *name;
   int i;
   float f;
@@ -1056,7 +1052,7 @@ void Script_SetColor(itemDef_t *item, char **args) {
   }
 }
 
-void Script_SetBackground(itemDef_t *item, char **args) {
+void Script_SetBackground(itemDef_t *item, const char **args) {
 	const char *name;
 
 	// expecting name to set asset to
@@ -1083,7 +1079,7 @@ itemDef_t *Menu_FindItemByName(menuDef_t *menu, const char *p) {
 	return NULL;
 }
 
-void Script_SetTeamColor(itemDef_t *item, char **args) {
+void Script_SetTeamColor(itemDef_t *item, const char **args) {
 	if (DC->getTeamColor) {
 		int i;
 		vec4_t color;
@@ -1095,7 +1091,7 @@ void Script_SetTeamColor(itemDef_t *item, char **args) {
 	}
 }
 
-void Script_SetItemColor(itemDef_t *item, char **args) {
+void Script_SetItemColor(itemDef_t *item, const char **args) {
 	const char *itemname;
 	const char *name;
 	vec4_t color;
@@ -1229,7 +1225,7 @@ void Menus_CloseByName(const char *p) {
 	}
 }
 
-void Menus_CloseAll() {
+void Menus_CloseAll(void) {
 	int i;
 	for (i = 0; i < menuCount; i++) {
 		Menu_RunCloseScript(&Menus[i]);
@@ -1237,28 +1233,28 @@ void Menus_CloseAll() {
 	}
 }
 
-void Script_Show(itemDef_t *item, char **args) {
+void Script_Show(itemDef_t *item, const char **args) {
 	const char *name;
 	if (String_Parse(args, &name)) {
 		Menu_ShowItemByName(item->parent, name, qtrue);
 	}
 }
 
-void Script_Hide(itemDef_t *item, char **args) {
+void Script_Hide(itemDef_t *item, const char **args) {
 	const char *name;
 	if (String_Parse(args, &name)) {
 		Menu_ShowItemByName(item->parent, name, qfalse);
 	}
 }
 
-void Script_FadeIn(itemDef_t *item, char **args) {
+void Script_FadeIn(itemDef_t *item, const char **args) {
 	const char *name;
 	if (String_Parse(args, &name)) {
 		Menu_FadeItemByName(item->parent, name, qfalse);
 	}
 }
 
-void Script_FadeOut(itemDef_t *item, char **args) {
+void Script_FadeOut(itemDef_t *item, const char **args) {
 	const char *name;
 	if (String_Parse(args, &name)) {
 		Menu_FadeItemByName(item->parent, name, qtrue);
@@ -1284,7 +1280,7 @@ void Menu_FadeMenuByName( const char *p, qboolean fadeOut ) {
 	}
  }
 
-void Script_FadeInMenu(itemDef_t *item, char **args) {
+void Script_FadeInMenu(itemDef_t *item, const char **args) {
 	const char *name=NULL;
 	if( String_Parse( args, &name ) ) {
 		Menus_OpenByName(name);
@@ -1292,7 +1288,7 @@ void Script_FadeInMenu(itemDef_t *item, char **args) {
 	}
 }
 
-void Script_FadeOutMenu(itemDef_t *item, char **args) {
+void Script_FadeOutMenu(itemDef_t *item, const char **args) {
 	const char *name=NULL;
 	if( String_Parse( args, &name ) ) {
 		Menus_CloseByName(name);
@@ -1300,7 +1296,7 @@ void Script_FadeOutMenu(itemDef_t *item, char **args) {
 	}
 }
 
-void Script_ConditionalOpen(itemDef_t *item, char **args) {
+void Script_ConditionalOpen(itemDef_t *item, const char **args) {
 	const char *cvar=NULL;
 	const char *name1=NULL;
 	const char *name2=NULL;
@@ -1333,7 +1329,7 @@ void Script_ConditionalOpen(itemDef_t *item, char **args) {
 	}
 }
 
-void Script_ConditionalScript(itemDef_t *item, char **args) {
+void Script_ConditionalScript(itemDef_t *item, const char **args) {
 	const char *cvar;
 	const char *script1;
 	const char *script2;
@@ -1420,14 +1416,14 @@ void Script_ConditionalScript(itemDef_t *item, char **args) {
 	}
 }
 
-void Script_Open(itemDef_t *item, char **args) {
+void Script_Open(itemDef_t *item, const char **args) {
 	const char *name;
 	if (String_Parse(args, &name)) {
 		Menus_OpenByName(name);
 	}
 }
 
-void Script_Close(itemDef_t *item, char **args) {
+void Script_Close(itemDef_t *item, const char **args) {
 	const char *name;
 	if (String_Parse(args, &name)) {
 		Menus_CloseByName(name);
@@ -1455,7 +1451,7 @@ void Menu_TransitionItemByName(menuDef_t *menu, const char *p, rectDef_t rectFro
 }
 
 
-void Script_Transition(itemDef_t *item, char **args) {
+void Script_Transition(itemDef_t *item, const char **args) {
   const char *name;
 	rectDef_t rectFrom, rectTo;
   int time;
@@ -1488,7 +1484,7 @@ void Menu_OrbitItemByName(menuDef_t *menu, const char *p, float x, float y, floa
 }
 
 
-void Script_Orbit(itemDef_t *item, char **args) {
+void Script_Orbit(itemDef_t *item, const char **args) {
   const char *name;
   float cx, cy, x, y;
   int time;
@@ -1500,7 +1496,7 @@ void Script_Orbit(itemDef_t *item, char **args) {
   }
 }
 
-void Script_SetFocus(itemDef_t *item, char **args) {
+void Script_SetFocus(itemDef_t *item, const char **args) {
 	const char *name;
 	itemDef_t *focusItem;
 
@@ -1523,7 +1519,7 @@ void Script_SetFocus(itemDef_t *item, char **args) {
 }
 
 // RR2DO2
-void Script_SetMenuFocus(itemDef_t *item, char **args) {
+void Script_SetMenuFocus(itemDef_t *item, const char **args) {
 	const char *name;
 
 	if (String_Parse(args, &name)) {
@@ -1538,7 +1534,7 @@ void Script_SetMenuFocus(itemDef_t *item, char **args) {
 
 // RR2DO2
 
-void Script_SetPlayerModel(itemDef_t *item, char **args) {
+void Script_SetPlayerModel(itemDef_t *item, const char **args) {
 	const char *name;
 
 	if (String_Parse(args, &name)) {
@@ -1546,7 +1542,7 @@ void Script_SetPlayerModel(itemDef_t *item, char **args) {
 	}
 }
 
-void Script_SetPlayerHead(itemDef_t *item, char **args) {
+void Script_SetPlayerHead(itemDef_t *item, const char **args) {
 	const char *name;
 
 	if (String_Parse(args, &name)) {
@@ -1554,7 +1550,7 @@ void Script_SetPlayerHead(itemDef_t *item, char **args) {
 	}
 }
 
-void Script_SetCvar(itemDef_t *item, char **args) {
+void Script_SetCvar(itemDef_t *item, const char **args) {
 	const char *cvar, *val;
 
 	if (String_Parse(args, &cvar) && String_Parse(args, &val)) {
@@ -1563,7 +1559,7 @@ void Script_SetCvar(itemDef_t *item, char **args) {
 	
 }
 
-void Script_Exec(itemDef_t *item, char **args) {
+void Script_Exec(itemDef_t *item, const char **args) {
 	const char *val;
 
 	if (String_Parse(args, &val)) {
@@ -1571,7 +1567,7 @@ void Script_Exec(itemDef_t *item, char **args) {
 	}
 }
 
-void Script_Play(itemDef_t *item, char **args) {
+void Script_Play(itemDef_t *item, const char **args) {
 	const char *val;
 
 	if (String_Parse(args, &val)) {
@@ -1579,7 +1575,7 @@ void Script_Play(itemDef_t *item, char **args) {
 	}
 }
 
-void Script_playLooped(itemDef_t *item, char **args) {
+void Script_playLooped(itemDef_t *item, const char **args) {
 	const char *val;
 
 	if (String_Parse(args, &val)) {
@@ -1588,7 +1584,7 @@ void Script_playLooped(itemDef_t *item, char **args) {
 	}
 }
 
-void Script_SetOnKey(itemDef_t *item, char **args) {
+void Script_SetOnKey(itemDef_t *item, const char **args) {
 	int i, key;
 	const char* script;
 	menuDef_t *menu = item->parent;
@@ -1618,7 +1614,7 @@ void Script_SetOnKey(itemDef_t *item, char **args) {
 	menu->numKeyScripts++;
 }
 
-void Script_ResetFeederScroll(itemDef_t *item, char **args) {
+void Script_ResetFeederScroll(itemDef_t *item, const char **args) {
 	listBoxDef_t *listPtr;
 	const char *name;
 	itemDef_t *focusItem;
@@ -1636,7 +1632,7 @@ void Script_ResetFeederScroll(itemDef_t *item, char **args) {
 	}
 }
 
-void Script_SetItemBackground(itemDef_t *item, char **args) {
+void Script_SetItemBackground(itemDef_t *item, const char **args) {
 	const char *name, *pos;
 	itemDef_t *menuItem;
 	int i, count;
@@ -1667,7 +1663,7 @@ void Script_SetItemBackground(itemDef_t *item, char **args) {
 	}
 }
 
-void Script_SetEditFocus( itemDef_t *item, char **args ) {
+void Script_SetEditFocus( itemDef_t *item, const char **args ) {
 	const char *name=NULL;
 	itemDef_t *editItem;
 
@@ -1700,7 +1696,7 @@ void Script_SetEditFocus( itemDef_t *item, char **args ) {
 	}
 }
 
-commandDef_t commandList[] =
+static const commandDef_t commandList[] =
 {
 	{"fadein", &Script_FadeIn},						// group/name
 	{"fadeout", &Script_FadeOut},					// group/name
@@ -1739,22 +1735,23 @@ commandDef_t commandList[] =
 // end slothy
 };
 
-int scriptCommandCount = sizeof(commandList) / sizeof(commandDef_t);
+static const int scriptCommandCount = (int)ARRAY_LEN(commandList);
 
 
 void Item_RunScript(itemDef_t *item, const char *s) {
-	char script[1024], *p;
+	char script[4096];
+	const char *p;
 	int i;
 	qboolean bRan;
 
 	memset(script, 0, sizeof(script));
 
 	if (item && s && s[0]) {
-		Q_strcat(script, 1024, s);
+		Q_strcat(script, sizeof(script), s);
 		p = script;
 
 		while (1) {
-			const char *command;
+			const char *command = NULL;
 
 			// expect command then arguments, ; ends command, NULL ends script
 			if (!String_Parse(&p, &command)) {
@@ -1785,7 +1782,8 @@ void Item_RunScript(itemDef_t *item, const char *s) {
 
 
 qboolean Item_EnableShowViaCvar( itemDef_t *item, int flag ) {
-	char script[1024], *p;
+	char script[1024];
+	const char *p;
 
 	memset(script, 0, sizeof(script));
 
@@ -1794,10 +1792,10 @@ qboolean Item_EnableShowViaCvar( itemDef_t *item, int flag ) {
 
 		DC->getCVarString(item->cvarTest, buff, sizeof(buff));
 
-		Q_strcat(script, 1024, item->enableCvar);
+		Q_strcat(script, sizeof(script), item->enableCvar);
 		p = script;
 		while (1) {
-			const char *val;
+			const char *val = NULL;
 
 			// expect value then ; or NULL, NULL ends list
 			if (!String_Parse(&p, &val)) {
@@ -3275,7 +3273,7 @@ static void Menu_CloseCinematics(menuDef_t *menu) {
 	}
 }
 
-static void Display_CloseCinematics() {
+static void Display_CloseCinematics(void) {
 	int i;
 	for (i = 0; i < menuCount; i++) {
 		Menu_CloseCinematics(&Menus[i]);
@@ -3306,7 +3304,7 @@ void  Menus_Activate(menuDef_t *menu) {
 
 }
 
-int Display_VisibleMenuCount() {
+int Display_VisibleMenuCount(void) {
 	int i, count;
 	count = 0;
 	for (i = 0; i < menuCount; i++) {
@@ -4258,7 +4256,7 @@ void Item_Border_Paint(itemDef_t* item) {
 	Q3F_DrawItemBorder(&r, item->special, item->textalignment, (menuDef_t*)item->parent, alpha);
 }
 
-qboolean Display_KeyBindPending() {
+qboolean Display_KeyBindPending(void) {
 	return g_waitingForKey;
 }
 
@@ -4928,7 +4926,7 @@ itemDef_t *Menu_GetFocusedItem(menuDef_t *menu) {
   return NULL;
 }
 
-menuDef_t *Menu_GetFocused() {
+menuDef_t *Menu_GetFocused(void) {
 	int i;
 
 	for (i = 0; i < menuCount; i++) {
@@ -5015,7 +5013,7 @@ void Menus_SetFeederSelection(int feeder, int index) {
 	}
 }
 
-qboolean Menus_AnyFullScreenVisible() {
+qboolean Menus_AnyFullScreenVisible(void) {
 	int i;
 
 	for (i = 0; i < menuCount; i++) {
@@ -6190,7 +6188,7 @@ qboolean ItemParse_weapon( itemDef_t *item, int handle )
 // slothy
 
 
-keywordHash_t itemParseKeywords[] = {
+static keywordHash_t itemParseKeywords[] = {
 	{"name",				ItemParse_name,				NULL},
 	{"text",				ItemParse_text,				NULL},
 	{"group",				ItemParse_group,			NULL},
@@ -6482,8 +6480,8 @@ qboolean MenuParse_onOpen( itemDef_t *item, int handle ) {
 		// this is only a valid token if it's one of the following cases:
 		// a) it's the first token
 		// b) it's the first token after an ;
-		char *token;
-		char *buff = (char *)menu->onOpen;
+		const char *token;
+		const char *buff = menu->onOpen;
 		qboolean lasttokenwassemicolon = qtrue;
 
 		while( 1 ) {
@@ -6823,7 +6821,7 @@ qboolean MenuParse_weapon( itemDef_t *item, int handle ) {
 	return res;
 }// slothy
 
-keywordHash_t menuParseKeywords[] = {
+static keywordHash_t menuParseKeywords[] = {
 	{"font", MenuParse_font, NULL},
 	{"smallFont", MenuParse_smallfont, NULL},
 	{"bigFont", MenuParse_bigfont, NULL},
@@ -6955,7 +6953,7 @@ int trap_Milliseconds( void );
 #define DEBUGTIME2
 #endif
 
-void Menu_PaintAll() {
+void Menu_PaintAll(void) {
 	int i;
 #ifdef DEBUGTIME_ENABLED_2
 	int dbgTime=trap_Milliseconds(),elapsed;
@@ -6998,7 +6996,7 @@ void Menu_PaintAll() {
 	}
 }
 
-void Menu_Reset() {
+void Menu_Reset(void) {
 	menuCount = 0;
 }
 
@@ -7008,7 +7006,7 @@ menuDef_t *Menu_Get( int menu_num ) {
 }
 // RR2DO2
 
-displayContextDef_t *Display_GetContext() {
+displayContextDef_t *Display_GetContext(void) {
 	return DC;
 }
  
@@ -7031,9 +7029,6 @@ void *Display_CaptureItem(int x, int y) {
 qboolean Display_MouseMove(void *p, int x, int y) {
 	int i;
 	menuDef_t *menu = p;
-
-	uimousex = x;
-	uimousey = y;
 
 	if (menu == NULL) {
 		menu = Menu_GetFocused();
@@ -7243,7 +7238,7 @@ static void Menu_CacheContents(menuDef_t *menu) {
 
 }
 
-void Display_CacheAll() {
+void Display_CacheAll(void) {
 	int i;
 	for (i = 0; i < menuCount; i++) {
 		Menu_CacheContents(&Menus[i]);

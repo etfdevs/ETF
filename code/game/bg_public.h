@@ -70,13 +70,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #define GAME_NAME			MAPINFO_TYPE    //keeg same string as mapinfo
 
-//bani
-#ifdef __GNUC__
-#define _attribute(x) __attribute__(x)
-#else
-#define _attribute(x)
-#endif
-
 #define	DEFAULT_GRAVITY		800
 #define	DEFAULT_GRAVITY_STR	"800"
 
@@ -968,12 +961,12 @@ int PM_GetReloadAnim( int weaponNum, int classNum );
 
 #ifdef PERFLOG
 void BG_Q3F_PerformanceMonitorInit(char* filename);
-void BG_Q3F_PerformanceMonitorShutdown();
+void BG_Q3F_PerformanceMonitorShutdown(void);
 void BG_Q3F_PerformanceMonitor_LogFunction(const char* funcName);
-void BG_Q3F_PerformanceMonitor_LogFunctionStop();
-void BG_Q3F_PerformanceMonitor_LogFunctionUpdate();
-void BG_Q3F_LogTrace();
-void BG_Q3F_FlushTraceBuffer();
+void BG_Q3F_PerformanceMonitor_LogFunctionStop(void);
+void BG_Q3F_PerformanceMonitor_LogFunctionUpdate(void);
+void BG_Q3F_LogTrace(void);
+void BG_Q3F_FlushTraceBuffer(void);
 #endif
 
 #define MAX_MAPINFOS		1024

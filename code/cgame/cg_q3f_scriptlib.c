@@ -115,7 +115,7 @@ void *UI_Alloc( int size ) {
 	return p;
 }
 
-qboolean UI_OutOfMemory() {
+qboolean UI_OutOfMemory(void) {
 	return currentMemory->outOfMemory;
 }
 
@@ -203,7 +203,7 @@ const char *String_Alloc(const char *p) {
 	return NULL;
 }
 
-void String_Report() {
+void String_Report(void) {
 	float f;
 	int i;
 	Com_Printf("Memory/String Pool Info\n");
@@ -277,7 +277,7 @@ static void MemPool_Init( memory_t *memory, const int size, char *memPool ) {
 String_Init
 =================
 */
-void String_Init() {
+void String_Init(void) {
 	int i;
 
 	// Initializing memory
@@ -402,7 +402,7 @@ PC_Float_Parse
 Vec_Parse
 =================
 */
-qboolean Vec_Parse(char **p, vec3_t *c) {
+qboolean Vec_Parse(const char **p, vec3_t *c) {
 	int i;
 	float f;
 

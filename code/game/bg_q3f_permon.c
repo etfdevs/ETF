@@ -87,7 +87,7 @@ void BG_Q3F_PerformanceMonitorInit(char* filename) {
 	tabCount++;
 }
 
-void BG_Q3F_PerformanceMonitorShutdown() {
+void BG_Q3F_PerformanceMonitorShutdown(void) {
 	if(!perMonInited) {
 		return;
 	}
@@ -115,11 +115,11 @@ void BG_Q3F_PerformanceMonitor_LogFunction(const char* funcName) {
 	depth++;	
 }
 
-void BG_Q3F_PerformanceMonitor_LogFunctionUpdate() {
+void BG_Q3F_PerformanceMonitor_LogFunctionUpdate(void) {
 	BG_Q3F_PerMonLogPrintf("Log For Function: %s Update. Time Taken: %d\n", timeStamps[depth-1].funcName, trap_Milliseconds() - timeStamps[depth-1].time);
 }
 
-void BG_Q3F_PerformanceMonitor_LogFunctionStop() {
+void BG_Q3F_PerformanceMonitor_LogFunctionStop(void) {
 	if(overflow) {
 		overflow--;
 		return;
@@ -133,11 +133,11 @@ void BG_Q3F_PerformanceMonitor_LogFunctionStop() {
 
 static int traceCount;
 
-void BG_Q3F_LogTrace() {
+void BG_Q3F_LogTrace(void) {
 	traceCount++;
 }
 
-void BG_Q3F_FlushTraceBuffer() {
+void BG_Q3F_FlushTraceBuffer(void) {
 	BG_Q3F_PerMonLogPrintf("PmoveCount: %d\n", traceCount);
 
 	traceCount = 0;

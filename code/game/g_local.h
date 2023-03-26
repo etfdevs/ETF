@@ -798,8 +798,8 @@ void G_Q3F_FreeAmmoBox( gentity_t *ent ); // RR2DO2
 //
 
 void AddRemap(const char *oldShader, const char *newShader, float timeOffset);
-void G_ResetRemappedShaders();
-const char *BuildShaderStateConfig();
+void G_ResetRemappedShaders(void);
+const char *BuildShaderStateConfig(void);
 
 int G_ModelIndex( const char *name );
 int	G_SoundIndex( const char *name );
@@ -900,7 +900,7 @@ void trigger_teleporter_touch (gentity_t *self, gentity_t *other, trace_t *trace
 //
 // g_target.c
 //
-void G_Q3F_LocationSort();
+void G_Q3F_LocationSort(void);
 
 //
 // g_misc.c
@@ -989,16 +989,18 @@ void DeathmatchScoreboardMessage (gentity_t *client);
 //
 // g_main.c
 //
+
+extern char bigTextBuffer[100000];
 void FindIntermissionPoint( void );
 #if 0
 void SetLeader(int team, int client);
 void CheckTeamLeader( int team );
 #endif
 void G_RunThink (gentity_t *ent);
-void QDECL G_LogPrintf( const char *fmt, ... ) _attribute( ( format( printf,1,2 ) ) );
+void QDECL  G_LogPrintf( const char *fmt, ... ) FORMAT_PRINTF(1,2);
 void SendScoreboardMessageToAllClients( void );
-void QDECL G_Printf( const char *fmt, ... ) _attribute( ( format( printf,1,2 ) ) );
-void NORETURN QDECL G_Error( const char *fmt, ... ) _attribute( ( format( printf,1,2 ) ) );
+void QDECL G_Printf( const char *fmt, ... ) FORMAT_PRINTF(1,2);
+void NORETURN QDECL G_Error( const char *fmt, ... ) FORMAT_PRINTF(1,2);
 void LogExit( const char *string );
 void G_Q3F_CeaseFire(qboolean state);
 void G_Q3F_RestartMap(void);
@@ -1040,14 +1042,14 @@ void Svcmd_GameMem_f( void );
 const char *String_Alloc(const char *p);
 
 #ifdef DEBUG_MEM
-void G_MemDebug_Init();				// djbob: debugging
-void G_MemDebug_Close();
+void G_MemDebug_Init(void);				// djbob: debugging
+void G_MemDebug_Close(void);
 #endif
 
-void G_VersionCheck_Init();
-void G_VersionCheck_Close();
+void G_VersionCheck_Init(void);
+void G_VersionCheck_Close(void);
 void G_VersionLogUser( gentity_t *ent );
-void QDECL G_VersionLogPrintf( const char *fmt, ... ) _attribute( ( format( printf,1,2 ) ) );
+void QDECL G_VersionLogPrintf( const char *fmt, ... ) FORMAT_PRINTF(1,2);
 
 // Golliwog: String handling commands
 // g_q3f_string.c
@@ -1103,22 +1105,22 @@ qboolean G_Q3F_RadiateToSurface( vec3_t focus, float maxDist, vec3_t traceEnd, v
 void G_Q3F_RunMapSentry( gentity_t *ent );
 // RR2DO2
 
-void G_Q3F_ValidateEntities();
+void G_Q3F_ValidateEntities(void);
 
 // Golliwog: Server configuration commands commands
 void G_Q3F_LoadServerConfiguration( qboolean testMode );
-void G_Q3F_ExecuteSetting( char *mapexec, int gameindex );
-void G_Q3F_UnloadServerConfiguration();
-void G_Q3F_TestServerConfiguration();
+void G_Q3F_ExecuteSetting( const char *mapexec, int gameindex );
+void G_Q3F_UnloadServerConfiguration(void);
+void G_Q3F_TestServerConfiguration(void);
 // Golliwog.
 
 // Golliwog: Map info commands
-q3f_keypairarray_t *G_Q3F_LoadMapInfo( char *mapname );
-char *G_Q3F_GetMapInfoEntry( q3f_keypairarray_t *mpi, char *key, int gameindex, char *defstr );
-void G_Q3F_CheckGameIndex();
-q3f_keypairarray_t *G_Q3F_LoadMapHistory();
-void G_Q3F_UpdateMapHistory( char *mapname );
-q3f_array_t *G_Q3F_GetAvailableMaps();
+q3f_keypairarray_t *G_Q3F_LoadMapInfo( const char *mapname );
+char *G_Q3F_GetMapInfoEntry( const q3f_keypairarray_t *mpi, const char *key, int gameindex, const char *defstr );
+void G_Q3F_CheckGameIndex(void);
+q3f_keypairarray_t *G_Q3F_LoadMapHistory(void);
+void G_Q3F_UpdateMapHistory( const char *mapname );
+q3f_array_t *G_Q3F_GetAvailableMaps(void);
 
 //
 // g_q3f_controllable.c
@@ -1129,7 +1131,7 @@ qboolean G_Q3F_Control( gentity_t *ent );
 //
 // g_q3f_waypoint.c
 //
-void G_Q3F_WaypointBuildArray();
+void G_Q3F_WaypointBuildArray(void);
 void G_Q3F_WaypointCommand( gentity_t *ent );
 
 //
@@ -1154,7 +1156,7 @@ int G_Q3F_GetCRC( const char *filename );
 //
 // g_q3f_soundscript.c
 //
-qboolean G_Q3F_SSCR_ParseSoundScript( char *mapname );
+qboolean G_Q3F_SSCR_ParseSoundScript( const char *mapname );
 
 //
 // g_q3f_weapon.c

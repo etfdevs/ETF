@@ -201,7 +201,7 @@ void CG_Q3F_WaterPoke( const refEntity_t *re ) {
 
 static int lastwaterpoketime = 0;
 
-void CG_Q3F_RenderWater() {
+void CG_Q3F_RenderWater(void) {
 	int x, y;
 	//polyVert_t *surfStrip[MAX_SURFACESTRIPVERTS];
 	polyVert_t surfStrip[MAX_SURFACESTRIPVERTS];

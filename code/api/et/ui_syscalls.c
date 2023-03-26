@@ -375,11 +375,11 @@ qboolean trap_LAN_ServerIsInFavoriteList( int source, int n  ) {
 	return Q_syscall( UI_LAN_SERVERISINFAVORITELIST, source, n );
 }
 
-void trap_LAN_SaveCachedServers() {
+void trap_LAN_SaveCachedServers( void ) {
 	Q_syscall( UI_LAN_SAVECACHEDSERVERS );
 }
 
-void trap_LAN_LoadCachedServers() {
+void trap_LAN_LoadCachedServers( void ) {
 	Q_syscall( UI_LAN_LOADCACHEDSERVERS );
 }
 

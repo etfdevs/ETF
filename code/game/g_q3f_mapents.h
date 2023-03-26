@@ -209,19 +209,19 @@ void SP_Q3F_target_command( gentity_t *ent );
 void SP_Q3F_target_reset( gentity_t *ent );
 
 	// Update HUD icons on change
-void G_Q3F_UpdateHUDIcons();
+void G_Q3F_UpdateHUDIcons(void);
 void G_Q3F_UpdateHUD( gentity_t *ent );
 
 	// No-build functions
 void SP_Q3F_func_nobuild( gentity_t *ent );
-void G_Q3F_NoBuildFinish();
+void G_Q3F_NoBuildFinish(void);
 qboolean G_Q3F_NoBuildCheck( vec3_t mins, vec3_t maxs, int team, int mask );
 
 	// No-annoyances functions
 void SP_Q3F_func_noannoyances( gentity_t *ent );
-void G_Q3F_NoAnnoyFinish();
+void G_Q3F_NoAnnoyFinish(void);
 extern qboolean levelhasnoannoys;
-qboolean G_Q3F_MapHasNoAnnoys();
+qboolean G_Q3F_MapHasNoAnnoys(void);
 qboolean G_Q3F_NoAnnoyCheck( vec3_t mins, vec3_t maxs, int team, int mask );
 
 	// target_cycle functions
@@ -243,7 +243,7 @@ void SP_Q3F_target_accumulator( gentity_t *ent );
 void G_Q3F_CheckOnKill( gentity_t *attacker, gentity_t *victim );
 void SP_Q3F_misc_onkill( gentity_t *self );
 void SP_Q3F_misc_onprotect( gentity_t *self );
-void G_Q3F_LinkOnKillChain();
+void G_Q3F_LinkOnKillChain(void);
 
 	// target_semitrigger ent
 void SP_Q3F_target_semitrigger( gentity_t *self );
@@ -267,7 +267,7 @@ void SP_Q3F_CTF_AmmoConversion ( gentity_t * ent );
 void SP_Q3F_item_pack( gentity_t *ent );
 void SP_Q3F_item_flagreturn_team2( gentity_t *ent );
 void SP_Q3F_item_flagreturn_team1( gentity_t *ent );
-void G_Q3F_CTFCompatAdjust();
+void G_Q3F_CTFCompatAdjust(void);
 
 // Force-field aware trace function
 void G_Q3F_ForceFieldExtTrace( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int realOwner, int contentmask );

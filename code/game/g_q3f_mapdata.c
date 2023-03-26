@@ -41,7 +41,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_local.h"
 #include "g_q3f_mapdata.h"
 
-q3f_array_t *G_Q3F_ArrayCreate()
+q3f_array_t *G_Q3F_ArrayCreate(void)
 {
 	// Create a new array and data for it.
 
@@ -289,7 +289,7 @@ q3f_array_t *G_Q3F_ArrayCopy( const q3f_array_t *array )
 
 
 
-q3f_keypairarray_t *G_Q3F_KeyPairArrayCreate()
+q3f_keypairarray_t *G_Q3F_KeyPairArrayCreate(void)
 {
 	// Create a new array and data for it.
 

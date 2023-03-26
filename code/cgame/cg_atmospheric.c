@@ -141,7 +141,7 @@ static void CG_AddPolyToPool( qhandle_t shader, const polyVert_t *verts ) {
 */
 
 static qboolean kludgeChecked, kludgeResult;
-qboolean CG_AtmosphericKludge()
+qboolean CG_AtmosphericKludge(void)
 {
 	// Activate rain for specified kludge maps that don't
 	// have it specified for them.
@@ -662,7 +662,7 @@ static void CG_SnowParticleRender( cg_atmosphericParticle_t *particle )
 **	Set up gust parameters.
 */
 
-static void CG_EffectGust()
+static void CG_EffectGust(void)
 {
 	// Generate random values for the next gust
 
@@ -718,7 +718,7 @@ static qboolean CG_EffectGustCurrent( vec3_t curr, float *weight, int *num )
 	return( qfalse );
 }
 
-static void CG_EP_ParseFloats( char *floatstr, float *f1, float *f2 )
+static void CG_EP_ParseFloats( const char *floatstr, float *f1, float *f2 )
 {
 	// Parse the float or floats
 
@@ -729,7 +729,7 @@ static void CG_EP_ParseFloats( char *floatstr, float *f1, float *f2 )
 	for( middleptr = buff; *middleptr && *middleptr != ' '; middleptr++ );
 	if( *middleptr )
 	{
-		*middleptr++ = 0;
+		*middleptr++ = '\0';
 		*f1 = atof( floatstr );
 		*f2 = atof( middleptr );
 	}
@@ -738,7 +738,7 @@ static void CG_EP_ParseFloats( char *floatstr, float *f1, float *f2 )
 	}
 }
 
-static void CG_EP_ParseInts( char *intstr, int *i1, int *i2 )
+static void CG_EP_ParseInts( const char *intstr, int *i1, int *i2 )
 {
 	// Parse the int or ints
 
@@ -749,7 +749,7 @@ static void CG_EP_ParseInts( char *intstr, int *i1, int *i2 )
 	for( middleptr = buff; *middleptr && *middleptr != ' '; middleptr++ );
 	if( *middleptr )
 	{
-		*middleptr++ = 0;
+		*middleptr++ = '\0';
 		*i1 = atof( intstr );
 		*i2 = atof( middleptr );
 	}
@@ -798,10 +798,10 @@ void CG_EffectParse( const char *effectstr )
 			startptr = eqptr + 1;	// Bad argument, continue
 			continue;
 		}
-		*eqptr++ = 0;
+		*eqptr++ = '\0';
 		for( endptr = eqptr; *endptr && *endptr != ','; endptr++ );
 		if( *endptr )
-			*endptr++ = 0;
+			*endptr++ = '\0';
 
 		if( atmFXType == ATM_NONE )
 		{
@@ -907,7 +907,7 @@ void CG_EffectParse( const char *effectstr )
 ** Main render loop
 */
 
-void CG_AddAtmosphericEffects()
+void CG_AddAtmosphericEffects(void)
 {
 	// Add atmospheric effects (e.g. rain, snow etc.) to view
 
@@ -1035,7 +1035,7 @@ void CG_SetupFrustum( void ) {
 //
 //	CG_CullPoint - returns true if culled
 //
-qboolean CG_CullPoint( vec3_t pt ) {
+qboolean CG_CullPoint( const vec3_t pt ) {
 	int		i;
 	plane_t	*frust;
 

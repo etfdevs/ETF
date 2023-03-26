@@ -62,7 +62,7 @@ If you have questions concerning this license or the applicable additional terms
 #define	PANEL_STR_COLOR				PANEL_STR_COLOUR
 
 	// The rendering function callback. Simple enough for anyone to work out.
-typedef int (panelRenderFunc_t)();
+typedef int (panelRenderFunc_t)(void);
 	// The transition function callback. (Usually) only used internally.
 typedef int (panelTransitionFunc_t)( int mode, int msec );
 

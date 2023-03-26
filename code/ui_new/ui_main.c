@@ -390,8 +390,7 @@ Q_EXPORT intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t ar
 }
 
 
-
-void AssetCache() {
+static void AssetCache(void) {
 	int n;
 	uiClientState_t	cstate;
 
@@ -743,7 +742,7 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, f
 }
 
 void Text_Width_To_Max(char *text, float scale, int max, fontStruct_t *parentfont) {
-	int count;
+	//int count;
 	float out;
 	glyphInfo_t *glyph;
 	float useScale;
@@ -772,7 +771,7 @@ void Text_Width_To_Max(char *text, float scale, int max, fontStruct_t *parentfon
 
 	out = 0;
 	if (text) {
-		count = 0;
+		//count = 0;
 		while (s && *s) {
 			if ( out > max ) {
 				*s = '\0';
@@ -786,7 +785,7 @@ void Text_Width_To_Max(char *text, float scale, int max, fontStruct_t *parentfon
 					glyph = &font->glyphs[(unsigned char)*s];
 					out += (glyph->xSkip * useScale);
 					s++;
-					count++;
+					//count++;
 				}
 			}
 		}
@@ -1016,11 +1015,11 @@ static void Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4_t 
   UI_SetActiveMenu(UIMENU_POSTGAME);
 }*/
 
-void UI_ShowEndGame() {
+void UI_ShowEndGame(void) {
 	UI_SetActiveMenu(UIMENU_ENDGAME);
 }
 
-void UI_ShowInGame() {
+void UI_ShowInGame(void) {
 	UI_SetActiveMenu(UIMENU_INGAME);  
 }
 
@@ -1299,14 +1298,14 @@ qboolean Asset_Parse(int handle) {
 	return qfalse;
 }
 
-void Font_Report() {
+/*void Font_Report(void) {
 	int i;
 	Com_Printf("Font Info\n");
 	Com_Printf("=========\n");
 	for ( i = 32; i < 96; i++) {
 		Com_Printf("Glyph handle %i: %i\n", i, uiInfo.uiDC.Assets.font.textFont.glyphs[i].glyph);
 	}
-}
+}*/
 
 void UI_Report(void) {
 	String_Report();
@@ -1810,7 +1809,7 @@ static void UI_DrawPBStatus(rectDef_t *rect, float scale, vec4_t color, int text
 UI_BuildPlayerList
 ===============
 */
-static void UI_BuildPlayerList() {
+static void UI_BuildPlayerList(void) {
 	uiClientState_t	cs;
 	int		n, count, team, team2, playerTeamNumber;
 	char	info[MAX_INFO_STRING];
@@ -1856,7 +1855,7 @@ static void UI_BuildPlayerList() {
 	}
 }
 
-qboolean UI_PlayerOnTeam() {
+qboolean UI_PlayerOnTeam(void) {
 	uiClientState_t	cs;
 	int		team;
 	char	info[MAX_INFO_STRING];
@@ -1870,7 +1869,7 @@ qboolean UI_PlayerOnTeam() {
 	return qfalse;
 }
 
-qboolean UI_PlayerHasClass() {
+qboolean UI_PlayerHasClass(void) {
 	uiClientState_t	cs;
 	int		team;
 	char	info[MAX_INFO_STRING];
@@ -3392,7 +3391,7 @@ void UI_ServersSort(int column, qboolean force) {
 UI_LoadMods
 ===============
 */
-static void UI_LoadMods() {
+static void UI_LoadMods(void) {
 	int		numdirs;
 	char	dirlist[2048];
 	char	*dirptr;
@@ -3422,7 +3421,7 @@ static void UI_LoadMods() {
 UI_LoadMovies
 ===============
 */
-static void UI_LoadMovies() {
+static void UI_LoadMovies(void) {
 	char	movielist[4096];
 	char	*moviename;
 	int		i, len;
@@ -3453,7 +3452,7 @@ static void UI_LoadMovies() {
 UI_LoadDemos
 ===============
 */
-static void UI_LoadDemos() {
+static void UI_LoadDemos(void) {
 	char	demolist[65536];
 	char	demoExt[32];
 	char	*demoname;
@@ -3521,7 +3520,7 @@ static void UI_LoadDemos() {
 UI_LoadConfigs
 ===============
 */
-static void UI_LoadConfigs() {
+static void UI_LoadConfigs(void) {
 	char	cfglist[4096];
 	char	*cfgname;
 	int		i, len;
@@ -3555,7 +3554,7 @@ static void UI_LoadConfigs() {
 	return qfalse;
 }*/
 
-void UI_SetupGameIndexMulti() {
+void UI_SetupGameIndexMulti(void) {
 	char buf[256];
 	char *p, *start;
 	menuDef_t *menu;
@@ -3732,13 +3731,13 @@ int* systemDataTableList_size[] = {
 	NULL
 };
 
-void UI_ReadBindings() {	
+void UI_ReadBindings(void) {	
 	int i;
 	for(i = 0; configDataTableList[i]; i++)
 		UI_SetupBindingTable(configDataTableList[i], *configDataTableList_size[i]);
 }
 
-static void UI_ApplyBindings() {	
+static void UI_ApplyBindings(void) {	
 	int i;
 	for(i = 0; configDataTableList[i]; i++)
 		UI_ApplyBindingTable(configDataTableList[i], *configDataTableList_size[i]);
@@ -3748,13 +3747,13 @@ static void UI_ApplyBindings() {
 #endif
 }
 
-static void UI_ReadSystemSettings() {	
+static void UI_ReadSystemSettings(void) {	
 	int i;
 	for(i = 0; systemDataTableList[i]; i++)
 		UI_SetupBindingTable(systemDataTableList[i], *systemDataTableList_size[i]);
 }
 
-static void UI_ETFReadSystemSettings() {
+static void UI_ETFReadSystemSettings(void) {
 	char buf[MAX_STRING_CHARS];
 
 	trap_Cvar_SetValue("ui_r_mode", trap_Cvar_VariableValue("r_mode"));
@@ -3789,7 +3788,7 @@ static void UI_ETFReadSystemSettings() {
 //		UI_SetupBindingTable(systemDataTableList[i], *systemDataTableList_size[i]);
 }
 
-static void UI_ETFApplySystemSettings() {
+static void UI_ETFApplySystemSettings(void) {
 	char buf[MAX_STRING_CHARS];
 //	float value;
 	
@@ -3815,17 +3814,17 @@ static void UI_ETFApplySystemSettings() {
 	trap_Cvar_Set( "r_textureMode", buf );
 }
 
-static void UI_ApplySystemSettings() {
+static void UI_ApplySystemSettings(void) {
 	int i;
 	for(i = 0; systemDataTableList[i]; i++)
 		UI_ApplyBindingTable(systemDataTableList[i], *systemDataTableList_size[i]);
 }
 
-static void UI_ReadGeneralSettings() {	
+static void UI_ReadGeneralSettings(void) {	
 	UI_SetupBindingTable(configDataTable_General, configDataTable_General_Size);
 }
 
-static void UI_ApplyGeneralSettings() {	
+static void UI_ApplyGeneralSettings(void) {	
 	UI_ApplyBindingTable(configDataTable_General, configDataTable_General_Size);
 }
 
@@ -4004,7 +4003,7 @@ static void UI_JoinServer(void) {
 	}
 }
 
-static void UI_RunMenuScript(char **args) {
+static void UI_RunMenuScript(const char **args) {
 	const char *name;
 	char buff[1024];
 
@@ -5067,13 +5066,12 @@ UI_BuildServerDisplayList
 */
 static void UI_BuildServerDisplayList(qboolean force) {
 	int i, count, clients, maxClients, ping/*, game*/, len, visible, passw, punkbuster;
-	char *val;
 #ifdef API_ET
 //	int punkbuster, antilag;
 #endif // API_ET
 	char info[MAX_STRING_CHARS];
 //	qboolean startRefresh = qtrue;
-	static int numinvisible;
+	//static int numinvisible;
 
 	if (!(force || uiInfo.uiDC.realTime > uiInfo.serverStatus.nextDisplayRefresh)) {
 		return;
@@ -5094,7 +5092,7 @@ static void UI_BuildServerDisplayList(qboolean force) {
 	uiInfo.serverStatus.numInvalidServers = 0;
 
 	if (force) {
-		numinvisible = 0;
+		//numinvisible = 0;
 		// clear number of displayed servers
 		uiInfo.serverStatus.numqueriedservers = 0;
 		uiInfo.serverStatus.numIncompatibleServers = 0;
@@ -5167,10 +5165,14 @@ static void UI_BuildServerDisplayList(qboolean force) {
 
 			// RR2DO2
 			// Skip non-ETF servers
-			if ( Q_stricmp( Info_ValueForKey( info, "game" ), GAME_VERSION ) != 0 ) {
-				uiInfo.serverStatus.numIncompatibleServers++;
-				trap_LAN_MarkServerVisible(ui_netSource.integer, i, qfalse);
-				continue;
+			{
+				const char *gamename = Info_ValueForKey( info, "game" );
+
+				if ( Q_stricmp( gamename, GAME_VERSION ) != 0 ) {
+					uiInfo.serverStatus.numIncompatibleServers++;
+					trap_LAN_MarkServerVisible(ui_netSource.integer, i, qfalse);
+					continue;
+				}
 			}
 			// RR2DO2
 
@@ -5200,8 +5202,8 @@ static void UI_BuildServerDisplayList(qboolean force) {
 			}
 	// 
 			if ( ui_browserShowVersion.integer == 0 ) {
-				val = Info_ValueForKey(info, "weaprestrict");				// version check, stupid int no decimals allowed
-				if(strcmp(val, FORTS_SHORTVERSION))							// only show servers of this ETF version
+				const char *ver = Info_ValueForKey(info, "weaprestrict");				// version check, stupid int no decimals allowed
+				if(strcmp(ver, FORTS_SHORTVERSION))							// only show servers of this ETF version
 				{
 					trap_LAN_MarkServerVisible(ui_netSource.integer, i, qfalse);	
 					continue;
@@ -5231,7 +5233,7 @@ static void UI_BuildServerDisplayList(qboolean force) {
 			if ( ping > 0 ) {
 				trap_LAN_MarkServerVisible(ui_netSource.integer, i, qfalse);
 				uiInfo.serverStatus.numPlayersOnServers += clients;
-				numinvisible++;
+				//numinvisible++;
 			}
 		}
 		else {
@@ -5433,7 +5435,7 @@ UI_BuildFindPlayerList
 ==================
 */
 static void UI_BuildFindPlayerList(qboolean force) {
-	static int numFound, numTimeOuts;
+	static int numFound;//, numTimeOuts;
 	int i, j, resend;
 	serverStatusInfo_t info;
 	char name[MAX_NAME_LENGTH+2];
@@ -5470,7 +5472,7 @@ static void UI_BuildFindPlayerList(qboolean force) {
 							"searching %d...", uiInfo.pendingServerStatus.num);
 		uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers-1][0] = '\0';
 		numFound = 0;
-		numTimeOuts++;
+		//numTimeOuts++;
 	}
 	for (i = 0; i < MAX_SERVERSTATUSREQUESTS; i++) {
 		// if this pending server is valid
@@ -5527,9 +5529,9 @@ static void UI_BuildFindPlayerList(qboolean force) {
 		// if empty pending slot or timed out
 		if (!uiInfo.pendingServerStatus.server[i].valid ||
 			uiInfo.pendingServerStatus.server[i].startTime < uiInfo.uiDC.realTime - ui_serverStatusTimeOut.integer) {
-			if (uiInfo.pendingServerStatus.server[i].valid) {
+			/*if (uiInfo.pendingServerStatus.server[i].valid) {
 				numTimeOuts++;
-			}
+			}*/
 			// reset server status request for this address
 			UI_GetServerStatusInfo( uiInfo.pendingServerStatus.server[i].adrstr, NULL );
 			// reuse pending slot
@@ -5821,7 +5823,7 @@ static const char *UI_SelectedMap(int index, int *actual) {
   return 0;
 }*/
 
-static void UI_UpdatePendingPings() { 
+static void UI_UpdatePendingPings(void) { 
 	trap_LAN_ResetPings(ui_netSource.integer);
 	uiInfo.serverStatus.refreshActive = qtrue;
 	uiInfo.serverStatus.refreshtime = uiInfo.uiDC.realTime + 1000;
@@ -6878,7 +6880,7 @@ void UI_MouseEvent( int dx, int dy )
 
 }
 
-void UI_LoadNonIngame() {
+void UI_LoadNonIngame(void) {
 	const char *menuSet = UI_Cvar_VariableString("ui_menuFiles");
 	if (menuSet == NULL || menuSet[0] == '\0') {
 		menuSet = "ui/menus.txt";
@@ -7066,43 +7068,54 @@ void Text_PaintCenter(float x, float y, float scale, vec4_t color, const char *t
 	Text_Paint(x /*- len / 2*/, y, scale, color, text, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE, parentfont, ITEM_ALIGN_CENTER);
 }
 
+#define DL_LEFTWIDTH 320
 
 static void UI_DisplayDownloadInfo( const char *downloadName, float centerPoint, float yStart, float scale ) {
 	static char dlText[]	= "Downloading:";
 	static char etaText[]	= "Estimated time left:";
 	static char xferText[]	= "Transfer rate:";
 
-	int downloadSize, downloadCount, downloadTime;
-	char dlSizeBuf[64], totalSizeBuf[64], xferRateBuf[64], dlTimeBuf[64];
-	int xferRate;
-	int leftWidth;
+	int downloadSize, downloadCount, downloadTime, percentage;
+	char dlSizeBuf[64], totalSizeBuf[64], xferRateBuf[64], dlTimeBuf[64], buf[64];
+	int xferRate, div;
 	const char *s;
 
-	downloadSize = trap_Cvar_VariableValue( "cl_downloadSize" );
-	downloadCount = trap_Cvar_VariableValue( "cl_downloadCount" );
-	downloadTime = trap_Cvar_VariableValue( "cl_downloadTime" );
+	trap_Cvar_VariableStringBuffer( "cl_downloadSize", buf, sizeof( buf ) );
+	downloadSize = atoi( buf );
+	trap_Cvar_VariableStringBuffer( "cl_downloadCount", buf, sizeof( buf ) );
+	downloadCount = atoi( buf ); 
+	trap_Cvar_VariableStringBuffer( "cl_downloadTime", buf, sizeof( buf ) );
+	downloadTime = atoi( buf );
 
-	leftWidth = 320;
-
-	UI_SetColor(colorWhite);
-	Text_PaintCenter(centerPoint, yStart + 112, scale, colorWhite, dlText, 0, NULL);
-	Text_PaintCenter(centerPoint, yStart + 192, scale, colorWhite, etaText, 0, NULL);
-	Text_PaintCenter(centerPoint, yStart + 248, scale, colorWhite, xferText, 0, NULL);
-
-	if (downloadSize > 0) {
-		s = va( "%s (%d%%)", downloadName, (int) ( (float)downloadCount * 100.0f / downloadSize ) );
+	if ( downloadSize > 0 ) {
+		if ( downloadCount > 21474836 ) {// x100 could cause overflow!
+			div = downloadSize >> 8;
+			if ( div )
+				percentage = (downloadCount >> 8) * 100 / div;
+			else
+				percentage = 0;
+		} else {
+			percentage = downloadCount * 100 / downloadSize;
+		}
+		if ( percentage > 100 ) 
+			percentage = 100;
+		s = va( "%s (%d%%)", downloadName, percentage );
+		//s = va( "%s (%d%%)", downloadName, (int)( (float)downloadCount * 100.0f / (float)downloadSize ) );
 	} else {
 		s = downloadName;
 	}
 
-	Text_PaintCenter(centerPoint, yStart+136, scale, colorWhite, s, 0, NULL);
+	Text_PaintCenter(centerPoint, yStart + 112, scale, colorWhite, dlText, 0, NULL);
+	Text_PaintCenter(centerPoint, yStart + 192, scale, colorWhite, etaText, 0, NULL);
+	Text_PaintCenter(centerPoint, yStart + 248, scale, colorWhite, xferText, 0, NULL);
+	Text_PaintCenter(centerPoint, yStart + 136, scale, colorWhite, s, 0, NULL);
 
 	UI_ReadableSize( dlSizeBuf,		sizeof dlSizeBuf,		downloadCount );
 	UI_ReadableSize( totalSizeBuf,	sizeof totalSizeBuf,	downloadSize );
 
 	if (downloadCount < 4096 || !downloadTime) {
-		Text_PaintCenter(leftWidth, yStart+216, scale, colorWhite, "estimating", 0, NULL);
-		Text_PaintCenter(leftWidth, yStart+160, scale, colorWhite, va("(%s of %s copied)", dlSizeBuf, totalSizeBuf), 0, NULL);
+		Text_PaintCenter(DL_LEFTWIDTH, yStart+216, scale, colorWhite, "estimating", 0, NULL);
+		Text_PaintCenter(DL_LEFTWIDTH, yStart+160, scale, colorWhite, va("(%s of %s copied)", dlSizeBuf, totalSizeBuf), 0, NULL);
 	} else {
 		if ((uiInfo.uiDC.realTime - downloadTime) / 1000) {
 			xferRate = downloadCount / ((uiInfo.uiDC.realTime - downloadTime) / 1000);
@@ -7119,19 +7132,19 @@ static void UI_DisplayDownloadInfo( const char *downloadName, float centerPoint,
 			UI_PrintTime ( dlTimeBuf, sizeof dlTimeBuf, 
 				(n - (((downloadCount/1024) * n) / (downloadSize/1024))) * 1000);
 
-			Text_PaintCenter(leftWidth, yStart+216, scale, colorWhite, dlTimeBuf, 0, NULL);
-			Text_PaintCenter(leftWidth, yStart+160, scale, colorWhite, va("(%s of %s copied)", dlSizeBuf, totalSizeBuf), 0, NULL);
+			Text_PaintCenter(DL_LEFTWIDTH, yStart+216, scale, colorWhite, dlTimeBuf, 0, NULL);
+			Text_PaintCenter(DL_LEFTWIDTH, yStart+160, scale, colorWhite, va("(%s of %s copied)", dlSizeBuf, totalSizeBuf), 0, NULL);
 		} else {
-			Text_PaintCenter(leftWidth, yStart+216, scale, colorWhite, "estimating", 0, NULL);
+			Text_PaintCenter(DL_LEFTWIDTH, yStart+216, scale, colorWhite, "estimating", 0, NULL);
 			if (downloadSize) {
-				Text_PaintCenter(leftWidth, yStart+160, scale, colorWhite, va("(%s of %s copied)", dlSizeBuf, totalSizeBuf), 0, NULL);
+				Text_PaintCenter(DL_LEFTWIDTH, yStart+160, scale, colorWhite, va("(%s of %s copied)", dlSizeBuf, totalSizeBuf), 0, NULL);
 			} else {
-				Text_PaintCenter(leftWidth, yStart+160, scale, colorWhite, va("(%s copied)", dlSizeBuf), 0, NULL);
+				Text_PaintCenter(DL_LEFTWIDTH, yStart+160, scale, colorWhite, va("(%s copied)", dlSizeBuf), 0, NULL);
 			}
 		}
 
 		if (xferRate) {
-			Text_PaintCenter(leftWidth, yStart+272, scale, colorWhite, va("%s/Sec", xferRateBuf), 0, NULL);
+			Text_PaintCenter(DL_LEFTWIDTH, yStart+272, scale, colorWhite, va("%s/Sec", xferRateBuf), 0, NULL);
 		}
 	}
 }
@@ -7839,7 +7852,7 @@ int HUD_WrapText( char* instr, float scale, fontStruct_t* font, float w, int siz
 	return lines;
 }
 
-int HUD_Q3F_GetChosenClass () {
+int HUD_Q3F_GetChosenClass (void) {
 	int cls = trap_Cvar_VariableValue("hud_chosenClass");
 	int k = 0;
 	if(cls == 10) { // 10 = choose random
@@ -8051,7 +8064,7 @@ int HUD_LoadData(const char* filename, const char** buffer, int buffersize) {
 	return 0;
 }
 
-void HUD_LoadClassBlurbs() {
+void HUD_LoadClassBlurbs(void) {
 	int i;
 
 	uiInfo.Q3F_current_classQuote = -1;
@@ -8066,7 +8079,7 @@ void HUD_LoadClassBlurbs() {
 	}
 }
 
-void HUD_LoadClassInvs() {
+void HUD_LoadClassInvs(void) {
 	int i;
 
 	for(i = Q3F_CLASS_RECON; i < Q3F_CLASS_MAX; i++) {
@@ -8079,7 +8092,7 @@ void HUD_LoadClassInvs() {
 	}
 }
 
-void HUD_LoadLanguageData() {
+void HUD_LoadLanguageData(void) {
 	HUD_LoadClassBlurbs();
 	HUD_LoadClassInvs();
 }
@@ -8572,7 +8585,7 @@ void HUD_DrawMapInfoBlurb(rectDef_t* rect, float scale, vec4_t color, int textSt
 	}
 }
 
-static void HUD_BuildPlayerList() {
+static void HUD_BuildPlayerList(void) {
 	int		n, count;
 	char	info[MAX_INFO_STRING];
 
@@ -8706,7 +8719,7 @@ void HUD_DrawVoteTally(rectDef_t* rect, float scale, vec4_t color, int textStyle
 	Text_Paint(rect->x + text_x, rect->y + text_y, scale, color, *timebuffer ? buffer : "0", 0, 0, textStyle, parentfont, textalignment);
 }
 
-void UI_Q3F_BuildServerMaplist() {
+void UI_Q3F_BuildServerMaplist(void) {
 	char buffer[4096];
 	char *p, *s;
 

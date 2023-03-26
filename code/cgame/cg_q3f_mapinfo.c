@@ -128,7 +128,7 @@ static qboolean CG_Q3F_MI_MapSelectGetArenaField( const char *mapname, const cha
 {
 	// Pull the longname field out of the .arena file, if present.
 
-	char	*token, *buffptr;
+	const char	*token, *buffptr;
 	int		len;
 	char	buff[8192];
 	char	key[MAX_TOKEN_CHARS];
@@ -169,7 +169,7 @@ static qboolean CG_Q3F_MI_MapSelectGetArenaField( const char *mapname, const cha
 
 			token = COM_ParseExt( &buffptr, qfalse );
 			if ( !token[0] ) {
-				strcpy( token, "<NULL>" );
+				token = "<NULL>";
 			}
 
 			if( !Q_stricmp( key, queryfield ) )

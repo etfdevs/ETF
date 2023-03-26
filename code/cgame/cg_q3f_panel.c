@@ -238,7 +238,7 @@ void CG_Q3F_PanelDrawString( const char *str, float x, float y, float size, floa
 	// Draw a string to the panel.
 
 	float currx, curry, maxwidth, /*maxheight,*/ lastspacewidth;
-	int index, lastspace, numLines;
+	int index, lastspace/*, numLines*/;
 	const char *wordendptr;
 	float width;
 	vec4_t realrgba;
@@ -259,7 +259,7 @@ void CG_Q3F_PanelDrawString( const char *str, float x, float y, float size, floa
 
 	curry = y;
 	VectorCopy4( rgba, realrgba );
-	numLines = 1;
+	//numLines = 1;
 	while( *str )
 	{
 			// Start by getting a line of text.
@@ -333,7 +333,7 @@ void CG_Q3F_PanelDrawString( const char *str, float x, float y, float size, floa
 		if( !(flags & PANEL_STR_WRAP) )		// Prevent wrapping if the line was too long.
 			break;
 		curry += size * panel.aspect;
-		numLines++;
+		//numLines++;
 	}
 }
 
@@ -623,7 +623,7 @@ static panelTransition_t panelTransitions[] = {
 ***** Per-panel rendering.
 ****/
 
-static int CG_Q3F_PanelFuncName()
+static int CG_Q3F_PanelFuncName(void)
 {
 	// Draw the client's name.
 
@@ -640,7 +640,7 @@ static int CG_Q3F_PanelFuncName()
 	return( 0 );
 }
 
-static int CG_Q3F_PanelFuncScoreSummary()
+static int CG_Q3F_PanelFuncScoreSummary(void)
 {
 	// Draw a score summary.
 
@@ -720,7 +720,7 @@ static int CG_Q3F_PanelFuncScoreSummary()
 	return( 1 );
 }
 
-static int CG_Q3F_PanelFuncLocation()
+static int CG_Q3F_PanelFuncLocation(void)
 {
 	// Render a panel holding the current location.
 
@@ -769,7 +769,7 @@ static int CG_Q3F_PanelFuncLocation()
 }
 
 static int panelTimerCalcTime, panelTimerRTC;
-static int CG_Q3F_PanelFuncTimer()
+static int CG_Q3F_PanelFuncTimer(void)
 {
 	// Draw a clock or timer.
 
@@ -900,7 +900,7 @@ static qboolean GG_Q3F_GetRadarBlip( int blipIndex, entityState_t *es, float *an
 	return( qtrue );
 }
 extern localEntity_t	cg_activeLocalEntities;		// double linked list
-static int CG_Q3F_PanelFuncRadar()
+static int CG_Q3F_PanelFuncRadar(void)
 {
 	// Display 'blips' on the panel.
 
@@ -980,7 +980,7 @@ static int CG_Q3F_PanelFuncRadar()
 	return( 1 );
 }
 
-static int CG_Q3F_PanelFuncMessage()
+static int CG_Q3F_PanelFuncMessage(void)
 {
 	// Attempts to find the state message, fills in parameters, and centers on the panel.
 

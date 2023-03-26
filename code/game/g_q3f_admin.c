@@ -1292,7 +1292,7 @@ void G_Q3F_AdminCommand_ClientOnly( gentity_t* admin ) {
 ** Automated tempbanning for in-game activities	
 */
 
-void G_Q3F_AdminCheckBannedPlayers()
+void G_Q3F_AdminCheckBannedPlayers(void)
 {
 	// Check all players, kick them if they're banned
 
@@ -1344,7 +1344,7 @@ void G_Q3F_AdminTempBan( gentity_t *player, const char *reason, int time )
 **	Maintenance routines
 */
 
-int G_Q3F_AdminNextExpireBans()
+int G_Q3F_AdminNextExpireBans(void)
 {
 	// Expire any 'past' bans, return the next expiry time.
 

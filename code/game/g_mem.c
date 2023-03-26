@@ -343,7 +343,7 @@ void Svcmd_GameMem_f( void )
 }
 
 #ifdef DEBUG_MEM
-void G_MemDebug_Init() {
+void G_MemDebug_Init(void) {
 	trap_FS_FOpenFile( "memory.log", &level.memLogFile, FS_APPEND );
 	if ( !level.memLogFile ) {
 		G_Printf( "WARNING: Couldn't open logfile: memory.log\n");
@@ -353,7 +353,7 @@ void G_MemDebug_Init() {
 	}
 }
 
-void G_MemDebug_Close() {
+void G_MemDebug_Close(void) {
 	if ( !level.memLogFile ) {
 		return;
 	}

@@ -131,7 +131,6 @@ void CG_Q3F_InitLog( const char *prefix, const char *entry, const char *suffix )
 		cgs.teamChatPos = (cgs.teamChatPos + 1) % TEAMCHAT_HEIGHT;
 }
 
-extern displayContextDef_t cgDC;
 qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, mapInfo* miList, int* index );
 
 void CG_Q3F_LoadingMapInfo(void)
@@ -465,7 +464,7 @@ static initSpiritDef_t initSpiritDefs[] = {
 *****	Initialization phases
 ****/
 
-static void CG_Q3F_InitPhaseMapInfo()
+static void CG_Q3F_InitPhaseMapInfo(void)
 {
 	// Pull data out of the seperate mapinfo.
 
@@ -502,7 +501,7 @@ static void CG_Q3F_InitPhaseMapInfo()
 	CG_Q3F_SetInitPhase( cgs.initPhase + 1 );
 }
 
-static void CG_Q3F_InitPhaseMapBSP()
+static void CG_Q3F_InitPhaseMapBSP(void)
 {
 	// Load the world BSP data.
 
@@ -512,7 +511,7 @@ static void CG_Q3F_InitPhaseMapBSP()
 		CG_Q3F_SetInitPhase( cgs.initPhase + 1 );
 }
 
-static void CG_Q3F_InitPhaseMapRender()
+static void CG_Q3F_InitPhaseMapRender(void)
 {
 	// Load the world render data (the worldmodel itself?).
 		CG_Q3F_InitLog( "World", "", "..." );
@@ -521,7 +520,7 @@ static void CG_Q3F_InitPhaseMapRender()
 		CG_Q3F_SetInitPhase( cgs.initPhase + 1 );
 }
 
-static void CG_Q3F_InitPhaseMapEntities()
+static void CG_Q3F_InitPhaseMapEntities(void)
 {
 	// Load the cgame entity data.
 
@@ -531,7 +530,7 @@ static void CG_Q3F_InitPhaseMapEntities()
 		CG_Q3F_SetInitPhase( cgs.initPhase + 1 );
 }
 
-static void CG_Q3F_InitPhaseSPD()
+static void CG_Q3F_InitPhaseSPD(void)
 {
 	// Load the world SPD
 
@@ -543,7 +542,7 @@ static void CG_Q3F_InitPhaseSPD()
 }
 
 
-static void CG_Q3F_InitPhaseSoundStatic()
+static void CG_Q3F_InitPhaseSoundStatic(void)
 {
 	// Load all static (i.e. always used) sounds.
 
@@ -667,7 +666,7 @@ static void CG_Q3F_InitPhaseSoundVoiceComms(void)
 	else CG_Q3F_SetInitPhase( cgs.initPhase + 1 );
 }
 
-static void CG_Q3F_InitPhaseSoundFootsteps()
+static void CG_Q3F_InitPhaseSoundFootsteps(void)
 {
 	// Load footstep sounds
 
@@ -698,7 +697,7 @@ static void CG_Q3F_InitPhaseSoundFootsteps()
 	}
 }
 
-static void CG_Q3F_InitPhaseSoundItems()
+static void CG_Q3F_InitPhaseSoundItems(void)
 {
 	if( cgs.initIndex < bg_numItems )
 	{
@@ -713,7 +712,7 @@ static void CG_Q3F_InitPhaseSoundItems()
 	else CG_Q3F_SetInitPhase( cgs.initPhase + 1 );
 }
 
-static void CG_Q3F_InitPhaseSoundDynamic()
+static void CG_Q3F_InitPhaseSoundDynamic(void)
 {
 	const char *soundName;
 
@@ -741,7 +740,7 @@ static void CG_Q3F_InitPhaseSoundDynamic()
 	}
 }
 
-static void CG_Q3F_InitPhaseGraphicStatic()
+static void CG_Q3F_InitPhaseGraphicStatic(void)
 {
 	// Load all static (i.e. always used) graphics.
 
@@ -783,7 +782,7 @@ static void CG_Q3F_InitPhaseGraphicStatic()
 	}
 }
 
-static void CG_Q3F_InitPhaseGraphicItems()
+static void CG_Q3F_InitPhaseGraphicItems(void)
 {
 	// Load all item-related graphics
 
@@ -802,7 +801,7 @@ static void CG_Q3F_InitPhaseGraphicItems()
 	}
 }
 
-static void CG_Q3F_InitPhaseGraphicWorld()
+static void CG_Q3F_InitPhaseGraphicWorld(void)
 {
 	// Load all world graphics
 
@@ -829,7 +828,7 @@ static void CG_Q3F_InitPhaseGraphicWorld()
 		CG_Q3F_SetInitPhase( cgs.initPhase + 1 );
 }
 
-static void CG_Q3F_InitPhaseGraphicModels()
+static void CG_Q3F_InitPhaseGraphicModels(void)
 {
 	// Load all dynamic models
 
@@ -849,7 +848,7 @@ static void CG_Q3F_InitPhaseGraphicModels()
 	}
 }
 
-static void CG_Q3F_InitPhaseGraphicShaders()
+static void CG_Q3F_InitPhaseGraphicShaders(void)
 {
 	// Load all dynamic shaders
 
@@ -873,7 +872,7 @@ static void CG_Q3F_InitPhaseGraphicShaders()
 	}
 }
 
-static void CG_Q3F_InitPhaseSpiritStatic()
+static void CG_Q3F_InitPhaseSpiritStatic(void)
 {
 	initSpiritDef_t * spiritdef = &initSpiritDefs[cgs.initIndex];
 	if (spiritdef->storage) 
@@ -891,7 +890,7 @@ static void CG_Q3F_InitPhaseSpiritStatic()
 		CG_Q3F_SetInitPhase( cgs.initPhase + 1 );
 };
 
-static void CG_Q3F_InitPhaseSpiritDynamic()
+static void CG_Q3F_InitPhaseSpiritDynamic(void)
 {
 	const char *scriptName;
 
@@ -920,7 +919,7 @@ static void CG_Q3F_InitPhaseSpiritDynamic()
 };
 
 
-static void CG_Q3F_InitPhaseClasses()
+static void CG_Q3F_InitPhaseClasses(void)
 {
 	int i;
 	bg_q3f_playerclass_t *cls;
@@ -1022,7 +1021,7 @@ static void CG_Q3F_InitPhaseClasses()
 
 void CG_ParseTeamNameinfo( void );
 
-static void CG_Q3F_InitPhaseClients()
+static void CG_Q3F_InitPhaseClients(void)
 {
 	// Initialize all client information
 	const char *clientInfo;
@@ -1043,7 +1042,7 @@ static void CG_Q3F_InitPhaseClients()
 	}
 }
 
-static void CG_Q3F_InitPhaseUIScripting()
+static void CG_Q3F_InitPhaseUIScripting(void)
 {
 	// Initialize all ui script stuff
 		CG_Q3F_InitLog( "UI Scripting", "", "..." );
@@ -1053,7 +1052,7 @@ static void CG_Q3F_InitPhaseUIScripting()
 		CG_Q3F_SetInitPhase( cgs.initPhase + 1 );
 }
 
-static void CG_Q3F_InitPhaseShaderRemap()
+static void CG_Q3F_InitPhaseShaderRemap(void)
 {
 	// Remap shaders based on the 'remapshader' mapinfo directive.
 
@@ -1079,7 +1078,7 @@ static void CG_Q3F_InitPhaseShaderRemap()
 
 			for( destIndex = cgs.initIndex; destIndex < splitIndex; destIndex++ )
 				from[destIndex - cgs.initIndex] = cgs.shaderRemap[destIndex];
-			from[destIndex - cgs.initIndex] = 0;
+			from[destIndex - cgs.initIndex] = '\0';
 			for( destIndex = splitIndex + 1; destIndex < index; destIndex++ )
 				to[destIndex - splitIndex - 1] = cgs.shaderRemap[destIndex];
 			to[destIndex - splitIndex - 1] = 0;
@@ -1095,7 +1094,7 @@ static void CG_Q3F_InitPhaseShaderRemap()
 	}
 }
 
-static void CG_Q3F_InitPhaseSnapshot()
+static void CG_Q3F_InitPhaseSnapshot(void)
 {
 	// Wait for a snapshot.
 	// ALWAYS THE LAST PHASE
@@ -1306,7 +1305,7 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 		CG_Q3F_InitUpdate();
 }
 
-void CG_Q3F_InitUpdate()
+void CG_Q3F_InitUpdate(void)
 {
 	static qboolean isUpdating = qfalse;
 

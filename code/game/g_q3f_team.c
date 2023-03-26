@@ -57,7 +57,7 @@ static vec4_t teamcolors[Q3F_TEAM_NUM_TEAMS] = {
 	{0, 0, 0, 1}, {1, 0.2f, 0.2f, 1}, {0.2f, 0.2f, 1, 1}, {1, 1, 0.2f, 1}, {0.2f, 1, 0.2f, 1}, {0.7f, 0.7f, 0.7f, 1}
 };
 
-void G_Q3F_InitTeams()
+void G_Q3F_InitTeams(void)
 {
 	// Initialize the team structures.
 

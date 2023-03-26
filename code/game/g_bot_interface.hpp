@@ -10,8 +10,8 @@
 
 int Bot_Interface_Init(void);
 int Bot_Interface_Shutdown(void);
-void Bot_Interface_Update();
-int Bot_Interface_ConsoleCommand();
+void Bot_Interface_Update(void);
+int Bot_Interface_ConsoleCommand(void);
 void Bot_Interface_SendEvent(int _eid, int _dest, int _source, float _delay, BotUserData *_data);
 void Bot_Interface_SendGlobalEvent(int _eid, int _source, float _delay, BotUserData * _data);
 void Bot_Interface_LogOutput(const char *_txt);

@@ -86,7 +86,7 @@ enum {
 
 // Utility functions
 
-q3f_array_t *G_Q3F_ArrayCreate();
+q3f_array_t *G_Q3F_ArrayCreate(void);
 void G_Q3F_ArrayDestroy( q3f_array_t *array );
 int G_Q3F_ArrayAdd( q3f_array_t *array, char type, char flags, intptr_t data );
 void G_Q3F_ArrayDel( q3f_array_t *array, intptr_t index );
@@ -96,7 +96,7 @@ void G_Q3F_ArraySort( q3f_array_t *array );
 q3f_data_t *G_Q3F_ArrayFind( const q3f_array_t *array, intptr_t value );
 q3f_array_t *G_Q3F_ArrayCopy( const q3f_array_t *array );
 
-q3f_keypairarray_t *G_Q3F_KeyPairArrayCreate();
+q3f_keypairarray_t *G_Q3F_KeyPairArrayCreate(void);
 void G_Q3F_KeyPairArrayDestroy( q3f_keypairarray_t * );
 int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, const char *key, char type, char flags, intptr_t data );
 void G_Q3F_KeyPairArrayDel( q3f_keypairarray_t *array, const char *key );

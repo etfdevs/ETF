@@ -40,7 +40,7 @@ If you have questions concerning this license or the applicable additional terms
 weaponInfo_t *CG_Q3F_GetWeaponStruct(int clsnum, int weapon);
 
 // RR2DO2: we use this in bg
-void CG_Q3F_EndReload() {
+void CG_Q3F_EndReload(void) {
 	cg.reloadendtime = cg.time;
 }
 

@@ -492,7 +492,7 @@ static void CG_TouchTriggerPrediction( void ) {
 
 #define ABS(x) ((x) < 0 ? (-(x)) : (x))
 
-static int IsUnacceptableError( playerState_t *ps, playerState_t *pps ) {
+static int IsUnacceptableError( const playerState_t *ps, const playerState_t *pps ) {
 	vec3_t delta;
 	int i;
 
@@ -652,7 +652,7 @@ void CG_PredictPlayerState( void ) {
 	usercmd_t	oldestCmd;
 	usercmd_t	latestCmd;
 	int stateIndex = -1, predictCmd = -1;
-	int numPredicted = 0, numPlayedBack = 0; // debug code
+	//int numPredicted = 0, numPlayedBack = 0; // debug code
 
 	cg.hyperspace = qfalse;	// will be set if touching a trigger_teleport
 
@@ -936,7 +936,7 @@ void CG_PredictPlayerState( void ) {
 				// run the Pmove
 				Pmove (&cg_pmove);
 
-				numPredicted++; // debug code
+				//numPredicted++; // debug code
 
 				// record the last predicted command
 				cg.lastPredictedCommand = cmdNum;
@@ -951,7 +951,7 @@ void CG_PredictPlayerState( void ) {
 				}
 			}
 			else {
-				numPlayedBack++; // debug code
+				//numPlayedBack++; // debug code
 
 				if ( cg_showmiss.integer && 
 						cg.savedPmoveStates[stateIndex].commandTime != cg_pmove.cmd.serverTime) {
@@ -969,7 +969,7 @@ void CG_PredictPlayerState( void ) {
 		else {
 			// run the Pmove
 			Pmove (&cg_pmove);
-			numPredicted++; // debug code
+			//numPredicted++; // debug code
 		}
 
 		moved = qtrue;

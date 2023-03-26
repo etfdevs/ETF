@@ -57,7 +57,7 @@ static int QDECL WBA_SortFunc( const void *a, const void *b )
 	return( Q_stricmp( wa->str, wb->str ) );
 }
 
-void G_Q3F_WaypointBuildArray()
+void G_Q3F_WaypointBuildArray(void)
 {
 	intptr_t iterator, checkIterator;
 	q3f_data_t *locData, *checkLocData;

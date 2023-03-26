@@ -68,7 +68,7 @@ static g_q3f_serverConfig_t sc;
 ***** Support functions
 ****/
 
-static void G_Q3F_SC_Error( char *format, ... )
+static void G_Q3F_SC_Error( const char *format, ... )
 {
 	// Stop with an error, showing file and line.
 
@@ -95,7 +95,7 @@ static void G_Q3F_SC_Error( char *format, ... )
 	sc.errorFound = qtrue;
 }
 
-static qboolean G_Q3F_SC_GetToken( char *requiredToken )
+static qboolean G_Q3F_SC_GetToken( const char *requiredToken )
 {
 	// Get the next token
 
@@ -114,7 +114,7 @@ static qboolean G_Q3F_SC_GetToken( char *requiredToken )
 	return( qtrue );
 }
 
-static q3f_keypair_t *G_Q3F_SC_FindKPEntry( q3f_keypairarray_t *array, char *keyname )
+static q3f_keypair_t *G_Q3F_SC_FindKPEntry( const q3f_keypairarray_t *array, const char *keyname )
 {
 	// Find a keypair entry in an unsorted array.
 
@@ -129,7 +129,7 @@ static q3f_keypair_t *G_Q3F_SC_FindKPEntry( q3f_keypairarray_t *array, char *key
 	return( NULL );
 }
 
-static q3f_data_t *G_Q3F_SC_FindArrayEntry( q3f_array_t *array, char *valuename )
+static q3f_data_t *G_Q3F_SC_FindArrayEntry( const q3f_array_t *array, const char *valuename )
 {
 	// Find a (string) array entry in an unsorted array.
 
@@ -144,7 +144,7 @@ static q3f_data_t *G_Q3F_SC_FindArrayEntry( q3f_array_t *array, char *valuename 
 	return( NULL );
 }
 
-static char *G_Q3F_SC_SettingTraverse( q3f_array_t *setting, intptr_t *index )
+static char *G_Q3F_SC_SettingTraverse( const q3f_array_t *setting, intptr_t *index )
 {
 	// Traverse the default and specified settings.
 
@@ -183,7 +183,7 @@ static char *G_Q3F_SC_SettingTraverse( q3f_array_t *setting, intptr_t *index )
 	return( data ? data->d.strdata : NULL );
 }
 
-static const char *G_Q3F_SC_GetSetting( q3f_array_t *setting, char *key )
+static const char *G_Q3F_SC_GetSetting( const q3f_array_t *setting, const char *key )
 {
 	// Find the value of the specified setting key
 
@@ -210,7 +210,7 @@ static const char *G_Q3F_SC_GetSetting( q3f_array_t *setting, char *key )
 ***** Load functions
 ****/
 
-static void G_Q3F_SC_ProcessSchedule()
+static void G_Q3F_SC_ProcessSchedule(void)
 {
 	// Process a schedule entry.
 
@@ -311,7 +311,7 @@ static void G_Q3F_SC_ProcessSetting( q3f_keypairarray_t **settingroot, qboolean 
 ***** Map list functions
 ****/
 
-static int G_Q3F_SC_ParseMapIndexField( char *str )
+static int G_Q3F_SC_ParseMapIndexField( const char *str )
 {
 	// Extract the bit numbers from the string.
 
@@ -328,12 +328,12 @@ static int G_Q3F_SC_ParseMapIndexField( char *str )
 	return( bitfield );
 }
 
-static qboolean G_Q3F_SC_PartialMatch( char *pattern, char *str )
+static qboolean G_Q3F_SC_PartialMatch( const char *pattern, const char *str )
 {
 	// Attempt to match pattern to string.
 	// Should probably do proper pattern matching later, but I doubt it's worth it.
 
-	char *patptr, *patptr2, *strptr, *matchptr;
+	const char *patptr, *patptr2, *strptr, *matchptr;
 	char buff[128];
 
 	for( patptr = pattern; *patptr && *patptr != '+'; patptr++ );
@@ -374,7 +374,7 @@ static qboolean G_Q3F_SC_PartialMatch( char *pattern, char *str )
 	return( !(*patptr || *strptr) );
 }
 
-static void G_Q3F_SC_ProcessMapPattern( char *mapstr, qboolean include )
+static void G_Q3F_SC_ProcessMapPattern( const char *mapstr, qboolean include )
 {
 	// Process a single entry in or out of the array. Very slow :)
 
@@ -417,12 +417,13 @@ static void G_Q3F_SC_ProcessMapPattern( char *mapstr, qboolean include )
 	}
 }
 
-static void G_Q3F_SC_ProcessMapString( char *mapstr, qboolean include )
+static void G_Q3F_SC_ProcessMapString( const char *mapstr, qboolean include )
 {
 	// Add or remove all specified entries from the map list.
 
 	char buff[128];
-	char *ptr, *buffptr;
+	const char *ptr;
+	char *buffptr;
 
 	while( mapstr && *mapstr )
 	{
@@ -439,7 +440,7 @@ static void G_Q3F_SC_ProcessMapString( char *mapstr, qboolean include )
 
 #define MAPMAX( x )	((x >> 8) & 0xFF)
 #define	MAPMIN( x )	(x & 0xFF)
-static void G_Q3F_SC_FilterByPlayers( int playerCount, char *playerLower, char *playerUpper )
+static void G_Q3F_SC_FilterByPlayers( int playerCount, const char *playerLower, const char *playerUpper )
 {
 	// Attempt to strip out all maps that won't be suitable for the current number of players.
 
@@ -487,7 +488,7 @@ static void G_Q3F_SC_FilterByPlayers( int playerCount, char *playerLower, char *
 	sc.generatedMapList = newmaplist;
 }
 
-void G_Q3F_SC_FilterByHistory( char *historyLimit )
+static void G_Q3F_SC_FilterByHistory( const char *historyLimit )
 {
 	// Filter out maps that are above the history limit
 
@@ -540,7 +541,7 @@ static void G_Q3F_SC_CompileMapList( q3f_array_t *setting, int playerCount, qboo
 //	q3f_data_t *data;
 	q3f_keypairarray_t *mapinfo;
 //	q3f_keypair_t*kp;
-	char rawmaplistbuff[10240], mapname[1024];
+	char mapname[1024];
 	char *ptr, *str, *filters, *historyLimit, *playerLower, *playerUpper;
 //	q3f_array_t *defaultSetting;
 
@@ -552,11 +553,11 @@ static void G_Q3F_SC_CompileMapList( q3f_array_t *setting, int playerCount, qboo
 	// Build a list of source maps to check against.
 	if( !sc.sourceMapList )
 	{
-		numMaps = trap_FS_GetFileList( "maps", ".bsp", rawmaplistbuff, sizeof(rawmaplistbuff) );
+		numMaps = trap_FS_GetFileList( "maps", ".bsp", bigTextBuffer, sizeof(bigTextBuffer) );
 		sc.sourceMapList = G_Q3F_KeyPairArrayCreate();
 		cumMin = 128;
 		cumMax = 0;
-		for( index = 0, ptr = rawmaplistbuff; index < numMaps; index++ )
+		for( index = 0, ptr = bigTextBuffer; index < numMaps; index++ )
 		{
 			COM_StripExtension( COM_SkipPath( ptr ), mapname, sizeof(mapname) );
 
@@ -738,7 +739,7 @@ static qboolean G_Q3F_SC_InDateRange( int day, int time, int dates[4] )
 			(boundCmp > 0 && (startCmp >= 0 || endCmp <= 0)) );
 }
 
-static void G_Q3F_DetermineSetting()
+static void G_Q3F_DetermineSetting(void)
 {
 	qtime_t qtime;
 	intptr_t index;
@@ -782,7 +783,7 @@ static void G_Q3F_DetermineSetting()
 	G_Q3F_SC_Error( "No appropriate schedule for %s %02d:%02d", dayNames[qtime.tm_wday], qtime.tm_hour, qtime.tm_min );
 }
 
-void G_Q3F_SC_CheckScheduleCoverage()
+void G_Q3F_SC_CheckScheduleCoverage(void)
 {
 	// Check that the whole week is covered by schedules.
 
@@ -899,7 +900,7 @@ void G_Q3F_LoadServerConfiguration( qboolean testMode )
 	}
 }
 
-void G_Q3F_UnloadServerConfiguration()
+void G_Q3F_UnloadServerConfiguration(void)
 {
 	// Clean up the map data.
 
@@ -908,7 +909,7 @@ void G_Q3F_UnloadServerConfiguration()
 	if( sc.maplists )	G_Q3F_KeyPairArrayDestroy(	sc.maplists		);
 }
 
-void G_Q3F_ExecuteSetting( char *mapexec, int gameindex )
+void G_Q3F_ExecuteSetting( const char *mapexec, int gameindex )
 {
 	// Locate the 'current' map settings, and execute them to the console.
 
@@ -993,7 +994,7 @@ void G_Q3F_ExecuteSetting( char *mapexec, int gameindex )
 	}
 }
 
-void G_Q3F_TestServerConfiguration()
+void G_Q3F_TestServerConfiguration(void)
 {
 	// Test the map configuration
 
@@ -1001,7 +1002,7 @@ void G_Q3F_TestServerConfiguration()
 	G_Q3F_UnloadServerConfiguration();
 }
 
-q3f_array_t *G_Q3F_GetAvailableMaps()
+q3f_array_t *G_Q3F_GetAvailableMaps(void)
 {
 	// Get a list of available maps at the end of a round, based on 
 	// number of players and map history.
@@ -1025,7 +1026,7 @@ q3f_array_t *G_Q3F_GetAvailableMaps()
 	return( sc.generatedMapList );
 }
 
-q3f_keypairarray_t *G_Q3F_LoadMapHistory()
+q3f_keypairarray_t *G_Q3F_LoadMapHistory(void)
 {
 	// Load in the map history.
 	// Assumes that there isn't a file handle already open.
@@ -1067,7 +1068,7 @@ q3f_keypairarray_t *G_Q3F_LoadMapHistory()
 	return( history );
 }
 
-void G_Q3F_UpdateMapHistory( char *mapname )
+void G_Q3F_UpdateMapHistory( const char *mapname )
 {
 	// Update the map history with the specified map being bumped. Assumes the map
 	// is a qualified map+gameindex string. Also assumes the current setting has been

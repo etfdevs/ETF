@@ -70,12 +70,12 @@ void AddRemap(const char *oldShader, const char *newShader, float timeOffset) {
 	}
 }
 
-void G_ResetRemappedShaders() {
+void G_ResetRemappedShaders(void) {
 	memset( &remappedShaders, 0, sizeof(remappedShaders) );
 	remapCount = 0;
 }
 
-const char *BuildShaderStateConfig() {
+const char *BuildShaderStateConfig(void) {
 	static char	buff[MAX_STRING_CHARS*4];
 	char out[(MAX_QPATH * 2) + 5];
 	int i;
@@ -590,7 +590,6 @@ gentity_t *G_TempEntity( const vec3_t origin, int event ) {
 
 	return e;
 }
-
 
 
 /*

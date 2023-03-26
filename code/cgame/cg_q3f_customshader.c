@@ -67,7 +67,7 @@ typedef struct parallaxshader_s {
 static parallaxshader_t *firstshader;
 
 //static int frame;
-void CG_Q3F_RenderCustomShaders()
+void CG_Q3F_RenderCustomShaders(void)
 {
 	polyVert_t verts[MAXPARALLAXPOINTS];
 	vec3_t viewProjections[MAXPARALLAXPOINTS];

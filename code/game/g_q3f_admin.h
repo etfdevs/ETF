@@ -60,8 +60,8 @@ void G_Q3F_AdminCommand_ClientOnly( gentity_t* admin );
 void G_Q3F_AdminPasswordCommand( gentity_t *admin );
 void G_Q3F_RCONPasswordCommand( gentity_t *ent );
 void G_Q3F_AdminTempBan( gentity_t *player, const char *reason, int time );
-void G_Q3F_AdminCheckBannedPlayers();
-int G_Q3F_AdminNextExpireBans();
+void G_Q3F_AdminCheckBannedPlayers(void);
+int G_Q3F_AdminNextExpireBans(void);
 
 #define	Q3F_ADMIN_BANFILE		"banlist.txt"		// Where to store bans
 //#define	Q3F_ADMIN_FILE			"adminlist.txt"		// Where to store admins

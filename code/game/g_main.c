@@ -505,10 +505,10 @@ Q_EXPORT intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t ar
 	return -1;
 }
 
-void G_Q3F_Global_Think() {
+void G_Q3F_Global_Think(void) {
 }
 
-void QDECL G_Printf( const char *fmt, ... ) {
+void FORMAT_PRINTF(1,2) QDECL G_Printf( const char *fmt, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -522,10 +522,8 @@ void QDECL G_Printf( const char *fmt, ... ) {
 
 	trap_Print( text );
 }
-//bani
-void QDECL G_Printf( const char *fmt, ... ) __attribute__( ( format( printf,1,2 ) ) );
 
-void NORETURN QDECL G_Error( const char *fmt, ... ) {
+void NORETURN FORMAT_PRINTF(1,2) QDECL G_Error( const char *fmt, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -539,8 +537,6 @@ void NORETURN QDECL G_Error( const char *fmt, ... ) {
 
 	trap_Error( text );
 }
-//bani
-void NORETURN QDECL G_Error( const char *fmt, ... ) __attribute__( ( format( printf,1,2 ) ) );
 
 /*
 ================
@@ -603,7 +599,7 @@ void G_FindTeams( void ) {
 G_Q3F_UpdateCvarLimits
 =================
 */
-void G_Q3F_UpdateCvarLimits() {
+void G_Q3F_UpdateCvarLimits(void) {
 	trap_SetConfigstring( CS_Q3F_CVARLIMITS, va( "snaps %i -1 rate %i -1", g_minSnaps.integer, g_minRate.integer ) );
 }
 
@@ -696,7 +692,7 @@ static int G_Q3F_ParseFriendlyFire( char *ffstring )
 	return( mask );
 }
 
-void G_Q3F_UpdateTeamNames() {
+void G_Q3F_UpdateTeamNames(void) {
 	trap_SetConfigstring(CS_TEAMNAMES, va("\\g_etf_redTeam\\%s\\g_etf_blueTeam\\%s\\g_etf_yellowTeam\\%s\\g_etf_greenTeam\\%s", 
 		g_redteam.string, g_blueteam.string, g_yellowteam.string, g_greenteam.string));
 }
@@ -803,7 +799,7 @@ G_Q3F_LoadMapConfig
 
 ======================
 */
-void G_Q3F_LoadMapConfig() {
+void G_Q3F_LoadMapConfig(void) {
 	// RR2DO2: load any map-specific config
 
 	char mapcfg[MAX_QPATH], buff[MAX_QPATH];
@@ -941,6 +937,8 @@ G_InitGame
 void G_Q3F_MuonFix( void );
 void G_Q3F_OdiumFix( void );
 
+char bigTextBuffer[100000];
+
 void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	int					i;
 	intptr_t 			index;
@@ -987,6 +985,11 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	memset( &level, 0, sizeof( level ) );
 	level.time = levelTime;
 	level.startTime = levelTime;
+
+	if ( restart ) {
+		// Nuke the big buffer on restarts
+		memset( bigTextBuffer, 0, sizeof(bigTextBuffer) );
+	}
 
 	// Golliwog: Load the current map's configuration, and map information for the current map.
 	trap_Cvar_VariableStringBuffer( "mapname", mapname, sizeof(mapname) );
@@ -1231,7 +1234,7 @@ void G_ShutdownGame( int restart )
 // this is only here so the functions in q_shared.c and bg_*.c can link
 
 #define G_MAXPRINTMSG 8192
-void QDECL Com_DPrintf( const char *fmt, ... ) {
+void FORMAT_PRINTF(1,2) QDECL Com_DPrintf( const char *fmt, ... ) {
 	va_list argptr;
 	char msg[G_MAXPRINTMSG];
 
@@ -1246,7 +1249,7 @@ void QDECL Com_DPrintf( const char *fmt, ... ) {
 	trap_Print( msg );
 }
 
-void QDECL Com_Error ( int _level, const char *error, ... ) {
+void QDECL FORMAT_PRINTF(2,3) Com_Error ( int _level, const char *error, ... ) {
 	va_list		argptr;
 	char		text[G_MAXPRINTMSG];
 
@@ -1256,10 +1259,8 @@ void QDECL Com_Error ( int _level, const char *error, ... ) {
 
 	trap_Error( text );
 }
-//bani
-void QDECL Com_Error( int _level, const char *error, ... ) __attribute__( ( format( printf,2,3 ) ) );
 
-void QDECL Com_Printf( const char *msg, ... ) {
+void QDECL FORMAT_PRINTF(1,2) Com_Printf( const char *msg, ... ) {
 	va_list		argptr;
 	char		text[G_MAXPRINTMSG];
 
@@ -1269,8 +1270,6 @@ void QDECL Com_Printf( const char *msg, ... ) {
 
 	trap_Print( text );
 }
-//bani
-void QDECL Com_Printf( const char *msg, ... ) __attribute__( ( format( printf,1,2 ) ) );
 
 #endif
 
@@ -1762,7 +1761,7 @@ G_LogPrintf
 Print to the logfile with a time stamp if it is open
 =================
 */
-void QDECL G_LogPrintf( const char *fmt, ... ) {
+void QDECL FORMAT_PRINTF(1,2) G_LogPrintf( const char *fmt, ... ) {
 	va_list		argptr;
 	char		string[1024];
 	int			min, tens, sec;
@@ -1792,8 +1791,6 @@ void QDECL G_LogPrintf( const char *fmt, ... ) {
 
 	trap_FS_Write( string, strlen( string ), level.logFile );
 }
-//bani
-void QDECL G_LogPrintf( const char *fmt, ... ) __attribute__( ( format( printf,1,2 ) ) );
 
 /*
 ================
@@ -2281,7 +2278,7 @@ G_Q3F_CalculateTeamPings
 Work out average team pings, send to all clients as a string
 ================
 */
-void G_Q3F_CalculateTeamPings()
+void G_Q3F_CalculateTeamPings(void)
 {
 	int pings[Q3F_TEAM_NUM_TEAMS], counts[Q3F_TEAM_NUM_TEAMS], index;
 	gentity_t *scan;
@@ -2385,7 +2382,7 @@ void G_Q3F_CalculateTeamPings()
 	}
 }
 
-/*static void G_Q3F_CheckCorruptClientSlots()
+/*static void G_Q3F_CheckCorruptClientSlots(void)
 {
 	// Check all empty client slot data, and if they're not all zero, dump them - there's
 	// obviously some kind of memory corruption going on.
@@ -2415,7 +2412,7 @@ void G_Q3F_CalculateTeamPings()
 	}
 }*/
 
-void G_RunEntities() {
+void G_RunEntities(void) {
 	gentity_t* ent;
 	int i,e;
 	trace_t trace;

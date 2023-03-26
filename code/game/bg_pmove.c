@@ -717,10 +717,11 @@ static void PM_WaterJumpMove( void ) {
 CheckLadder [ ARTHUR TOMLIN ]
 =============
 */
-void CheckLadder( void )
+void PM_CheckLadderMove( void )
 {
 	vec3_t flatforward,spot;
 	trace_t trace;
+
 	pml.ladder = qfalse;
 	pm->ps->pm_flags &= ~PMF_LADDER;
 
@@ -732,6 +733,7 @@ void CheckLadder( void )
 	flatforward[1] = pml.forward[1];
 	flatforward[2] = 0;
 	VectorNormalize (flatforward);
+
 	VectorMA( pm->ps->origin, 1, flatforward, spot );
 	pm->trace( &trace, pm->ps->origin, pm->mins, pm->maxs, spot, pm->ps->clientNum, MASK_PLAYERSOLID );
 	if ((trace.fraction < 1) && (trace.surfaceFlags & SURF_LADDER))

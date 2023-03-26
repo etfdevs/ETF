@@ -115,7 +115,7 @@ void CG_Q3F_CheckForScannerData(struct centity_s *cent)
  END JT*/
 }
 
-void CG_Q3F_ScannerDraw()
+void CG_Q3F_ScannerDraw(void)
 {
 	int i;
 	float		w, h;

@@ -57,8 +57,8 @@ enum cg_q3f_mapselectmode_t {
 void CG_Q3F_MapSelectTally( const char *cs );
 void CG_Q3F_MapSelectInit( const char *cs );
 qboolean CG_Q3F_MapSelectChoice( int choice );
-qboolean CG_Q3F_MapSelectVote();
-void CG_Q3F_MapSelectRespond();
-qboolean CG_Q3F_MapSelectDraw();
+qboolean CG_Q3F_MapSelectVote(void);
+void CG_Q3F_MapSelectRespond(void);
+qboolean CG_Q3F_MapSelectDraw(void);
 
 #endif //__CG_Q3F_MAPSELECT_H
