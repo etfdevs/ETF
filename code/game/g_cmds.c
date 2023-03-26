@@ -1171,6 +1171,47 @@ static qboolean G_Q3F_CheckFlood( gentity_t *ent )
 
 void _MS_TraceLocation( gentity_t *ent, vec3_t dest );
 
+static const char *ammoNames[] = {
+	"Shells",
+	"Nails",
+	"Rockets",
+	"Cells",
+};
+
+static const char *axeNames[Q3F_CLASS_MAX] = {
+	"Axe",
+	"Axe",
+	"Axe",
+	"Axe",
+	"Axe",
+	"Syringe",
+	"Axe",
+	"Axe",
+	"Knife",
+	"Wrench",
+	"Axe",
+};
+
+static const char *gunNames[] = {
+	"No Weapon",
+	"Axe",
+	"Shotgun",
+	"Super Shotgun",
+	"Nailgun",
+	"Super Nailgun",
+	"Grenade Launcher",
+	"Rocket Launcher",
+	"Sniper Rifle",
+	"Railgun",
+	"Flamethrower",
+	"Minigun",
+	"Assault Rifle",
+	"Dartgun",
+	"Pipe Launcher",
+	"Napalm Cannon",
+	""
+};
+
 static char *G_Q3F_ParseSayString( const char *srcptr, gentity_t *activator, gentity_t *target, int colour )
 {
 	static char buf[2048];
@@ -1251,6 +1292,28 @@ canthandle:
 			_MS_TraceLocation( activator, pos );
 			loc = Team_GetLocationFromPos( pos );
 			Q_strcat( buffptr, buffendptr - buffptr, loc ? loc->str : "unknown location");
+			break;
+		case 'w':	// Weapon name
+			if ( activator->client->ps.weapon == WP_AXE )
+				Q_strcat( buffptr, buffendptr - buffptr, axeNames[activator->client->ps.persistant[PERS_CURRCLASS]]);
+			else
+				Q_strcat( buffptr, buffendptr - buffptr, gunNames[activator->client->ps.weapon]);
+			break;
+		case 'y':	// Ammo name
+			{
+				const bg_q3f_weapon_t *wp = BG_Q3F_GetWeapon(activator->client->ps.weapon);
+				if ( activator->client->ps.weapon == WP_AXE )
+				{
+					if ( activator->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_ENGINEER )
+						Q_strcat( buffptr, buffendptr - buffptr, ammoNames[AMMO_CELLS]);
+					else
+						Q_strcat( buffptr, buffendptr - buffptr, "No Ammo");
+				}
+				else if ( wp->ammotype < AMMO_MEDIKIT )
+					Q_strcat( buffptr, buffendptr - buffptr, ammoNames[wp->ammotype]);
+				else
+					Q_strcat( buffptr, buffendptr - buffptr, "No Ammo");
+			}
 			break;
 		case 'z':	// Sentry Location
 			if( activator->client->sentry )
