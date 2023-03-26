@@ -3790,6 +3790,8 @@ void ClientCommand( int clientNum ) {
 		Cmd_Where_f (ent);
 	else if (Q_stricmp (cmd, "callvote") == 0)
 		Cmd_CallVote_f (ent);
+	else if (Q_stricmp (cmd, "cv") == 0)
+		Cmd_CallVote_f (ent);
 	else if (Q_stricmp (cmd, "vote") == 0)
 		Cmd_Vote_f (ent);
 	else if (Q_stricmp (cmd, "setviewpos") == 0)
