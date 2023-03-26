@@ -340,6 +340,13 @@ qboolean G_MoverPush( gentity_t *pusher, vec3_t move, vec3_t amove, gentity_t **
 	for ( e = 0; e < moveEntities; e++ ) {
 		check = &g_entities[ moveList[e] ];
 
+		if ( check->s.eType == ET_Q3F_CORPSE ) {
+			trap_LinkEntity( check );
+			GibEntity( check, ENTITYNUM_WORLD );
+			moveList[e] = ENTITYNUM_NONE;
+			continue;
+		}
+
 		// the entity needs to be pushed
 		pushedStackDepth = 0;	// Arnout: new push, reset stack depth
 		if ( G_TryPushingEntity( check, pusher, move, amove ) ) {
