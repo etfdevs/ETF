@@ -445,6 +445,7 @@ void CG_ProcessSnapshots( void ) {
 	if ( cg.time < cg.snap->serverTime ) {
 		// this can happen right after a vid_restart
 		cg.time = cg.snap->serverTime;
+		cgDC.realTime = cg.time;
 	}
 	if ( cg.nextSnap != NULL && cg.nextSnap->serverTime <= cg.time ) {
 		CG_Error( "CG_ProcessSnapshots: cg.nextSnap->serverTime <= cg.time" );
