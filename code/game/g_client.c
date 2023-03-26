@@ -1183,7 +1183,7 @@ void G_Q3F_CheckClones( char *ipstr ) {
 }
 
 // Barrowing this code from my jka mod
-#define MAX_IP_LENGTH	40
+#define MAX_IP_LENGTH	48
 
 #if 0
 typedef struct {
