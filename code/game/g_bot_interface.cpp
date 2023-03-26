@@ -1030,6 +1030,10 @@ class           ETFInterface:public IEngineInterface
 		{
 			if(_newclass == -1 || _newclass == 0 || !G_Q3F_ChangeClassCommand(bot, g_q3f_classlist[_newclass]->s->commandstring))
 				_newclass = G_Q3F_SelectRandomClass(bot->client->sess.sessionTeam, bot);
+
+			// Try again in case desired class is disabled
+			if ( bot->client->sess.sessionClass != _newclass )
+				_newclass = G_Q3F_SelectRandomClass(bot->client->sess.sessionTeam, bot);
 		}
 
 
