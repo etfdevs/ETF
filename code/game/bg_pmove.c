@@ -717,7 +717,7 @@ static void PM_WaterJumpMove( void ) {
 CheckLadder [ ARTHUR TOMLIN ]
 =============
 */
-void CheckLadderMove( void )
+void CheckLadder( void )
 {
 	vec3_t flatforward,spot;
 	trace_t trace;
