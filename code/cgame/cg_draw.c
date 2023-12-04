@@ -1564,22 +1564,6 @@ void CG_DrawDemoRecording( void ) {
 	char demostatus[128];
 	char wavestatus[128];
 
-	// tjw:	cl_demorecording, cl_demooffset, and cl_demofilename cvars
-	//		are always referencing garbage in OSX.
-	//		The etmain client doesn't seem to have this problem and the
-	//		game engine shows the correct values...  Very strange. 
-	//		BTW, this is a dirty hack.
- #if defined(__MACOS__)
-	{
-		char demorecording[2] = {"0"};
-		trap_Cvar_VariableStringBuffer("cl_demorecording", demorecording, sizeof(demorecording));
-		if(demorecording[0] == '1') {
-			CG_Text_Paint( 5, cg_recording_statusline.integer, 0.2f, colorWhite, "recording demo, /stoprecord to finish", 0, 0, 0, NULL, ITEM_ALIGN_LEFT );
-		}
-		return;
-	}
-#endif
-
 	if( !cl_demorecording.integer && !cl_waverecording.integer ) {
 		return;
 	}
@@ -1591,13 +1575,13 @@ void CG_DrawDemoRecording( void ) {
 	if( cl_demorecording.integer ) {
 		Com_sprintf( demostatus, sizeof( demostatus ), " demo %s: %ik ", cl_demofilename.string, cl_demooffset.integer / 1024 );
 	} else {
-		strncpy( demostatus, "", sizeof( demostatus ) );
+		demostatus[0] = '\0';
 	}
 
 	if( cl_waverecording.integer ) {
 		Com_sprintf( wavestatus, sizeof( demostatus ), " audio %s: %ik ", cl_wavefilename.string, cl_waveoffset.integer / 1024 );
 	} else {
-		strncpy( wavestatus, "", sizeof( wavestatus ) );
+		demostatus[0] = '\0';
 	}
 
 	Com_sprintf( status, sizeof( status ), "RECORDING%s%s", demostatus, wavestatus );
