@@ -324,6 +324,7 @@ static void UI_ETF_DemoParseString(const char* in, char* out, int size) {
 
 	trap_RealTime(&time);
 
+	out[0] = '\0';
 	yr = time.tm_year;
 	while(yr >= 100)
 		yr-=100;
