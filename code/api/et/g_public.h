@@ -68,7 +68,7 @@ If you have questions concerning this license or the applicable additional terms
 
 //===============================================================
 
-typedef qboolean (*addToSnapshotCallback)( int entityNum, int clientNum );
+//typedef qboolean (*addToSnapshotCallback)( int entityNum, int clientNum );
 
 typedef struct {
 //	entityState_t	s;				// communicated by server to clients
@@ -125,7 +125,7 @@ typedef struct {
 typedef enum {
 	//============== general Quake services ==================
 
-	G_PRINT,		// ( const char *string );
+	G_PRINT = 0,		// ( const char *string );
 	// print message on the local console
 
 	G_ERROR,		// ( const char *string );
@@ -452,7 +452,12 @@ typedef enum {
 	BOTLIB_PC_SOURCE_FILE_AND_LINE,
 	BOTLIB_PC_UNREAD_TOKEN,
 
-	PB_STAT_REPORT
+	PB_STAT_REPORT,
+
+	// zinx
+	G_SENDMESSAGE,
+	G_MESSAGESTATUS,
+	// -zinx
 
 } gameImport_t;
 
@@ -492,11 +497,18 @@ typedef enum {
 
 	GAME_SNAPSHOT_CALLBACK,			// ( int entityNum, int clientNum ); // return qfalse if you don't want it to be added
 
-	BOTAI_START_FRAME				// ( int time );
+	BOTAI_START_FRAME,				// ( int time );
 
 	// Ridah, Cast AI
-	,BOT_VISIBLEFROMPOS
-	,BOT_CHECKATTACKATPOS
+	BOT_VISIBLEFROMPOS,
+	BOT_CHECKATTACKATPOS,
 	// done.
+
+	// zinx
+	GAME_MESSAGERECEIVED,           // ( int cno, const char *buf, int buflen, int commandTime );
+	// -zinx
+
+	GAME_EXPORT_LAST
+
 } gameExport_t;
 

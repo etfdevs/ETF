@@ -97,7 +97,7 @@ functions imported from the main executable
 #define	CGAME_IMPORT_API_VERSION	3
 
 typedef enum {
-	CG_PRINT,
+	CG_PRINT = 0,
 	CG_ERROR,
 	CG_MILLISECONDS,
 	CG_CVAR_REGISTER,
@@ -230,7 +230,7 @@ typedef enum {
 	CG_STOPCAMERA,
 	CG_GETCAMERAINFO,
 
-	CG_MEMSET = 150,
+	/*CG_MEMSET = 150,
 	CG_MEMCPY,
 	CG_STRNCPY,
 	CG_SIN,
@@ -242,9 +242,9 @@ typedef enum {
 
 	CG_TESTPRINTINT,
 	CG_TESTPRINTFLOAT,
-	CG_ACOS,
+	CG_ACOS,*/
 
-	CG_INGAME_POPUP,		//----(SA)	added
+	CG_INGAME_POPUP = 162,		//----(SA)	added
 
 	// NERVE - SMF
 	CG_INGAME_CLOSEPOPUP,
@@ -264,6 +264,25 @@ typedef enum {
 	CG_GETHUNKDATA,
 
 	CG_PUMPEVENTLOOP,
+
+	// zinx
+	CG_SENDMESSAGE,
+	CG_MESSAGESTATUS,
+	// -zinx
+
+	// bani
+	CG_R_LOADDYNAMICSHADER,
+	// -bani
+
+	// fretn
+	CG_R_RENDERTOTEXTURE,
+	// -fretn
+	// bani
+	CG_R_GETTEXTUREID,
+	// -bani
+	// bani
+	CG_R_FINISH,
+	// -bani
 } cgameImport_t;
 
 
@@ -276,7 +295,7 @@ functions exported to the main executable
 */
 
 typedef enum {
-	CG_INIT,
+	CG_INIT = 0,
 //	void CG_Init( int serverMessageNum, int serverCommandSequence )
 	// called when the level loads or when the renderer is restarted
 	// all media should be registered at this time
@@ -321,6 +340,13 @@ typedef enum {
 	CG_CHECKEXECKEY,
 
 	CG_WANTSBINDKEYS,
+
+	// zinx
+	CG_MESSAGERECEIVED,
+//	void (*CG_MessageReceived)( const char *buf, int buflen, int serverTime );
+	// -zinx
+
+	CG_EXPORT_LAST,
 
 } cgameExport_t;
 

@@ -45,7 +45,7 @@ typedef struct {
 } uiClientState_t;
 
 typedef enum {
-	UI_ERROR,
+	UI_ERROR = 0,
 	UI_PRINT,
 	UI_MILLISECONDS,
 	UI_CVAR_SET,
@@ -162,7 +162,7 @@ typedef enum {
 	UI_OPENURL,
 	UI_SET_PBSVSTATUS,				// TTimo
 
-	UI_MEMSET = 200,
+	/*UI_MEMSET = 200,
 	UI_MEMCPY,
 	UI_STRNCPY,
 	UI_SIN,
@@ -170,8 +170,8 @@ typedef enum {
 	UI_ATAN2,
 	UI_SQRT,
 	UI_FLOOR,
-	UI_CEIL,
-	UI_GETHUNKDATA
+	UI_CEIL,*/
+	UI_GETHUNKDATA = 209
 
 } uiImport_t;
 
@@ -253,6 +253,8 @@ typedef enum {
 	UI_CHECKEXECKEY,		// NERVE - SMF
 
 	UI_WANTSBINDKEYS,
+
+	UI_EXPORT_LAST,
 
 } uiExport_t;
 
