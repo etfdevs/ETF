@@ -161,7 +161,7 @@ jobs:
 
   macos-x86:
     name: ${{ matrix.config }} macOS x86_64
-    runs-on: macos-latest
+    runs-on: macos-12
     strategy:
       fail-fast: false
       matrix:
