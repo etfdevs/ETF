@@ -1,24 +1,23 @@
 name: build
 
 on:
-  # Run on pushes to tags, the "master" branch, and PR's
+  workflow_dispatch:
   push:
-    tags-ignore:
-    branches:
-      - master
+    branches: [master]
     paths-ignore:
       - '**.md'
       - '*.txt'
       - '.gitignore'
       - 'docs/*'
   pull_request:
+    branches: [master]
     paths-ignore:
       - '**.md'
       - '*.txt'
       - '.gitignore'
       - 'docs/*'
-
-  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   windows-mingw:
@@ -72,7 +71,7 @@ jobs:
           echo "C:\msys64\mingw64\bin" >> $GITHUB_PATH
         fi
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
 
@@ -94,7 +93,7 @@ jobs:
       working-directory: ${{github.workspace}}/code/bin
       run: cmake --build . --config ${{ matrix.config }} --parallel
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       if: ${{ matrix.config == 'Release' }}
       with:
         name: windows-${{ matrix.arch }}
@@ -105,7 +104,7 @@ jobs:
 
   ubuntu-x86:
     name: ${{ matrix.config }} Ubuntu ${{ matrix.arch }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -130,7 +129,7 @@ jobs:
           sudo apt-get -qq update
           sudo apt-get -y install ninja-build
         fi
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
 
@@ -151,7 +150,7 @@ jobs:
       working-directory: ${{github.workspace}}/code/bin
       run: cmake --build . --config ${{ matrix.config }} --parallel
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       if: matrix.cc == 'gcc' && matrix.config == 'Release'
       with:
         name: linux-${{ matrix.arch }}
@@ -178,7 +177,7 @@ jobs:
     - name: Install tools
       run: brew install coreutils ninja
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
 
@@ -194,7 +193,7 @@ jobs:
       working-directory: ${{github.workspace}}/code/bin
       run: cmake --build . --config ${{ matrix.config }} --parallel
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       if: matrix.cc == 'clang' && matrix.config == 'Release'
       with:
         name: macos-${{ matrix.arch }}
@@ -209,7 +208,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
 
       - name: Create binary archives
         run: |
@@ -233,7 +232,7 @@ jobs:
           7z a -r etf-2.0-all-test-latest.zip      ./etf/*_mac
 
       - name: Create latest build
-        uses: marvinpinto/action-automatic-releases@6273874b61ebc8c71f1a61b2d98e234cf389b303
+        uses: czietz/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           automatic_release_tag: "latest"

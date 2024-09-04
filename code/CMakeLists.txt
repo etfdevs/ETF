@@ -144,9 +144,9 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
 	if(APPLE AND X86_64)
 		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-missing-field-initializers -fPIC -fvisibility=hidden) #-fno-strict-aliasing
 	elseif(X86_64)
-		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-old-style-declaration -Wno-missing-field-initializers -fPIC -fvisibility=hidden) #-fno-strict-aliasing
+		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-missing-field-initializers -fPIC -fvisibility=hidden) #-fno-strict-aliasing
 	else()
-		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-old-style-declaration -Wno-missing-field-initializers -fPIC -fvisibility=hidden -march=pentium -mtune=pentiumpro) #-fno-strict-aliasing
+		set(compiler_flags_global -pipe -Wall -Wextra -Wshadow -Wno-unused-parameter -Wno-missing-field-initializers -fPIC -fvisibility=hidden -march=pentium -mtune=pentiumpro) #-fno-strict-aliasing
 	endif()
 	# debug: explicit -Og -D_DEBUG, implicit -g
 	set(compiler_flags_debug ${compiler_flags_global} -Og -D_DEBUG)
@@ -167,6 +167,10 @@ set(compiler_flags_relwithdebinfo ${compiler_flags_global} -DNDEBUG /Ox /Oy /Zi 
 set(compiler_flags_release ${compiler_flags_global} -DNDEBUG /Ox /Oy /MT)
 else()
 message(FATAL_ERROR "Compiler flags not setup for this project")
+endif()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+list(REMOVE_ITEM compiler_flags_release -fschedule-insns2 -fstrength-reduce)
 endif()
 
 #if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
@@ -525,7 +529,7 @@ if(APPLE)
 else()
 	set_target_properties(qagame PROPERTIES SUFFIX "${LIB_SUFFIX}${Architecture}${DLL_EXT}") #NOTE changeme when multi-platform and multi-arch support is added
 endif()
-target_compile_definitions(qagame PUBLIC "API_ET" "QAGAME" "NO_BOT_SUPPORT" "ARCH_STRING=\"${Architecture}\"")
+target_compile_definitions(qagame PUBLIC "API_ET" "QAGAME" "GAMEDLL" "NO_BOT_SUPPORT" "ARCH_STRING=\"${Architecture}\"")
 target_include_directories(qagame PUBLIC ${SRCDIR}/game ${SRCDIR}/cJSON ${SRCDIR}/api/et ${SRCDIR}/api/shared )
 if(BOTS)
 	target_compile_definitions(qagame PUBLIC "BUILD_BOTS")
