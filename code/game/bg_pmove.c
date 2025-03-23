@@ -58,12 +58,12 @@ float	pm_wadeScale = 0.85f;
 float	pm_ladderScale = 0.80f;			// fraction max speed on ladders
 float	pm_landConcScale = 10.0f;		// The amount of conc exaggeration when you hit the ground.
 
-float	pm_accelerate = 10.0f;
+float	pm_accelerate = pm_accelerate_cvar->value;
 float	pm_wateraccelerate = 8.0f;
 float	pm_flyaccelerate = 8.0f;
 float	pm_ladderAccelerate = 3000.0f;  // The acceleration to friction ratio is 1:1
 
-float	pm_airaccelerate = 6.0f;		// Golliwog: Was one, but not 'QW' enough
+float	pm_airaccelerate = pm_airaccelerate_cvar->value;		// Golliwog: Was one, but not 'QW' enough
 //float	pm_concairaccelerate = 3.0;		// ETF 0.0
 float	pm_concairaccelerate = 3.6;
 float	pm_airminspeed = 50.0f; // the "minimum" speed while in air, used to get away from jump pads
@@ -71,7 +71,7 @@ float	pm_airminspeed = 50.0f; // the "minimum" speed while in air, used to get a
 #define AMSD_SYNC 1.5f//9
 float	pm_airmaxspeeddiff = AMSD_ASYNC; // this is the actual max acceleration
 
-float	pm_friction = 6.0f;
+float	pm_friction = pm_friction_cvar->value;
 float	pm_airfriction = 6.0f;			// Air friction, ignores vertical values
 float	pm_waterfriction = 2.0f;
 float	pm_flightfriction = 3.0f;
@@ -79,6 +79,18 @@ float	pm_spectatorfriction = 5.0f;
 float	pm_ladderfriction = 3000.0f;  // Friction is high enough so you don't slip down
 
 int		c_pmove = 0;
+
+// Declare the CVars
+static cvar_t *pm_airaccelerate_cvar;
+static cvar_t *pm_accelerate_cvar;
+static cvar_t *pm_friction_cvar;
+
+void PM_Init() {
+    // Register the CVar and set a default value (in this case 10.0f)
+    pm_airaccelerate_cvar = Cvar_Get("pm_airaccelerate", "10.0", CVAR_ARCHIVE);
+    pm_accelerate_cvar = Cvar_Get("pm_accelerate", "10.0", CVAR_ARCHIVE);
+    pm_friction_cvar = Cvar_Get("pm_friction", "6.0", CVAR_ARCHIVE);
+}
 
 #ifdef CGAME
 			#define BOX_PRINT_MODE_CHAT			0
