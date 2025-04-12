@@ -521,10 +521,10 @@ void Weapon_Napalm_Fire(struct gentity_s *ent) {
 	//bolt->damage = 10+ETF_random()*20; // RR2DO2: 1e
 	//bolt->damage = 12+ETF_random()*20; // RR2DO2: 1f
 	//bolt->damage = 25+ETF_random()*10; // RR2DO2: 1h
-	bolt->damage = 40+ETF_random()*10; // djbob: 2.2
+	bolt->damage = 70+ETF_random()*10; // djbob: 2.2 1.6 Default: 40
 	//bolt->splashDamage = 20; // RR2DO2: 1e
 //	bolt->splashDamage = 22; // RR2DO2: 1f
-	bolt->splashDamage = 37; // djbob: 2.2
+	bolt->splashDamage = 60; // djbob: 2.2 1.6 Default: 37
 	bolt->methodOfDeath = MOD_FLAME;
 	bolt->splashMethodOfDeath = MOD_FLAME;
 	bolt->clipmask = MASK_SHOT;
@@ -532,7 +532,7 @@ void Weapon_Napalm_Fire(struct gentity_s *ent) {
 	bolt->s.pos.trType = TR_LINEAR;
 	bolt->s.pos.trTime = level.time - MISSILE_PRESTEP_TIME;		// move a bit on the very first frame
 	VectorCopy( muzzle, bolt->s.pos.trBase );
-	VectorScale( forward, 750, bolt->s.pos.trDelta );
+	VectorScale( forward, 1100, bolt->s.pos.trDelta ); // 1.6 Default: 750
 //	VectorScale( forward, g_napalmRocketVel.integer, bolt->s.pos.trDelta );
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 	VectorCopy ( muzzle , bolt->r.currentOrigin);

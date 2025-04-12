@@ -40,57 +40,52 @@ If you have questions concerning this license or the applicable additional terms
 #include "bg_q3f_weapon.h"
 #include "bg_q3f_util.h"
 
+// Declare cvars before using them
+cvar_t *pm_airaccelerate_cvar;
+cvar_t *pm_accelerate_cvar;
+cvar_t *pm_friction_cvar;
 pmove_t		*pm;
 pml_t		pml;
 
+//Declare Floats
+float pm_accelerate = 15.0f;      //default 10 live: 15.0
+float pm_airaccelerate = 14.0f;    //default 6 Live: 14.0
+float pm_friction =6.0f;			//default 6
+
 // movement parameters
-float	pm_stopspeed = 100.0f;
+float	pm_stopspeed = 70.0f;			//default 100.0f Live: 70
 /*float	pm_duckScale = 0.25;
 float	pm_swimScale = 0.60;
 float	pm_swimSurfaceScale = 0.65;		// If we're at the surface, we go faster.
 float	pm_wadeScale = 0.70;*/
 float	pm_sniperAimScale = 0.287f;
-float	pm_minigunSpinScale = 0.35f;
+float	pm_minigunSpinScale = 0.35f;	// Default 0.35f
 float	pm_duckScale = 0.35f;
 float	pm_swimScale = 0.75f;
 float	pm_swimSurfaceScale = 0.80f;	// If we're at the surface, we go faster.
 float	pm_wadeScale = 0.85f;
 float	pm_ladderScale = 0.80f;			// fraction max speed on ladders
-float	pm_landConcScale = 10.0f;		// The amount of conc exaggeration when you hit the ground.
+float	pm_landConcScale = 6.0f;		// The amount of conc exaggeration when you hit the ground. default: 10.0f, live: 6.0f
 
-float	pm_accelerate = pm_accelerate_cvar->value;
 float	pm_wateraccelerate = 8.0f;
 float	pm_flyaccelerate = 8.0f;
 float	pm_ladderAccelerate = 3000.0f;  // The acceleration to friction ratio is 1:1
 
-float	pm_airaccelerate = pm_airaccelerate_cvar->value;		// Golliwog: Was one, but not 'QW' enough
 //float	pm_concairaccelerate = 3.0;		// ETF 0.0
-float	pm_concairaccelerate = 3.6;
+float	pm_concairaccelerate = 10.0f;	// Live: 10.0f
 float	pm_airminspeed = 50.0f; // the "minimum" speed while in air, used to get away from jump pads
-#define AMSD_ASYNC 0.35f//2.5
-#define AMSD_SYNC 1.5f//9
+#define AMSD_ASYNC 0.80f//2.5		//0.35f default Live: 0.8
+#define AMSD_SYNC 1.5f//9			//1.5f default Live: 1.5
 float	pm_airmaxspeeddiff = AMSD_ASYNC; // this is the actual max acceleration
 
-float	pm_friction = pm_friction_cvar->value;
-float	pm_airfriction = 6.0f;			// Air friction, ignores vertical values
+float	pm_airfriction = 6.0f;			// Air friction, ignores vertical values, default 6.0
 float	pm_waterfriction = 2.0f;
-float	pm_flightfriction = 3.0f;
+float	pm_flightfriction = 6.0f;
 float	pm_spectatorfriction = 5.0f;
 float	pm_ladderfriction = 3000.0f;  // Friction is high enough so you don't slip down
 
 int		c_pmove = 0;
 
-// Declare the CVars
-static cvar_t *pm_airaccelerate_cvar;
-static cvar_t *pm_accelerate_cvar;
-static cvar_t *pm_friction_cvar;
-
-void PM_Init() {
-    // Register the CVar and set a default value (in this case 10.0f)
-    pm_airaccelerate_cvar = Cvar_Get("pm_airaccelerate", "10.0", CVAR_ARCHIVE);
-    pm_accelerate_cvar = Cvar_Get("pm_accelerate", "10.0", CVAR_ARCHIVE);
-    pm_friction_cvar = Cvar_Get("pm_friction", "6.0", CVAR_ARCHIVE);
-}
 
 #ifdef CGAME
 			#define BOX_PRINT_MODE_CHAT			0
@@ -242,6 +237,8 @@ void PM_ClipVelocity( vec3_t in, vec3_t normal, vec3_t out, float overbounce ) {
 	int		i;
 	
 	backoff = DotProduct (in, normal);
+	pm->ps->pm_flags &= ~PMF_JUMP_HELD;
+
 	
 	if ( backoff < 0 ) {
 		backoff *= overbounce;
@@ -571,16 +568,26 @@ static qboolean PM_CheckJump( void ) {
 
 	if ( pm->cmd.upmove < 10 ) {
 		// not holding jump
-		return qfalse;
+		return qfalse;		// Ensure the player is pressing the jump button
 	}
 
-	// must wait for jump to be released
-	if ( pm->ps->pm_flags & PMF_JUMP_HELD ) {
-		// clear upmove so cmdscale doesn't lower running speed
-		pm->cmd.upmove = 0;
-		return qfalse;
-	}
+	// must wait for jump to be released - Tulkas> this check is removed in favor of adding autohop
+//	if ( pm->ps->pm_flags & PMF_JUMP_HELD ) {
+//		// clear upmove so cmdscale doesn't lower running speed
+//		pm->cmd.upmove = 0;
+//		return qfalse;
+//	}
 
+    // Ensure the player is on the ground
+    if (pm->ps->groundEntityNum == ENTITYNUM_NONE) {
+        return qfalse;
+    }
+	
+    // NEW: Prevent multiple jumps per frame by checking PMF_JUMP_HELD
+    if (pm->ps->pm_flags & PMF_JUMP_HELD) {
+        return qfalse;  // If jump is already being held, don’t spam it
+    }
+	
 	// Golliwog: Check to see if we can jump off a ladder, first
 	if( pml.ladder )
 	{
@@ -1129,6 +1136,8 @@ static void PM_WalkMove( void ) {
 	float		vel;
 	bg_q3f_playerclass_t *cls;
 
+
+
 	if ( pm->waterlevel > 2 && DotProduct( pml.forward, pml.groundTrace.plane.normal ) > 0 ) {
 		// begin swimming
 		PM_WaterMove();
@@ -1139,7 +1148,13 @@ static void PM_WalkMove( void ) {
 		// jumped away
 		if ( pm->waterlevel > 1 ) {
 			PM_WaterMove();
-		} else {
+		}
+		
+		if (pm->ps->groundEntityNum != ENTITYNUM_NONE) {  
+			pm->ps->pm_flags &= ~PMF_JUMP_HELD;  // ✅ Allow jumping again when landing
+		}
+
+		 else {
 			cls = BG_Q3F_GetClass( pm->ps );
 			PM_AirMove( cls->maxspeed );
 		}
@@ -1551,8 +1566,11 @@ static void PM_GroundTraceMissed( void ) {
 //	trace_t		trace;
 //	vec3_t		point;
 
-	if ( pm->ps->groundEntityNum != ENTITYNUM_NONE ) {
-		// we just transitioned into freefall
+		if ( pm->ps->groundEntityNum != ENTITYNUM_NONE ) {
+			pm->ps->pm_flags &= ~PMF_JUMP_HELD;  // ✅ Allow jumping again when landing
+			// we just transitioned into freefall
+		}
+		
 		if ( pm->debugLevel ) {
 			Com_Printf("%i:lift\n", c_pmove);
 		}
@@ -1572,7 +1590,7 @@ static void PM_GroundTraceMissed( void ) {
 				pm->ps->pm_flags |= PMF_BACKWARDS_JUMP;
 			}
 		}
-	}
+	
 
 	pm->ps->groundEntityNum = ENTITYNUM_NONE;
 	pml.groundPlane = qfalse;
@@ -1597,6 +1615,11 @@ static void PM_GroundTrace( void ) {
 	pml.groundTrace = trace;
 	pml.previous_walking = pm->ps->groundEntityNum != ENTITYNUM_NONE;
 
+	if (pm->ps->groundEntityNum != ENTITYNUM_NONE) {  
+		pm->ps->pm_flags &= ~PMF_JUMP_HELD;  // ✅ Allow jumping again when landing
+	}
+
+	
 	// do something corrective if the trace starts in a solid...
 	if ( trace.allsolid ) {
 		if ( !PM_CorrectAllSolid(&trace) )
