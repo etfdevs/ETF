@@ -34,7 +34,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       fail-fast: false
-      maatrix:
+      matrix:
         arch: [ x86, x64 ]
         config: [Release]
         include:
