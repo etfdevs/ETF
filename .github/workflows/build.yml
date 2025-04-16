@@ -25,8 +25,6 @@ on:
       - VERSION.txt
       - release.sh
   merge_group:
-  #release:
-  #  types: [published]
 
 jobs:
   Windows-MSVC:
@@ -127,7 +125,7 @@ jobs:
         name: etf-artifacts-macos-${{ matrix.arch }}
         path: ${{ github.workspace }}/build/etf
         
-  create-testing:
+  package:
     if: github.ref == 'refs/heads/master' && github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: [Windows-MSVC, Linux, macOS]
     runs-on: ubuntu-22.04
@@ -136,8 +134,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download Artifacts
+      - name: Download artifacts
         uses: actions/download-artifact@v4
+        with: 
+          pattern: etf-artifacts-*
+          merge-multiple: true
+          path: ${{ github.workspace }}/build/etf
 
       - name: Pack release zip
         working-directory: ${{ github.workspace }}/build
@@ -148,7 +150,7 @@ jobs:
       - name: Upload release 
         uses: actions/upload-artifact@v4
         with:
-          name: etjump-snapshot-release
+          name: etf-snapshot-release
           path: ${{ github.workspace }}/build/*.zip
 
       - name: Create latest build
