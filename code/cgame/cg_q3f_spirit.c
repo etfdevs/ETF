@@ -294,7 +294,7 @@ static particle_t *AllocParticle( void ) {
 	return( alloc );
 }
 
-static void SpawnParticle( const SpiritSystem_t *SpiritSystem, pgroup_t *pgroup,const vec3_t origin,const vec3_t axis[3], int attime ) {
+static void SpawnParticle( const SpiritSystem_t *SpiritSystem, pgroup_t *pgroup, const vec3_t origin, vec3_t axis[3], int attime ) {
 	int i;
 	float velocity, delay;
 	particle_t * particle = AllocParticle();

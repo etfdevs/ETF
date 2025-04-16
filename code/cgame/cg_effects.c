@@ -675,7 +675,7 @@ void CG_SpawnSmokeSprite(const vec3_t origin, int life,
 	smokesprite->radiusrate = (endradius - startradius) / life;
 
 	smokesprite->rotation = ETF_random() * 360;
-};
+}
 
 static qboolean CG_GasSpritePhysics( gassprite_t *gassprite, const int time ) {
 	trace_t tr;
@@ -747,7 +747,7 @@ qboolean CG_SpawnGasSprite( centity_t * cent,float fraction) {
 void CG_BurnGasSprites( centity_t * cent) {
 	gassprite_t *gassprite;int count;
 	float fraction,fraction_add;
-	static vec4_t GasBurnLight ={1.0, 0.2, 0.2, 1};
+	static const vec4_t GasBurnLight ={1.0, 0.2, 0.2, 1};
 
 	if( !cgs.media.sfx_napalmExplode )
 		cgs.media.sfx_napalmExplode = trap_S_RegisterSound( "sound/weapons/q3f_napalm_start.wav", qfalse );

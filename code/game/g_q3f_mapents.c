@@ -80,16 +80,16 @@ q3f_keypairarray_t *G_Q3F_ProcessStateString( const char *value )
 	// Process a state string, of the format:
 	// target[=state],target[=state],target[=state] etc.
 
-	char *startptr, *stateptr, *endptr;
+	const char *startptr, *stateptr, *endptr;
 	char *target;
 	char statebuff[12];		// Big enough for any state string
 	int strsize, statecode, index;
-	char flags;
+	byte flags;
 	q3f_keypairarray_t *targetarray;
 
 	targetarray = G_Q3F_KeyPairArrayCreate();
 
-	for( startptr = (char *) value; *startptr; )
+	for( startptr = value; *startptr; )
 	{
 		flags = 0;
 		for( endptr = startptr; *endptr && *endptr != '=' && *endptr != ','; endptr++ );
@@ -162,12 +162,13 @@ q3f_array_t *G_Q3F_ProcessStrings( const char *value )
 	// Anything starting with ~ has the force flag set, as usual.
 
 	q3f_array_t *array;
-	char *startptr, *ptr, *buff;
-	char flags;
+	const char *startptr, *ptr;
+	char *buff;
+	byte flags;
 
 	array = G_Q3F_ArrayCreate();
 
-	for( startptr = (char *) value; *startptr; )
+	for( startptr = value; *startptr; )
 	{
 		for( ptr = startptr; *ptr && *ptr != ','; ptr++ );
 		if( *startptr == '~' )
@@ -415,18 +416,18 @@ q3f_keypairarray_t *G_Q3F_ProcessGiveString( const char *value )
 	// Set of commands defining what happens to affected players (ents?)
 	// when activated.
 
-	char *startptr, *endptr;
+	const char *startptr, *endptr;
 	char *target;
 	int strsize, num;
-	char flags, inv;
+	byte flags, inv;
 	q3f_keypairarray_t *targetarray;
 
 	targetarray = G_Q3F_KeyPairArrayCreate();
 
-	for( startptr = (char *) value; *startptr; )
+	for( startptr = value; *startptr; )
 	{
 		for( endptr = startptr; *endptr && *endptr != '='; endptr++ );
-		strsize = endptr - startptr + 1;
+		strsize = (int)(endptr - startptr + 1);
 		target = G_Alloc( strsize );
 		Q_strncpyz( target, startptr, strsize );
 
@@ -469,10 +470,10 @@ q3f_keypairarray_t *G_Q3F_ProcessClientStatsString( const char *value )
 {
 	// Set of evaluations used to check for certain client stats when activated
 
-	char *startptr, *endptr;
+	const char *startptr, *endptr;
 	char *target;
 	int strsize, num;
-	char flags, inv;
+	byte flags, inv;
 	q3f_keypairarray_t *targetarray;
 
 	targetarray = G_Q3F_KeyPairArrayCreate();
@@ -589,9 +590,9 @@ void G_Q3F_ProcessMapField( const char *key, const char *value, gentity_t *ent )
 	// It begins by attempting the fields above, then the 'special cases',
 	// and finally just stores them as text.
 
-	char flag;
+	byte flag;
 	char buff[MAX_STRING_CHARS] = { 0 }, *dstptr;
-	const char* srcptr;
+	const char *srcptr;
 
 	if( !ent->mapdata )
 	{

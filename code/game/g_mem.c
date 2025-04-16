@@ -112,7 +112,7 @@ void *G_Alloc( int size )
 			// We've got a block
 			if( fmn->size == allocsize )
 			{
-				G_MemLogPrintf("Free Block Found: %p\n", fmn);
+				G_MemLogPrintf("Free Block Found: %p\n", (void *)fmn);
 
 				// Same size, just remove
 
@@ -155,7 +155,7 @@ void *G_Alloc( int size )
 		// We found a slot big enough
 		smallest->size -= allocsize;
 		
-		G_MemLogPrintf("Allocing From Smallest Larger Block: %p\n", smallest);
+		G_MemLogPrintf("Allocing From Smallest Larger Block: %p\n", (void *)smallest);
 		G_MemLogPrintf("Resizing Block To: %i\n", smallest->size);
 
 		endptr = (char *) smallest + smallest->size;
@@ -246,11 +246,11 @@ void G_Free( void *ptr )
 	fmn->next = freehead;
 	freehead->prev = fmn;
 
-	G_MemLogPrintf("Head Free Memory Block: %p, Size: %i, Next: %p, Prev: %p\n", freehead, freehead->size, freehead->next, freehead->prev);
+	G_MemLogPrintf("Head Free Memory Block: %p, Size: %i, Next: %p, Prev: %p\n", (void *)freehead, freehead->size, (void *)freehead->next, (void *)freehead->prev);
 
 	freehead = fmn;
 
-	G_MemLogPrintf("Creating New Free Memory Block: %p, Size: %i, Next: %p, Prev: %p\n", fmn, fmn->size, fmn->next, fmn->prev);
+	G_MemLogPrintf("Creating New Free Memory Block: %p, Size: %i, Next: %p, Prev: %p\n", (void *)fmn, fmn->size, (void *)fmn->next, (void *)fmn->prev);
 }
 
 void G_InitMemory( void )
@@ -287,7 +287,7 @@ void G_DefragmentMemory( void )
 
 			if( fmn == endfmn )
 			{
-				G_MemLogPrintf("Merging Free Mem Nodes: %p, %i -> %p, %i\n", startfmn, startfmn->size, fmn, fmn->size);
+				G_MemLogPrintf("Merging Free Mem Nodes: %p, %i -> %p, %i\n", (void *)startfmn, startfmn->size, (void *)fmn, fmn->size);
 
 				// We can add fmn onto startfmn.
 				prev = fmn->prev;
@@ -337,7 +337,7 @@ void Svcmd_GameMem_f( void )
 	G_Printf( "Game memory status: %i out of %i bytes allocated\n", POOLSIZE - freemem, POOLSIZE );
 
 	for( fmn = freehead; fmn; fmn = fmn->next ) {
-		G_Printf( "  %p: %d bytes free.\n", fmn, fmn->size );
+		G_Printf( "  %p: %d bytes free.\n", (void *)fmn, fmn->size );
 	}
 	G_Printf( "Status complete.\n" );
 }

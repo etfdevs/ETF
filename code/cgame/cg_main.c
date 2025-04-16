@@ -1238,7 +1238,7 @@ char    *CG_ConcatArgs( int start ) {
 	for ( i = start ; i < c ; i++ ) {
 		trap_Argv( i, arg, sizeof( arg ) );
 		tlen = (int)strlen( arg );
-		if ( len + tlen >= sizeof(line) - 1 ) {
+		if ( len + tlen >= BIG_INFO_STRING - 1 ) {
 			break;
 		}
 		memcpy( line + len, arg, tlen );

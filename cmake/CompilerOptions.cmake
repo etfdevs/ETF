@@ -30,6 +30,7 @@ function(create_compiler_opts target)
 		-Winline
 		-Wno-unused-parameter
 		-Wno-missing-field-initializers
+		-Wno-stringop-overflow
 		$<$<CONFIG:Release>:
 			-flto=auto			# link time optimizations
 			-O3					# max optimization

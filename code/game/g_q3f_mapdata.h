@@ -53,7 +53,7 @@ typedef struct q3f_data_s {		// This should be padded to 8 bytes. (I think)
 		struct q3f_keypairarray_s *keypairarraydata;
 		void *ptrdata;
 	} d;
-	char type, flags;
+	byte type, flags;
 } q3f_data_t;
 
 typedef struct q3f_array_s {
@@ -88,7 +88,7 @@ enum {
 
 q3f_array_t *G_Q3F_ArrayCreate(void);
 void G_Q3F_ArrayDestroy( q3f_array_t *array );
-int G_Q3F_ArrayAdd( q3f_array_t *array, char type, char flags, intptr_t data );
+int G_Q3F_ArrayAdd( q3f_array_t *array, byte type, byte flags, intptr_t data );
 void G_Q3F_ArrayDel( q3f_array_t *array, intptr_t index );
 q3f_data_t *G_Q3F_ArrayTraverse( const q3f_array_t *array, intptr_t *index );
 void G_Q3F_ArrayConsolidate( q3f_array_t *array );
@@ -98,7 +98,7 @@ q3f_array_t *G_Q3F_ArrayCopy( const q3f_array_t *array );
 
 q3f_keypairarray_t *G_Q3F_KeyPairArrayCreate(void);
 void G_Q3F_KeyPairArrayDestroy( q3f_keypairarray_t * );
-int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, const char *key, char type, char flags, intptr_t data );
+int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, const char *key, byte type, byte flags, intptr_t data );
 void G_Q3F_KeyPairArrayDel( q3f_keypairarray_t *array, const char *key );
 q3f_keypair_t *G_Q3F_KeyPairArrayTraverse( const q3f_keypairarray_t *array, intptr_t *index );
 void G_Q3F_KeyPairArrayConsolidate( q3f_keypairarray_t *array );

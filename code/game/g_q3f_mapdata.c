@@ -81,7 +81,7 @@ void G_Q3F_ArrayDestroy( q3f_array_t *array )
 	G_Free( array );
 }
 
-int G_Q3F_ArrayAdd( q3f_array_t *array, char type, char flags, intptr_t data )
+int G_Q3F_ArrayAdd( q3f_array_t *array, byte type, byte flags, intptr_t data )
 {
 	// Add a new entry to the array
 
@@ -330,7 +330,7 @@ void G_Q3F_KeyPairArrayDestroy( q3f_keypairarray_t *array )
 	G_Free( array );
 }
 
-int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, const char *key, char type, char flags, intptr_t data )
+int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, const char *key, byte type, byte flags, intptr_t data )
 {
 	// Add a new entry to the array
 

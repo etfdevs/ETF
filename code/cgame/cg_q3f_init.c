@@ -890,7 +890,7 @@ static void CG_Q3F_InitPhaseSpiritStatic(void)
 		}
 	} else
 		CG_Q3F_SetInitPhase( cgs.initPhase + 1 );
-};
+}
 
 static void CG_Q3F_InitPhaseSpiritDynamic(void)
 {
@@ -918,7 +918,7 @@ static void CG_Q3F_InitPhaseSpiritDynamic(void)
 			cgs.initIndex++;
 		}
 	}
-};
+}
 
 
 static void CG_Q3F_InitPhaseClasses(void)
