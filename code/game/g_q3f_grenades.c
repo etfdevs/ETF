@@ -430,7 +430,7 @@ qboolean EmpExplode( gentity_t *emp )
 				}
 			}
 		}
-		else if( ent->s.eType == ET_MISSILE && ( ent->s.weapon == WP_ROCKET_LAUNCHER == ent->s.weapon == WP_GRENADE_LAUNCHER || ent->s.weapon == WP_PIPELAUNCHER || ent->s.weapon == WP_NAPALMCANNON) )
+		else if( ent->s.eType == ET_MISSILE && ( ent->s.weapon == WP_ROCKET_LAUNCHER || ent->s.weapon == WP_GRENADE_LAUNCHER || ent->s.weapon == WP_PIPELAUNCHER || ent->s.weapon == WP_NAPALMCANNON) )
 		//else if(	!Q_stricmp( ent->classname, "pipe" ) ||
 		//			!Q_stricmp( ent->classname, "grenade" ) ||
 		//			!Q_stricmp( ent->classname, "rocket" ) )

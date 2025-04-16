@@ -515,14 +515,14 @@ static int QDECL LS_SortFunc( const void *a, const void *b )
 {
 	// Comparison function
 
-	g_q3f_location_t *la, *lb;
+	const g_q3f_location_t *la, *lb;
 
-	if( !((q3f_data_t *) a)->type )
+	if( !((const q3f_data_t *) a)->type )
 		return( 1 );
-	if( !((q3f_data_t *) b)->type )
+	if( !((const q3f_data_t *) b)->type )
 		return( -1 );
-	la = (g_q3f_location_t *)((q3f_data_t *) a)->d.intdata;
-	lb = (g_q3f_location_t *)((q3f_data_t *) b)->d.intdata;
+	la = (const g_q3f_location_t *)((const q3f_data_t *) a)->d.intdata;
+	lb = (const g_q3f_location_t *)((const q3f_data_t *) b)->d.intdata;
 
 	if( la->pos[0] != lb->pos[0] )
 		return( la->pos[0] - lb->pos[0] );

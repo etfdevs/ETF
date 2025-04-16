@@ -204,9 +204,9 @@ qboolean CylinderTraceImpact( const vec3_t start, const vec3_t forward, const ve
 extern matrix3_t axisDefault;
 
 void AxisClear( matrix3_t axis );
-void AxisCopy( const matrix3_t in, matrix3_t out );
+void AxisCopy( matrix3_t in, matrix3_t out );
 void AnglesToAxis( const vec3_t angles, matrix3_t axis );
-void AxisToAngles( const matrix3_t axis, vec3_t angles );
+void AxisToAngles( matrix3_t axis, vec3_t angles );
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -317,7 +317,7 @@ void VectorSet5( vec5_t vec, float x, float y, float z, float w, float u );
 //
 ///////////////////////////////////////////////////////////////////////////
 void CreateRotationMatrix(const vec3_t angles, vec3_t matrix[3]);
-void TransposeMatrix(const vec3_t matrix[3], vec3_t transpose[3]);
+void TransposeMatrix(matrix3_t matrix, matrix3_t transpose);
 
 
 #if defined(__cplusplus)

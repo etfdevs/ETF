@@ -61,7 +61,6 @@ int F2R_Count(void);
 F2RDef_t *F2R_Get( int f2rnum );
 F2RDef_t *F2R_GetForModel( qhandle_t model );
 int F2R_NumGet( F2RDef_t *F2RScript );
-void F2R_Reset(void);
 void F2R_Reload(void);
 
 F2RDef_t *Parse_F2RFile( const char *F2RFile );

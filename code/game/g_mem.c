@@ -220,7 +220,7 @@ void G_Free( void *ptr )
 
 		if( freeend == (char *) freeptr )
 		{
-			G_MemLogPrintf("Merging Memory To Existing Block: %p, size: %i\n", fmn, fmn->size);
+			G_MemLogPrintf("Merging Memory To Existing Block: %p, size: %i\n", (void *)fmn, fmn->size);
 			// Released block can be merged to an existing node			
 			fmn->size += *freeptr;		// Add size of node.
 			G_MemLogPrintf("New Size: %i\n", fmn->size);

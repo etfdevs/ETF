@@ -749,7 +749,7 @@ void Spirit_AddParticles( void ) {
 	SpiritRunTime = cg.time;
 }
 
-void Spirit_RunSystem( const SpiritSystem_t *SpiritSystem, intptr_t key, const vec3_t origin, const vec3_t oldorigin, const vec3_t axis[3]) {
+static void Spirit_RunSystem( const SpiritSystem_t *SpiritSystem, intptr_t key, const vec3_t origin, const vec3_t oldorigin, vec3_t axis[3]) {
 	vec3_t delta;
 	int i, hash;
 	pgroup_t *pgroup;
@@ -806,7 +806,7 @@ void Spirit_RunSystem( const SpiritSystem_t *SpiritSystem, intptr_t key, const v
 	}
 }
 
-qboolean Spirit_UpdateScript( const SpiritScript_t *SpiritScript, const vec3_t origin, const vec3_t axis[3], intptr_t key ) {
+qboolean Spirit_UpdateScript( const SpiritScript_t *SpiritScript, const vec3_t origin, vec3_t axis[3], intptr_t key ) {
 	int hash;
 	pgroup_t *pgroup;
 	SpiritSystem_t *SpiritSystem;
@@ -833,7 +833,7 @@ qboolean Spirit_UpdateScript( const SpiritScript_t *SpiritScript, const vec3_t o
 	return ret;
 }
 
-void Spirit_RunScript( const SpiritScript_t *SpiritScript, const vec3_t origin, const vec3_t oldorigin, const vec3_t axis[3], intptr_t key ) {
+void Spirit_RunScript( const SpiritScript_t *SpiritScript, const vec3_t origin, const vec3_t oldorigin, vec3_t axis[3], intptr_t key ) {
 	if (! SpiritScript ) return;
 	if ( SpiritRunTime >= cg.time ) return;
 	if ( SpiritScript->sound ) {
@@ -847,7 +847,7 @@ void Spirit_RunScript( const SpiritScript_t *SpiritScript, const vec3_t origin, 
 		Spirit_RunScript( SpiritScript->link, origin, oldorigin, axis, key );
 	}
 
-	Spirit_RunSystem( SpiritScript->SpiritSystem, key , origin, oldorigin, axis );
+	Spirit_RunSystem( SpiritScript->SpiritSystem, key, origin, oldorigin, axis );
 }
 
 

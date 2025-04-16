@@ -1012,7 +1012,7 @@ qboolean CylinderTraceImpact( const vec3_t start, const vec3_t forward, const ve
 			return qtrue;
 	}
 	return qfalse;
-};
+}
 
 
 
@@ -1035,7 +1035,7 @@ void AxisClear( matrix3_t axis ) {
 	axis[2][2] = 1;
 }
 
-void AxisCopy( const matrix3_t in, matrix3_t out ) {
+void AxisCopy( matrix3_t in, matrix3_t out ) {
 	VectorCopy( in[0], out[0] );
 	VectorCopy( in[1], out[1] );
 	VectorCopy( in[2], out[2] );
@@ -1049,7 +1049,7 @@ void AnglesToAxis( const vec3_t angles, matrix3_t axis ) {
 	VectorSubtract( vec3_origin, right, axis[1] );
 }
 
-void AxisToAngles( const matrix3_t axis, vec3_t angles ) {
+void AxisToAngles( matrix3_t axis, vec3_t angles ) {
 	float	length1;
 	float	yaw, pitch, roll = 0;
 	
@@ -1553,7 +1553,7 @@ void CreateRotationMatrix(const vec3_t angles, matrix3_t matrix) {
 TransposeMatrix
 ================
 */
-void TransposeMatrix(const matrix3_t matrix, matrix3_t transpose) {
+void TransposeMatrix(matrix3_t matrix, matrix3_t transpose) {
 	int i, j;
 	for (i = 0; i < 3; i++) {
 		for (j = 0; j < 3; j++) {

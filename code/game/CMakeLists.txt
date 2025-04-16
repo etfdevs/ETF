@@ -24,7 +24,6 @@ add_library(qagame MODULE
 	"bg_q3f_flyby.h"
 	"bg_q3f_grenades.c"
 	"bg_q3f_grenades.h"
-	"bg_q3f_permon.c"
 	"bg_q3f_playerclass.c"
 	"bg_q3f_playerclass.h"
 	"bg_q3f_splines.c"

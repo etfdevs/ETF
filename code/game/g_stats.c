@@ -104,7 +104,7 @@ void G_DamageStats(gclient_t *target, gclient_t *attacker, int damage, int mod )
 	else index = ModConversion[ mod ];
 	target->pers.stats.data[index].taken += damage;
 	attacker->pers.stats.data[index].given += damage;
-};
+}
 
 void G_DeathStats(gclient_t *target, gclient_t *attacker, int mod ) {
 	int index;
@@ -113,7 +113,7 @@ void G_DeathStats(gclient_t *target, gclient_t *attacker, int mod ) {
 	else index = ModConversion[ mod ];
 	target->pers.stats.data[index].deaths++;
 	attacker->pers.stats.data[index].kills++;
-};
+}
 
 int G_StatsModIndex( int mod ) {
 	if (mod >= MOD_LASTONE )

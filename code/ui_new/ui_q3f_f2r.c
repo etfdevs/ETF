@@ -346,7 +346,7 @@ int F2R_NumGet( F2RDef_t *F2RScript ) {
 F2R_Reset
 ===============
 */
-void F2R_Reset(void) {
+static void F2R_Reset(void) {
 	F2RCount = 0;
 }
 
