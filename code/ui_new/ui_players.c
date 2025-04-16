@@ -755,7 +755,7 @@ static void UI_RunLerpFrame( playerInfo_t *pi, F2RDef_t	*F2RScript, lerpFrame_t 
 			lf->frameTime = dp_realtime;
 			lf->oldFrameTime = dp_realtime;
 			lf->animationTime = dp_realtime;
-			lf->oldFrameTime = dp_realtime;
+			//lf->oldFrameTime = dp_realtime;
 			lf->backlerp = 0;
 			lf->frame = lf->animation->firstFrame;
 			return;
@@ -770,7 +770,7 @@ static void UI_RunLerpFrame( playerInfo_t *pi, F2RDef_t	*F2RScript, lerpFrame_t 
 
 		// get the next frame based on the animation
 		anim = lf->animation;
-		if ( !anim->frameLerp ) {
+		if ( !anim || !anim->frameLerp ) {
 			return;		// shouldn't happen
 		}
 		if ( dp_realtime < lf->animationTime ) {

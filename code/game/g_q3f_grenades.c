@@ -341,7 +341,7 @@ qboolean EmpExplode( gentity_t *emp )
 	float damage;
 	int avail_ammo, max_clip;
 	int given;
-
+	const bg_q3f_playerclass_t *cls;
 
 	if (emp->activator && emp->activator->client) 
 		given = emp->activator->client->pers.stats.data[STATS_GREN + Q3F_GREN_EMP].given;
@@ -358,15 +358,27 @@ qboolean EmpExplode( gentity_t *emp )
 		if( ent->client )//&& (ent == emp->activator || g_friendlyFire.integer ||
 //			!G_Q3F_IsAllied( emp->activator, ent )) )
 		{
+			cls = BG_Q3F_GetClass(&ent->client->ps);
+
 			// It's a player.
+			if (g_newPulseGren.integer) {
+				//damage =	(int) (0.75 * ent->client->ps.ammo[AMMO_SHELLS]) +
+				//			1.5 * (int) (0.75 * ent->client->ps.ammo[AMMO_ROCKETS]);
+				damage = (int)(0.85 * cls->maxammo_shells) +
+					1.75 * (int)(0.75 * cls->maxammo_rockets);
 
-			//damage =	(int) (0.75 * ent->client->ps.ammo[AMMO_SHELLS]) +
-			//			1.5 * (int) (0.75 * ent->client->ps.ammo[AMMO_ROCKETS]);
-			damage =	(int) (0.85 * ent->client->ps.ammo[AMMO_SHELLS]) +
-						1.75 * (int) (0.75 * ent->client->ps.ammo[AMMO_ROCKETS]);
+				if (ent->client->ps.persistant[PERS_CURRCLASS] != Q3F_CLASS_ENGINEER)
+					damage += 0.75 * cls->maxammo_cells;
+			}
+			else {
+				//damage =	(int) (0.75 * ent->client->ps.ammo[AMMO_SHELLS]) +
+				//			1.5 * (int) (0.75 * ent->client->ps.ammo[AMMO_ROCKETS]);
+				damage = (int)(0.85 * ent->client->ps.ammo[AMMO_SHELLS]) +
+					1.75 * (int)(0.75 * ent->client->ps.ammo[AMMO_ROCKETS]);
 
-			if( ent->client->ps.persistant[PERS_CURRCLASS] != Q3F_CLASS_ENGINEER )
-				damage += 0.75 * ent->client->ps.ammo[AMMO_CELLS];
+				if (ent->client->ps.persistant[PERS_CURRCLASS] != Q3F_CLASS_ENGINEER)
+					damage += 0.75 * ent->client->ps.ammo[AMMO_CELLS];
+			}
 			if( damage > 0 )
 			{
 				vec3_t emporg, dir;
@@ -418,9 +430,10 @@ qboolean EmpExplode( gentity_t *emp )
 				}
 			}
 		}
-		else if(	!Q_stricmp( ent->classname, "pipe" ) ||
-					!Q_stricmp( ent->classname, "grenade" ) ||
-					!Q_stricmp( ent->classname, "rocket" ) )
+		else if( ent->s.eType == ET_MISSILE && ( ent->s.weapon == WP_ROCKET_LAUNCHER == ent->s.weapon == WP_GRENADE_LAUNCHER || ent->s.weapon == WP_PIPELAUNCHER || ent->s.weapon == WP_NAPALMCANNON) )
+		//else if(	!Q_stricmp( ent->classname, "pipe" ) ||
+		//			!Q_stricmp( ent->classname, "grenade" ) ||
+		//			!Q_stricmp( ent->classname, "rocket" ) )
 		{
 			// It's an explosive missile
 			ent->nextthink = level.time + (rand() & 511);

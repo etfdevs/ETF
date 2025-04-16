@@ -242,7 +242,7 @@ static qboolean HallucinogenicRender( centity_t *cent, refEntity_t *ent )
 
 extern cg_q3f_grenade_t cg_q3f_grenade_emp;
 
-void CG_PulseExplosion(vec3_t base_origin) {
+static void CG_PulseExplosion(vec3_t base_origin) {
 	vec3_t origin,dir;
 //	cg_q3f_grenade_t *gren = &cg_q3f_grenade_emp;
 	//localEntity_t	*le;

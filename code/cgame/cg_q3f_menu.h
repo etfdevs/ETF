@@ -42,11 +42,11 @@ If you have questions concerning this license or the applicable additional terms
 #include "../api/et/q_shared.h"
 #include "../ui_new/ui_shared.h"
 
-void CG_Q3F_MenuDraw(void);						// Render menu every frame
+//void CG_Q3F_MenuDraw(void);						// Render menu every frame
 void CG_Q3F_MenuInit(void);						// Prepare a new menu
 void CG_Q3F_MenuCancel( qboolean command );	// 'Cancel' a menu
 void CG_Q3F_MenuCommand(void);					// Process a menu command
-void CG_Q3F_UserMenuCommand( void );		// Display a user menu
+//void CG_Q3F_UserMenuCommand( void );		// Display a user menu
 qboolean CG_Q3F_MenuChoice( int choice );	// Select a menu option (called from weapon)
 void CG_Q3F_MenuNumCommand( void );			// Process 'menucmd' command.
 qboolean CG_Q3F_ShowingSentryUpgradeMenu(void);	// 'Upgrade Autosentry' menu is being shown
@@ -68,7 +68,7 @@ void MenuCheckVoteTally( void );
 
 
 typedef enum {
-	Q3F_MENUSTATE_NONE,
+	Q3F_MENUSTATE_NONE = 0,
 	Q3F_MENUSTATE_READY,
 	Q3F_MENUSTATE_FADING
 } cg_q3f_menustates_t;

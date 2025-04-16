@@ -35,8 +35,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "cg_local.h"
 #include "cg_q3f_scanner.h"
 
-// for the voice chats
-#include "../../ui/menudef.h"
 
 /*
 ===================
@@ -90,8 +88,8 @@ CG_Obituary
 static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 	int			mod;
 	int			target, attacker;
-	char		*message = NULL;
-	char		*message2;
+	const char	*message = NULL;
+	const char	*message2;
 	const char	*obit;
 	const char	*targetInfo;
 	const char	*attackerInfo;
@@ -1091,8 +1089,8 @@ A new item was picked up this frame
 */
 static void CG_ItemPickup( int itemNum ) {
 	cg.itemPickup = itemNum;
-	cg.itemPickupTime = cg.time;
-	cg.itemPickupBlendTime = cg.time;
+	//cg.itemPickupTime = cg.time;
+	//cg.itemPickupBlendTime = cg.time;
 	// see if it should be the grabbed weapon
 /*	if ( bg_itemlist[itemNum].giType == IT_WEAPON ) {
 		// select it immediately
@@ -1160,7 +1158,7 @@ Also called by playerstate transition
 ================
 */
 void CG_PainEvent( centity_t *cent, int health ) {
-	char	*snd;
+	const char	*snd;
 
 	// don't do more than two pain sounds a second
 	if ( cg.time - cent->pe.painTime < 500 ) {
@@ -1190,7 +1188,7 @@ CG_GurpEvent
 ================
 */
 void CG_GurpEvent( centity_t *cent, int health ) {
-	char	*snd;
+	const char	*snd;
 	playerEntity_t *pe;
 	static int gurpsound_idx;
 
@@ -1264,10 +1262,6 @@ static void CG_DebugBullet( entityState_t *es ) {
 	le->leType = LE_FADE_RGB;
 	le->lifeRate *= 10000/1000;
 
-	if(!cgs.media.railCoreShader) {
-		cgs.media.railCoreShader = trap_R_RegisterShader( "railCore" );
-	}
-
 	re->reType = RT_RAIL_CORE;
 	re->customShader = cgs.media.railCoreShader;
 	
@@ -1291,9 +1285,6 @@ void CG_BotDebugLine(vec3_t start, vec3_t end, vec3_t color)
 	le = CG_AllocLocalEntity(2000);
 	re = &le->refEntity;
 	le->leType = LE_CONST_RGB;
-	if(!cgs.media.railCoreShader)
-		cgs.media.railCoreShader = trap_R_RegisterShader("railCore");
-
 	re->reType = RT_RAIL_CORE;
 	re->customShader = cgs.media.railCoreShader;
 
@@ -1317,9 +1308,6 @@ void CG_BotDebugRadius(vec3_t pos, vec3_t info, vec3_t color)
 	vec3_t start, end;
 	float fStepSize = 180.0f / (float)iNumSteps;
 	int i;
-
-	if(!cgs.media.railCoreShader)
-		cgs.media.railCoreShader = trap_R_RegisterShader("railCore");
 
 	VectorCopy(pos, start);
 	VectorCopy(pos, end);
@@ -1354,7 +1342,7 @@ CG_BurnEvent
 ================
 */
 void CG_BurnEvent( centity_t *cent, int health ) {
-	char	*snd;
+	const char	*snd;
 	playerEntity_t *pe;
 	static int burnsound_idx;
 
@@ -1595,7 +1583,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		break;
 	case EV_WATER_UNDER:
 		DEBUGNAME("EV_WATER_UNDER");
-		CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_WAVES);		
+		CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_WAVES);
 		trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.watrUnSound );
 		if(cg.clientNum == es->number) {
 			cg.waterundertime = cg.time + HOLDBREATHTIME;
@@ -1603,7 +1591,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		break;
 	case EV_WATER_CLEAR:
 		DEBUGNAME("EV_WATER_CLEAR");
-		CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_WAVES);		
+		CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_WAVES);
 		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*gasp.wav" ) );
 		break;
 
@@ -1729,7 +1717,10 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		break;
 	case EV_FIRE_WEAPON:
 		DEBUGNAME("EV_FIRE_WEAPON");
-		CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_GUNFIRE);
+		if( es->weapon == WP_AXE )
+			CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_MELEESWING);
+		else
+			CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_GUNFIRE);
 		CG_FireWeapon( cent );
 		break;
 		// JT
@@ -1886,7 +1877,10 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			default:					magnitude = 0;
 		}
 		CG_Q3F_Vibrate( magnitude, position );
-		CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_EXPLOSION);
+		if(es->weapon == WP_AXE)
+			CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_MELEESWING);
+		else
+			CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_EXPLOSION);
 		break;
 
 	case EV_MISSILE_MISS:
@@ -1907,7 +1901,10 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			default:					magnitude = 0;
 		}
 		CG_Q3F_Vibrate( magnitude, position );
-		CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_EXPLOSION);
+		if(es->weapon == WP_AXE)
+			CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_MELEESWING);
+		else
+			CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_EXPLOSION);
 		break;
 
 	case EV_MISSILE_MISS_METAL:
@@ -1928,7 +1925,10 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 		CG_Q3F_Vibrate( magnitude, position );
 		CG_MissileHitWall( es->weapon, es->otherEntityNum2, position, dir, IMPACTSOUND_METAL );
-		CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_EXPLOSION);
+		if(es->weapon == WP_AXE)
+			CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_MELEESWING);
+		else
+			CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_EXPLOSION);
 		break;
 
 	case EV_BULLET_HIT_WALL:
@@ -2081,6 +2081,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 		trap_S_StartSound (NULL, es->number, CHAN_ITEM, cgs.media.protectSound );
 		break;
+#ifdef PENTAGRAM_POWERUP
 	case EV_POWERUP_PENTAGRAM:
 		DEBUGNAME("EV_POWERUP_PENTAGRAM");
 		if ( es->number == cg.snap->ps.clientNum ) {
@@ -2089,6 +2090,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 		//trap_S_StartSound (NULL, es->number, CHAN_ITEM, cgs.media.protectEvilSound );
 		break;
+#endif
 	case EV_POWERUP_REGEN:
 		DEBUGNAME("EV_POWERUP_REGEN");
 		if ( es->number == cg.snap->ps.clientNum ) {

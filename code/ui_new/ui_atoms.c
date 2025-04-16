@@ -38,9 +38,6 @@ If you have questions concerning this license or the applicable additional terms
 **********************************************************************/
 #include "ui_local.h"
 
-// these are here so the functions in q_shared.c can link
-#ifndef UI_HARD_LINKED
-
 #define UI_MAXPRINTMSG 8192
 void QDECL Com_DPrintf( const char *fmt, ... ) {
 	va_list argptr;
@@ -80,8 +77,6 @@ void QDECL Com_Printf( const char *msg, ... ) {
 
 	trap_Print( text );
 }
-
-#endif
 
 qboolean newUI = qfalse;
 

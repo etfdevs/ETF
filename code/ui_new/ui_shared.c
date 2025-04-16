@@ -119,7 +119,7 @@ void UI_Q3F_LoadFontFile( const char *fontName, int pointSize, fontInfo_t *font 
 	filelen = DC->openFile( va("%s_%i.dat", fontName, pointSize), &f, FS_READ );
 
 	// read font .dat file
-	if( filelen >= 0 ) {
+	if( filelen >= 0 && filelen == (int)sizeof( fontInfo_t) ) {
 		DC->fRead( font, sizeof( fontInfo_t ), f );
 
 		DC->closeFile( f );
@@ -128,23 +128,22 @@ void UI_Q3F_LoadFontFile( const char *fontName, int pointSize, fontInfo_t *font 
 	}
 
 	// swap bytes if needed for those pesky macs
-	i = 1;
-	if( !*(byte *) &i ) {
-		font->glyphScale = FloatSwap( font->glyphScale );
-		for( i = 0; i < GLYPHS_PER_FONT; i++ ) {
-			font->glyphs[i].height = LongSwap( font->glyphs[i].height );
-			font->glyphs[i].top = LongSwap( font->glyphs[i].top  );
-			font->glyphs[i].bottom = LongSwap( font->glyphs[i].bottom );
-			font->glyphs[i].pitch = LongSwap( font->glyphs[i].pitch );
-			font->glyphs[i].xSkip = LongSwap( font->glyphs[i].xSkip );
-			font->glyphs[i].imageWidth = LongSwap( font->glyphs[i].imageWidth );
-			font->glyphs[i].imageHeight = LongSwap( font->glyphs[i].imageHeight );
-			font->glyphs[i].s = FloatSwap( font->glyphs[i].s );
-			font->glyphs[i].t = FloatSwap( font->glyphs[i].t );
-			font->glyphs[i].s2 = FloatSwap( font->glyphs[i].s2 );
-			font->glyphs[i].t2 = FloatSwap( font->glyphs[i].t2 );
-		}
+#ifdef Q3_BIG_ENDIAN
+	font->glyphScale = FloatSwap( font->glyphScale );
+	for( i = 0; i < GLYPHS_PER_FONT; i++ ) {
+		font->glyphs[i].height = LongSwap( font->glyphs[i].height );
+		font->glyphs[i].top = LongSwap( font->glyphs[i].top  );
+		font->glyphs[i].bottom = LongSwap( font->glyphs[i].bottom );
+		font->glyphs[i].pitch = LongSwap( font->glyphs[i].pitch );
+		font->glyphs[i].xSkip = LongSwap( font->glyphs[i].xSkip );
+		font->glyphs[i].imageWidth = LongSwap( font->glyphs[i].imageWidth );
+		font->glyphs[i].imageHeight = LongSwap( font->glyphs[i].imageHeight );
+		font->glyphs[i].s = FloatSwap( font->glyphs[i].s );
+		font->glyphs[i].t = FloatSwap( font->glyphs[i].t );
+		font->glyphs[i].s2 = FloatSwap( font->glyphs[i].s2 );
+		font->glyphs[i].t2 = FloatSwap( font->glyphs[i].t2 );
 	}
+#endif
 
 	// load shaders
 	for( i = 0; i < GLYPHS_PER_FONT; i++ ) {
@@ -157,7 +156,7 @@ void UI_Q3F_LoadFontFile( const char *fontName, int pointSize, fontInfo_t *font 
 #ifndef CGAME
 //#define MEM_POOL_SIZE  128 * 1024
 //#else
-#define MEM_POOL_SIZE  4096 * 1024
+#define MEM_POOL_SIZE  16384 * 1024
 //#endif
 
 static char		memoryPool[MEM_POOL_SIZE];
@@ -625,7 +624,7 @@ PC_Script_Parse
 =================
 */
 qboolean PC_Script_Parse(int handle, const char **out) {
-	char script[1024];
+	char script[4096];
 	pc_token_t token;
 
 	memset(script, 0, sizeof(script));
@@ -648,11 +647,11 @@ qboolean PC_Script_Parse(int handle, const char **out) {
 		}
 
 		if (token.string[1] != '\0') {
-			Q_strcat(script, 1024, va("\"%s\"", token.string));
+			Q_strcat(script, 4096, va("\"%s\"", token.string));
 		} else {
-			Q_strcat(script, 1024, token.string);
+			Q_strcat(script, 4096, token.string);
 		}
-		Q_strcat(script, 1024, " ");
+		Q_strcat(script, 4096, " ");
 	}
 	return qfalse;
 }
@@ -718,7 +717,7 @@ void GradientBar_Paint(rectDef_t *rect, vec4_t color) {
 }
 
 void Window_Paint(Window *w, float fadeAmount, float fadeClamp, float fadeCycle) {
-	vec4_t color;
+	vec4_t color = { 1.f, 1.f, 1.f, 1.f };
 	rectDef_t fillRect = w->rect;
 
 /*	if (debugMode) {
@@ -843,8 +842,8 @@ void Tooltip_ComputePosition(itemDef_t *item)
 {
 	menuDef_t *parent = (menuDef_t*)item->parent;
 
-	Rectangle *itemRect = &item->window.rectClient;
-	Rectangle *tipRect = &item->toolTipData->window.rectClient;
+	rectDef_t *itemRect = &item->window.rectClient;
+	rectDef_t *tipRect = &item->toolTipData->window.rectClient;
 
 //	DC->textFont( item->toolTipData->font );
 
@@ -2003,7 +2002,7 @@ float Item_Slider_ThumbPosition(itemDef_t *item, float scale) {
 	return (int)x;
 }
 
-int Item_Slider_OverSlider(itemDef_t *item, float x, float y) {
+static int Item_Slider_OverSlider(itemDef_t *item, float x, float y) {
 	rectDef_t r;
 
 	r.x = Item_Slider_ThumbPosition(item, 1); // - (SLIDER_THUMB_WIDTH / 2); //; 
@@ -2018,7 +2017,7 @@ int Item_Slider_OverSlider(itemDef_t *item, float x, float y) {
 	return 0;
 }
 
-int Item_ListBox_OverLB(itemDef_t *item, float x, float y) {
+static int Item_ListBox_OverLB(itemDef_t *item, float x, float y) {
 	rectDef_t r;
 	//listBoxDef_t *listPtr;
 	int thumbstart;
@@ -2086,7 +2085,7 @@ int Item_ListBox_OverLB(itemDef_t *item, float x, float y) {
 }
 
 
-void Item_ListBox_MouseEnter(itemDef_t *item, float x, float y) 
+void Item_ListBox_MouseEnter(itemDef_t *item, float x, float y, qboolean click) 
 {
 	rectDef_t r;
 	listBoxDef_t *listPtr = (listBoxDef_t*)item->typeData;
@@ -2094,33 +2093,35 @@ void Item_ListBox_MouseEnter(itemDef_t *item, float x, float y)
 	item->window.flags &= ~(WINDOW_LB_LEFTARROW | WINDOW_LB_RIGHTARROW | WINDOW_LB_THUMB | WINDOW_LB_PGUP | WINDOW_LB_PGDN);
 	item->window.flags |= Item_ListBox_OverLB(item, x, y);
 
-/*	if (item->window.flags & WINDOW_HORIZONTAL) {
-		if (!(item->window.flags & (WINDOW_LB_LEFTARROW | WINDOW_LB_RIGHTARROW | WINDOW_LB_THUMB | WINDOW_LB_PGUP | WINDOW_LB_PGDN))) {
-			// check for selection hit as we have exausted buttons and thumb
-			if (listPtr->elementStyle == LISTBOX_IMAGE) {
-				r.x = item->window.rect.x;
-				r.y = item->window.rect.y;
-				r.h = item->window.rect.h - SCROLLBAR_SIZE;
-				r.w = item->window.rect.w - listPtr->drawPadding;
-				if (Rect_ContainsPoint(&r, x, y)) {
-					listPtr->cursorPos =  (int)((x - r.x) / listPtr->elementWidth)  + listPtr->startPos;
-					if (listPtr->cursorPos >= listPtr->endPos) {
-						listPtr->cursorPos = listPtr->endPos;
+	if ( click ) {
+/*		if (item->window.flags & WINDOW_HORIZONTAL) {
+			if (!(item->window.flags & (WINDOW_LB_LEFTARROW | WINDOW_LB_RIGHTARROW | WINDOW_LB_THUMB | WINDOW_LB_PGUP | WINDOW_LB_PGDN))) {
+				// check for selection hit as we have exausted buttons and thumb
+				if (listPtr->elementStyle == LISTBOX_IMAGE) {
+					r.x = item->window.rect.x;
+					r.y = item->window.rect.y;
+					r.h = item->window.rect.h - SCROLLBAR_SIZE;
+					r.w = item->window.rect.w - listPtr->drawPadding;
+					if (Rect_ContainsPoint(&r, x, y)) {
+						listPtr->cursorPos =  (int)((x - r.x) / listPtr->elementWidth)  + listPtr->startPos;
+						if (listPtr->cursorPos >= listPtr->endPos) {
+							listPtr->cursorPos = listPtr->endPos;
+						}
 					}
+				} else {
+					// text hit.. 
 				}
-			} else {
-				// text hit.. 
 			}
-		}
-	} else*/ if (!(item->window.flags & (WINDOW_LB_LEFTARROW | WINDOW_LB_RIGHTARROW | WINDOW_LB_THUMB | WINDOW_LB_PGUP | WINDOW_LB_PGDN))) {
-		r.x = item->window.rect.x;
-		r.y = item->window.rect.y;
-		r.w = item->window.rect.w - SCROLLBAR_SIZE;
-		r.h = item->window.rect.h - listPtr->drawPadding;
-		if (Rect_ContainsPoint(&r, x, y)) {
-			listPtr->cursorPos =  (int)((y - 2 - r.y) / listPtr->elementHeight)  + listPtr->startPos;
-			if (listPtr->cursorPos > listPtr->endPos) {
-				listPtr->cursorPos = listPtr->endPos;
+		} else*/ if (!(item->window.flags & (WINDOW_LB_LEFTARROW | WINDOW_LB_RIGHTARROW | WINDOW_LB_THUMB | WINDOW_LB_PGUP | WINDOW_LB_PGDN))) {
+			r.x = item->window.rect.x;
+			r.y = item->window.rect.y;
+			r.w = item->window.rect.w - SCROLLBAR_SIZE;
+			r.h = item->window.rect.h - listPtr->drawPadding;
+			if (Rect_ContainsPoint(&r, x, y)) {
+				listPtr->cursorPos =  (int)((y - 2 - r.y) / listPtr->elementHeight)  + listPtr->startPos;
+				if (listPtr->cursorPos > listPtr->endPos) {
+					listPtr->cursorPos = listPtr->endPos;
+				}
 			}
 		}
 	}
@@ -2165,7 +2166,7 @@ void Item_MouseEnter(itemDef_t *item, float x, float y) {
 			}
 
 			if (item->type == ITEM_TYPE_LISTBOX) {
-				Item_ListBox_MouseEnter(item, x, y);
+				Item_ListBox_MouseEnter(item, x, y, qfalse);
 			}
 		}
 	}
@@ -2211,15 +2212,13 @@ qboolean Item_OwnerDraw_HandleKey(itemDef_t *item, int key) {
 }
 
 qboolean Item_Slider_HandleKey(itemDef_t *item, int key, qboolean down, float scale) {
-	float x, value, width, work, myscale;
-
 	//DC->Print("slider handle key\n");
-	if (item->window.flags & WINDOW_HASFOCUS && item->cvar && Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory)) {
+	if ((item->window.flags & WINDOW_HASFOCUS) && item->cvar && Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory)) {
 		if (key == K_MOUSE1 || key == K_ENTER || key == K_MOUSE2 || key == K_MOUSE3) {
 			editFieldDef_t *editDef = item->typeData;
 			if (editDef) {
 				rectDef_t testRect;
-				width = SLIDER_WIDTH;
+				float x, value;
 				if (item->text) {
 					x = item->textRect.x + item->textRect.w + 8;
 				} else {
@@ -2233,8 +2232,8 @@ qboolean Item_Slider_HandleKey(itemDef_t *item, int key, qboolean down, float sc
 				//DC->Print("slider x: %f\n", testRect.x);
 				//DC->Print("slider w: %f\n", testRect.w);
 				if (Rect_ContainsPoint(&testRect, DC->cursorx, DC->cursory)) {
-					work = DC->cursorx - x;
-					value = work / width;
+					float myscale, work = DC->cursorx - x;
+					value = work / SLIDER_WIDTH;
 					if(value > 1.0f)
 						value = 1.0f;
 					if(value < 0.0f)
@@ -2432,6 +2431,7 @@ qboolean Item_ListBox_HandleKey(itemDef_t *item, int key, qboolean down, qboolea
 			}
 		// mouse hit
 		if (key == K_MOUSE1 || key == K_MOUSE2) {
+			Item_ListBox_MouseEnter( item, DC->cursorx, DC->cursory, qtrue );
 			if (item->window.flags & WINDOW_LB_LEFTARROW) {
 				listPtr->startPos--;
 				if (listPtr->startPos < 0) {
@@ -2466,11 +2466,11 @@ qboolean Item_ListBox_HandleKey(itemDef_t *item, int key, qboolean down, qboolea
 				}
 
 				// select an item
-				if (DC->realTime < lastListBoxClickTime && listPtr->doubleClick) {
+				if (item->cursorPos == listPtr->cursorPos && 
+					DC->realTime < lastListBoxClickTime && listPtr->doubleClick) {
 					Item_RunScript(item, listPtr->doubleClick);
 				}
 				lastListBoxClickTime = DC->realTime + DOUBLE_CLICK_DELAY;
-
 
 				if(listPtr->elementStyle == LISTBOX_MULTI_CONTROLS) {
 					configData_t* configData = DC->feederItemInfo(item->special, listPtr->cursorPos, item);
@@ -2596,7 +2596,7 @@ qboolean Item_ListBox_HandleKey(itemDef_t *item, int key, qboolean down, qboolea
 }
 
 qboolean Item_CheckBox_HandleKey( itemDef_t *item, int key ) {
-	if( Rect_ContainsPoint( &item->window.rect, DC->cursorx, DC->cursory ) && item->window.flags & WINDOW_HASFOCUS && item->cvar ) {
+	if( Rect_ContainsPoint( &item->window.rect, DC->cursorx, DC->cursory ) && (item->window.flags & WINDOW_HASFOCUS) && item->cvar ) {
 		if( key == K_MOUSE1 || key == K_ENTER || key == K_MOUSE2 || key == K_MOUSE3 ) {
 			// ATVI Wolfenstein Misc #462
 			// added the flag to toggle via action script only
@@ -2617,16 +2617,14 @@ qboolean Item_CheckBox_HandleKey( itemDef_t *item, int key ) {
 }
 
 qboolean Item_YesNo_HandleKey(itemDef_t *item, int key) {
-
-  if (Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags & WINDOW_HASFOCUS && item->cvar) {
+	if (Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && (item->window.flags & WINDOW_HASFOCUS) && item->cvar) {
 		if (key == K_MOUSE1 || key == K_ENTER || key == K_MOUSE2 || key == K_MOUSE3) {
-	    DC->setCVar(item->cvar, va("%i", !DC->getCVarValue(item->cvar)));
-		  return qtrue;
+			DC->setCVar(item->cvar, va("%i", !DC->getCVarValue(item->cvar)));
+			return qtrue;
 		}
-  }
+	}
 
-  return qfalse;
-
+	return qfalse;
 }
 
 int Item_Multi_CountSettings(itemDef_t *item) {
@@ -2639,12 +2637,13 @@ int Item_Multi_CountSettings(itemDef_t *item) {
 
 int Item_Multi_FindCvarByValue(itemDef_t *item) {
 	char buff[1024];
-	float value = 0;
-	int i;
 	multiDef_t *multiPtr = (multiDef_t*)item->typeData;
 	if (multiPtr) {
+		float value = 0;
+		int i;
+
 		if (multiPtr->strDef) {
-	    DC->getCVarString(item->cvar, buff, sizeof(buff));
+			DC->getCVarString(item->cvar, buff, sizeof(buff));
 		} else {
 			value = DC->getCVarValue(item->cvar);
 		}
@@ -2665,12 +2664,13 @@ int Item_Multi_FindCvarByValue(itemDef_t *item) {
 
 const char *Item_Multi_Setting(itemDef_t *item) {
 	char buff[1024];
-	float value = 0;
-	int i;
 	multiDef_t *multiPtr = (multiDef_t*)item->typeData;
 	if (multiPtr) {
+		float value = 0;
+		int i;
+
 		if (multiPtr->strDef) {
-	    DC->getCVarString(item->cvar, buff, sizeof(buff));
+			DC->getCVarString(item->cvar, buff, sizeof(buff));
 		} else {
 			value = DC->getCVarValue(item->cvar);
 		}
@@ -2692,32 +2692,25 @@ const char *Item_Multi_Setting(itemDef_t *item) {
 qboolean Item_Multi_HandleKey(itemDef_t *item, int key) {
 	multiDef_t *multiPtr = (multiDef_t*)item->typeData;
 	if (multiPtr) {
-	  if (Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags & WINDOW_HASFOCUS && item->cvar) {
-			if (key == K_MOUSE1 || key == K_ENTER ) {						// step forward
-				int current = Item_Multi_FindCvarByValue(item) + 1;
+		if (Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags & WINDOW_HASFOCUS && item->cvar) {
+			if (key == K_MOUSE1 || key == K_ENTER || key == K_MOUSE2 || key == K_MOUSE3 ) {						// step forward
+				int current = Item_Multi_FindCvarByValue(item);
 				int max = Item_Multi_CountSettings(item);
-				if ( current < 0 || current >= max ) {
+
+				if (key == K_MOUSE2 || key == K_MOUSE3) {
+					current--;	// step back
+				}
+				else {
+					current++;	// step forward
+				}
+
+				if ( current < 0 ) {
+					current = max - 1;
+				}
+				if ( current >= max ) {
 					current = 0;
 				}
-				if (multiPtr->strDef) {
-					DC->setCVar(item->cvar, multiPtr->cvarStr[current]);
-				} else {
-					float value = multiPtr->cvarValue[current];
-					if (((float)((int) value)) == value) {
-						DC->setCVar(item->cvar, va("%i", (int) value ));
-					}
-					else {
-						DC->setCVar(item->cvar, va("%f", value ));
-					}
-				}
-				return qtrue;
-			}
-			else if(key == K_MOUSE2 || key == K_MOUSE3) {					// step back
-				signed int current = Item_Multi_FindCvarByValue(item) - 1;
-				int max = Item_Multi_CountSettings(item) - 1;
-				if ( current < 0 || current >= max ) {
-					current = max;
-				}
+
 				if (multiPtr->strDef) {
 					DC->setCVar(item->cvar, multiPtr->cvarStr[current]);
 				} else {
@@ -2733,7 +2726,7 @@ qboolean Item_Multi_HandleKey(itemDef_t *item, int key) {
 			}
 		}
 	}
-  return qfalse;
+	return qfalse;
 }
 
 void Item_Action( itemDef_t *item ) {
@@ -3372,6 +3365,8 @@ void Menu_HandleKey(menuDef_t *menu, int key, qboolean down) {
 	itemDef_t *item = NULL;
 	itemDef_t *wheelitem = NULL;
 	qboolean inHandler = qfalse;
+
+	Menu_HandleMouseMove( menu, DC->cursorx, DC->cursory );     // NERVE - SMF - fix for focus not resetting on unhidden buttons
 
 	if (inHandler) {
 		return;
@@ -5140,7 +5135,7 @@ void Menu_Paint(menuDef_t *menu, qboolean forcePaint) {
 		return;
 	}
 
-	if (menu->window.ownerDrawFlags && !DC->ownerDrawVisible(menu->window.ownerDrawFlags)) {
+	if (menu->window.ownerDrawFlags && DC->ownerDrawVisible && !DC->ownerDrawVisible(menu->window.ownerDrawFlags)) {
 		return;
 	}
 	
@@ -5215,7 +5210,7 @@ void Menu_Paint(menuDef_t *menu, qboolean forcePaint) {
 					}
 					else {
 						if(DC->realTime > ttInfo.showtime) {
-							Rectangle *r = &item->toolTipData->window.rect;
+							rectDef_t *r = &item->toolTipData->window.rect;
 							r->x = DC->cursorx + 16;
 							if((r->x + r->w) > 635)
 								r->x = 635 - r->w;
@@ -5260,7 +5255,7 @@ void Item_ValidateTypeData(itemDef_t *item) {
 	} else if (item->type == ITEM_TYPE_EDITFIELD || item->type == ITEM_TYPE_NUMERICFIELD || item->type == ITEM_TYPE_YESNO || item->type == ITEM_TYPE_SLIDER || item->type == ITEM_TYPE_TEXT) {
 		item->typeData = UI_Alloc(sizeof(editFieldDef_t));
 		memset(item->typeData, 0, sizeof(editFieldDef_t));
-		if (item->type == ITEM_TYPE_EDITFIELD) {
+		if (item->type == ITEM_TYPE_EDITFIELD || item->type == ITEM_TYPE_NUMERICFIELD) {
 			if (!((editFieldDef_t *) item->typeData)->maxPaintChars) {
 				((editFieldDef_t *) item->typeData)->maxPaintChars = MAX_EDITFIELD;
 			}

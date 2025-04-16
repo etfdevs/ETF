@@ -827,6 +827,7 @@ gitem_t	bg_itemlist[] =
 /* sounds */ "sound/items/flight.wav"
 	},
 
+#ifdef PENTAGRAM_POWERUP
 /*QUAKED item_pentagram (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
 */
 	{
@@ -843,6 +844,7 @@ gitem_t	bg_itemlist[] =
 /* precache */ "",
 /* sounds */ "sound/items/protect3.wav"
 	},
+#endif
 
 /*QUAKED team_CTF_redflag (1 0 0) (-16 -16 -16) (16 16 16)
 Only in CTF games
@@ -1510,7 +1512,8 @@ const char *eventnames[] = {
 	"EV_ETF_FLAMETHROWER_EFFECT",
 	"EV_SUPPLY_BUILD",
 	"EV_PLACE_BUILDING",
-	"EV_POWERUP_PENTAGRAM"
+	"EV_POWERUP_PENTAGRAM",
+	"EV_ARMOR_PERSON"
 };
 
 /*

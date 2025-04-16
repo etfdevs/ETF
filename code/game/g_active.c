@@ -1005,6 +1005,11 @@ void ClientThink_real( gentity_t *ent ) {
 		//	return;
 	}
 
+	if ( client->wantsscore ) {
+		G_SendScore(ent);
+		client->wantsscore = qfalse;
+	}
+
 	//
 	// check for exiting intermission
 	//

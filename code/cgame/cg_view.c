@@ -772,10 +772,10 @@ static int CG_CalcFov( void ) {
 		fov_x += v;
 		fov_y -= v;
 		inwater = qtrue;
-		cg.refdef_current->rdflags |= RDF_UNDERWATER;
+		cg.refdef.rdflags |= RDF_UNDERWATER;
 	}
 	else {
-		cg.refdef_current->rdflags &= ~RDF_UNDERWATER;
+		cg.refdef.rdflags &= ~RDF_UNDERWATER;
 		inwater = qfalse;
 	}
 
@@ -1167,7 +1167,7 @@ Generates and draws a game scene and status information at the given time.
 extern int remapSkyPortalCount;
 
 #define	CG_FPS_FRAMES	20
-void CG_Q3F_RenderCustomShaders();
+void CG_Q3F_RenderCustomShaders(void);
 
 #ifdef Q3F_WATER
 void CG_Q3F_RenderWater();
@@ -1330,6 +1330,7 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 
 	// build cg.refdef
 	inwater = CG_CalcViewValues();
+	CG_SetupFrustum();
 
 	DEBUGTIME
 
@@ -1340,7 +1341,7 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	}*/
 
 	// RR2DO2: draw sky portal
-	if( cg_drawSkyPortal.integer && !r_fastSky.integer && cgs.skyportal.hasportal) {
+	if( cg_drawSkyPortal.integer && !r_fastSky.integer && cgs.skyportal.hasportal ) {
 		CG_ETF_DrawSkyPortal( &cg.refdef, &cg.lensflare_blinded, stereoView, cgs.skyportal.origin );
 	}
 
@@ -1457,6 +1458,8 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	// Golliwog
 
 	DEBUGTIME
+
+	trap_SetClientLerpOrigin( cg.refdef.vieworg[0], cg.refdef.vieworg[1], cg.refdef.vieworg[2] );
 
 	// actually issue the rendering calls
 	CG_DrawActive( stereoView );

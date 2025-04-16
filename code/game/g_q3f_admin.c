@@ -1159,6 +1159,13 @@ void G_Q3F_RCONPasswordCommand( gentity_t *ent ) {
 	char password[MAX_STRING_CHARS];
 	char buff[MAX_STRING_CHARS];
 
+	if( !(ent->r.svFlags & SVF_BOT) && !strcmp(ent->client->sess.ipStr, "localhost") && trap_Cvar_VariableIntegerValue("cl_running") > 0 ) {
+		ent->client->sess.adminLevel = ADMIN_FULL;
+		trap_SendServerCommand( ent->s.number, "hud_auth_rcon 1" );
+		trap_SendServerCommand( ent->s.number, "hud_auth_admin 1" );
+		return;
+	}
+
 	trap_Cvar_VariableStringBuffer("rconpassword", buff, sizeof(buff));
 	trap_Argv(1, password, sizeof(password));
 
@@ -1221,12 +1228,12 @@ static const g_q3f_adminCmd_t adminCmds[] = {
 	{ "timelimit", G_Q3F_AdminTimelimit },
 	{ "unmute", G_ETF_AdminUnMute },
 	{ "vote", G_ETF_AdminVote },
-	{ "warn", G_ETF_AdminWarn },
+	{ "warn", G_ETF_AdminWarn }
 };
 
-static const int numAdminCmds = (int)ARRAY_LEN(adminCmds);
-static const int numUsageColumns = 3;
-static const int numUsageRows = (numAdminCmds / numUsageColumns) + ((numAdminCmds % numUsageColumns) ? 1 : 0);
+#define numAdminCmds (int)ARRAY_LEN(adminCmds)
+#define numUsageColumns 3
+#define numUsageRows (numAdminCmds / numUsageColumns) + ((numAdminCmds % numUsageColumns) ? 1 : 0)
 
 void G_Q3F_AdminCommand( gentity_t *admin )
 {

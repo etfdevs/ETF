@@ -39,10 +39,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include <string.h>
 
-#if defined(_WIN32) && defined(_MSC_VER)
-#pragma warning(disable : 4706)		// assignment within conditional expression
-#endif
-
 ///////////////////////////////////////////////////////////////////////////
 //
 //      FILE EXTENSIONS
@@ -60,15 +56,19 @@ const char *COM_GetExtension( const char *name )
 void COM_StripExtension( const char *in, char *out, int destsize )
 {
 	const char *dot = strrchr(in, '.'), *slash;
-	if (dot && (!(slash = strrchr(in, '/')) || slash < dot))
-		Q_strncpyz(out, in, (destsize < dot-in+1 ? destsize : dot-in+1));
+
+	if (dot && ((slash = strrchr(in, '/')) == NULL || slash < dot))
+		destsize = (destsize < dot-in+1 ? destsize : dot-in+1);
+
+	if ( in == out && destsize > 1 )
+		out[destsize-1] = '\0';
 	else
 		Q_strncpyz(out, in, destsize);
 }
 
 qboolean COM_CompareExtension(const char *in, const char *ext)
 {
-	int inlen, extlen;
+	size_t inlen, extlen;
 	
 	inlen = strlen(in);
 	extlen = strlen(ext);
@@ -87,7 +87,7 @@ qboolean COM_CompareExtension(const char *in, const char *ext)
 void COM_DefaultExtension( char *path, int maxSize, const char *extension )
 {
 	const char *dot = strrchr(path, '.'), *slash;
-	if (dot && (!(slash = strrchr(path, '/')) || slash < dot))
+	if (dot && ((slash = strrchr(path, '/')) == NULL || slash < dot))
 		return;
 	else
 		Q_strcat(path, maxSize, extension);
@@ -108,7 +108,7 @@ void COM_FixPath( char *pathname )
 	}
 }
 
-char *COM_SkipPath ( const char *pathname )
+char *COM_SkipPath ( char *pathname )
 {
 	char	*last;
 	

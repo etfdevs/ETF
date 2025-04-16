@@ -213,6 +213,7 @@ static const g_q3f_pfsmap_t pfsmap[] = {
 	{ Q3F_FLAG_CHARGEABLE,		"chargeable"		},
 	{ Q3F_FLAG_ROTATING,		"rotating"			},
 	{ Q3F_FLAG_NOSHRINK,		"noshrink"			},
+	{ Q3F_FLAG_DELAYFIRSTSPAWN,	"delayfirstspawn"	},
 	{ Q3F_FLAG_NODROP,			"nodrop"			},
 	{ Q3F_FLAG_ALLOWDEAD,		"allowdead"			},
 	{ Q3F_FLAG_ALLOWSAME,		"allowsame"			},
@@ -589,7 +590,8 @@ void G_Q3F_ProcessMapField( const char *key, const char *value, gentity_t *ent )
 	// and finally just stores them as text.
 
 	char flag;
-	char buff[MAX_STRING_CHARS], *srcptr, *dstptr;
+	char buff[MAX_STRING_CHARS] = { 0 }, *dstptr;
+	const char* srcptr;
 
 	if( !ent->mapdata )
 	{
@@ -649,7 +651,7 @@ void G_Q3F_ProcessMapField( const char *key, const char *value, gentity_t *ent )
 		}
 		else flag = 0;
 
-		for( srcptr = (char *) value, dstptr = buff; dstptr < (buff + sizeof(buff) - 1) && *srcptr; )
+		for( srcptr = value, dstptr = buff; dstptr < (buff + sizeof(buff) - 1) && *srcptr; )
 		{
 			// Process newlines in the string
 			if( *srcptr == '\\' && *(srcptr+1) == 'n' )
@@ -671,7 +673,7 @@ void G_Q3F_ProcessMapField( const char *key, const char *value, gentity_t *ent )
 			// (Probably) a sound key, let's precache it to avoid 'first play' misses (?).
 			// This could result in a LOT of pre-cached config strings - overflow problems?
 		if( !strcmp( key + strlen(key) - 6, "_sound" ) )
-			G_SoundIndex( (char *) value );		// This is the value WITHOUT a ~ prefix.
+			G_SoundIndex( value );		// This is the value WITHOUT a ~ prefix.
 
 		// Ensiform: Hack fix shitty maps with "q3f_hud" status icons
 		if( !strcmp( key + strlen(key) - 7, "_shader" ) && !Q_stricmpn( buff, "textures/q3f_hud", 16 ) ) {
@@ -2711,7 +2713,14 @@ void SP_Q3F_func_goalinfo( gentity_t *ent )
 	ent->use			= 0;
 	ent->touch			= G_Q3F_func_goalinfo_touch;
 	ent->think			= G_Q3F_func_goalinfo_think;
-	ent->nextthink		= 0;
+	if ( ent->mapdata->flags & Q3F_FLAG_DELAYFIRSTSPAWN ) {
+		float respawn = 45 + ETF_crandom() * 15;
+		ent->mapdata->state		= Q3F_STATE_ACTIVE;
+		ent->nextthink			= level.time + respawn * 1000;
+		ent->mapdata->waittime	= ent->nextthink;
+	}
+	else
+		ent->nextthink		= 0;
 
 	G_SpawnVector( "mins", "-15 -30 -30", ent->r.mins );
 	G_SpawnVector( "maxs", "15 15 15", ent->r.maxs );
@@ -2789,7 +2798,7 @@ void SP_Q3F_func_goalinfo( gentity_t *ent )
 **	Target array maintenance
 */
 
-static qboolean G_Q3F_AddNameToTargetArray( char *str, gentity_t *ent )
+static qboolean G_Q3F_AddNameToTargetArray( const char *str, gentity_t *ent )
 {
 	// Add a string to array, assumes it's AddString created
 	// True return value means the array needs resorted
@@ -2823,7 +2832,7 @@ static qboolean G_Q3F_AddNameToTargetArray( char *str, gentity_t *ent )
 	return( newkey );
 }
 
-static qboolean G_Q3F_RemoveNameFromTargetArray( char *str, gentity_t *ent )
+static qboolean G_Q3F_RemoveNameFromTargetArray( const char *str, gentity_t *ent )
 {
 	// Remove string from array, assumes it's AddString created
 	// True return value means the array needs resorted

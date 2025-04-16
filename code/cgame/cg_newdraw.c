@@ -1850,7 +1850,7 @@ static void CG_DrawClassIcon (rectDef_t* rect ) {
 	centity_t* agentdata = NULL;
 
 	if( cg.snap->ps.eFlags & (EF_Q3F_DISGUISE) ) {
-		for( index = 0; index < MAX_ENTITIES; index++ ) {
+		for( index = 0; index < MAX_GENTITIES; index++ ) {
 			agentdata = &cg_entities[index];
 
 			if( (agentdata->currentState.eType == ET_Q3F_AGENTDATA) &&
@@ -1859,7 +1859,7 @@ static void CG_DrawClassIcon (rectDef_t* rect ) {
 				break;		// We've found one.
 		}
 
-		if( index == MAX_ENTITIES )
+		if( index == MAX_GENTITIES )
 			agentdata = NULL;	// We might not have the control ent yet, or it's finished
 	} 
 
@@ -1890,7 +1890,7 @@ static void CG_DrawAgentDisguiseFullInfo(rectDef_t *rect, float scale, vec4_t co
 	if( cg.snap->ps.eFlags & (EF_Q3F_DISGUISE|EF_Q3F_INVISIBLE) ) {
 		// We don't draw, but we might want a agent effect instead.
 
-		for( index = 0; index < MAX_ENTITIES; index++ ) {
+		for( index = 0; index < MAX_GENTITIES; index++ ) {
 			agentdata = &cg_entities[index];
 
 			if( (agentdata->currentState.eType == ET_Q3F_AGENTDATA) &&
@@ -1899,7 +1899,7 @@ static void CG_DrawAgentDisguiseFullInfo(rectDef_t *rect, float scale, vec4_t co
 				break;		// We've found one.
 		}
 
-		if( index == MAX_ENTITIES )
+		if( index == MAX_GENTITIES )
 			agentdata = NULL;	// We might not have the control ent yet, or it's finished
 	} 
 
@@ -1964,7 +1964,7 @@ static void CG_DrawAgentDisguiseInfo(rectDef_t *rect, float scale, vec4_t color,
 	if( cg.snap->ps.eFlags & (EF_Q3F_DISGUISE|EF_Q3F_INVISIBLE) ) {
 		// We don't draw, but we might want a agent effect instead.
 
-		for( index = 0; index < MAX_ENTITIES; index++ ) {
+		for( index = 0; index < MAX_GENTITIES; index++ ) {
 			agentdata = &cg_entities[index];
 
 			if( (agentdata->currentState.eType == ET_Q3F_AGENTDATA) &&
@@ -1973,7 +1973,7 @@ static void CG_DrawAgentDisguiseInfo(rectDef_t *rect, float scale, vec4_t color,
 				break;		// We've found one.
 		}
 
-		if( index == MAX_ENTITIES )
+		if( index == MAX_GENTITIES )
 			agentdata = NULL;	// We might not have the control ent yet, or it's finished
 	}
 
@@ -2880,7 +2880,10 @@ const char* Q3F_Alert_Shaders[Q3F_ALERT_MAX] = {
 	"ui/gfx/hud/icons/minigun.tga",
 	"ui/gfx/hud/icons/nailgren.tga",
 	"ui/gfx/hud/icons/door.tga",
-	"ui/gfx/hud/icons/lift.tga"
+	"ui/gfx/hud/icons/lift.tga",
+	"ui/gfx/hud/icons/sentry.tga",
+	"ui/gfx/hud/icons/door.tga",
+	"icons/iconw_axe"
 };
 
 void CG_Q3F_DrawAlertIcon( rectDef_t* rect, int anchorx, int anchory, int border ) {

@@ -90,7 +90,7 @@ static void BotSendDispenserStatus(gentity_t *station);
 
 #define	Q3F_SUPPLYSTATION_BUILD_TIME	2000	// Milliseconds to build
 #define	Q3F_SUPPLYSTATION_BUILD_CELLS	100		// Cells required to build
-#define Q3F_SUPPLYSTATION_UPGRADE_CELLS	130		// Cells required for upgrade
+#define Q3F_SUPPLYSTATION_UPGRADE_CELLS	200		// Cells required for upgrade
 #define	Q3F_SUPPLYSTATION_REGEN_TIME	10000	// Milliseconds between ammo regen
 
 #define Q3F_SUPPLYSTATION_SHELLS		400	
@@ -99,17 +99,17 @@ static void BotSendDispenserStatus(gentity_t *station);
 #define Q3F_SUPPLYSTATION_CELLS			400
 #define Q3F_SUPPLYSTATION_ARMOUR		500
 
-vec3_t q3f_sentry_min = {
+static const vec3_t q3f_sentry_min = {
 	-16, -16, 0
 };
-vec3_t q3f_sentry_max = {
+static const vec3_t q3f_sentry_max = {
 	16, 16, 48
 };
 
-vec3_t q3f_supplystation_min = {
+static const vec3_t q3f_supplystation_min = {
 	-8, -8, 0
 };
-vec3_t q3f_supplystation_max = {
+static const vec3_t q3f_supplystation_max = {
 	8, 8, 46
 };
 
@@ -187,7 +187,7 @@ static qboolean G_Q3F_AttemptDismantle( gentity_t *player, gentity_t *building )
 	return( qfalse );
 }
 
-qboolean G_Q3F_SentryEnemyValid( gentity_t *ent, gentity_t *enemy )
+static qboolean G_Q3F_SentryEnemyValid( gentity_t *ent, gentity_t *enemy )
 {
 	// Returns qtrue if the specified entity is a valid enemy.
 
@@ -211,7 +211,7 @@ qboolean G_Q3F_SentryEnemyValid( gentity_t *ent, gentity_t *enemy )
 	return qtrue;
 }
 
-static void G_DumpClientInfo( gclient_t *cl, const char* prefix, const char* title) {
+static void G_DumpClientInfo( gclient_t *cl, const char* prefix, const char* title ) {
 	char buf[16];
 	
 	if(!cl) {
@@ -360,7 +360,7 @@ void G_Q3F_SentryDie( gentity_t *sentry, gentity_t *inflictor, gentity_t *attack
 #endif
 }
 
-void G_Q3F_SentryPain( gentity_t *ent, gentity_t *attacker, int damage )
+static void G_Q3F_SentryPain( gentity_t *ent, gentity_t *attacker, int damage )
 {
 	// We've been hurt, see if we can return the complement
 
@@ -385,7 +385,7 @@ void G_Q3F_SentryPain( gentity_t *ent, gentity_t *attacker, int damage )
 	G_Q3F_UpdateEngineerStats( ent->parent );
 }
 
-int G_Q3F_SentryMaxHealth( int sentlevel )
+static int G_Q3F_SentryMaxHealth( int sentlevel )
 {
 	switch( sentlevel )
 	{
@@ -397,7 +397,7 @@ int G_Q3F_SentryMaxHealth( int sentlevel )
 	}
 }
 
-int G_Q3F_SentryMaxShells( int sentlevel )
+static int G_Q3F_SentryMaxShells( int sentlevel )
 {
 	switch( sentlevel )
 	{
@@ -409,7 +409,7 @@ int G_Q3F_SentryMaxShells( int sentlevel )
 	}
 }
 
-void G_Q3F_SentryFinishBuild( gentity_t *ent )
+static void G_Q3F_SentryFinishBuild( gentity_t *ent )
 {
 	// Sentry has finished building.
 
@@ -792,7 +792,7 @@ void G_Q3F_SentryRefill( gentity_t *player, int sentrynum )
 	player->client->repairEnt = NULL;
 }
 
-void G_Q3F_SentryRotate( gentity_t *player, int sentrynum, int angle )
+static void G_Q3F_SentryRotate( gentity_t *player, int sentrynum, int angle )
 {
 	// Repair the specified sentry (or else pick one in range)
 
@@ -815,7 +815,7 @@ void G_Q3F_SentryRotate( gentity_t *player, int sentrynum, int angle )
 }
 
 #ifdef SENTRY_MOVE
-void G_Q3F_SentryPlrMove( gentity_t *player, int sentrynum )
+static void G_Q3F_SentryPlrMove( gentity_t *player, int sentrynum )
 {
 	// Repair the specified sentry (or else pick one in range)
 
@@ -1023,7 +1023,7 @@ void G_Q3F_SentryAttemptPlace( gentity_t *player )
 }
 #endif
 
-void G_Q3F_SentryDismantle( gentity_t *player, int sentrynum )
+static void G_Q3F_SentryDismantle( gentity_t *player, int sentrynum )
 {
 	// Dismantle the specified sentry and reclaim cells
 
@@ -1298,7 +1298,7 @@ static qboolean G_Q3F_SentryAimLock( AimBlock_t * aim, gentity_t *target ) {
 	return qfalse;
 }
 
-void G_Q3F_SentryMove( gentity_t *ent )
+static void G_Q3F_SentryMove( gentity_t *ent )
 {	trace_t tr;
 	vec3_t origin;
 	gentity_t *ground = &g_entities[ent->s.groundEntityNum];
@@ -1432,7 +1432,7 @@ void G_Q3F_RunSentry( gentity_t *ent )
 	}
 #endif
 	// If we have an enemy, and we want to fire, fire off the correct weapon.
-	G_Q3F_SentryMove( ent);
+	G_Q3F_SentryMove( ent );
 
 	// bogus: sentries can be destroyed in move (eg drop in lava/slime)
 	if(!ent->inuse)
@@ -1636,7 +1636,7 @@ ceasefire_target:
 **	SupplyStation handling
 */
 
-int G_Q3F_SupplyStationMaxHealth( int supplevel )
+static int G_Q3F_SupplyStationMaxHealth( int supplevel )
 {
 	switch( supplevel )
 	{
@@ -1756,7 +1756,7 @@ void G_Q3F_SupplyStationDie( gentity_t *supplystation, gentity_t *inflictor, gen
 	G_FreeEntity( supplystation );
 }
 
-void G_Q3F_SupplyStationPain( gentity_t *ent, gentity_t *attacker, int damage )
+static void G_Q3F_SupplyStationPain( gentity_t *ent, gentity_t *attacker, int damage )
 {
 	// Simply update stats
 
@@ -1829,7 +1829,7 @@ static QINLINE int G_Q3F_SupplyRegenTime(int supplevel)
 	return supplevel == 3 ? 6000 : Q3F_SUPPLYSTATION_REGEN_TIME;
 }
 
-void G_Q3F_SupplyStationRegen( gentity_t *supplystation )
+static void G_Q3F_SupplyStationRegen( gentity_t *supplystation )
 {
 	// Time to increase ammo?
 	if( supplystation->timestamp < level.time ) {
@@ -1877,7 +1877,7 @@ void G_Q3F_SupplyStationRegen( gentity_t *supplystation )
 	}
 }
 
-void G_Q3F_SupplyStationThink( gentity_t *supplystation )
+static void G_Q3F_SupplyStationThink( gentity_t *supplystation )
 {
 	// see if we should retract our screen
 	if( supplystation->s.frame ) {

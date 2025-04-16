@@ -165,7 +165,7 @@ void G_Q3F_PanelAffix( gentity_t *panel )
 
 typedef struct {
 	int id;
-	char *name;
+	const char *name;
 } panelTransitionMap_t;
 static const panelTransitionMap_t panelTransitionNames[] = {
 	// List of transition names.
@@ -225,7 +225,7 @@ qboolean G_Q3F_PanelBaseSpawn( gentity_t *panel )
 	return( qtrue );
 }
 
-int G_Q3F_ConvertSpawnColour( char *key, char *def )
+static int G_Q3F_ConvertSpawnColour( const char *key, const char *def )
 {
 	// Get the specified key and convert into an RGB 24-bit integer.
 

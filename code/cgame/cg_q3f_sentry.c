@@ -423,6 +423,7 @@ void CG_Q3F_Sentry( centity_t *cent )
 	if( cent->currentState.legsAnim >= 1 && cent->currentState.legsAnim <= 3 ) {
 		if( (cent->beamEnd[0] - 1) < cent->currentState.legsAnim ) {
 			cent->beamEnd[0] = cent->currentState.legsAnim + 1;
+			CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_BUILD);
 			trap_S_StartSound( NULL, cent->currentState.number, CHAN_AUTO, cgs.media.sentryUpgradeSound );
 		}
 	} else {
@@ -886,6 +887,7 @@ void CG_Q3F_Supplystation( centity_t *cent ) {
 	if( cent->currentState.legsAnim > 1 && cent->currentState.legsAnim <= 3 ) {
 		if( (cent->beamEnd[0] - 1) < cent->currentState.legsAnim ) {
 			cent->beamEnd[0] = cent->currentState.legsAnim + 1;
+			CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_BUILD);
 			trap_S_StartSound( NULL, cent->currentState.number, CHAN_AUTO, cgs.media.supplyBuildSound );
 		}
 	} else {
@@ -937,6 +939,7 @@ void CG_Q3F_Supplystation( centity_t *cent ) {
 			trap_S_StartSound( NULL, cent->currentState.number, CHAN_AUTO, cgs.media.supplyPopup );
 		else
 			trap_S_StartSound( NULL, cent->currentState.number, CHAN_AUTO, cgs.media.supplyRetract );
+		CG_Q3F_AddAlertIcon( cent->lerpOrigin, Q3F_ALERT_SUPPLY );
 	}
 
 	if( cent->currentState.frame ) {

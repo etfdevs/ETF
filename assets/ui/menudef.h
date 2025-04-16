@@ -380,6 +380,8 @@
 #define UI_FAV_SERVER_8				1008
 #define UI_FAV_SERVER_9				1009
 
+#define UI_SERVERREFRESHTEXT		1223
+
 
 
 

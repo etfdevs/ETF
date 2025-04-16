@@ -722,13 +722,15 @@ void CG_PredictPlayerState( void ) {
 	// the server time is beyond our current cg.time,
 	// because predicted player positions are going to 
 	// be ahead of everything else anyway
+#if 0
 	if ( cg.nextSnap && !cg.nextFrameTeleport && !cg.thisFrameTeleport ) {
 		cg.predictedPlayerState = cg.nextSnap->ps;
 		cg.physicsTime = cg.nextSnap->serverTime;
 	} else {
+#endif
 		cg.predictedPlayerState = cg.snap->ps;
 		cg.physicsTime = cg.snap->serverTime;
-	}
+	//}
 
 	cg_pmove.pmove_fixed = (int)cgs.pmove_fixed;
 	cg_pmove.pmove_msec = cgs.pmove_msec;

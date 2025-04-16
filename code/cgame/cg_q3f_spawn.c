@@ -520,7 +520,7 @@ static char *CG_Q3F_AddSpawnVarToken( const char *string ) {
 	int		l;
 	char	*dest;
 
-	l = strlen( string );
+	l = (int)strlen( string );
 	if ( numSpawnVarChars + l + 1 > MAX_SPAWN_VARS_CHARS ) {
 		CG_Error( "CG_Q3F_AddSpawnVarToken: MAX_SPAWN_VARS_CHARS" );
 	}

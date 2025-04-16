@@ -259,7 +259,7 @@ static void G_Q3F_SC_ProcessSetting( q3f_keypairarray_t **settingroot, qboolean 
 	if( !G_Q3F_SC_GetToken( "{" ) )
 		return;
 
-	cmd[0] = 0;
+	cmd[0] = '\0';
 //	closeQuote = qfalse;
 	while( 1 )
 	{
@@ -947,8 +947,9 @@ void G_Q3F_ExecuteSetting( const char *mapexec, int gameindex )
 	if( mapexec )
 	{
 		// Find a per-map configuration file and execute that.
-
-		COM_StripExtension( COM_SkipPath( mapexec ), mapname, sizeof(mapname) );
+		Q_strncpyz(mapname, mapexec, sizeof(mapname));
+		Q_strncpyz(mapname, COM_SkipPath(mapname), sizeof(mapname));
+		COM_StripExtension(mapname, mapname, sizeof(mapname));
 
 		if( Q_stricmp( sc.currSetting, "default" ) &&
 			(kp = G_Q3F_SC_FindKPEntry( sc.settings, sc.currSetting )) &&

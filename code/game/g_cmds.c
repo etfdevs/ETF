@@ -41,7 +41,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_admin.h"
 #include "bg_q3f_util.h"
 #include "g_q3f_mapselect.h"
-//#include "../../ui/menudef.h"			// for the voice chats
 
 #include "g_bot_interface.h"
 #ifdef BUILD_LUA
@@ -69,11 +68,11 @@ If you have questions concerning this license or the applicable additional terms
 
 /*
 ==================
-DeathmatchScoreboardMessage
+G_SendScore
 
 ==================
 */
-void DeathmatchScoreboardMessage( gentity_t *ent ) {
+void G_SendScore( gentity_t *ent ) {
 	char		entry[56];
 	char		string[MAX_STRING_CHARS-1];
 	int			stringlength;
@@ -82,7 +81,7 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 	int			numSorted;
 
 	// send the latest information on all clients
-	string[0] = 0;
+	string[0] = '\0';
 	stringlength = 0;
 
 	numSorted = level.numConnectedClients;
@@ -91,7 +90,7 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 	prefix = Com_sprintf( string, sizeof(string), "scores %i %i %i %i %i", numSorted, 
 		level.teamScores[Q3F_TEAM_RED], level.teamScores[Q3F_TEAM_BLUE], level.teamScores[Q3F_TEAM_YELLOW], level.teamScores[Q3F_TEAM_GREEN] );
 
-	string[0] = 0;
+	string[0] = '\0';
 
 	for (i=0 ; i < numSorted ; i++) {
 		int		ping, flags, score;
@@ -163,7 +162,7 @@ Request current scoreboard information
 ==================
 */
 void Cmd_Score_f( gentity_t *ent ) {
-	DeathmatchScoreboardMessage( ent );
+	ent->client->wantsscore = qtrue;
 }
 
 /*
@@ -173,14 +172,14 @@ Cmd_Stats_f
 Request current statistics information
 ==================
 */
-void Cmd_Stats_f( gentity_t *ent ) {
+static void Cmd_Stats_f( gentity_t *ent ) {
 	char		entry[50];
 	char		string[MAX_STRING_CHARS-1];
 	int			stringlength, prefix;
 	int			i, j;
 
 	// send the latest information on all clients
-	string[0] = 0;
+	string[0] = '\0';
 	stringlength = 0;
 
 	prefix = Com_sprintf( entry, sizeof(entry), "stats \"%i %i %i %i\"", ent->client->pers.stats.caps, ent->client->pers.stats.assists, ent->client->pers.stats.defends, ent->client->pers.stats.teamkills );
@@ -332,7 +331,7 @@ Cmd_Give_f
 Give items to a client
 ==================
 */
-void Cmd_Give_f (gentity_t *ent)
+static void Cmd_Give_f (gentity_t *ent)
 {
 	char		*name;
 	gitem_t		*it;
@@ -457,6 +456,11 @@ void Cmd_Give_f (gentity_t *ent)
 		ent->client->ps.persistant[PERS_GAUNTLET_FRAG_COUNT]++;
 		return;
 	}
+	if (Q_stricmp(name, "legwound") == 0) {
+		ent->client->legwounds = 6;
+		return;
+	}
+
 	// spawn a specific item right on the player
 	if ( !give_all ) {
 		it = BG_FindItem (name);
@@ -615,8 +619,13 @@ void Cmd_Kill_f( gentity_t *ent ) {
 		return;
 	}
 
-	trap_SendServerCommand(ent->s.clientNum, va("print \"%d second delay...\n\"", g_suicideDelay.integer ));
-	ent->client->killDelayTime = level.time + 1000 * g_suicideDelay.integer;
+	if ( g_suicideDelay.integer > 0 ) {
+		trap_SendServerCommand(ent->s.clientNum, va("print \"%d second delay...\n\"", g_suicideDelay.integer));
+		ent->client->killDelayTime = level.time + 1000 * g_suicideDelay.integer;
+	}
+	else
+		// negative or zero delay no message and force 0 delay for negative
+		ent->client->killDelayTime = level.time;
 }
 
 /*
@@ -665,7 +674,7 @@ qboolean SetTeam( gentity_t *ent, char *s ) {
 	gclient_t			*client;
 	int					clientNum;
 	spectatorState_t	specState;
-	int					specClient;
+	//int					specClient;
 	g_q3f_playerclass_t	*cls;
 
 	if (!ent->inuse)
@@ -677,7 +686,7 @@ qboolean SetTeam( gentity_t *ent, char *s ) {
 	client = ent->client;
 
 	clientNum = client - level.clients;
-	specClient = 0;
+	//specClient = 0;
 
 	if(level.clients[clientNum].punishTime) {
 		if(level.clients[clientNum].punishTime < level.time) {
@@ -734,7 +743,7 @@ qboolean SetTeam( gentity_t *ent, char *s ) {
 	// decide if we will allow the change
 	//
 	oldTeam = client->sess.sessionTeam;
-	if ( team == oldTeam ) {
+	if ( team == oldTeam && team != Q3F_TEAM_SPECTATOR ) {
 		return qfalse;
 	}
 
@@ -794,7 +803,7 @@ qboolean SetTeam( gentity_t *ent, char *s ) {
 
 	client->sess.sessionTeam = team;
 	client->sess.spectatorState = specState;
-	client->sess.spectatorClient = specClient;
+	//client->sess.spectatorClient = specClient;
 
 	// RR2DO2 : set next class to nullclass, so game knows he is without one
 	ent->client->ps.persistant[PERS_CURRCLASS] = Q3F_CLASS_NULL;
@@ -853,6 +862,18 @@ to free floating spectator mode
 =================
 */
 void StopFollowing( gentity_t *ent, qboolean resetclient ) {
+	vec3_t pos, ang;
+
+	VectorCopy(ent->client->ps.origin, pos);
+	VectorCopy(ent->client->ps.viewangles, ang);
+	SetTeam( ent, "s" );
+	if( resetclient )
+		ent->client->sess.spectatorClient = -1;
+	ent->client->ps.persistant[PERS_FLAGS] |= PF_JOINEDTEAM;
+	VectorCopy(pos, ent->client->ps.origin);
+	SetClientViewAngle(ent, ang);
+#if 0
+
 	ent->client->ps.persistant[ PERS_TEAM ] = Q3F_TEAM_SPECTATOR;	
 	ent->client->sess.sessionTeam = Q3F_TEAM_SPECTATOR;	
 	ent->client->ps.persistant[ PERS_CURRCLASS ] = Q3F_CLASS_NULL; // We are a null spectator again
@@ -878,6 +899,12 @@ void StopFollowing( gentity_t *ent, qboolean resetclient ) {
 
 	// Player won't be an engineer anymore so nuke the data
 	G_Q3F_UpdateEngineerStats(ent);
+
+	if(ent->client->ps.stats[STAT_Q3F_FLAGS] & 1<< FL_Q3F_SCANNER)
+		G_Q3F_ToggleScanner(ent);
+
+	ent->client->ps.stats[STAT_Q3F_FLAGS] = 0;
+#endif
 }
 
 /*

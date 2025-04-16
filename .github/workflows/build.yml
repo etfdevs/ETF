@@ -4,232 +4,152 @@ on:
   workflow_dispatch:
   push:
     branches: [master]
+    tags-ignore:
+      - '*'
     paths-ignore:
-      - '**.md'
-      - '*.txt'
-      - '.gitignore'
-      - 'docs/*'
+      - docs/*
+      - .gitignore
+      - .gitattributes
+      - .clang-format
+      - README.md
+      - VERSION.txt
+      - release.sh
   pull_request:
     branches: [master]
     paths-ignore:
-      - '**.md'
-      - '*.txt'
-      - '.gitignore'
-      - 'docs/*'
-  release:
-    types: [published]
+      - docs/*
+      - .gitignore
+      - .gitattributes
+      - .clang-format
+      - README.md
+      - VERSION.txt
+      - release.sh
+  merge_group:
+  #release:
+  #  types: [published]
 
 jobs:
-  windows-mingw:
-    name: ${{ matrix.config }} Windows ${{ matrix.arch }}
+  Windows-MSVC:
+    name: Windows-MSVC ${{ matrix.arch }}
     runs-on: windows-latest
     strategy:
       fail-fast: false
-      matrix:
-        #arch: [arm64, x86, x64]
-        arch: [x86, x64]
-        cc: [gcc]
-        cxx: [g++]
+      maatrix:
+        arch: [ x86, x64 ]
         config: [Release]
         include:
-         # - arch: arm64
-         #   platform: ARM64
-         #   suffix: .arm64
-
           - arch: x86
             platform: Win32
-            msystem: MINGW32
-            prefix: mingw-w64-i686
+
           - arch: x64
-            platform: Win64
-            msystem: MINGW64
-            prefix: mingw-w64-x86_64
-            
-            
-          - config: Release
-            rule: install
-
-          #- arch: x64
-          #  platform: x64
-          #  suffix: .x86_64
-
+            platform: x64
     steps:
-    - uses: msys2/setup-msys2@v2
-      with:
-        install: ${{ matrix.prefix }}-binutils ${{ matrix.prefix }}-make ${{ matrix.prefix }}-${{ matrix.cc }} ${{ matrix.prefix }}-ninja
-        msystem: ${{ matrix.msystem }}
-        path-type: minimal
-        release: false
-        update: false
-
-    - name: Configure MinGW for ${{ matrix.arch }} into PATH
-      shell: bash
-      run: |
-        if [ ${{ matrix.arch }} == "x86" ]; then
-          echo "C:\msys64\mingw32\bin" >> $GITHUB_PATH
-        else
-          echo "C:\msys64\mingw64\bin" >> $GITHUB_PATH
-        fi
-
     - uses: actions/checkout@v4
       with:
-        submodules: recursive
+        fetch-depth: 0
 
-    - name: Create Build Directory
-      working-directory: ${{github.workspace}}/code
-      run: cmake -E make_directory ${{github.workspace}}/code/bin
-      
-    - name: Configure CMake (x86)
-      working-directory: ${{github.workspace}}/code/bin
-      if: ${{ matrix.arch == 'x86' }}
-      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/code/cmake/toolchains/i686-w64-mingw32-github.cmake
+    - name: Configure CMake
+      run: cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -G "Visual Studio 17 2022" -A ${{ matrix.platform }}
 
-    - name: Configure CMake (x64)
-      working-directory: ${{github.workspace}}/code/bin
-      if: ${{ matrix.arch == 'x64' }}
-      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
-      
     - name: Build
-      working-directory: ${{github.workspace}}/code/bin
-      run: cmake --build . --config ${{ matrix.config }} --parallel
+      run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.config }} --parallel
 
-    - uses: actions/upload-artifact@v4
-      if: ${{ matrix.config == 'Release' }}
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
       with:
-        name: windows-${{ matrix.arch }}
-        path: |
-          code/bin/*.dll
-        if-no-files-found: error
-        retention-days: 5
+        name: etf-artifacts-win-${{ matrix.arch }}
+        path: ${{ github.workspace }}/build/etf
 
-  ubuntu-x86:
-    name: ${{ matrix.config }} Ubuntu ${{ matrix.arch }}
+  Linux:
+    name: Linux ${{ matrix.arch }}
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
         arch: [x86, x86_64]
-        cc: [gcc]
-        cxx: [g++]
         config: [Release]
-        include:
-          - config: Release
-            rule: install
-          - arch: x86
-          - arch: x86_64
 
     steps:
-    - name: Install tools
+    - name: Install dependencies
+      if: matrix.arch == 'x86'
       run: |
-        if [ ${{ matrix.arch }} == "x86" ]; then
-          sudo dpkg --add-architecture i386
-          sudo apt-get -qq update
-          sudo apt-get -y install gcc-multilib g++-multilib ninja-build
-        else
-          sudo apt-get -qq update
-          sudo apt-get -y install ninja-build
-        fi
+        sudo apt-get update
+        sudo apt-get install gcc-multilib g++-multilib    
+
     - uses: actions/checkout@v4
       with:
-        submodules: recursive
-
-    - name: Create Build Directory
-      working-directory: ${{github.workspace}}/code
-      run: cmake -E make_directory ${{github.workspace}}/code/bin
+        fetch-depth: 0
 
     - name: Configure CMake
-      working-directory: ${{github.workspace}}/code/bin
       run: |
         if [ ${{ matrix.arch }} == "x86" ]; then
-          cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/linux-i686.cmake
+          cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=cmake/Toolchain-cross-x86-linux.cmake
         else
-          cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+          cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.config }}
         fi
 
     - name: Build
-      working-directory: ${{github.workspace}}/code/bin
-      run: cmake --build . --config ${{ matrix.config }} --parallel
+      run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.config }} --parallel
 
-    - uses: actions/upload-artifact@v4
-      if: matrix.cc == 'gcc' && matrix.config == 'Release'
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
       with:
-        name: linux-${{ matrix.arch }}
-        path: |
-          code/bin/*.so
-        if-no-files-found: error
-        retention-days: 5
+        name: etf-artifacts-linux-${{ matrix.arch }}
+        path: ${{ github.workspace }}/build/etf
 
-  macos-x86:
-    name: ${{ matrix.config }} macOS x86_64
-    runs-on: macos-12
+  macOS:
+    name: macOS ${{ matrix.arch }}
+    runs-on: macos-13
     strategy:
       fail-fast: false
       matrix:
-        arch: [x86_64]
-        cc: [clang]
-        cxx: [clang++]
+        arch: [x64]
         config: [Release]
         include:
-          - config: Release
-            rule: install
+          - arch: x64
+            platforms: "\"x86_64;arm64\""
+            osx-target: "10.12"
 
     steps:
-    - name: Install tools
-      run: brew install coreutils ninja
-
     - uses: actions/checkout@v4
       with:
-        submodules: recursive
-
-    - name: Create Build Directory
-      working-directory: ${{github.workspace}}/code
-      run: cmake -E make_directory ${{github.workspace}}/code/bin
+        fetch-depth: 0
 
     - name: Configure CMake
-      working-directory: ${{github.workspace}}/code/bin
-      run: cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+      run: cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_OSX_ARCHITECTURES=${{ matrix.platforms }} -DCMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.osx-target }}
 
     - name: Build
-      working-directory: ${{github.workspace}}/code/bin
-      run: cmake --build . --config ${{ matrix.config }} --parallel
+      run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.config }} --parallel
 
-    - uses: actions/upload-artifact@v4
-      if: matrix.cc == 'clang' && matrix.config == 'Release'
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
       with:
-        name: macos-${{ matrix.arch }}
-        path: |
-          code/bin/*_mac
-        if-no-files-found: error
-        retention-days: 5
+        name: etf-artifacts-macos-${{ matrix.arch }}
+        path: ${{ github.workspace }}/build/etf
         
   create-testing:
     if: github.ref == 'refs/heads/master' && github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    needs: [windows-mingw, ubuntu-x86, macos-x86]
-    runs-on: ubuntu-latest
+    needs: [Windows-MSVC, Linux, macOS]
+    runs-on: ubuntu-22.04
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Download Artifacts
         uses: actions/download-artifact@v4
 
-      - name: Create binary archives
+      - name: Pack release zip
+        working-directory: ${{ github.workspace }}/build
         run: |
-          mkdir -p etf
-          mv -t  ./etf/ ./linux-x86/*.so
-          mv -t  ./etf/ ./linux-x86_64/*.so
-          mv -t  ./etf/ ./windows-x86/*.dll
-          mv -t  ./etf/ ./windows-x64/*.dll
-          mv -t  ./etf/ ./macos-x86_64/*_mac
-          cd etf
-          7z a -r -tzip mp_bin.pk3      ./cgame*.so
-          7z a -r -tzip mp_bin.pk3      ./ui*.so
-          7z a -r -tzip mp_bin.pk3      ./cgame*.dll
-          7z a -r -tzip mp_bin.pk3      ./ui*.dll
-          7z a -r -tzip mp_bin.pk3      ./cgame_mac
-          7z a -r -tzip mp_bin.pk3      ./ui_mac
-          cd ..
-          7z a -r etf-2.0-all-test-latest.zip      ./etf/*.pk3
-          7z a -r etf-2.0-all-test-latest.zip      ./etf/*.so
-          7z a -r etf-2.0-all-test-latest.zip      ./etf/*.dll
-          7z a -r etf-2.0-all-test-latest.zip      ./etf/*_mac
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          make mod_release
+
+      - name: Upload release 
+        uses: actions/upload-artifact@v4
+        with:
+          name: etjump-snapshot-release
+          path: ${{ github.workspace }}/build/*.zip
 
       - name: Create latest build
         uses: czietz/action-automatic-releases@latest
@@ -238,5 +158,4 @@ jobs:
           automatic_release_tag: "latest"
           prerelease: false
           title: Latest Build
-          files: |
-            *.zip
+          files: ${{ github.workspace }}/build/*.zip

@@ -136,7 +136,9 @@ q3f_keypairarray_t *G_Q3F_LoadMapInfo( const char *mapname )
 	int index, c1, c2;//, gameIndices;
 	q3f_keypairarray_t *kpa;
 
-	COM_StripExtension( COM_SkipPath( mapname ), rawmapname, sizeof(rawmapname) );
+	Q_strncpyz(rawmapname, mapname, sizeof(rawmapname));
+	Q_strncpyz(rawmapname, COM_SkipPath(rawmapname), sizeof(rawmapname));
+	COM_StripExtension(rawmapname, rawmapname, sizeof(rawmapname));
 	infoname = va( "%s/%s%s", MAPINFODIR, rawmapname, MAPINFOEXT );
 
 	memset( &mi, 0, sizeof(mi) );

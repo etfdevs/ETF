@@ -34,6 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "bg_public.h"
 
 #ifdef QAGAME
+// this should never be true
 #include "g_local.h"
 #else
 #include "../ui_new/ui_shared.h"
@@ -44,10 +45,10 @@ const char *String_Alloc(const char *p);
 typedef struct mapInfoKeyHandler_s
 {
 	const char *keyname;
-	qboolean (*func)(mapInfo* info, const char* value, const char** buf);
+	qboolean (*func)(mapInfo_t* info, const char* value, const char** buf);
 } mapInfoKeyHandler_t;
 
-static qboolean MapInfo_KeyHandlerMap(mapInfo* info, const char* value, const char** buf) {
+static qboolean MapInfo_KeyHandlerMap(mapInfo_t* info, const char* value, const char** buf) {
 	info->mapName = String_Alloc(value);
 	info->imageName = String_Alloc(va("levelshots/%s", value));
 	info->levelShot = -1;
@@ -55,17 +56,17 @@ static qboolean MapInfo_KeyHandlerMap(mapInfo* info, const char* value, const ch
 	return qtrue;
 }
 
-static qboolean MapInfo_KeyHandlerLongName(mapInfo* info, const char* value, const char** buf) {
+static qboolean MapInfo_KeyHandlerLongName(mapInfo_t* info, const char* value, const char** buf) {
 	info->mapName = String_Alloc(value);
 	return qtrue;
 }
 
-static qboolean MapInfo_KeyHandlerGameIndicies(mapInfo* info, const char* value, const char** buf) {
+static qboolean MapInfo_KeyHandlerGameIndicies(mapInfo_t* info, const char* value, const char** buf) {
 	info->gameIndicies = String_Alloc(value);
 	return qtrue;
 }
 
-static qboolean MapInfo_KeyHandlerType(mapInfo* info, const char* value, const char** buf) {
+static qboolean MapInfo_KeyHandlerType(mapInfo_t* info, const char* value, const char** buf) {
 	if( strstr( value, MAPINFO_TYPE ) ) {
 		return qtrue;
 	}
@@ -117,7 +118,7 @@ static const gameIndexKeyHandler_t gameIndexDefKeyHandlers[] = {
 	{NULL, NULL}
 };
 
-static qboolean MapInfo_KeyHandlerGameIndexDef(mapInfo* info, const char* value, const char** buf) {
+static qboolean MapInfo_KeyHandlerGameIndexDef(mapInfo_t* info, const char* value, const char** buf) {
 	const char	*token;
 	char	key[MAX_TOKEN_CHARS];
 	const gameIndexKeyHandler_t* handler;
@@ -181,12 +182,12 @@ static const mapInfoKeyHandler_t mapInfoKeyHandlers[] = {
 BG_ParseInfos
 ===============
 */
-static qboolean BG_ParseInfos( const char *buf, mapInfo* miList, int* index) {
+static qboolean BG_ParseInfos( const char *buf, mapInfo_t* miList, int* index) {
 	const char	*token;
 	char	key[MAX_TOKEN_CHARS];
 	const mapInfoKeyHandler_t* handler;
 
-	memset(&miList[*index], 0, sizeof(mapInfo));
+	memset(&miList[*index], 0, sizeof(mapInfo_t));
 
 	token = COM_Parse( &buf );
 	if ( !token[0] ) {
@@ -243,16 +244,18 @@ static qboolean BG_ParseInfos( const char *buf, mapInfo* miList, int* index) {
 BG_LoadMapInfoFromFile
 ===============
 */
-qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, mapInfo* miList, int* index ) {
+qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, mapInfo_t* miList, int* index ) {
 	int				len;
 	fileHandle_t	f;
 	char			buf[MAX_MAPINFOS_TEXT];
-	char			rawmapname[1024];
+	char			rawmapname[MAX_QPATH];
 	//char* p;
 
 	len = DC->openFile( filename, &f, FS_READ );
-	if ( !f ) {
+	if ( !f || len <= 0 ) {
 		DC->Print( S_COLOR_RED "file not found: %s\n", filename );
+		if ( f )
+			DC->closeFile( f );
 		return( qfalse );
 	}
 	if ( len >= MAX_MAPINFOS_TEXT ) {
@@ -262,13 +265,15 @@ qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, 
 	}
 
 	DC->fRead( buf, len, f );
-	buf[len] = 0;
+	buf[len] = '\0';
 	DC->closeFile( f );
 
 	/* Ensiform - Add this so we can check what files cause the Unexpected end of info file error */
 	COM_BeginParseSession(filename);
 	if(BG_ParseInfos(buf, miList, index)) {
-		COM_StripExtension( COM_SkipPath( filename ), rawmapname, sizeof(rawmapname) );
+		Q_strncpyz( rawmapname, filename, sizeof(rawmapname) );
+		Q_strncpyz(rawmapname, COM_SkipPath(rawmapname), sizeof(rawmapname));
+		COM_StripExtension( rawmapname, rawmapname, sizeof(rawmapname) );
 		miList[(*index)-1].mapLoadName = String_Alloc( rawmapname );
 	}
 

@@ -62,7 +62,7 @@ Clip Handling Functions			-- JT
 	WP_NUM_WEAPONS
 */ 
 
-static int Q3F_ClipOffsets[] =
+static const int Q3F_ClipOffsets[] =
 {
 	-1,	//	WP_NONE,
 
@@ -86,7 +86,7 @@ static int Q3F_ClipOffsets[] =
 
 // JT: Mapping from ammunition type to the possible weapons that can have clips containing them.
 // Note that this is _CLIPS_, not all weapons.
-static int Q3F_AmmoClips[4][3] = 
+static const int Q3F_AmmoClips[4][3] = 
 {
 	{ WP_SHOTGUN, WP_SUPERSHOTGUN, -1},		//	AMMO_SHELLS
 	{ -1, -1, -1 },				//  AMMO_NAILS
@@ -127,7 +127,7 @@ void Q3F_CapClipsForAmmoType(int ammotype, playerState_t *playstate)
 	}
 }
 
-int Q3F_GetAmmoNumInClip(int ammotype, playerState_t *playstate)
+int Q3F_GetAmmoNumInClip(int ammotype, const playerState_t *playstate)
 {
 	int i, temp;
 	int num=0;
@@ -153,7 +153,7 @@ void Q3F_SetClipValue(int weapon, int value, playerState_t *playstate)
 	int woffset;
 	int offset;
 
-	if(weapon > WP_NUM_WEAPONS || weapon <0)		// Safety.
+	if(weapon >= WP_NUM_WEAPONS || weapon <0)		// Safety.
 		return;
 
 	woffset = Q3F_ClipOffsets[weapon];
@@ -172,12 +172,12 @@ void Q3F_SetClipValue(int weapon, int value, playerState_t *playstate)
 	}
 }
 
-int Q3F_GetClipValue(int weapon, playerState_t *playstate)
+int Q3F_GetClipValue(int weapon, const playerState_t *playstate)
 {
 	int woffset;
 	int offset;
 
-	if(weapon > WP_NUM_WEAPONS || weapon <0)		// Safety.
+	if(weapon >= WP_NUM_WEAPONS || weapon <0)		// Safety.
 		return -1;
 
 

@@ -78,4 +78,3 @@ void COM_BitClear( int array[], unsigned int bitNum ) {
 
 	array[i] &= bitmask;
 }
-

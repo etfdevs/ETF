@@ -90,11 +90,11 @@ void trap_R_AddRefEntityToScene( const refEntity_t *re, const centity_t *cent ) 
 
 
 
-void F2R_Init( F2RDef_t *F2RScript ) {
+static void F2R_Init( F2RDef_t *F2RScript ) {
 	memset(F2RScript, 0, sizeof(F2RDef_t));
 }
 
-void F2R_Reset(void) {
+static void F2R_Reset(void) {
 	F2RCount = 0;
 	F2RLinks = 0;
 	Memory_Init( MEM_F2R );

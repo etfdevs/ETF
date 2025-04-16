@@ -1232,6 +1232,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 				trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.sfx_flamethrower_firewater, 255, 0 );
 			} else {
 				trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.sfx_flamethrower_fire, 255, 0 );
+				CG_Q3F_AddAlertIcon(cent->lerpOrigin, Q3F_ALERT_FIRE);
 			}
 		} else if ( weapon->readySound ) {
 			trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, weapon->readySound, 255, 0 );
@@ -1585,9 +1586,9 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 			VectorCopy( cg.refdef.vieworg, origin );
 			//VectorMA( origin, -8, cg.refdef.viewaxis[2], origin );
 
-			VectorMA( origin, 18, cg.refdef_current->viewaxis[0], origin );
-			VectorMA( origin, -7, cg.refdef_current->viewaxis[1], origin );
-			VectorMA( origin, -4, cg.refdef_current->viewaxis[2], origin );
+			VectorMA( origin, 18, cg.refdef.viewaxis[0], origin );
+			VectorMA( origin, -7, cg.refdef.viewaxis[1], origin );
+			VectorMA( origin, -4, cg.refdef.viewaxis[2], origin );
 
 	        // Keeger, brought in from ET...Flamethrower effect
 			CG_FlamethrowerFlame( &cg.predictedPlayerEntity, origin  );
@@ -1779,7 +1780,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 
 	// animate
 	//slothy -- note to self.. this is weapon movement animation, eg needle stabbing, axe chopping etc
-	CG_RunLerpFrame( F2RScript, &cent->pe.hands, animNumber, 1.f );
+	CG_RunLerpFrame( F2RScript, &cent->pe.hands, animNumber, 1.f, qtrue );
 	hand.oldframe = cent->pe.hands.oldFrame;
 	hand.frame = cent->pe.hands.frame;
 	hand.backlerp = cent->pe.hands.backlerp;
@@ -2754,7 +2755,7 @@ CG_Sniper_Bullet
 Renders bullet effects.
 ======================
 */
-void CG_SniperBullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, int fleshEntityNum ) {
+/*void CG_SniperBullet(vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, int fleshEntityNum) {
 	vec3_t		start;
 	vec4_t		rgba;
 
@@ -2776,5 +2777,5 @@ void CG_SniperBullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean f
 	} else {
 		CG_MissileHitWall( WP_NAILGUN, 0, end, normal, IMPACTSOUND_DEFAULT );
 	}
-}
+}*/
 

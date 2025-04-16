@@ -548,6 +548,8 @@ struct gclient_s {
 	int			frameOffset;
 	// the last frame number we got an update from this client
 	int			lastUpdateFrame;
+
+	qboolean	wantsscore;
 };
 
 //
@@ -755,7 +757,7 @@ qboolean	G_SpawnVector2DExt( const char *key, const char *defaultString, float *
 //
 // g_cmds.c
 //
-void Cmd_Score_f (gentity_t *ent);
+void G_SendScore(gentity_t *ent);
 qboolean CheatsOk( gentity_t *ent, qboolean silent );
 void StopFollowing( gentity_t *ent, qboolean resetclient );
 void BroadcastTeamChange( gclient_t *client, int oldTeam );
@@ -769,22 +771,11 @@ void G_CheckTeamItems( void );
 void G_RunItem( gentity_t *ent );
 void RespawnItem( gentity_t *ent );
 
-#if 0
-void UseHoldableItem( gentity_t *ent );
-void PrecacheItem (gitem_t *it);
-#endif
 gentity_t *Drop_Item( gentity_t *ent, gitem_t *item, float angle );
 gentity_t *LaunchItem( gitem_t *item, vec3_t origin, vec3_t velocity );
-#if 0
-void SetRespawn (gentity_t *ent, float delay);
-#endif
 void G_SpawnItem (gentity_t *ent, gitem_t *item);
 void FinishSpawningItem( gentity_t *ent );
-#if 0
-void Think_Weapon (gentity_t *ent);
-int ArmorIndex (gentity_t *ent);
-#endif
-void	Add_Ammo (gentity_t *ent, int weapon, int count);
+void Add_Ammo (gentity_t *ent, int weapon, int count);
 void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace);
 
 void ClearRegisteredItems( void );
@@ -891,7 +882,6 @@ gentity_t *fire_nail (gentity_t *self, vec3_t start, vec3_t dir, int damage, int
 //
 void G_RunMover( gentity_t *ent );
 void Touch_DoorTrigger( gentity_t *ent, gentity_t *other, trace_t *trace );
-void SpectatorTouch_DoorTrigger( gentity_t *ent, gentity_t *other, trace_t *trace );
 
 //
 // g_trigger.c
@@ -929,19 +919,12 @@ void G_UnlaggedTrace( gentity_t *ent, trace_t *results, const vec3_t start,
 
 // g_client.c
 int TeamCount( int ignoreClientNum, int team );	// RR2DO2
-#if 0
-int TeamLeader( int team );
-#endif
 int PickTeam( int ignoreClientNum );				// RR2DO2
 void SetClientViewAngle( gentity_t *ent, vec3_t angle );
 gentity_t *SelectSpawnPoint ( vec3_t avoidPoint, vec3_t origin, vec3_t angles, gentity_t *ent );
 void CopyToBodyQue( gentity_t *ent );
 void respawn (gentity_t *ent);
 void BeginIntermission (void);
-#if 0
-void InitClientPersistant (gclient_t *client);
-void InitClientResp (gclient_t *client);
-#endif
 void InitBodyQue (void);
 qboolean ClientSpawn( gentity_t *ent );
 void player_die (gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod);
@@ -968,19 +951,6 @@ qboolean	ConsoleCommand( void );
 //
 void FireWeapon( gentity_t *ent );
 
-//
-// p_hud.c
-//
-void MoveClientToIntermission (gentity_t *client);
-#if 0
-void G_SetStats (gentity_t *ent);
-#endif
-void DeathmatchScoreboardMessage (gentity_t *client);
-
-//
-// g_cmds.c
-//
-//static void G_SayTo( gentity_t *ent, gentity_t *other, int mode, int color, const char *name, const char *message );
 
 //
 // g_pweapon.c
@@ -993,10 +963,6 @@ void DeathmatchScoreboardMessage (gentity_t *client);
 
 extern char bigTextBuffer[100000];
 void FindIntermissionPoint( void );
-#if 0
-void SetLeader(int team, int client);
-void CheckTeamLeader( int team );
-#endif
 void G_RunThink (gentity_t *ent);
 void QDECL  G_LogPrintf( const char *fmt, ... ) FORMAT_PRINTF(1,2);
 void SendScoreboardMessageToAllClients( void );
@@ -1006,6 +972,7 @@ void LogExit( const char *string );
 void G_Q3F_CeaseFire(qboolean state);
 void G_Q3F_RestartMap(void);
 void G_SetMatchState(int state);
+void MoveClientToIntermission(gentity_t* client);
 
 //
 // g_client.c
@@ -1232,14 +1199,8 @@ extern	vmCvar_t	g_motd;
 extern	vmCvar_t	g_blood;
 extern	vmCvar_t	g_allowVote;
 extern	vmCvar_t	g_teamAutoJoin;
-//extern	vmCvar_t	g_teamForceBalance;
 extern	vmCvar_t	g_banIPs;
 extern	vmCvar_t	g_filterBan;
-//extern	vmCvar_t	g_obeliskHealth;
-//extern	vmCvar_t	g_obeliskRegenPeriod;
-//extern	vmCvar_t	g_obeliskRegenAmount;
-//extern	vmCvar_t	g_obeliskRespawnDelay;
-//extern	vmCvar_t	g_cubeTimeout;
 extern	vmCvar_t	g_redteam;
 extern	vmCvar_t	g_blueteam;
 extern	vmCvar_t	g_yellowteam;
@@ -1247,9 +1208,6 @@ extern	vmCvar_t	g_greenteam;
 extern	vmCvar_t	g_smoothClients;
 extern	vmCvar_t	pmove_fixed;
 extern	vmCvar_t	pmove_msec;
-extern	vmCvar_t	g_rankings;
-extern	vmCvar_t	g_singlePlayer;
-//extern	vmCvar_t	g_proxMineTimeout;
 extern	vmCvar_t	g_suicideDelay;
 extern	vmCvar_t	g_teamChatSounds;
 //extern	vmCvar_t	g_grenadeScale;
@@ -1344,6 +1302,9 @@ extern	vmCvar_t	lua_allowedModules;
 #endif
 
 extern	vmCvar_t	g_spawnFullStats;
+
+extern	vmCvar_t	g_balancedDeathAmmo;
+extern	vmCvar_t	g_newPulseGren;
 
 #ifdef API_ET
 void	trap_Print( const char *fmt );

@@ -44,7 +44,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_flag.h"
 #include "g_q3f_mapselect.h"
 #include "g_q3f_weapon.h"
-#include "surfaceflags.h"
 
 void ExitLevel( void );
 
@@ -211,7 +210,7 @@ void G_Q3F_CommandPointTouch( gentity_t *ent, gentity_t *other, trace_t *trace )
 		return;			// Already owned by this team
 
 	kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "overrideteams" ) );
-	teammask = kp ? kp->value.d.intdata : (1 << teamnum);
+	teammask = kp ? (int)kp->value.d.intdata : (int)(1 << teamnum);
 
 		// Set teamset teams to only respond to the activator's team
 	if( (kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "teamset" ) )) )
@@ -499,7 +498,7 @@ void G_Q3F_UpdateHUD( gentity_t *ent )
 		// Set colour
 	kp = G_Q3F_KeyPairArrayFind( mapdata->other, G_Q3F_GetString( "color" ) );
 	if( kp )
-		sscanf( kp->value.d.strdata, "%f %f %f", &ent->s.apos.trDelta[0], &ent->s.apos.trDelta[1], &ent->s.apos.trDelta[2] );
+		(void)sscanf( kp->value.d.strdata, "%f %f %f", &ent->s.apos.trDelta[0], &ent->s.apos.trDelta[1], &ent->s.apos.trDelta[2] );
 	else {
 		// Set colour from a team, if possible
 		for( team = mapdata->team, count = index = -1; team; team >>= 1, index++ ) {
@@ -562,7 +561,7 @@ static void G_Q3F_HUDTouch( gentity_t *ent, gentity_t *other, trace_t *trace )
 	G_Q3F_UpdateHUD( ent );
 }
 
-void G_PrecacheHud( gentity_t *ent )
+static void G_PrecacheHud( gentity_t *ent )
 {
 	q3f_keypair_t *kp;
 	q3f_mapent_t *mapdata;
@@ -1556,9 +1555,9 @@ void G_Q3F_TargetCycleTouch( gentity_t *ent, gentity_t *other, trace_t *tr )
 		// causing an infinite loop, or an invalid clientnum on carried goalitems.
 		if( !player->inuse || !client || client->pers.connected != CON_CONNECTED )
 			continue;
-		if( allowteams && !(allowteams->value.d.intdata & (1 << client->sess.sessionTeam)) )
+		if( allowteams && !(allowteams->value.d.intdata & (int)(1u << client->sess.sessionTeam)) )
 			continue;
-		if( allowclasses && !(allowclasses->value.d.intdata & (1 << client->ps.persistant[PERS_CURRCLASS])) )
+		if( allowclasses && !(allowclasses->value.d.intdata & (int)(1u << client->ps.persistant[PERS_CURRCLASS])) )
 			continue;
 		if( holding && !G_Q3F_CheckHeld( other, holding->value.d.arraydata ) )
 			continue;
@@ -3174,7 +3173,8 @@ void SP_Q3F_func_forcefield( gentity_t *ent )
 		ent->mapdata->state != Q3F_STATE_INVISIBLE )
 		trap_LinkEntity( ent );
 
-	ent->mapdata->statethink = G_Q3F_ForceFieldStateThink;
+	if( ent->mapdata )
+		ent->mapdata->statethink = G_Q3F_ForceFieldStateThink;
 }
 
 void G_Q3F_VisibilityTouch(gentity_t * ent, gentity_t * other, trace_t * trace)
@@ -3248,7 +3248,8 @@ void SP_Q3F_func_visibility(gentity_t * ent)
 	if(ent->mapdata && ent->mapdata->state != Q3F_STATE_INVISIBLE)
 		trap_LinkEntity(ent);
 
-	ent->mapdata->statethink = G_Q3F_VisibilityStateThink;
+	if (ent->mapdata)
+		ent->mapdata->statethink = G_Q3F_VisibilityStateThink;
 }
 
 /******************************************************************************

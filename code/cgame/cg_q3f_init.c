@@ -131,7 +131,7 @@ void CG_Q3F_InitLog( const char *prefix, const char *entry, const char *suffix )
 		cgs.teamChatPos = (cgs.teamChatPos + 1) % TEAMCHAT_HEIGHT;
 }
 
-qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, mapInfo* miList, int* index );
+qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, mapInfo_t* miList, int* index );
 
 void CG_Q3F_LoadingMapInfo(void)
 {
@@ -426,6 +426,8 @@ static initGraphic_t initGraphics[] = {
 	{	&cgs.media.refillmeShader,			"icons/refillme",						INITRT_SHADERNOMIP	},
 
 	{	&cgs.media.disconnectIcon,			"gfx/2d/net",							INITRT_SHADER	},
+
+	{	&cgs.media.railCoreShader,			"railCore",								INITRT_SHADER	},
 
 #ifdef RIMLIGHTING_OUTLINE
 	{	&cgs.media.outlineShader,			"_outline",								INITRT_SHADERNOMIP	},
@@ -1169,10 +1171,6 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 
 	// Ensiform: Set this early.
 	cg.demoPlayback = demoPlayback;
-	
-  	// OSP - sync to main refdef  keeg brought in to stop tracemap crash in cgame
-   //keeg note:  could just change the other code to use cg.refdef but talk to RR2 first
-	cg.refdef_current = &cg.refdef;
 
 	trap_Cvar_VariableStringBuffer( "//trap_GetValue", value, sizeof( value ) );
 	if ( value[0] ) {

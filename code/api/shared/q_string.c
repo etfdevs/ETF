@@ -223,63 +223,144 @@ void Q_strncpyz( char *dest, const char *src, int destsize ) {
 	dest[destsize-1] = '\0';
 }
 
-int Q_stricmpn (const char *s1, const char *s2, int n) {
-	int		c1, c2;
+int Q_stricmpn( const char *s1, const char *s2, int n ) {
+	unsigned char c1, c2;
 
-	if ( s1 == NULL ) {
+	if ( s1 == NULL )
+	{
 		if ( s2 == NULL )
 			return 0;
 		else
 			return -1;
 	}
-	else if ( s2==NULL )
+	else if ( s2 == NULL )
 		return 1;
 
 	do {
 		c1 = *s1++;
 		c2 = *s2++;
 
-		if (!n--) {
+		if ( !n-- )
 			return 0;		// strings are equal until end point
-		}
 
-		if (c1 != c2) {
-			if (c1 >= 'a' && c1 <= 'z') {
-				c1 -= ('a' - 'A');
-			}
-			if (c2 >= 'a' && c2 <= 'z') {
-				c2 -= ('a' - 'A');
-			}
-			if (c1 != c2) {
+		if ( c1 != c2 )
+		{
+			if ( c1 <= 'Z' && c1 >= 'A' )
+				c1 += ('a' - 'A');
+
+			if ( c2 <= 'Z' && c2 >= 'A' )
+				c2 += ('a' - 'A');
+
+			if ( c1 != c2 )
 				return c1 < c2 ? -1 : 1;
-			}
 		}
-	} while (c1);
-
+	}
+	while ( c1 != '\0' );
+	
 	return 0;		// strings are equal
 }
 
-int Q_stricmp (const char *s1, const char *s2) {
-	return (s1 && s2) ? Q_stricmpn (s1, s2, 99999) : -1;
-}
 
-int Q_strncmp (const char *s1, const char *s2, int n) {
-	int		c1, c2;
+int Q_strncmp( const char *s1, const char *s2, int n ) {
+	unsigned char c1, c2;
+
+	if ( s1 == NULL )
+	{
+		if ( s2 == NULL )
+			return 0;
+		else
+			return -1;
+	}
+	else if ( s2 == NULL )
+		return 1;
 
 	do {
 		c1 = *s1++;
 		c2 = *s2++;
 
-		if (!n--) {
+		if ( !n-- )
 			return 0;		// strings are equal until end point
-		}
 
-		if (c1 != c2) {
+		if ( c1 != c2 )
 			return c1 < c2 ? -1 : 1;
-		}
-	} while (c1);
+	}
+	while ( c1 != '\0' );
 
 	return 0;		// strings are equal
+}
+
+qboolean Q_streq( const char *s1, const char *s2 ) {
+	unsigned char c1, c2;
+
+	do {
+		c1 = *s1++;
+		c2 = *s2++;
+		if ( c1 != c2 )
+			return qfalse;
+	}
+	while ( c1 != '\0' );
+
+	return qtrue;
+}
+
+int Q_strcmp( const char *s1, const char *s2 ) {
+	unsigned char c1, c2;
+
+	if ( s1 == NULL )
+	{
+		if ( s2 == NULL )
+			return 0;
+		else
+			return -1;
+	}
+	else if ( s2 == NULL )
+		return 1;
+
+	do {
+		c1 = *s1++;
+		c2 = *s2++;
+
+		if ( c1 != c2 )
+			return c1 < c2 ? -1 : 1;
+	}
+	while ( c1 != '\0' );
+
+	return 0;		// strings are equal
+}
+
+int Q_stricmp( const char *s1, const char *s2 ) {
+	unsigned char c1, c2;
+
+	if ( s1 == NULL )
+	{
+		if ( s2 == NULL )
+			return 0;
+		else
+			return -1;
+	}
+	else if ( s2 == NULL )
+		return 1;
+
+	do 
+	{
+		c1 = *s1++;
+		c2 = *s2++;
+
+		if ( c1 != c2 )
+		{
+			if ( c1 <= 'Z' && c1 >= 'A' )
+				c1 += ('a' - 'A');
+
+			if ( c2 <= 'Z' && c2 >= 'A' )
+				c2 += ('a' - 'A');
+
+			if ( c1 != c2 )
+				return c1 < c2 ? -1 : 1;
+		}
+	}
+	while ( c1 != '\0' );
+
+	return 0;
 }
 
 char *Q_strlwr( char *s1 ) {
@@ -319,6 +400,15 @@ void Q_strcat( char *dest, int size, const char *src ) {
 		return;
 	}
 	Q_strncpyz( dest + l1, src, size - l1 );
+}
+
+char *Q_stradd( char *dst, const char *src )
+{
+	char c;
+	while ( (c = *src++) != '\0' )
+		*dst++ = c;
+	*dst = '\0';
+	return dst;
 }
 
 /*
@@ -493,11 +583,12 @@ Q_strstrip( "Bo\nb is h\rairy!!", "\n\r!", "12" );	// "Bo1b is h2airy"
 Q_strstrip( "Bo\nb is h\rairy!!", "\n\r!", NULL );	// "Bob is hairy"
 */
 
-void Q_strstrip( char *string, const char *strip, const char *repl )
+/*void Q_strstrip(char* string, const char* strip, const char* repl)
 {
 	char		*out=string, *p=string, c;
 	const char	*s=strip;
-	int			replaceLen = repl?strlen( repl ):0, offset=0;
+	size_t		replaceLen = repl?strlen( repl ):0;
+	ptrdiff_t	offset=0;
 	qboolean	recordChar = qtrue;
 
 	while ( (c = *p++) != '\0' )
@@ -519,7 +610,7 @@ void Q_strstrip( char *string, const char *strip, const char *repl )
 			*out++ = c;
 	}
 	*out = '\0';
-}
+}*/
 
 /*
 Q_strchrs

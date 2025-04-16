@@ -781,9 +781,9 @@ static void RenderSmokeSprite(const vec3_t origin, const float radius, const flo
 	verts = &SmokePolyPool[smokepolys];
 	smokepolys+=4;
 
-	VectorCopy( cg.refdef_current->viewaxis[1], tmp );
-	RotatePointAroundVector( right, cg.refdef_current->viewaxis[0], tmp, rotation );
-	CrossProduct( cg.refdef_current->viewaxis[0], right, up );
+	VectorCopy( cg.refdef.viewaxis[1], tmp );
+	RotatePointAroundVector( right, cg.refdef.viewaxis[0], tmp, rotation );
+	CrossProduct( cg.refdef.viewaxis[0], right, up );
 
 	VectorMA( origin, radius, up, top );
 	VectorMA( origin, -radius, up, bottom );

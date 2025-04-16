@@ -100,7 +100,6 @@ vmCvar_t	g_logSync;
 vmCvar_t	g_blood;
 vmCvar_t	g_allowVote;
 vmCvar_t	g_teamAutoJoin;
-//vmCvar_t	g_teamForceBalance;
 vmCvar_t	g_banIPs;
 vmCvar_t	g_filterBan;
 vmCvar_t	g_redteam;
@@ -110,7 +109,6 @@ vmCvar_t	g_greenteam;
 vmCvar_t	g_smoothClients;
 vmCvar_t	pmove_fixed;
 vmCvar_t	pmove_msec;
-vmCvar_t	g_rankings;
 vmCvar_t	g_listEntity;
 vmCvar_t	g_teamFrags;		// Slothy
 
@@ -212,6 +210,9 @@ vmCvar_t	lua_allowedModules;
 
 vmCvar_t	g_spawnFullStats;
 
+vmCvar_t	g_balancedDeathAmmo;
+vmCvar_t	g_newPulseGren;
+
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
 	{ &g_cheats, "sv_cheats", "", 0, 0, qfalse },
@@ -241,7 +242,6 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_friendlyFire, "g_friendlyFire", "Full", CVAR_ARCHIVE, 0, qtrue  },
 
 	{ &g_teamAutoJoin, "g_teamAutoJoin", "0", CVAR_ARCHIVE  },
-//	{ &g_teamForceBalance, "g_teamForceBalance", "0", CVAR_ARCHIVE  },
 
 	{ &g_log, "g_log", "games.log", CVAR_ARCHIVE, 0, qfalse  },
 	{ &g_logSync, "g_logSync", "0", CVAR_ARCHIVE, 0, qfalse  },
@@ -281,8 +281,6 @@ static cvarTable_t		gameCvarTable[] = {
 
 	{ &pmove_fixed, "pmove_fixed", "0", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_msec, "pmove_msec", "8", CVAR_SYSTEMINFO, 0, qfalse},
-
-	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
 
 	{ &g_suicideDelay, "g_suicideDelay", "7", 0, 0, qfalse },		// Golliwog: Delay after suiciding
 	{ &g_teamChatSounds, "g_teamChatSounds", "4", 0, 0, qfalse },	// Golliwog: Allow sounds/sounddict in team chat
@@ -417,7 +415,9 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &lua_allowedModules, "lua_allowedModules", "", 0 },
 #endif
 
-	{ &g_spawnFullStats, "g_spawnFullStats", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &g_spawnFullStats, "g_spawnFullStats", "1", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_balancedDeathAmmo, "g_balancedDeathAmmo", "1", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_newPulseGren, "g_newPulseGren", "0", CVAR_ARCHIVE, 0, qfalse },
 	
 };
 
@@ -1226,12 +1226,7 @@ void G_ShutdownGame( int restart )
 #endif
 }
 
-
-
 //===================================================================
-
-#ifndef GAME_HARD_LINKED
-// this is only here so the functions in q_shared.c and bg_*.c can link
 
 #define G_MAXPRINTMSG 8192
 void FORMAT_PRINTF(1,2) QDECL Com_DPrintf( const char *fmt, ... ) {
@@ -1270,8 +1265,6 @@ void QDECL FORMAT_PRINTF(1,2) Com_Printf( const char *msg, ... ) {
 
 	trap_Print( text );
 }
-
-#endif
 
 /*
 ========================================================================
@@ -1441,7 +1434,7 @@ void SendScoreboardMessageToAllClients( void ) {
 
 	for ( i = 0 ; i < level.maxclients ; i++ ) {
 		if ( level.clients[ i ].pers.connected == CON_CONNECTED ) {
-			DeathmatchScoreboardMessage( g_entities + i );
+			level.clients[i].wantsscore = qtrue;
 		}
 	}
 }

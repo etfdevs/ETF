@@ -58,7 +58,7 @@ qboolean Spirit_UpdateScript( const SpiritScript_t *SpiritScript, const vec3_t o
 qboolean Spirit_UpdateModel( const SpiritScript_t *SpiritScript, const refEntity_t *re, const char * tagname, intptr_t key );
 
 SpiritScript_t *Spirit_LoadScript( const char *filename );
-void Spirit_AddStandAlone( char * script,vec3_t origin, vec3_t dir, float rotation );
+void Spirit_AddStandAlone( const char *script, vec3_t origin, vec3_t dir, float rotation );
 
 void Spirit_SetupKeywordHash( void );
 int Spirit_ScriptCount(void);

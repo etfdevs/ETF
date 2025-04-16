@@ -1,0 +1,41 @@
+add_library(ui MODULE
+	"../api/shared/q_bit.c"
+	"../api/shared/q_bit.h"
+	"../api/shared/q_color.c"
+	"../api/shared/q_color.h"
+	"../api/shared/q_math.c"
+	"../api/shared/q_math.h"
+	"../api/shared/q_path.c"
+	"../api/shared/q_path.h"
+	"../api/shared/q_platform.h"
+	"../api/shared/q_rand.c"
+	"../api/shared/q_rand.h"
+	"../api/shared/q_string.c"
+	"../api/shared/q_string.h"
+	"../api/et/q_shared.c"
+	"../api/et/q_shared.h"
+	"../game/bg_misc.c"
+	"../game/bg_public.h"
+	"../game/bg_q3f_grenades.h"
+	"../game/bg_q3f_info.c"
+	"../game/bg_q3f_playerclass.c"
+	"../game/bg_q3f_playerclass.h"
+	"../api/et/cg_public.h"
+	"ui_atoms.c"
+	"ui_gameinfo.c"
+	"ui_main.c"
+	"ui_local.h"
+	"ui_players.c"
+	"../api/et/ui_public.h"
+	"ui_q3f_f2r.c"
+	"ui_shared.c"
+	"ui_shared.h"
+	"../api/et/ui_syscalls.c"
+)
+target_compile_definitions(ui PRIVATE UI_EXPORTS API_ET)
+target_link_libraries(ui PRIVATE cxx_compiler_opts)
+set_target_properties(ui PROPERTIES
+	LIBRARY_OUTPUT_DIRECTORY "${BASE_DIR_PATH}"
+	LIBRARY_OUTPUT_DIRECTORY_DEBUG "${BASE_DIR_PATH}"
+	LIBRARY_OUTPUT_DIRECTORY_RELEASE "${BASE_DIR_PATH}")
+set_target_platform_details(ui)

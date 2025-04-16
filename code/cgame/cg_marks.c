@@ -199,7 +199,7 @@ void CG_OldMark(qhandle_t markShader, const vec3_t origin, const vec3_t dir,
 	bytecolor[1]=color[1]*255;
 	bytecolor[2]=color[2]*255;
 	bytecolor[3]=color[3]*255;
-	
+
 	for ( i = 0, mf = markFragments ; i < numFragments ; i++, mf++ ) {
 		polyVert_t	*v;
 		qboolean	hasST;

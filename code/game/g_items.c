@@ -65,7 +65,7 @@ If you have questions concerning this license or the applicable additional terms
 
 //======================================================================
 
-int Pickup_Powerup( gentity_t *ent, gentity_t *other ) {
+static int Pickup_Powerup( gentity_t *ent, gentity_t *other ) {
 	int			quantity;
 	int			i;
 	gclient_t	*client;
@@ -137,7 +137,7 @@ int Pickup_Powerup( gentity_t *ent, gentity_t *other ) {
 
 //======================================================================
 
-int Pickup_Holdable( gentity_t *ent, gentity_t *other ) {
+static int Pickup_Holdable( gentity_t *ent, gentity_t *other ) {
 
 	other->client->ps.stats[STAT_HOLDABLE_ITEM] = ent->item - bg_itemlist;
 
@@ -150,7 +150,7 @@ int Pickup_Holdable( gentity_t *ent, gentity_t *other ) {
 
 //======================================================================
 
-int G_Q3F_Pickup_Backpack( gentity_t *ent, gentity_t *other )
+static int G_Q3F_Pickup_Backpack( gentity_t *ent, gentity_t *other )
 {
 	// Pick up the item and it's contents, then print a message for
 	// the picker.
@@ -275,7 +275,7 @@ void Add_Ammo (gentity_t *ent, int weapon, int count)
 	}
 }
 
-int Pickup_Ammo (gentity_t *ent, gentity_t *other)
+static int Pickup_Ammo (gentity_t *ent, gentity_t *other)
 {
 	int		quantity;
 
@@ -293,7 +293,7 @@ int Pickup_Ammo (gentity_t *ent, gentity_t *other)
 //======================================================================
 
 
-int Pickup_Weapon (gentity_t *ent, gentity_t *other) {
+static int Pickup_Weapon (gentity_t *ent, gentity_t *other) {
 	//int		quantity;
 
 	return 0;			// JT - None of that.
@@ -339,7 +339,7 @@ int Pickup_Weapon (gentity_t *ent, gentity_t *other) {
 
 //======================================================================
 
-int Pickup_Health (gentity_t *ent, gentity_t *other) {
+static int Pickup_Health (gentity_t *ent, gentity_t *other) {
 	int			max;
 	int			quantity;
 	bg_q3f_playerclass_t *cls;
@@ -395,7 +395,7 @@ int Pickup_Health (gentity_t *ent, gentity_t *other) {
 
 //======================================================================
 
-int Pickup_Armor( gentity_t *ent, gentity_t *other ) {
+static int Pickup_Armor( gentity_t *ent, gentity_t *other ) {
 	bg_q3f_playerclass_t *cls;
 
 	cls = BG_Q3F_GetClass( &other->client->ps );
@@ -945,7 +945,7 @@ void SaveRegisteredItems( void ) {
 			string[i] = '0';
 		}
 	}
-	string[ bg_numItems ] = 0;
+	string[ bg_numItems ] = '\0';
 
 	G_Printf( "%i items registered\n", count );
 	trap_SetConfigstring(CS_ITEMS, string);
@@ -998,7 +998,7 @@ G_BounceItem
 
 ================
 */
-void G_BounceItem( gentity_t *ent, trace_t *trace ) {
+static void G_BounceItem( gentity_t *ent, trace_t *trace ) {
 	vec3_t	velocity;
 	float	dot;
 	int		hitTime;

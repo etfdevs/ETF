@@ -253,7 +253,7 @@ vmCvar_t	r_nocull;
 vmCvar_t	r_nocurves;
 vmCvar_t	r_noportals;
 vmCvar_t	r_novis;
-vmCvar_t	r_showclusters;
+//vmCvar_t	r_showclusters;
 vmCvar_t	r_singleShader;
 vmCvar_t	r_lightmap;
 vmCvar_t	cg_fallingBob;
@@ -339,6 +339,7 @@ vmCvar_t	cg_drawFollowText;
 
 #ifdef BUILD_BOTS
 vmCvar_t	cg_omnibotdrawing;
+vmCvar_t	cg_omnibot_render_distance;
 #endif
 
 vmCvar_t	cg_rocketTrail;
@@ -481,7 +482,7 @@ static cvarTable_t		cvarTable[] = {
 	{ &r_nocurves,					"r_nocurves",				"0",		CVAR_CHEAT },
 	{ &r_noportals,					"r_noportals",				"0",		CVAR_CHEAT },
 	{ &r_novis,						"r_novis",					"0",		CVAR_CHEAT },
-	{ &r_showclusters,				"r_showclusters",			"0",		CVAR_CHEAT },
+	//{ &r_showclusters,				"r_showclusters",			"0",		CVAR_CHEAT },
 	{ &r_lightmap,					"r_lightmap",				"0",		CVAR_CHEAT },
 	{ &r_showNormals,				"r_showNormals",			"0",		CVAR_CHEAT },
 	{ &r_showTris,					"r_showTris",				"0",		CVAR_CHEAT },
@@ -554,7 +555,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &cl_waveoffset,				"cl_waveoffset",			"0",		CVAR_ROM },
 
 	{ &developer,					"developer",				"0",		CVAR_CHEAT },
-	{ NULL,							"userinfo",					"",			CVAR_CHEAT },
 	{ &r_subdivisions,				"r_subdivisions",			"4",		CVAR_ARCHIVE },
 
 	{ &demo_avifpsF1,				"demo_avifpsF1",			"0",		CVAR_ARCHIVE },
@@ -572,6 +572,7 @@ static cvarTable_t		cvarTable[] = {
 
 #ifdef BUILD_BOTS
 	{ &cg_omnibotdrawing,			"cg_omnibotdrawing",		"0",		CVAR_ARCHIVE },
+	{ &cg_omnibot_render_distance,	"omnibot_render_distance",	"2048",		CVAR_ARCHIVE },
 #endif
 
 	{ &cg_rocketTrail,				"cg_rocketTrail",			"1",		CVAR_ARCHIVE },
@@ -634,7 +635,7 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	{ &r_nocurves,			"r_nocurves",			0,		0,		0,		0,	0,	qfalse },
 	{ &r_noportals,			"r_noportals",			0,		0,		0,		0,	0,	qfalse },
 	{ &r_novis,				"r_novis",				0,		0,		0,		0,	0,	qfalse },
-	{ &r_showclusters,		"r_showclusters",		0,		0,		0,		0,	0,	qfalse },
+	//{ &r_showclusters,		"r_showclusters",		0,		0,		0,		0,	0,	qfalse },
 	{ &r_lightmap,			"r_lightmap",			0,		0,		0,		0,	0,	qfalse },
 	//Unlagged cvars
 	{ &cg_cmdTimeNudge,		"cg_cmdTimeNudge",		0,		0,		999,	0,	0,	qtrue },
@@ -833,18 +834,17 @@ void CG_UpdateCvars( void ) {
 		if( cv->vmCvar ) {
 			trap_Cvar_Update( cv->vmCvar );
 
-         //Keeger:  bring in xhair from ET
-         if(cv->modificationCount != cv->vmCvar->modificationCount) {
+			//Keeger:  bring in xhair from ET
+			if(cv->modificationCount != cv->vmCvar->modificationCount) {
 				cv->modificationCount = cv->vmCvar->modificationCount;
 
 				if(cv->vmCvar == &cg_crosshairColor || cv->vmCvar == &cg_crosshairAlpha) {
 					BG_setCrosshair(cg_crosshairColor.string, cg.xhairColor, cg_crosshairAlpha.value, "cg_crosshairColor");
 				}
-
 				else if(cv->vmCvar == &cg_crosshairColorAlt || cv->vmCvar == &cg_crosshairAlphaAlt) {
 					BG_setCrosshair(cg_crosshairColorAlt.string, cg.xhairColorAlt, cg_crosshairAlphaAlt.value, "cg_crosshairColorAlt");
 				}
-         }  
+			}
 		}
 	}
 
@@ -910,7 +910,7 @@ void CG_PlayDelayedSounds( void ) {
 	}
 }
 
-void CG_BufferSound(int soundnum) {
+static void CG_BufferSound(int soundnum) {
 	int i;
 	bufferedSound_t *s;
 
@@ -932,27 +932,19 @@ void CG_Q3F_PlayLocalSound( const char *sound )
 	// If sound is an integer, assume it's a cached config sound, otherwise
 	// load it in specially.
 
-	int soundid;
-	char *ptr;
-	//sfxHandle_t soundhandle;
+	sfxHandle_t soundid = -2;
 
 	if( !sound || !*sound )
 		return;
 
-		// Check it's numeric
-	soundid = -2;
-	for( ptr = (char *) sound; *ptr; ptr++ )
-	{
-		if( *ptr < '0' || *ptr > '9' )
-		{
-			soundid = -1;
-			break;
-		}
-	}
-	if( soundid == -2 )
-		soundid = atoi( sound );
+	// Check it's numeric
+	if( !Q_isanumber( sound ) )
+		soundid = -1;
 
-	if ( soundid >= 0 )
+	if( soundid == -2 )
+		soundid = (sfxHandle_t)atoi( sound );
+
+	if ( soundid >= 0 && soundid < MAX_SOUNDS )
 	{
 		// Play the sound
 		if( cgs.gameSounds[ soundid ] )
@@ -970,7 +962,7 @@ void CG_Q3F_PlayLocalSound( const char *sound )
 }
 // Golliwog.
 
-void CG_AddToTextBox(char* text, char* buffer, int* times, int max, int bufferwidth) {
+static void CG_AddToTextBox(const char* text, char* buffer, int* times, int max, int bufferwidth) {
 	int i;
 
 	for(i = max-1; i > 0 ; i--) {
@@ -985,7 +977,7 @@ void CG_AddToTextBox(char* text, char* buffer, int* times, int max, int bufferwi
 	trap_Print("\n");
 }
 
-void QDECL CG_Printf( int mode, const char *msg, ... ) {
+void FORMAT_PRINTF(2, 3) QDECL CG_Printf( int mode, const char *msg, ... ) {
 	va_list		argptr;
 	char		buffer[1024];
 	char		*p, *s;
@@ -1100,7 +1092,7 @@ void QDECL CG_Printf( int mode, const char *msg, ... ) {
 	}
 }
 
-void QDECL CG_LowPriority_Printf( int mode, const char *msg, ... ) {
+void FORMAT_PRINTF(2, 3) QDECL CG_LowPriority_Printf( int mode, const char *msg, ... ) {
 	va_list		argptr;
 	char		buffer[1024];
 	char		*p, *s;
@@ -1167,7 +1159,7 @@ void QDECL CG_LowPriority_Printf( int mode, const char *msg, ... ) {
 }
 
 
-void NORETURN QDECL CG_Error( const char *msg, ... ) {
+void FORMAT_PRINTF(1, 2) NORETURN QDECL CG_Error( const char *msg, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -1178,11 +1170,8 @@ void NORETURN QDECL CG_Error( const char *msg, ... ) {
 	trap_Error( text );
 }
 
-#ifndef CGAME_HARD_LINKED
-// this is only here so the functions in q_shared.c and bg_*.c can link (FIXME)
-
 #define CG_MAXPRINTMSG 8192
-void QDECL Com_DPrintf( const char *fmt, ... ) {
+void FORMAT_PRINTF(1, 2) QDECL Com_DPrintf( const char *fmt, ... ) {
 	va_list argptr;
 	char msg[CG_MAXPRINTMSG];
 
@@ -1197,7 +1186,7 @@ void QDECL Com_DPrintf( const char *fmt, ... ) {
 	trap_Print( msg );
 }
 
-void NORETURN QDECL Com_Error( int level, const char *error, ... ) {
+void FORMAT_PRINTF(2, 3) NORETURN QDECL Com_Error( int level, const char *error, ... ) {
 	va_list		argptr;
 	char		text[CG_MAXPRINTMSG];
 
@@ -1208,7 +1197,7 @@ void NORETURN QDECL Com_Error( int level, const char *error, ... ) {
 	trap_Error( text);
 }
 
-void QDECL Com_Printf( const char *msg, ... ) {
+void FORMAT_PRINTF(1, 2) QDECL Com_Printf( const char *msg, ... ) {
 	va_list		argptr;
 	char		text[CG_MAXPRINTMSG];
 
@@ -1219,10 +1208,6 @@ void QDECL Com_Printf( const char *msg, ... ) {
 	//CG_Printf ( BOX_PRINT_MODE_CHAT, "%s", text);
 	trap_Print( text );
 }
-
-#endif
-
-
 
 /*
 ================
@@ -1235,6 +1220,38 @@ const char *CG_Argv( int arg ) {
 	trap_Argv( arg, buffer, sizeof( buffer ) );
 
 	return buffer;
+}
+
+/*
+==================
+CG_ConcatArgs
+==================
+*/
+char    *CG_ConcatArgs( int start ) {
+	int i, c, tlen;
+	static char line[BIG_INFO_STRING];
+	int len;
+	char arg[MAX_STRING_CHARS];
+
+	len = 0;
+	c = trap_Argc();
+	for ( i = start ; i < c ; i++ ) {
+		trap_Argv( i, arg, sizeof( arg ) );
+		tlen = (int)strlen( arg );
+		if ( len + tlen >= sizeof(line) - 1 ) {
+			break;
+		}
+		memcpy( line + len, arg, tlen );
+		len += tlen;
+		if ( i != c - 1 ) {
+			line[len] = ' ';
+			len++;
+		}
+	}
+
+	line[len] = '\0';
+
+	return line;
 }
 
 
@@ -1255,7 +1272,7 @@ void CG_RegisterItemSounds( int itemNum ) {
 
 	item = &bg_itemlist[ itemNum ];
 
-	if( item->pickup_sound ) {
+	if( item->pickup_sound && *item->pickup_sound) {
 		trap_S_RegisterSound( item->pickup_sound, qfalse );
 	}
 
@@ -1277,7 +1294,7 @@ void CG_RegisterItemSounds( int itemNum ) {
 			return;
 		}
 		memcpy (data, start, len);
-		data[len] = 0;
+		data[len] = '\0';
 		if ( *s ) {
 			s++;
 		}
@@ -1344,7 +1361,7 @@ void CG_StartMusic( void ) {
 }
 
 // RR2DO2 : hud scripting stuff
-char *CG_GetMenuBuffer(const char *filename) {
+/*char* CG_GetMenuBuffer(const char* filename) {
 	int	len;
 	fileHandle_t	f;
 	static char buf[MAX_MENUFILE];
@@ -1365,7 +1382,7 @@ char *CG_GetMenuBuffer(const char *filename) {
 	trap_FS_FCloseFile( f );
 
 	return buf;
-}
+}*/
 
 //
 // ==============================

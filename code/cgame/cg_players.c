@@ -532,20 +532,26 @@ CG_SetLerpFrameAnimation
 may include ANIM_TOGGLEBIT
 ===============
 */
-static void CG_SetLerpFrameAnimation( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation ) {
+static void CG_SetLerpFrameAnimation( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, qboolean isweapon ) {
 	animation_t	*anim;
 
 	lf->animationNumber = newAnimation;
 	newAnimation &= ~ANIM_TOGGLEBIT;
 
 	if ( newAnimation < 1 || newAnimation > ANI_NUM ) {
-		CG_Error( "Bad animation number: %i", newAnimation );
+		if ( isweapon )
+			CG_Error( "CG_SetLerpFrameAnimation: Bad animation number: %i (VIEWWEAPON)", newAnimation );
+		else
+			CG_Error( "CG_SetLerpFrameAnimation: Bad animation number: %i", newAnimation );
 	}
 
 	anim = F2RScript->animations[newAnimation - 1];
 
 	if ( !anim ) {
-		CG_Error( "Missing animation number %i in '%s'", newAnimation, F2RScript->F2RFile );
+		if ( isweapon )
+			CG_Error( "CG_SetLerpFrameAnimation: Missing animation number %i in '%s' (VIEWWEAPON)", newAnimation, F2RScript->F2RFile );
+		else
+			CG_Error( "CG_SetLerpFrameAnimation: Missing animation number %i in '%s'", newAnimation, F2RScript->F2RFile );
 	}
 
 	lf->animation = anim;
@@ -565,7 +571,7 @@ Sets cg.snap, cg.oldFrame, and cg.backlerp
 cg.time should be between oldFrameTime and frameTime after exit
 ===============
 */
-void CG_RunLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, float speedScale ) {
+void CG_RunLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, float speedScale, qboolean isweapon ) {
 	int			f, numFrames;
 	animation_t	*anim;
 
@@ -579,7 +585,7 @@ void CG_RunLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, fl
 	if(	newAnimation != lf->animationNumber || !lf->animation || F2RScript->animations[0] != lf->animblock )
 	{
 		// If we've switched 
-		CG_SetLerpFrameAnimation( F2RScript, lf, newAnimation );
+		CG_SetLerpFrameAnimation( F2RScript, lf, newAnimation, isweapon );
 
 		if( F2RScript->animations[0] != lf->animblock )
 		{
@@ -588,9 +594,9 @@ void CG_RunLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, fl
 			lf->frameTime = cg.time;
 			lf->oldFrameTime = cg.time;
 			lf->animationTime = cg.time;
-			lf->oldFrameTime = cg.time;
+			//lf->oldFrameTime = cg.time;
 			lf->backlerp = 0;
-			lf->frame = lf->animation->firstFrame;
+			lf->frame = lf->animation->firstFrame; // shouldn't ever have null lf->animation in this case but we could probably try to resolve this
 			return;
 		}
 	}
@@ -603,7 +609,7 @@ void CG_RunLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, fl
 
 		// get the next frame based on the animation
 		anim = lf->animation;
-		if ( !anim->frameLerp ) {
+		if ( !anim || !anim->frameLerp ) {
 			return;		// shouldn't happen
 		}
 		if ( cg.time < lf->animationTime ) {
@@ -676,8 +682,10 @@ static void CG_ClearLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int animati
 		return;
 	}
 
-	CG_SetLerpFrameAnimation( F2RScript, lf, animationNumber );
-	lf->oldFrame = lf->frame = lf->animation->firstFrame;
+	CG_SetLerpFrameAnimation( F2RScript, lf, animationNumber, qfalse );
+	if ( lf->animation ) {
+		lf->oldFrame = lf->frame = lf->animation->firstFrame;
+	}
 }
 
 
@@ -740,7 +748,7 @@ static void CG_PlayerAnimation( centity_t *cent, refEntity_t *legs, refEntity_t 
 
 	// do the shuffle turn frames locally
 	if ( cent->pe.legs.yawing && ( cent->currentState.legsAnim & ~ANIM_TOGGLEBIT ) == ANI_MOVE_IDLESTAND ) {
-		CG_RunLerpFrame( F2RScript, &cent->pe.legs, ANI_MOVE_TURN, speedScale );
+		CG_RunLerpFrame( F2RScript, &cent->pe.legs, ANI_MOVE_TURN, speedScale, qfalse );
 		legs->animNumber = ANI_MOVE_TURN;
 	} else {
 		// remap leg anims if needed
@@ -751,10 +759,10 @@ static void CG_PlayerAnimation( centity_t *cent, refEntity_t *legs, refEntity_t 
 			if( animNumber == ANI_SPECIAL )
 				animNumber = ANI_MOVE_IDLESTAND;
 
-			CG_RunLerpFrame( F2RScript, &cent->pe.legs, animNumber, speedScale );
+			CG_RunLerpFrame( F2RScript, &cent->pe.legs, animNumber, speedScale, qfalse );
 			legs->animNumber = animNumber;
 		} else {
-			CG_RunLerpFrame( F2RScript, &cent->pe.legs, cent->currentState.legsAnim, speedScale );
+			CG_RunLerpFrame( F2RScript, &cent->pe.legs, cent->currentState.legsAnim, speedScale, qfalse );
 			legs->animNumber = cent->currentState.legsAnim & ~ANIM_TOGGLEBIT;
 		}
 	}
@@ -793,14 +801,14 @@ static void CG_PlayerAnimation( centity_t *cent, refEntity_t *legs, refEntity_t 
 
 		animNumber = BG_Q3F_GetRemappedAnimFromWeaponNumAndAnim( cent->currentState.weapon, ci->cls, weapNumber, fakeplayerclass, animNumber );
 
-		CG_RunLerpFrame( F2RScript, &cent->pe.torso, animNumber, speedScale );
+		CG_RunLerpFrame( F2RScript, &cent->pe.torso, animNumber, speedScale, qfalse );
 		torso->animNumber = animNumber;
 	} else {
 		if ( cent->currentState.eType == ET_Q3F_CORPSE )
 			F2RScript = CG_Q3F_TorsoF2RScript( cent->currentState.modelindex2 );
 		else
 			F2RScript = CG_Q3F_TorsoF2RScript( ci->cls );
-		CG_RunLerpFrame( F2RScript, &cent->pe.torso, cent->currentState.torsoAnim, speedScale );
+		CG_RunLerpFrame( F2RScript, &cent->pe.torso, cent->currentState.torsoAnim, speedScale, qfalse );
 		torso->animNumber = cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT;
 	}
 
@@ -1147,7 +1155,12 @@ static void CG_PlayerFloatSprite( centity_t *cent, qhandle_t shader ) {
 	ent.origin[2] += 48;
 	ent.reType = RT_SPRITE;
 	ent.customShader = shader;
-	ent.radius = 10;
+	if ( shader == cgs.media.balloonShader ) {
+		ent.radius = 6.66f;
+	}
+	else {
+		ent.radius = 10;
+	}
 	ent.renderfx = rf;
 	ent.shaderRGBA[0] = 255;
 	ent.shaderRGBA[1] = 255;
@@ -1219,7 +1232,7 @@ static void CG_PlayerSprites( centity_t *cent, centity_t *_agentdata ) {
 
 	// Lagged icon should always show up :/
 	if ( cent->currentState.eFlags & EF_CONNECTION ) {
-		CG_PlayerFloatSprite( cent, cgs.media.connectionShader);
+		CG_PlayerFloatSprite( cent, cgs.media.connectionShader );
 		return;
 	}
 
@@ -1760,8 +1773,9 @@ qboolean CG_Q3F_AddRefEntityWithAgentEffect( refEntity_t *ent, centity_t *cent, 
 
 	agentstate = &agentdata->currentState;
 
+	// This should never happen anymore
 	if( !cgs.media.agentShader )
-			cgs.media.agentShader = trap_R_RegisterShader( "gfx/agenteffect" );
+		cgs.media.agentShader = trap_R_RegisterShader( "gfx/agenteffect" );
 
 	CG_Q3F_CalcAgentVisibility(	&drawmodel, &shaderalpha, &newmodel,
 								section / 6.0, (section + 4.0) / 6.0,
@@ -1924,6 +1938,19 @@ void CG_AddPlayerEffects( centity_t *cent, const refEntity_t *torso, const refEn
 			cent->pe.EffectFlags &= ~PE_EF_DISEASED;
 	}
 
+	VectorCopy(cent->lerpOrigin, origin);
+	origin[2] -= 16;
+
+	//Leg wounded player effect
+	if( cent->currentState.extFlags & EXTF_LEGWOUNDS)
+	{
+		Spirit_RunScript( cgs.spirit.legshot, origin, origin, axisDefault, (intptr_t)cent );
+		cent->pe.EffectFlags |= PE_EF_LEGWOUNDS;
+	} else if ( cent->pe.EffectFlags & PE_EF_LEGWOUNDS ) {
+		if( !Spirit_UpdateScript( cgs.spirit.legshot, origin, axisDefault, (intptr_t)cent ))
+			cent->pe.EffectFlags &= ~PE_EF_LEGWOUNDS;
+	}
+
 	/* Don't show the rest of the effects when your in 1st person */
 	if ( cent->currentState.number == cg.snap->ps.clientNum && !cg.renderingThirdPerson 
 		&& !cg.renderingFlyBy && !cg.rendering2ndRefDef )
@@ -1967,19 +1994,6 @@ void CG_AddPlayerEffects( centity_t *cent, const refEntity_t *torso, const refEn
 	} else if (cent->pe.EffectFlags & PE_EF_TRANQED ) {
 		if (!Spirit_UpdateModel( cgs.spirit.tranqed, torso , "tag_head", (intptr_t)cent ))
 			cent->pe.EffectFlags &= ~PE_EF_TRANQED;
-	}
-
-	VectorCopy(cent->lerpOrigin, origin);
-	origin[2] -= 16;
-
-	//Leg wounded player effect
-	if( cent->currentState.extFlags & EXTF_LEGWOUNDS)
-	{
-		Spirit_RunScript(cgs.spirit.legshot, origin, origin, axisDefault, (intptr_t)cent );
-		cent->pe.EffectFlags |= PE_EF_LEGWOUNDS;
-	} else if ( cent->pe.EffectFlags & PE_EF_LEGWOUNDS ) {
-		if( !Spirit_UpdateScript( cgs.spirit.legshot, origin, axisDefault, (intptr_t)cent ))
-			cent->pe.EffectFlags &= ~PE_EF_LEGWOUNDS;
 	}
 }
 
@@ -2060,7 +2074,7 @@ void CG_Player( centity_t *cent ) {
 		if( cent->currentState.eFlags & (EF_Q3F_DISGUISE|EF_Q3F_INVISIBLE) ) {
 			// We don't draw, but we might want a agent effect instead.
 
-			for( renderfx = 0; renderfx < MAX_ENTITIES; renderfx++ ) {
+			for( renderfx = 0; renderfx < MAX_GENTITIES; renderfx++ ) {
 				agentdata = &cg_entities[renderfx];
 
 				if( (agentdata->currentState.eType == ET_Q3F_AGENTDATA) &&
@@ -2069,7 +2083,7 @@ void CG_Player( centity_t *cent ) {
 					break;		// We've found one.
 			}
 
-			if( renderfx == MAX_ENTITIES )
+			if( renderfx == MAX_GENTITIES )
 				agentdata = NULL;	// We might not have the control ent yet, or it's finished
 		} else {
 			agentdata = NULL;

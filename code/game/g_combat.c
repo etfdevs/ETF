@@ -53,7 +53,7 @@ If you have questions concerning this license or the applicable additional terms
 ScorePlum
 ============
 */
-void ScorePlum( gentity_t *ent, vec3_t origin, int score ) {
+static void ScorePlum( gentity_t *ent, vec3_t origin, int score ) {
 	gentity_t *plum;
 
 	plum = G_TempEntity( origin, EV_SCOREPLUM );
@@ -102,19 +102,35 @@ void TossClientItems( gentity_t *self ) {
 	gitem_t		*item;
 	gentity_t	*drop;
 
-	if ( self->client->ps.ammo[AMMO_SHELLS] ||
-		 self->client->ps.ammo[AMMO_NAILS] ||
-		 self->client->ps.ammo[AMMO_ROCKETS] ||
-		 self->client->ps.ammo[AMMO_CELLS])
-	{
-		item = BG_FindItem( "Backpack" );
-		drop = Drop_Item( self, item, 0 );
-		drop->activator		= self;
-		drop->s.time2		= self->client->ps.ammo[AMMO_SHELLS];
-		drop->s.legsAnim	= self->client->ps.ammo[AMMO_NAILS];
-		drop->s.torsoAnim	= self->client->ps.ammo[AMMO_ROCKETS];
-		drop->s.weapon		= self->client->ps.ammo[AMMO_CELLS];
-		drop->flags			|= FL_DROPPED_ITEM;
+	if ( self->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_CIVILIAN ) {
+		return;
+	}
+
+	if ( g_balancedDeathAmmo.integer ) {
+		item = BG_FindItem("Backpack");
+		drop = Drop_Item(self, item, 0);
+		drop->activator = self;
+		drop->s.time2 = 25; //self->client->ps.ammo[AMMO_SHELLS];
+		drop->s.legsAnim = 25; //self->client->ps.ammo[AMMO_NAILS];
+		drop->s.torsoAnim = 10; //self->client->ps.ammo[AMMO_ROCKETS];
+		drop->s.weapon = 50; //self->client->ps.ammo[AMMO_CELLS];
+		drop->flags |= FL_DROPPED_ITEM;
+	}
+	else {
+		if (self->client->ps.ammo[AMMO_SHELLS] ||
+			self->client->ps.ammo[AMMO_NAILS] ||
+			self->client->ps.ammo[AMMO_ROCKETS] ||
+			self->client->ps.ammo[AMMO_CELLS])
+		{
+			item = BG_FindItem("Backpack");
+			drop = Drop_Item(self, item, 0);
+			drop->activator = self;
+			drop->s.time2 = self->client->ps.ammo[AMMO_SHELLS];
+			drop->s.legsAnim = self->client->ps.ammo[AMMO_NAILS];
+			drop->s.torsoAnim = self->client->ps.ammo[AMMO_ROCKETS];
+			drop->s.weapon = self->client->ps.ammo[AMMO_CELLS];
+			drop->flags |= FL_DROPPED_ITEM;
+		}
 	}
 }
 
@@ -124,7 +140,7 @@ void TossClientItems( gentity_t *self ) {
 LookAtKiller
 ==================
 */
-void LookAtKiller( gentity_t *self, gentity_t *inflictor, gentity_t *attacker ) {
+static void LookAtKiller( gentity_t *self, gentity_t *inflictor, gentity_t *attacker ) {
 	vec3_t		dir;
 
 	if ( attacker && attacker != self ) {
@@ -324,7 +340,8 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 				attacker->client->sess.enemyKill++;
 				AddScore( attacker, self->r.currentOrigin, 1 );
 
-				if( meansOfDeath == MOD_AXE ) {
+				// no reward for knife because it does 40 damage compared to the rest 20 or less
+				if( meansOfDeath == MOD_AXE || meansOfDeath == MOD_NEEDLE_PRICK || meansOfDeath == MOD_WRENCH ) {
 					// play humiliation on player
 					attacker->client->ps.persistant[PERS_GAUNTLET_FRAG_COUNT]++;
 
@@ -388,7 +405,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		TossClientItems( self );
 	}
 
-	Cmd_Score_f( self );		// show scores
+	self->client->wantsscore = qtrue;		// show scores
 	// send updated scores to any clients that are following this one,
 	// or they would get stale scoreboards
 	for ( i = 0 ; i < level.maxclients ; i++ ) {
@@ -402,7 +419,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 			continue;
 		}
 		if ( client->sess.spectatorClient == self->s.number ) {
-			Cmd_Score_f( g_entities + i );
+			client->wantsscore = qtrue;
 		}
 	}
 

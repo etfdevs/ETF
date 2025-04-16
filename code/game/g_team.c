@@ -341,7 +341,7 @@ void TeamplayInfoMessage( int team ) {
 			if (a < 0) a = 0;
 
 			Com_sprintf (entry, sizeof(entry), " %i %i %i", i, h, a);
-			j = strlen(entry);
+			j = (int)strlen(entry);
 			if (stringlength + j >= (int)sizeof(string))
 				break;
 			strcpy (string + stringlength, entry);

@@ -229,7 +229,9 @@ qboolean G_Q3F_SSCR_ParseSoundScript( const char *mapname ) {
     int		scriptHandle;
 	int		numSpeakers = 0;
 
-	COM_StripExtension( COM_SkipPath( mapname ), rawmapname, sizeof(rawmapname) );
+	Q_strncpyz( rawmapname, mapname, sizeof(rawmapname) );
+	Q_strncpyz( rawmapname, COM_SkipPath( rawmapname ), sizeof(rawmapname) );
+	COM_StripExtension( rawmapname, rawmapname, sizeof(rawmapname) );
 	scriptName = va( "%s.sscr", rawmapname );
     
     // See if we have a soundscript for this map, if so, parse it

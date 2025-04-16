@@ -37,7 +37,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "ui_local.h"
 
-qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, mapInfo* miList, int* index );
+qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, mapInfo_t* miList, int* index );
 
 /*
 =================
@@ -45,11 +45,11 @@ UI_ServersQsortCompare
 =================
 */
 static int QDECL UI_MapsQsortCompare( const void *arg1, const void *arg2 ) {
-	mapInfo *a1;
-	mapInfo *a2;
+	const mapInfo_t *a1;
+	const mapInfo_t *a2;
 
-	a1 = (mapInfo *)arg1;
-	a2 = (mapInfo *)arg2;
+	a1 = (mapInfo_t *)arg1;
+	a2 = (mapInfo_t *)arg2;
 
 	return(Q_stricmp(a1->mapName, a2->mapName));
 }
@@ -62,8 +62,8 @@ UI_ParseMapinfo
 */
 void UI_ParseMapInfo( void ) {
 	int			numdirs;
-	char		filename[128];
-	char		dirlist[2048];
+	char		filename[MAX_QPATH];
+	char		dirlist[MAX_MAPLIST];
 	char*		dirptr;
 	int			i;
 	int			dirlen;
@@ -71,22 +71,21 @@ void UI_ParseMapInfo( void ) {
 	uiInfo.mapCount = 0;
 
 	// get all mapinfos from .mapinfo files
-	numdirs = trap_FS_GetFileList(MAPINFODIR, MAPINFOEXT, dirlist, 2048 );
+	numdirs = trap_FS_GetFileList(MAPINFODIR, MAPINFOEXT, dirlist, sizeof(dirlist) );
 	dirptr  = dirlist;
-	for (i = 0; i < numdirs && uiInfo.mapCount < MAX_MAPS; i++, dirptr += dirlen+1) {
+	for (i = 0; i < numdirs && uiInfo.mapCount < MAX_MAPS; i++/*, dirptr += dirlen+1*/) {
 		dirlen = strlen(dirptr);
-		//strcpy(filename, "maps/");
-		//strcat(filename, dirptr);
 		Com_sprintf( filename, sizeof(filename), "%s/%s", MAPINFODIR, dirptr );
 		BG_LoadMapInfoFromFile(filename, &uiInfo.uiDC, uiInfo.mapList, &uiInfo.mapCount);
+		dirptr += dirlen + 1;
 	}
 	trap_Print( va( "%i mapinfos parsed\n", uiInfo.mapCount ) );
 	if (UI_OutOfMemory()) {
-		trap_Print(S_COLOR_YELLOW"WARNING: not enough memory in pool to load all mapinfos\n");
+		trap_Print(S_COLOR_YELLOW "WARNING: not enough memory in pool to load all mapinfos\n");
 	}
 
 	// slothy: sort map list
-	qsort( &uiInfo.mapList[0], uiInfo.mapCount, sizeof(mapInfo), UI_MapsQsortCompare);
+	qsort( &uiInfo.mapList[0], uiInfo.mapCount, sizeof(mapInfo_t), UI_MapsQsortCompare);
 }
 
 /*
@@ -107,7 +106,7 @@ UI_ParseHudInfo
 void UI_ParseHudInfo( void ) {
 	int			numdirs;
 	char		filename[128];
-	char		dirlist[2048];
+	char		dirlist[MAX_HUDLIST];
 	char*		dirptr;
 	int			i;
 	int			dirlen;
@@ -132,16 +131,17 @@ void UI_ParseHudInfo( void ) {
 	// find all .hud files
 	numdirs = trap_FS_GetFileList(HUDINFODIR, HUDINFOEXT, dirlist, sizeof(dirlist) );
 	dirptr  = dirlist;
-	for (i = 0; i < numdirs && uiInfo.hudCount < MAX_HUDS; i++, dirptr += dirlen+1) {
+	for (i = 0; i < numdirs && uiInfo.hudCount < MAX_HUDS; i++) {
 		dirlen = strlen(dirptr);
-		if(strchr(dirptr, '/'))
-			continue; 
-		if(strchr(dirptr, '\\'))
+		if(strchr(dirptr, '/') || strchr(dirptr, '\\')) {
+			dirptr += dirlen+1;
 			continue;
+		}
 		Com_sprintf( filename, sizeof(filename), "%s/%s", HUDINFODIR, dirptr );
 		// do something here to store hud name
 		COM_StripExtension( dirptr, hudname, sizeof(hudname));
 		Q_strncpyz(uiInfo.hudFiles[uiInfo.hudCount++], hudname, 64);
+		dirptr += dirlen + 1;
 	}
 #ifdef _DEBUG
 	trap_Print( va( "%i huds found\n", uiInfo.hudCount ) );

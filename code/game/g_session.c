@@ -47,15 +47,15 @@ and tournament restarts.
 */
 
 // serialise a JSON object and write it to the specified file
-static void Q_FSWriteJSON( void *root, fileHandle_t f ) {
-	const char *serialised = NULL;
+static void Q_FSWriteJSON( cJSON *object, fileHandle_t f ) {
+	char *serialised = NULL;
 
-	serialised = cJSON_Print( (cJSON *)root );
+	serialised = cJSON_Print( object );
 	trap_FS_Write( serialised, (int)strlen( serialised ), f );
 	trap_FS_FCloseFile( f );
 
-	free( (void *)serialised );
-	cJSON_Delete( (cJSON *)root );
+	cJSON_free( serialised );
+	cJSON_Delete( object );
 }
 
 /*
@@ -75,6 +75,11 @@ static void G_WriteClientSessionData( const gclient_t *client ) {
 	Com_Printf( "Writing session file %s\n", fileName );
 
 	root = cJSON_CreateObject();
+
+	if (!root) {
+		G_Error("Could not allocate memory for session data");
+	}
+
 	cJSON_AddNumberToObject( root, "spectatorTime", sess->spectatorTime );
 	cJSON_AddNumberToObject( root, "spectatorState", sess->spectatorState );
 	cJSON_AddNumberToObject( root, "spectatorClient", sess->spectatorClient );
@@ -106,19 +111,20 @@ void G_ReadClientSessionData( gclient_t *client ) {
 	char fileName[MAX_QPATH] = {0};
 	char *buffer = NULL;
 	fileHandle_t f = NULL_FILE;
-	unsigned int len = 0;
+	int len = 0;
 	const char *tmp = NULL;
 
 	Com_sprintf( fileName, sizeof(fileName), "session/client%02i.json", (int)(client - level.clients) );
 	len = trap_FS_FOpenFile( fileName, &f, FS_READ );
 
 	// no file
-	if ( !f || !len || len == 0xFFFFFFFFU ) {
-		trap_FS_FCloseFile( f );
+	if ( !f || len <= 0 ) {
+		if ( f )
+			trap_FS_FCloseFile( f );
 		return;
 	}
 
-	buffer = (char *)malloc( len + 1 );
+	buffer = (char *)cJSON_malloc( (size_t)len + 1 );
 	if ( !buffer ) {
 		return;
 	}
@@ -129,7 +135,7 @@ void G_ReadClientSessionData( gclient_t *client ) {
 
 	// read buffer
 	root = cJSON_Parse( buffer );
-	free( buffer );
+	cJSON_free( buffer );
 
 	if ( !root ) {
 		Com_Printf( "G_ReadSessionData(%02i): could not parse session data\n", (int)(client - level.clients) );

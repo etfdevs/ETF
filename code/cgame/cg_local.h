@@ -190,6 +190,9 @@ typedef enum {
 	Q3F_ALERT_NAILGREN,
 	Q3F_ALERT_DOOR,				// slothy
 	Q3F_ALERT_LIFT,				// slothy	
+	Q3F_ALERT_SUPPLY,
+	Q3F_ALERT_BUTTON,
+	Q3F_ALERT_MELEESWING,
 	Q3F_ALERT_MAX,
 } q3f_alert_t;
 
@@ -414,17 +417,6 @@ typedef struct {
 	int				flags;
 } score_t;
 
-typedef struct flamerstruct_s {
-	vec3_t org;								// trajectory origin
-	vec3_t pos, oldpos;						// current pos
-	vec3_t delta;
-	int starttime;
-	int dietime;
-
-	struct flamerstruct_s *next;
-	struct flamerstruct_s *prev;
-} flamerstruct_t;
-
 // each client has an associated clientInfo_t
 // that contains media references necessary to present the
 // client model and other color coded effects
@@ -444,8 +436,6 @@ typedef struct {
 	int				armor;
 
 	int				medkitUsageTime;
-	int				invulnerabilityStartTime;
-	int				invulnerabilityStopTime;
 
 	//int				breathPuffTime;
 
@@ -511,11 +501,6 @@ typedef struct {
 	qhandle_t		icon;
 	qhandle_t		icon_df;
 } itemInfo_t;
-
-
-typedef struct {
-	int				itemNum;
-} powerupInfo_t;
 
 
 #define MAX_REWARDSTACK		10
@@ -698,13 +683,6 @@ typedef struct {
 	qboolean basicChatLinesWrapped;
 	qboolean teamChatLinesWrapped;
 
-	char obit		[MAX_SAY_TEXT*MAX_OBIT_STRINGS];
-	int obitTimes	[MAX_OBIT_STRINGS];
-	int obitLinesUsed;
-	int obitBuffer	[1024];
-	qboolean obitLinesChanged;
-	qboolean obitLinesWrapped;
-
 	// low ammo warning state
 	int			lowAmmoWarning;		// 1 = low, 2 = empty
 
@@ -759,19 +737,16 @@ typedef struct {
 	//==========================
 
 	int			itemPickup;
-	int			itemPickupTime;
-	int			itemPickupBlendTime;	// the pulse around the crosshair is timed seperately
+	//int			itemPickupTime;
+	//int			itemPickupBlendTime;	// the pulse around the crosshair is timed seperately
 
 	int			weaponSelectTime;
-	int			weaponAnimation;
-	int			weaponAnimationTime;
 
 	// blend blobs
 	float		damageTime;
 	float		damageX, damageY, damageValue;
 
 	// status bar head
-	float		headYaw;
 	float		headEndPitch;
 	float		headEndYaw;
 	int			headEndTime;
@@ -882,13 +857,12 @@ typedef struct {
 
    // Keeger
 #ifdef API_ET
-   refdef_t			*refdef_current;		// Handling of some drawing elements for MV
 	vec2_t		mapcoordsMins;
 	vec2_t		mapcoordsMaxs;
 	vec2_t		mapcoordsScale;
-   qboolean	mapcoordsValid;
+	qboolean	mapcoordsValid;
 
-   qboolean	spawning;				// the CG_Spawn*() functions are valid
+	qboolean	spawning;				// the CG_Spawn*() functions are valid
 #endif
 	// RR2DO2: scopes
 	int			scopeTime;
@@ -1460,7 +1434,7 @@ typedef struct {
 	cgMedia_t		media;
 	cgSpirit_t		spirit;
 	
-	mapInfo			mapinfo;
+	mapInfo_t		mapinfo;
 	qboolean		mapInfoLoaded;
 
 	// Golliwog: Teams and classes playing this map.
@@ -1687,7 +1661,7 @@ extern	vmCvar_t		r_nocull;
 extern	vmCvar_t		r_nocurves;
 extern	vmCvar_t		r_noportals;
 extern	vmCvar_t		r_novis;
-extern	vmCvar_t		r_showclusters;
+//extern	vmCvar_t		r_showclusters;
 extern	vmCvar_t		r_lightmap;
 extern	vmCvar_t		cg_fallingBob;
 extern	vmCvar_t		cg_weaponBob;
@@ -1819,9 +1793,6 @@ void CG_LoadMenus(const char *menuFile, qboolean resetHud);
 void CG_KeyEvent(int key, qboolean down);
 void CG_MouseEvent(int x, int y);
 void CG_EventHandling(int type, qboolean fForced);
-void CG_RankRunFrame( void );
-void CG_SetScoreSelection(void *menu);
-score_t *CG_GetSelectedScore(void);
 void CG_BuildSpectatorString(void);
 void Menu_Reset(void);
 
@@ -1863,7 +1834,6 @@ void CG_FillRect( float x, float y, float width, float height, const float *colo
 void CG_FillRectAdditive( float x, float y, float width, float height, const float *color );
 void CG_DrawPic( float x, float y, float width, float height, qhandle_t hShader );
 void CG_DrawAdjustedPic( float x, float y, float width, float height, qhandle_t hShader );
-void CG_DrawString( float x, float y, const char *string, float charWidth, float charHeight, const float *modulate );
 void CG_Item_AutoAnchor(rectDef_t* rect, const rectDef_t* newRect, int anchorx, int anchory);
 
 int CG_DrawStrlen( const char *str );
@@ -1878,7 +1848,6 @@ void CG_TileClear( void );
 void CG_ColorForHealth( vec4_t hcolor );
 void CG_GetColorForHealth( int health, int armor, vec4_t hcolor );
 
-void UI_DrawProportionalString( int x, int y, const char* str, int style, vec4_t color );
 void CG_DrawRect( float x, float y, float width, float height, float size, const float *color );
 void CG_DrawSides(float x, float y, float w, float h, float size);
 void CG_DrawTopBottom(float x, float y, float w, float h, float size);
@@ -1897,35 +1866,23 @@ void CG_ScanForCrosshairEntity( void );
 void CG_DrawHead( float x, float y, float w, float h, int clientNum, vec3_t headAngles );
 void CG_DrawActive( stereoFrame_t stereoView );
 void CG_ETF_DrawSkyPortal( refdef_t *parentrefdef, vec4_t *parentflareblind, stereoFrame_t stereoView, vec3_t sky_origin );
-void CG_DrawFlagModel( float x, float y, float w, float h, int team, qboolean force2D );
 void CG_DrawTeamBackground( int x, int y, int w, int h, float alpha, int team );
 void CG_OwnerDraw( itemDef_t *item, float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle, int textalignment );
 void CG_Text_Paint_MaxWidth(float x, float y, float scale, vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment, int maxwidth);
 void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment);
 int CG_Text_Width(const char *text, float scale, int limit, fontStruct_t *parentfont);
 int CG_Text_Height(const char *text, float scale, int limit, fontStruct_t *parentfont);
-void CG_SelectPrevPlayer(void);
-void CG_SelectNextPlayer(void);
 float CG_GetValue(int ownerDraw);
 qboolean CG_OwnerDrawVisible(int flags);
 void CG_RunMenuScript(const char **args);
-void CG_ShowResponseHead(void);
-void CG_SetPrintString(int type, const char *p);
-void CG_InitTeamChat(void);
-void CG_GetTeamColor(vec4_t *color);
 const char *CG_Q3F_TeamStatus(void);
 const char *CG_GetKillerText(void);
 void CG_Draw3DModel( float x, float y, float w, float h, qhandle_t model, qhandle_t skin, vec3_t origin, vec3_t angles );
 void CG_Text_PaintChar(float x, float y, float width, float height, float scale, float s, float t, float s2, float t2, qhandle_t hShader);
-void CG_CheckOrderPending(void);
 const char *CG_GameTypeString(void);
-qboolean CG_YourTeamHasFlag(void);
-qboolean CG_OtherTeamHasFlag(void);
-qhandle_t CG_StatusHandle(int task);
 // RR2DO2
 //float CG_DrawOldLagometer( );	// put here to be found
 void CG_Q3F_DrawProgress( int x, int y, int maxwidth, int height, int maxvalue, int absmaxvalue, int value, qhandle_t icon, vec4_t iconcolor );
-void CG_Q3F_DrawWeaponInfo( int weapon, int clipcount, int ammocount );
 // RR2DO2
 
 void CG_ExpandingTextBox_AutoWrap( char* instr, float scale, fontStruct_t*font, float w, int size);
@@ -1970,9 +1927,8 @@ sfxHandle_t	CG_CustomSound( int clientNum, const char *soundName );
 void CG_TrailItem( centity_t *cent, qhandle_t hModel );
 qboolean CG_Q3F_UseFakeAgentModel( int modelpart );
 void CG_Q3F_CalcAgentVisibility( qboolean *drawmodel, float *shaderalpha, qboolean *newmodel, float fracstart, float fracend, entityState_t *agentstate );
-qboolean CG_Q3F_RegisterClientModelName( clientInfo_t *ci, const char *modelName, const char *skinName );
 void CG_LightVerts( vec3_t normal, int numVerts, polyVert_t *verts, qboolean keepSrcColor );
-void CG_RunLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, float speedScale );
+void CG_RunLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, float speedScale, qboolean isweapon );
 qhandle_t       CG_Q3F_ShaderForQuad(int team);
 float          *CG_Q3F_LightForQuad(int team);
 
@@ -2043,7 +1999,6 @@ void CG_SingleShotgunPattern( vec3_t origin, vec3_t origin2, int otherEntNum, in
 void CG_ShotgunPattern( vec3_t origin, vec3_t origin2, int otherEntNum, int seed );
 void CG_MinigunPattern( vec3_t origin, vec3_t origin2, int otherEntNum, int seed, int spread );
 void CG_Bullet( vec3_t origin, int sourceEntityNum, vec3_t normal, qboolean flesh, int fleshEntityNum );
-void CG_Sniper_Bullet( vec3_t origin, int sourceEntityNum, vec3_t normal, qboolean flesh, int fleshEntityNum );
 
 //void CG_RailTrail( clientInfo_t *ci, vec3_t start, vec3_t end );
 void CG_AddViewWeapon (playerState_t *ps);
@@ -2073,10 +2028,10 @@ qboolean CG_ShadowMark(vec3_t origin, float radius, float height, float *shadowP
 //
 // cg_trails.c
 //
-int CG_AddTrailJunc(int headJuncIndex, qhandle_t shader, int spawnTime, int sType, vec3_t pos, int trailLife, float alphaStart, float alphaEnd, float startWidth, float endWidth, int flags, vec3_t colorStart, vec3_t colorEnd, float sRatio, float animSpeed);
-int CG_AddSparkJunc(int headJuncIndex, qhandle_t shader, vec3_t pos, int trailLife, float alphaStart, float alphaEnd, float startWidth, float endWidth);
-int CG_AddSmokeJunc(int headJuncIndex, qhandle_t shader, vec3_t pos, int trailLife, float alpha, float startWidth, float endWidth);
-int CG_AddFireJunc(int headJuncIndex, qhandle_t shader, vec3_t pos, int trailLife, float alpha, float startWidth, float endWidth);
+int CG_AddTrailJunc(int headJuncIndex, void *usedby, qhandle_t shader, int spawnTime, int sType, vec3_t pos, int trailLife, float alphaStart, float alphaEnd, float startWidth, float endWidth, int flags, vec3_t colorStart, vec3_t colorEnd, float sRatio, float animSpeed);
+int CG_AddSparkJunc(int headJuncIndex, void *usedby, qhandle_t shader, vec3_t pos, int trailLife, float alphaStart, float alphaEnd, float startWidth, float endWidth);
+int CG_AddSmokeJunc(int headJuncIndex, void *usedby, qhandle_t shader, vec3_t pos, int trailLife, float alpha, float startWidth, float endWidth);
+//int CG_AddFireJunc(int headJuncIndex, void *usedby, qhandle_t shader, vec3_t pos, int trailLife, float alpha, float startWidth, float endWidth);
 void CG_AddTrails(void);
 void CG_ClearTrails (void);
 //
@@ -2106,8 +2061,8 @@ localEntity_t *CG_SmokePuff( const vec3_t p, const vec3_t vel,
 void CG_NormalExplosion( const vec3_t origin );
 void CG_QuadExplosion( const vec3_t origin, int team );
 void CG_BulletExplosion( const vec3_t origin, const vec3_t dir );
-localEntity_t *CG_OldNapalmFlame( const vec3_t p, const vec3_t vel, 
-				   float radius, float alpha, int duration, qhandle_t hShader );
+//localEntity_t *CG_OldNapalmFlame( const vec3_t p, const vec3_t vel, 
+//				   float radius, float alpha, int duration, qhandle_t hShader );
 
 void CG_SpawnSmokeSprite(const vec3_t origin, int life, const vec4_t color, float startradius, float endradius);
 qboolean CG_SpawnGasSprite( centity_t * cent, float fraction);
@@ -2166,12 +2121,6 @@ void CG_ETF_DemoParseString(const char* in, char* out, int size);
 void CG_MatchLog_f( void );
 void CG_MatchLogAddLine( const char *line );
 void CG_DemoClick( int key, qboolean down );
-
-//
-// cg_scoreboard.c
-//
-qboolean CG_DrawOldScoreboard( void );
-void CG_DrawOldTourneyScoreboard( void );
 
 //
 // cg_consolecmds.c
@@ -2558,10 +2507,6 @@ qboolean	trap_GetUserCmd( int cmdNumber, usercmd_t *ucmd );
 //void		trap_SetUserCmdValue( int stateValue, int flags, float sensitivityScale, int mpIdentClient );
 void		trap_SetClientLerpOrigin( float x, float y, float z );		// DHM - Nerve
 
-// aids for VM testing
-void		testPrintInt( char *string, int i );
-void		testPrintFloat( char *string, float f );
-
 int			trap_MemoryRemaining( void );
 void		trap_R_RegisterFont(const char *fontName, int pointSize, fontInfo_t *font);
 qboolean	trap_Key_IsDown( int keynum );
@@ -2573,13 +2518,11 @@ qboolean	trap_Key_GetOverstrikeMode( void );
 void		trap_Key_SetOverstrikeMode( qboolean state );
 
 // RF
-void trap_SendMoveSpeedsToGame( int entnum, char *movespeeds );
 
 //void trap_UI_Popup(const char *arg0);	//----(SA)	added
 void trap_UI_Popup( int arg0 );
 
 // NERVE - SMF
-qhandle_t getTestShader(void); // JPW NERVE shhh
 void trap_UI_ClosePopup( const char *arg0);
 void trap_Key_GetBindingBuf( int keynum, char *buf, int buflen );
 void trap_Key_SetBinding( int keynum, const char *binding );

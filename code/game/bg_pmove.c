@@ -736,7 +736,7 @@ static void PM_WaterJumpMove( void ) {
 CheckLadder [ ARTHUR TOMLIN ]
 =============
 */
-void CheckLadder( void )
+void PM_CheckLadderMove( void )
 {
 	vec3_t flatforward,spot;
 	trace_t trace;
@@ -1775,7 +1775,7 @@ static void PM_CheckDuck (void)
 		return;
 	}
 
-	if (pm->cmd.upmove < 0)
+	if (pm->cmd.upmove < 0 && !(pm->ps->pm_flags & PMF_LADDER))
 	{	// duck
 		pm->ps->pm_flags |= PMF_DUCKED;
 	} else {	// stand up if possible
@@ -2855,14 +2855,14 @@ void PmoveSingle (pmove_t *pmove) {
 	}
 
 	PM_DropTimers();
-	CheckLadder();  // ARTHUR TOMLIN check and see if they're on a ladder
+	PM_CheckLadderMove();  // ARTHUR TOMLIN check and see if they're on a ladder
 
 	if ( pm->ps->powerups[PW_FLIGHT] ) {
 		// flight powerup doesn't allow jump and has different friction
 		PM_FlyMove();
 	} else if (pm->ps->pm_flags & PMF_TIME_WATERJUMP) {
 		PM_WaterJumpMove();
-	} else if (pml.ladder) {	
+	} else if (pml.ladder) {
 		PM_LadderMove();
 	} else if ( pm->waterlevel > 1 ) {
 		// swimming

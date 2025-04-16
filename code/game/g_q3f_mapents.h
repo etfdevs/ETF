@@ -79,7 +79,8 @@ If you have questions concerning this license or the applicable additional terms
 #define	Q3F_FLAG_ROTATING			0x00001000	// Model rotates/bobs like a normal item.
 #define	Q3F_FLAG_FLAGINFO			0x00002000	// (Probably) has flaginfo keys
 #define	Q3F_FLAG_RETOUCH			0x00004000	// Can be retouched without triggering (i.e. doors)
-#define	Q3F_FLAG_SPEEDSCALE			0x00008000	// Goalitem alters player speed when carried
+//#define	Q3F_FLAG_SPEEDSCALE			0x00008000	// Goalitem alters player speed when carried
+#define Q3F_FLAG_DELAYFIRSTSPAWN	0x00008000	// Delay first spawn like powerup items for goalinfos
 #define	Q3F_FLAG_NOSHRINK			0x00010000	// Goal does not grow or shrink when appearing/disappearing
 #define	Q3F_FLAG_NODROP				0x00020000	// Flag cannot be 'dropped' manually
 #define	Q3F_FLAG_KILLMSG			0x00040000	// (Probably) has kill_<team>_message keys

@@ -317,7 +317,7 @@ void UI_Shutdown( void );
 void UI_KeyEvent( int key, qboolean down );
 void UI_MouseEvent( int dx, int dy );
 void UI_Refresh( int realtime );
-qboolean UI_IsFullscreen( void );
+//qboolean UI_IsFullscreen( void );
 
 Q_EXPORT intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intptr_t arg3, intptr_t arg4,
 	intptr_t arg5, intptr_t arg6, intptr_t arg7, intptr_t arg8, intptr_t arg9, intptr_t arg10, intptr_t arg11 ) {
@@ -508,7 +508,7 @@ void _UI_DrawRect( float x, float y, float width, float height, float size, cons
 
 int Text_Width(const char *text, float scale, int limit, fontStruct_t *parentfont) {
 	int count,len;
-	float out;
+	float out = 0;
 	glyphInfo_t *glyph;
 	float useScale;
 	const char *s = text;
@@ -533,7 +533,6 @@ int Text_Width(const char *text, float scale, int limit, fontStruct_t *parentfon
 	}
 
 	useScale = scale * font->glyphScale;
-	out = 0;
 	if (text) {
 		len = strlen(text);
 		if (limit > 0 && len > limit) {
@@ -562,7 +561,7 @@ int Text_Width(const char *text, float scale, int limit, fontStruct_t *parentfon
 
 int Text_Height(const char *text, float scale, int limit, fontStruct_t *parentfont) {
 	int len, count;
-	float max;
+	float max = 0;
 	glyphInfo_t *glyph;
 	float useScale;
 	const char *s = text;
@@ -588,7 +587,6 @@ int Text_Height(const char *text, float scale, int limit, fontStruct_t *parentfo
 
 	useScale = scale * font->glyphScale;
 
-	max = 0;
 	if (text) {
     len = strlen(text);
 		if (limit > 0 && len > limit) {
@@ -617,16 +615,15 @@ int Text_Height(const char *text, float scale, int limit, fontStruct_t *parentfo
 	return max * useScale;
 }
 
-void Text_PaintChar(float x, float y, float width, float height, float scale, float s, float t, float s2, float t2, qhandle_t hShader ) {
-  float w, h;
-  w = width * scale;
-  h = height * scale;
-  UI_AdjustFrom640( &x, &y, &w, &h );
-  trap_R_DrawStretchPic( x, y, w, h, s, t, s2, t2, hShader );
+void Text_PaintChar(float x, float y, float w, float h, float scale, float s, float t, float s2, float t2, qhandle_t hShader) {
+	w *= scale;
+	h *= scale;
+	UI_AdjustFrom640( &x, &y, &w, &h );
+	trap_R_DrawStretchPic( x, y, w, h, s, t, s2, t2, hShader );
 }
 
 void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment) {
-  int len, count;
+	int len, count;
 	vec4_t newColor;
 	glyphInfo_t *glyph;
 	float useScale;
@@ -799,14 +796,14 @@ void Text_Paint_MaxWidth(float x, float y, float scale, vec4_t color, const char
 		return;
 	}
 
-	Q_strncpyz(buffer, text, 1024);
+	Q_strncpyz(buffer, text, sizeof(buffer));
 
 	Text_Width_To_Max(buffer, scale, maxwidth, parentfont);
 	Text_Paint(x, y, scale, color, buffer, adjust, limit, style, parentfont, textalignment);
 }
 
 void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const char *text, int cursorPos, char cursor, int limit, int style, fontStruct_t *parentfont, int textalignment) {
-  int len, count;
+	int len, count;
 	vec4_t newColor;
 	glyphInfo_t *glyph, *glyph2;
 	float yadj;
@@ -832,11 +829,11 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 	}
 
 	useScale = scale * font->glyphScale;
-  if (text) {
+	if (text) {
 		const char *s = text;
 		trap_R_SetColor( color );
 		memcpy(&newColor[0], &color[0], sizeof(vec4_t));
-    len = strlen(text);
+		len = strlen(text);
 		if (limit > 0 && len > limit) {
 			len = limit;
 		}
@@ -845,8 +842,8 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 		while (s && *s && count < len) {
 			if (*s >= GLYPH_CHARSTART) {
 				glyph = &font->glyphs[(unsigned char)*s];
-		//int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
-		//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
+			//int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
+			//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
 				if ( Q_IsColorStringPtr( s ) ) {
 					if ( *( s + 1 ) == COLOR_NULL ) {
 						memcpy( &newColor[0], &color[0], sizeof( vec4_t ) );
@@ -1133,7 +1130,7 @@ char *GetMenuBuffer(const char *filename) {
 		return defaultMenu;
 	}
 	if ( len >= MAX_MENUFILE ) {
-		trap_Print( va( S_COLOR_RED "menu file too large: %s is %i, max allowed is %i", filename, len, MAX_MENUFILE ) );
+		trap_Print( va( S_COLOR_RED "menu file too large: %s is %i, max allowed is %i\n", filename, len, MAX_MENUFILE ) );
 		trap_FS_FCloseFile( f );
 		return defaultMenu;
 	}
@@ -1391,16 +1388,27 @@ void UI_LoadMenus(const char *menuFile, qboolean reset) {
 		trap_PC_AddGlobalDefine("NO_PUNKBUSTER");
 	}
 
+	trap_PC_AddGlobalDefine(va("FORTS_VERSION \"%s\"", FORTS_VERSION));
+	if (1) {
+		// Indicate working test
+		trap_PC_AddGlobalDefine(va("FORTS_RELEASE \"%s\"", "Pre-Release"));
+	}
+	else {
+		// Indicate final/release version
+		trap_PC_AddGlobalDefine(va("FORTS_RELEASE \"%s\"", "Release"));
+	}
 	trap_PC_AddGlobalDefine(va("BUILD_YEAR \"%d\"", compileyear));
 	trap_PC_AddGlobalDefine(va("BUILD_MONTH \"%d\"", compilemonth));
 	trap_PC_AddGlobalDefine(va("BUILD_DAY \"%d\"", compileday));
 
+	trap_PC_AddGlobalDefine(va("BUILD_ARCH \"%s\"", ARCH_STRING));
+
 	handle = trap_PC_LoadSource( menuFile );
 	if (!handle) {
-		Com_Printf( S_COLOR_YELLOW "menu file not found: %s, using default^7\n", menuFile );
+		Com_Printf( S_COLOR_YELLOW "menu file not found: %s, using default\n", menuFile );
 		handle = trap_PC_LoadSource( "ui/menus.txt" );
 		if (!handle) {
-			trap_Error( S_COLOR_RED "default menu file not found: ui/menus.txt, unable to continue!^7" );
+			trap_Error( S_COLOR_RED "default menu file not found: ui/menus.txt, unable to continue!" );
 		}
 		menuFile = "ui/menus.txt";
 	}
@@ -1443,8 +1451,8 @@ void UI_Load(void) {
 
 	menuSet = UI_Cvar_VariableString("ui_menuFiles");
 	if (menu && menu->window.name) {
-		strcpy(lastName, menu->window.name);
-	} else lastName[0] = 0;
+		Q_strncpyz(lastName, menu->window.name, sizeof(lastName));
+	} else lastName[0] = '\0';
 
 	if (menuSet == NULL || menuSet[0] == '\0') {
 		menuSet = "ui/menus.txt";
@@ -3393,9 +3401,9 @@ UI_LoadMods
 */
 static void UI_LoadMods(void) {
 	int		numdirs;
-	char	dirlist[2048];
+	char	dirlist[MAX_MODLIST];
 	char	*dirptr;
-	char  *descptr;
+	char	*descptr;
 	int		i;
 	int		dirlen;
 
@@ -3413,7 +3421,6 @@ static void UI_LoadMods(void) {
 			break;
 		}
 	}
-
 }
 
 /*
@@ -3422,11 +3429,11 @@ UI_LoadMovies
 ===============
 */
 static void UI_LoadMovies(void) {
-	char	movielist[4096];
+	char	movielist[MAX_MOVIELIST];
 	char	*moviename;
 	int		i, len;
 
-	uiInfo.movieCount = trap_FS_GetFileList( "video", "roq", movielist, 4096 );
+	uiInfo.movieCount = trap_FS_GetFileList( "video", "roq", movielist, sizeof(movielist) );
 
 	if (uiInfo.movieCount) {
 		if (uiInfo.movieCount > MAX_MOVIES) {
@@ -3452,6 +3459,139 @@ static void UI_LoadMovies(void) {
 UI_LoadDemos
 ===============
 */
+#define MAX_DEMO_FOLDER_DEPTH (8)
+typedef struct loadDemoContext_s
+{
+	int depth;
+	qboolean warned;
+	char demoList[MAX_DEMOLIST];
+	char directoryList[MAX_DEMOLIST];
+	char *dirListHead;
+} loadDemoContext_t;
+
+static void UI_LoadDemosInDirectory( loadDemoContext_t *ctx, const char *directory )
+{
+	char *demoname = NULL;
+	char demoExt[32] = {0};
+	char *dirListEnd;
+	int j;
+	//int olddemocount;
+	qboolean patternFound = qtrue;
+
+	if ( ctx->depth > MAX_DEMO_FOLDER_DEPTH )
+	{
+		if ( !ctx->warned )
+		{
+			ctx->warned = qtrue;
+			Com_Printf( S_COLOR_YELLOW "WARNING: Maximum demo folder depth (%d) was reached.\n", MAX_DEMO_FOLDER_DEPTH );
+		}
+
+		return;
+	}
+
+	ctx->depth++;
+
+	Com_sprintf( demoExt, sizeof( demoExt ), ".%s??", DEMO_EXTENSION );
+
+	uiInfo.demoCount += trap_FS_GetFileList( directory, demoExt, ctx->demoList, sizeof( ctx->demoList ) );
+
+	if( !uiInfo.demoCount ) {
+		patternFound = qfalse;
+		Com_sprintf(demoExt, sizeof(demoExt), ".%s%d", DEMO_EXTENSION, (int)trap_Cvar_VariableValue("protocol"));
+		uiInfo.demoCount = trap_FS_GetFileList( directory, demoExt, ctx->demoList, sizeof( ctx->demoList ) );
+	}
+
+	demoname = ctx->demoList;
+
+	for ( j = 0; j < 2; j++ )
+	{
+		if ( uiInfo.demoCount > MAX_DEMOS )
+			uiInfo.demoCount = MAX_DEMOS;
+
+		for( ; uiInfo.loadedDemos<uiInfo.demoCount; uiInfo.loadedDemos++)
+		{
+			char dirPath[MAX_QPATH];
+			size_t len;
+
+			Q_strncpyz( dirPath, directory + strlen( DEMO_DIRECTORY ), sizeof( dirPath ) );
+			Q_strcat( dirPath, sizeof( dirPath ), "/" );
+			len = strlen( demoname );
+			Com_sprintf( uiInfo.demoList[uiInfo.loadedDemos], sizeof( uiInfo.demoList[0] ), "%s%s", dirPath + 1, demoname );
+			demoname += len + 1;
+		}
+
+		if ( !j )
+		{
+			if ( (int)trap_Cvar_VariableValue("protocol") == 84 && !patternFound && uiInfo.demoCount < MAX_DEMOS )
+			{
+				Com_sprintf( demoExt, sizeof( demoExt ), ".%s%d", DEMO_EXTENSION, 83 );
+				uiInfo.demoCount += trap_FS_GetFileList( directory, demoExt, ctx->demoList, sizeof( ctx->demoList ) );
+				demoname = ctx->demoList;
+			}
+			else
+				break;
+		}
+	}
+
+	dirListEnd = ctx->directoryList + sizeof( ctx->directoryList );
+	if ( ctx->dirListHead < dirListEnd )
+	{
+		int i;
+		int dirListSpaceRemaining = dirListEnd - ctx->dirListHead;
+		int numFiles = trap_FS_GetFileList( directory, "/", ctx->dirListHead, dirListSpaceRemaining );
+		char *dirList;
+		char *childDirListBase;
+		char *fileName;
+
+		// Find end of this list so we have a base pointer for the child folders to use
+		dirList = ctx->dirListHead;
+		for ( i = 0; i < numFiles; i++ )
+		{
+			ctx->dirListHead += strlen( ctx->dirListHead ) + 1;
+		}
+		ctx->dirListHead++;
+
+		// Iterate through child directories
+		childDirListBase = ctx->dirListHead;
+		fileName = dirList;
+		for ( i = 0; i < numFiles; i++ )
+		{
+			size_t len = strlen( fileName );
+
+			if ( Q_stricmp( fileName, "." ) && Q_stricmp( fileName, ".." ) && len )
+				UI_LoadDemosInDirectory( ctx, va( "%s/%s", directory, fileName ) );
+
+			ctx->dirListHead = childDirListBase;
+			fileName += len+1;
+		}
+
+		assert( (fileName + 1) == childDirListBase );
+	}
+
+	ctx->depth--;
+}
+
+static void InitLoadDemoContext( loadDemoContext_t *ctx )
+{
+	ctx->warned = qfalse;
+	ctx->depth = 0;
+	ctx->dirListHead = ctx->directoryList;
+}
+
+static void UI_LoadDemos( void )
+{
+	loadDemoContext_t loadDemoContext;
+	InitLoadDemoContext( &loadDemoContext );
+
+	uiInfo.demoCount = 0;
+	uiInfo.loadedDemos = 0;
+	memset( uiInfo.demoList, 0, sizeof( uiInfo.demoList ) );
+	UI_LoadDemosInDirectory( &loadDemoContext, DEMO_DIRECTORY );
+}
+
+
+
+#if 0
 static void UI_LoadDemos(void) {
 	char	demolist[65536];
 	char	demoExt[32];
@@ -3514,6 +3654,7 @@ static void UI_LoadDemos(void) {
 		}
 	}
 }
+#endif
 
 /*
 ===============
@@ -3521,11 +3662,11 @@ UI_LoadConfigs
 ===============
 */
 static void UI_LoadConfigs(void) {
-	char	cfglist[4096];
+	char	cfglist[MAX_CONFIGLIST];
 	char	*cfgname;
 	int		i, len;
 
-	uiInfo.cfgCount = trap_FS_GetFileList( "", ".cfg", cfglist, 4096 );
+	uiInfo.cfgCount = trap_FS_GetFileList( "", ".cfg", cfglist, sizeof(cfglist) );
 
 	if (uiInfo.cfgCount) {
 		if (uiInfo.cfgCount > MAX_CONFIGS) {
@@ -6073,7 +6214,7 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 			char *p;
 			char buffer[64];
 			int i, j;
-			mapInfo* mInfo = NULL;
+			mapInfo_t* mInfo = NULL;
 			gameIndexInfo_t* gIInfo = NULL;
 
 			Q_strncpyz(buffer, uiInfo.Q3F_serverMaplist[index], 64);
@@ -7213,8 +7354,8 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 	if (!Q_stricmp(cstate.servername,"localhost")) {
 		Text_PaintCenter(centerPoint, yStart + 48, scale, colorWhite, va("Starting up..."), ITEM_TEXTSTYLE_SHADOWEDMORE, NULL);
 	} else {
-		strcpy(text, va("Connecting to %s", cstate.servername));
-		Text_PaintCenter(centerPoint, yStart + 48, scale, colorWhite,text , ITEM_TEXTSTYLE_SHADOWEDMORE, NULL);
+		Com_sprintf(text, sizeof(text), "Connecting to %s", cstate.servername);
+		Text_PaintCenter(centerPoint, yStart + 48, scale, colorWhite, text, ITEM_TEXTSTYLE_SHADOWEDMORE, NULL);
 	}
 
 	//UI_DrawProportionalString( 320, 96, "Press Esc to abort", UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, menu_text_color );
@@ -7222,7 +7363,7 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 	// display global MOTD at bottom
 	Text_PaintCenter(centerPoint, 600, scale, colorWhite, Info_ValueForKey( cstate.updateInfoString, "motd" ), 0, NULL);
 	// print any server info (server full, bad version, etc)
-	if ( cstate.connState < CA_CONNECTED && *cstate.messageString) {
+	if ( cstate.connState < CA_CONNECTED && *cstate.messageString ) {
 		Text_PaintCenter(centerPoint, yStart + 176, scale, colorWhite, cstate.messageString, 0, NULL);
 	}
 
@@ -7806,7 +7947,7 @@ int HUD_WrapText( char* instr, float scale, fontStruct_t* font, float w, int siz
 	char buffer[1024];
 	char	*s, *p, *c, *ls;
 	int lines = 0;
-	
+
 	strcpy(buffer, instr);
 
 	memset(instr, 0, size);
@@ -8105,13 +8246,13 @@ void HUD_DrawClassTitle(rectDef_t *rect, float scale, vec4_t color, int textStyl
 
 	bg_q3f_playerclass_t* pcls = bg_q3f_classlist[cls+1];
 
-	Q_strncpyz(buffer, pcls->title, 128);
+	Q_strncpyz(buffer, pcls->title, sizeof(buffer));
 
 	res = HUD_ClassUnavailable(cls);
 	if(res == 1) {
-		strcat(buffer, " - Class Disabled");
+		Q_strcat(buffer, sizeof(buffer), " - Class Disabled");
 	} else if (res == 2) {
-		strcat(buffer, " - Class Full");
+		Q_strcat(buffer, sizeof(buffer), " - Class Full");
 	}
 
 	Text_Paint( rect->x + text_x, rect->y + text_y, scale, color, buffer, 0, 0, textStyle, font, textalignment);
@@ -8124,7 +8265,7 @@ void UI_DrawClassTitle(rectDef_t *rect, float scale, vec4_t color, int textStyle
 
 	bg_q3f_playerclass_t* pcls = bg_q3f_classlist[cls+1];
 
-	Q_strncpyz(buffer, pcls->title, 128);
+	Q_strncpyz(buffer, pcls->title, sizeof(buffer));
 
 	Text_Paint( rect->x + text_x, rect->y + text_y, scale, color, buffer, 0, 0, textStyle, font, textalignment);
 }
@@ -8488,9 +8629,9 @@ void HUD_DrawClassInfo( rectDef_t* rect, float scale, vec4_t color, int textStyl
 	current	= atoi(buf[0]);
 	max		= atoi(buf[1]);
 
-	Com_sprintf(out, 6, "%i", current);
+	Com_sprintf(out, sizeof(out), "%i", current);
 	if(max) {
-		strcat(out, va("/%i", max));
+		Q_strcat(out, sizeof(out), va("/%i", max));
 	}
 
 	Text_Paint(rect->x + text_x, rect->y + text_y, scale, color, out, 0, 0, textStyle, parentfont, textalignment);
@@ -8532,7 +8673,7 @@ void HUD_DrawMapInfoBlurb(rectDef_t* rect, float scale, vec4_t color, int textSt
 	int i;
 	int y;
 	int index;
-	mapInfo* mInfo = NULL;
+	mapInfo_t* mInfo = NULL;
 	char *s, *p;
 	gameIndexInfo_t* gIInfo = NULL;
 
@@ -8607,6 +8748,8 @@ static void HUD_BuildPlayerList(void) {
 			uiInfo.Q3F_playercount++;
 		}
 	}
+
+	Menus_SetFeederSelection(FEEDER_ADMIN_PLAYERS, 0);
 }
 
 void HUD_BuildPlayerIPList(void) {
@@ -8651,7 +8794,7 @@ void HUD_BuildPlayerBANList(void) {
 void HUD_DrawMapLvlShot( rectDef_t* rect ) {
 	char mapname[64];
 	int i;
-	mapInfo* mInfo = NULL;
+	mapInfo_t* mInfo = NULL;
 
 	trap_Cvar_VariableStringBuffer("mapname", mapname, 64);
 
@@ -8672,7 +8815,7 @@ void HUD_DrawMapLvlShot( rectDef_t* rect ) {
 void HUD_DrawMapName(rectDef_t* rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t* parentfont) {
 	char mapname[64];
 	int i;
-	mapInfo* mInfo = NULL;
+	mapInfo_t* mInfo = NULL;
 
 	trap_Cvar_VariableStringBuffer("mapname", mapname, 64);
 
@@ -9006,7 +9149,7 @@ void HUD_DrawMapVoteName( rectDef_t *rect, float scale, vec4_t color, int textSt
 	char *p;
 	char buffer[64];
 	int i, j;
-	mapInfo* mInfo = NULL;
+	mapInfo_t* mInfo = NULL;
 	gameIndexInfo_t* gIInfo = NULL;
 
 	if( num >= uiInfo.mapSelectCount) {
@@ -9093,7 +9236,7 @@ void HUD_DrawMapVoteTallyBar( rectDef_t* rect, int num )
 void HUD_DrawMapVoteLevelshot( rectDef_t* rect ) {
 	int map = trap_Cvar_VariableValue("hud_chosenvotemap");
 	int i;
-	mapInfo* mInfo = NULL;
+	mapInfo_t* mInfo = NULL;
 	char buffer[64];
 	char* p;
 
@@ -9125,7 +9268,7 @@ void HUD_DrawVoteMapInfoBlurb(rectDef_t* rect, float scale, vec4_t color, int te
 	char buffer[1024];
 	int i, j;
 	int y;
-	mapInfo* mInfo = NULL;
+	mapInfo_t* mInfo = NULL;
 	char *s, *p;
 	gameIndexInfo_t* gIInfo = NULL;
 

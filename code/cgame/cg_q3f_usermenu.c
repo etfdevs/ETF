@@ -123,7 +123,7 @@ void CG_Q3F_CustomMenuShow( const char *filename ) {
 	}
 	index = 0;filedone = 0;
 	while (G_FS_ReadToken( handle, &filedone, filelen, buffer, sizeof( buffer ))) {
-		len = strlen(buffer) + 1;
+		len = (int)strlen(buffer) + 1;
 		line = &Custom_StringSpace[Custom_StringUsed];
 		if (len  > (CUSTOM_STRING_MAX - Custom_StringUsed)) {
 			Com_Printf("Overflowed custom menu string space.\n");

@@ -72,7 +72,7 @@
             rect 0 465 640 30
             visible MENU_TRUE
             decoration
-            text "ETF 2.0 Pre-Release [" BUILD_MONTH "/" BUILD_DAY "/" BUILD_YEAR "] (c)2003-" BUILD_YEAR ", ETF Development Team.  All Rights Reserved"
+            text FORTS_VERSION " " BUILD_ARCH " " FORTS_RELEASE " [" BUILD_MONTH "/" BUILD_DAY "/" BUILD_YEAR "] (c)2003-" BUILD_YEAR ", ETF Development Team.  All Rights Reserved"
             textalign ITEM_ALIGN_CENTER
             textalignx 320
             textaligny 8

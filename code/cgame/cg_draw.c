@@ -510,7 +510,7 @@ void CG_DrawHead( float x, float y, float w, float h, int clientNum, vec3_t head
 
    //Keeg: if it's an agent and he's disguised, we want to display his disguised head
 	if( cg.snap->ps.eFlags & (EF_Q3F_DISGUISE) ) {
-		for( index = 0; index < MAX_ENTITIES; index++ ) {
+		for( index = 0; index < MAX_GENTITIES; index++ ) {
 			agentdata = &cg_entities[index];
 
 			if( (agentdata->currentState.eType == ET_Q3F_AGENTDATA) &&
@@ -519,7 +519,7 @@ void CG_DrawHead( float x, float y, float w, float h, int clientNum, vec3_t head
 				break;		// We've found one.
 		}
 
-		if( index == MAX_ENTITIES )
+		if( index == MAX_GENTITIES )
 			agentdata = NULL;	// We might not have the control ent yet, or it's finished
 	} else {
 		agentdata = NULL;
@@ -934,8 +934,8 @@ static void CG_DrawCrosshair(void) {
 
 	hShader = cgs.media.crosshairShader[ ca % NUM_CROSSHAIRS ];
 
-   trap_R_DrawStretchPic( x + cg.refdef.x + 0.5 * (cg.refdef_current->width - w), 
-        y + cg.refdef.y + 0.5 * (cg.refdef_current->height - h),
+   trap_R_DrawStretchPic( x + cg.refdef.x + 0.5 * (cg.refdef.width - w), 
+        y + cg.refdef.y + 0.5 * (cg.refdef.height - h),
         w, h, 0, 0, 1, 1, hShader );
    if ( cg.crosshairShaderAlt[ ca % NUM_CROSSHAIRS ] ) {
 	   w = h = cg_crosshairSize.value;
@@ -949,8 +949,8 @@ static void CG_DrawCrosshair(void) {
 		   trap_R_SetColor(cg.xhairColorAlt);		// slothy
 	   }
 
-	   trap_R_DrawStretchPic( x + cg.refdef.x + 0.5 * (cg.refdef_current->width - w), 
-            y + cg.refdef.y + 0.5 * (cg.refdef_current->height - h),
+	   trap_R_DrawStretchPic( x + cg.refdef.x + 0.5 * (cg.refdef.width - w), 
+            y + cg.refdef.y + 0.5 * (cg.refdef.height - h),
             w, h, 0, 0, 1, 1, cg.crosshairShaderAlt[ ca % NUM_CROSSHAIRS ] );
    }
    trap_R_SetColor( NULL );
@@ -1843,7 +1843,7 @@ void CG_ETF_DrawSkyPortal( refdef_t *parentrefdef, vec4_t *parentflareblind, ste
 	VectorCopy( sky_origin, sky_refdef.vieworg );
 
 	sky_refdef.time = cg.time;
-	sky_refdef.rdflags |= RDF_SKYBOXPORTAL | RDF_DRAWINGSKY;
+	sky_refdef.rdflags |= RDF_SKYBOXPORTAL;// | RDF_DRAWINGSKY;
 
 	switch ( stereoView ) {
 	case STEREO_CENTER:
@@ -1891,6 +1891,7 @@ typedef struct onsText_s
 {
 	struct onsText_s *next;
 	int			endtime;
+	int			duration;
 	int			color;
 	char		text[MAX_TEXTLENGTH];
 	vec3_t		origin;
@@ -1964,7 +1965,8 @@ qboolean CG_AddOnScreenText( const char *text, vec3_t origin, int _color, float 
 	VectorCopy(origin, worldtext->origin);
 	/*worldtext->x = x;
 	worldtext->y = y;*/
-	worldtext->endtime = cg.time + (int)((float)duration * 1000.f);
+	worldtext->endtime = 0;
+	worldtext->duration = (int)((float)duration * 1000.f);
 	worldtext->color = _color;
 	Q_strncpyz(worldtext->text,text,MAX_TEXTLENGTH);
 	return qtrue;
@@ -1992,12 +1994,17 @@ void CG_DrawOnScreenText(void) {
 		/* Check for expiration */
 		if(worldtext->endtime < cg.time) 
 		{
-			/* Clear up this world text */
-			*whereworldtext=worldtext->next;
-			worldtext->next=freeworldtext;
-			freeworldtext=worldtext;
-			worldtext=*whereworldtext;
-			continue;
+			if(!worldtext->endtime){
+				worldtext->endtime = cg.time + worldtext->duration;
+			}
+			else{
+				/* Clear up this world text */
+				*whereworldtext=worldtext->next;
+				worldtext->next=freeworldtext;
+				freeworldtext=worldtext;
+				worldtext=*whereworldtext;
+				continue;
+			}
 		}
 		
 		if(CG_WorldToScreen(worldtext->origin, &x, &y) && trap_R_inPVS(cg.refdef.vieworg, worldtext->origin))

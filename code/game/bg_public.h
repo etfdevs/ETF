@@ -62,7 +62,7 @@ If you have questions concerning this license or the applicable additional terms
 #define FORTS_SUB_VERSION	""
 //Keeg change game version and name info
 #define	GAME_VERSION		"etf"	// RR2DO2: LOWERCASE!!
-#define	FORTS_VERSION		"ETF 2.0" FORTS_SUB_VERSION
+#define	FORTS_VERSION		"ETF 2.0.0" FORTS_SUB_VERSION
 #define FORTS_SHORTVERSION	"20"	// Slothy: used to version-match in server browser (can't do decimals, whole numbers only)
 #define FORTS_VERSIONINT	20		// Ensiform: used to version-match in server browser info for sorting
 #define	MAPINFO_TYPE		"etf"  //keeger:  type inside mapinfo file
@@ -339,7 +339,7 @@ typedef enum {
 	PERS_EXCELLENT_COUNT,			// two successive kills in a short amount of time
 	PERS_GAUNTLET_FRAG_COUNT,		// kills with the guantlet
 	PERS_CAPTURES,					// captures
-	PERS_DUMMY,						// Arnout - Q3F Port: if this is not-0, the usercmd forwardmove, rightmove and upmove get set to 0
+	PERS_DUMMY = 12,				// Arnout - Q3F Port: if this is not-0, the usercmd forwardmove, rightmove and upmove get set to 0
 	PERS_CURRCLASS,					// This has to remain across respawns
 	PERS_FLAGS,						// Extra 16 bits of flags to be used.
 	PERS_DEFEND_COUNT,				// defend awards
@@ -1033,11 +1033,6 @@ enum {
 };
 
 typedef struct {
-	const char *gameType;
-	int gtEnum;
-} gameTypeInfo;
-
-typedef struct {
 	char name[256];
 	const char* description;
 	int number;
@@ -1054,7 +1049,7 @@ typedef struct {
 	gameIndexInfo_t gameIndiciesInfo[MAX_GAMEINDICIES];
 	int numGameIndicies;
 	int cinematic;
-} mapInfo;
+} mapInfo_t;
 
 #define Q3F_SAY_ALL				0
 #define Q3F_SAY_TEAM			1

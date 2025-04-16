@@ -60,7 +60,7 @@ typedef struct {
 
 enum {
 	// Memory types
-	MEM_F2R,
+	MEM_F2R = 0,
 	MEM_SPIRIT,
 	MEM_CGAME,
 

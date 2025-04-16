@@ -176,7 +176,7 @@ int COM_Compress( char *data_p ) {
 			newline = qtrue;
 			in++;
 			// record when we hit whitespace
-		} else if ( c == ' ' || c == '\t') {
+		} else if ( c == ' ' || c == '\t' ) {
 			whitespace = qtrue;
 			in++;
 			// an actual token

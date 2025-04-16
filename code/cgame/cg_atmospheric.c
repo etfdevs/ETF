@@ -264,8 +264,8 @@ static qboolean CG_RainParticleGenerate( cg_atmosphericParticle_t *particle, vec
 	angle = ETF_random() * 2*M_PI;
 	distance = 20 + MAX_ATMOSPHERIC_DISTANCE * ETF_random();
 
-	particle->pos[0] = cg.refdef_current->vieworg[0] + sin(angle) * distance;
-	particle->pos[1] = cg.refdef_current->vieworg[1] + cos(angle) * distance;
+	particle->pos[0] = cg.refdef.vieworg[0] + sin(angle) * distance;
+	particle->pos[1] = cg.refdef.vieworg[1] + cos(angle) * distance;
 	
 	// ydnar: choose a spawn point randomly between sky and ground
 	skyHeight = BG_GetSkyHeightAtPoint( particle->pos );
@@ -278,8 +278,8 @@ static qboolean CG_RainParticleGenerate( cg_atmosphericParticle_t *particle, vec
 
 	// make sure it doesn't fall from too far cause it then will go over our heads ('lower the ceiling')
 	if( cg_atmFx.baseHeightOffset > 0 ) {
-		if( particle->pos[2] - cg.refdef_current->vieworg[2] > cg_atmFx.baseHeightOffset ) {
-			particle->pos[2] = cg.refdef_current->vieworg[2] + cg_atmFx.baseHeightOffset;
+		if( particle->pos[2] - cg.refdef.vieworg[2] > cg_atmFx.baseHeightOffset ) {
+			particle->pos[2] = cg.refdef.vieworg[2] + cg_atmFx.baseHeightOffset;
 
 			if( particle->pos[2] < groundHeight ) {
 				return qfalse;
@@ -334,8 +334,8 @@ static qboolean CG_RainParticleCheckVisible( cg_atmosphericParticle_t *particle 
 		return CG_SetParticleActive( particle, ACT_NOT );
 	}
 
-	distance[0] = particle->pos[0] - cg.refdef_current->vieworg[0];
-	distance[1] = particle->pos[1] - cg.refdef_current->vieworg[1];
+	distance[0] = particle->pos[0] - cg.refdef.vieworg[0];
+	distance[1] = particle->pos[1] - cg.refdef.vieworg[1];
  	if( (distance[0] * distance[0] + distance[1] * distance[1]) > Square( MAX_ATMOSPHERIC_DISTANCE ) )
  	{
 		// ydnar: just nuke this particle, let it respawn
@@ -390,7 +390,7 @@ static void CG_RainParticleRender( cg_atmosphericParticle_t *particle )
 
 	VectorCopy( particle->pos, start );
 
-	dist = DistanceSquared( particle->pos, cg.refdef_current->vieworg );
+	dist = DistanceSquared( particle->pos, cg.refdef.vieworg );
 
 	// Make sure it doesn't clip through surfaces
 	groundHeight = BG_GetSkyGroundHeightAtPoint( start );
@@ -416,11 +416,11 @@ static void CG_RainParticleRender( cg_atmosphericParticle_t *particle )
 	VectorCopy( particle->deltaNormalized, forward );
 	VectorMA( start, -len, forward, finish );
 
-	line[0] = DotProduct( forward, cg.refdef_current->viewaxis[1] );
-	line[1] = DotProduct( forward, cg.refdef_current->viewaxis[2] );
+	line[0] = DotProduct( forward, cg.refdef.viewaxis[1] );
+	line[1] = DotProduct( forward, cg.refdef.viewaxis[2] );
 
-	VectorScale( cg.refdef_current->viewaxis[1], line[1], right );
-	VectorMA( right, -line[0], cg.refdef_current->viewaxis[2], right );
+	VectorScale( cg.refdef.viewaxis[1], line[1], right );
+	VectorMA( right, -line[0], cg.refdef.viewaxis[2], right );
 	VectorNormalize( right );
 	
 	// dist = 1.0;
@@ -471,8 +471,8 @@ static qboolean CG_SnowParticleGenerate( cg_atmosphericParticle_t *particle, vec
 	angle = ETF_random() * 2*M_PI;
 	distance = 20 + MAX_ATMOSPHERIC_DISTANCE * ETF_random();
 
-	particle->pos[0] = cg.refdef_current->vieworg[0] + sin(angle) * distance;
-	particle->pos[1] = cg.refdef_current->vieworg[1] + cos(angle) * distance;
+	particle->pos[0] = cg.refdef.vieworg[0] + sin(angle) * distance;
+	particle->pos[1] = cg.refdef.vieworg[1] + cos(angle) * distance;
 	
 	// ydnar: choose a spawn point randomly between sky and ground
 	skyHeight = BG_GetSkyHeightAtPoint( particle->pos );
@@ -486,9 +486,9 @@ static qboolean CG_SnowParticleGenerate( cg_atmosphericParticle_t *particle, vec
 	// make sure it doesn't fall from too far cause it then will go over our heads ('lower the ceiling')
 	if( cg_atmFx.baseHeightOffset > 0 )
 	{
-		if( particle->pos[2] - cg.refdef_current->vieworg[2] > cg_atmFx.baseHeightOffset )
+		if( particle->pos[2] - cg.refdef.vieworg[2] > cg_atmFx.baseHeightOffset )
 		{
-			particle->pos[2] = cg.refdef_current->vieworg[2] + cg_atmFx.baseHeightOffset;
+			particle->pos[2] = cg.refdef.vieworg[2] + cg_atmFx.baseHeightOffset;
 			if( particle->pos[2] < groundHeight )
 				return qfalse;
 		}
@@ -530,8 +530,8 @@ static qboolean CG_SnowParticleCheckVisible( cg_atmosphericParticle_t *particle 
 		return CG_SetParticleActive( particle, ACT_NOT );
 	}
 
-	distance[0] = particle->pos[0] - cg.refdef_current->vieworg[0];
-	distance[1] = particle->pos[1] - cg.refdef_current->vieworg[1];
+	distance[0] = particle->pos[0] - cg.refdef.vieworg[0];
+	distance[1] = particle->pos[1] - cg.refdef.vieworg[1];
  	if( (distance[0] * distance[0] + distance[1] * distance[1]) > Square( MAX_ATMOSPHERIC_DISTANCE ) )
  	{
 		// ydnar: just nuke this particle, let it respawn
@@ -604,10 +604,10 @@ static void CG_SnowParticleRender( cg_atmosphericParticle_t *particle )
 		return;
 	}
 
-	line[0] = particle->pos[0] - cg.refdef_current->vieworg[0];
-	line[1] = particle->pos[1] - cg.refdef_current->vieworg[1];
+	line[0] = particle->pos[0] - cg.refdef.vieworg[0];
+	line[1] = particle->pos[1] - cg.refdef.vieworg[1];
 
-	dist = DistanceSquared( particle->pos, cg.refdef_current->vieworg );
+	dist = DistanceSquared( particle->pos, cg.refdef.vieworg );
 	// dist becomes scale
 	if( dist > Square( 500.f ) ) {
         dist = 1.f + ( ( dist - Square( 500.f ) ) * ( 10.f / Square( 2000.f ) ) );
@@ -620,11 +620,11 @@ static void CG_SnowParticleRender( cg_atmosphericParticle_t *particle )
 	VectorCopy( particle->deltaNormalized, forward );
 	VectorMA( start, -( len /** sinTumbling*/ ), forward, finish );
 
-	line[0] = DotProduct( forward, cg.refdef_current->viewaxis[1] );
-	line[1] = DotProduct( forward, cg.refdef_current->viewaxis[2] );
+	line[0] = DotProduct( forward, cg.refdef.viewaxis[1] );
+	line[1] = DotProduct( forward, cg.refdef.viewaxis[2] );
 
-	VectorScale( cg.refdef_current->viewaxis[1], line[1], right );
-	VectorMA( right, -line[0], cg.refdef_current->viewaxis[2], right );
+	VectorScale( cg.refdef.viewaxis[1], line[1], right );
+	VectorMA( right, -line[0], cg.refdef.viewaxis[2], right );
 	VectorNormalize( right );
 
 	particleWidth = dist * (/*cosTumbling **/ particle->weight);
@@ -936,7 +936,7 @@ void CG_AddAtmosphericEffects(void)
 //	getgroundtime = getskytime = rendertime = checkvisibletime = generatetime = 0;
 //	n_getgroundtime = n_getskytime = n_rendertime = n_checkvisibletime = n_generatetime = 0;
 
-	VectorSet( cg_atmFx.viewDir, cg.refdef_current->viewaxis[0][0], cg.refdef_current->viewaxis[0][1], 0.f );
+	VectorSet( cg_atmFx.viewDir, cg.refdef.viewaxis[0][0], cg.refdef.viewaxis[0][1], 0.f );
 
 	for( curr = 0; curr < max; curr++ )
 	{
@@ -1007,28 +1007,28 @@ void CG_SetupFrustum( void ) {
 	float	xs, xc;
 	float	ang;
 
-	ang = cg.refdef_current->fov_x / 180 * M_PI * 0.5f;
+	ang = cg.refdef.fov_x / 180 * M_PI * 0.5f;
 	xs = sin( ang );
 	xc = cos( ang );
 
-	VectorScale( cg.refdef_current->viewaxis[0], xs, frustum[0].normal );
-	VectorMA( frustum[0].normal, xc, cg.refdef_current->viewaxis[1], frustum[0].normal );
+	VectorScale( cg.refdef.viewaxis[0], xs, frustum[0].normal );
+	VectorMA( frustum[0].normal, xc, cg.refdef.viewaxis[1], frustum[0].normal );
 
-	VectorScale( cg.refdef_current->viewaxis[0], xs, frustum[1].normal );
-	VectorMA( frustum[1].normal, -xc, cg.refdef_current->viewaxis[1], frustum[1].normal );
+	VectorScale( cg.refdef.viewaxis[0], xs, frustum[1].normal );
+	VectorMA( frustum[1].normal, -xc, cg.refdef.viewaxis[1], frustum[1].normal );
 
 	ang = cg.refdef.fov_y / 180 * M_PI * 0.5f;
 	xs = sin( ang );
 	xc = cos( ang );
 
-	VectorScale( cg.refdef_current->viewaxis[0], xs, frustum[2].normal );
-	VectorMA( frustum[2].normal, xc, cg.refdef_current->viewaxis[2], frustum[2].normal );
+	VectorScale( cg.refdef.viewaxis[0], xs, frustum[2].normal );
+	VectorMA( frustum[2].normal, xc, cg.refdef.viewaxis[2], frustum[2].normal );
 
-	VectorScale( cg.refdef_current->viewaxis[0], xs, frustum[3].normal );
-	VectorMA( frustum[3].normal, -xc, cg.refdef_current->viewaxis[2], frustum[3].normal );
+	VectorScale( cg.refdef.viewaxis[0], xs, frustum[3].normal );
+	VectorMA( frustum[3].normal, -xc, cg.refdef.viewaxis[2], frustum[3].normal );
 
 	for (i=0 ; i<4 ; i++) {
-		frustum[i].dist = DotProduct( cg.refdef_current->vieworg, frustum[i].normal);
+		frustum[i].dist = DotProduct( cg.refdef.vieworg, frustum[i].normal);
 	}
 }
 

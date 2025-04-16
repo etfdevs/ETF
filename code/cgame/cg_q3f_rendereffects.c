@@ -51,7 +51,7 @@ void CG_Q3F_ShaderBeam( const vec3_t start, const vec3_t end, float width, qhand
 	rgba[3] = color[3] * 255;
 	width *= 0.5;
 
-	GetPerpendicularViewVector( cg.refdef_current->vieworg, start, end, up );
+	GetPerpendicularViewVector( cg.refdef.vieworg, start, end, up );
 
 	VectorMA( end, width, up, verts[0].xyz );
 	verts[0].st[0] = 1;

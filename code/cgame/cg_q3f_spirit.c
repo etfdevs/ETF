@@ -634,7 +634,7 @@ static void Spirit_DrawParticle(particle_t * particle ) {
 	
 		size = particle->SpiritSystem->size;
 
-		GetPerpendicularViewVector( cg.refdef_current->vieworg, pos, bottom, right );
+		GetPerpendicularViewVector( cg.refdef.vieworg, pos, bottom, right );
 
 		VectorMA( pos, size, right, verts[0].xyz );
 		verts[0].st[0] = 1;
@@ -1535,7 +1535,7 @@ SpiritScript_t *Spirit_LoadScript(const char *filename) {
 }
 
 
-void Spirit_AddStandAlone( char * script,vec3_t origin, vec3_t dir, float rotation) {
+void Spirit_AddStandAlone( const char *script, vec3_t origin, vec3_t dir, float rotation) {
 	SpiritScript_t *SpiritScript;
 	StandAloneScript_t * standalone;
 

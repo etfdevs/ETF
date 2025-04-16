@@ -604,7 +604,7 @@ CG_SniperDot
 	}
 }*/
 
-static vec3_t dotcolours[4] = {
+static const vec3_t dotcolours[4] = {
 	{ 1, 0, 0 },
 	{ 0.3f, 0.3f, 1 },
 	{ 1, 1, 0 },

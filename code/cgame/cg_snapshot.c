@@ -53,6 +53,8 @@ static void CG_ResetEntity( centity_t *cent ) {
 	if ( cent->currentState.eType == ET_PLAYER ) {
 		CG_ResetPlayerEntity( cent );
 	}
+
+	cent->muzzleFlashTime = 0;
 }
 
 /*

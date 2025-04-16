@@ -159,69 +159,31 @@ void UI_ReadBindings( void );
 //
 // ui_atoms.c
 //
-// this is only used in the old ui, the new ui has it's own version
-typedef struct {
-	int					frametime;
-	int					realtime;
-	int					cursorx;
-	int					cursory;
-	glconfig_t 	glconfig;
-	qboolean		debug;
-	qhandle_t		whiteShader;
-	qhandle_t		menuBackShader;
-	qhandle_t		menuBackShader2;
-	qhandle_t		menuBackNoLogoShader;
-	qhandle_t		charset;
-	qhandle_t		charsetProp;
-	qhandle_t		charsetPropGlow;
-	qhandle_t		charsetPropB;
-	qhandle_t		cursor;
-	qhandle_t		rb_on;
-	qhandle_t		rb_off;
-	float				scale;
-	float				bias;
-	qboolean		demoversion;
-	qboolean		firstdraw;
-} uiStatic_t;
-
 
 // new ui stuff
-#define UI_NUMFX 7
-#define MAX_HEADS 64
-#define MAX_ALIASES 64
-#define MAX_HEADNAME  32
-#define MAX_TEAMS 64
-#define MAX_GAMETYPES 16
 #define MAX_MAPS 128
-#define MAX_SPMAPS 16
-#define PLAYERS_PER_TEAM 5
-//#define MAX_PINGREQUESTS		32
 #define MAX_ADDRESSLENGTH		64
-#define MAX_HOSTNAMELENGTH		22
-#define MAX_MAPNAMELENGTH		16
-#define MAX_STATUSLENGTH		64
-#define MAX_LISTBOXWIDTH		59
-#define UI_FONT_THRESHOLD		0.1
 #define MAX_DISPLAY_SERVERS		2048
 #define MAX_SERVERSTATUS_LINES	128
 #define MAX_SERVERSTATUS_TEXT	1024
 #define MAX_FOUNDPLAYER_SERVERS	16
-#define TEAM_MEMBERS 5
-#define GAMES_ALL			0
-#define GAMES_FFA			1
-#define GAMES_TEAMPLAY		2
-#define GAMES_TOURNEY		3
-#define GAMES_CTF			4
-#define MAPS_PER_TIER 3
-#define MAX_TIERS 16
 #define MAX_MODS 64
-#define MAX_DEMOS 256
-#define MAX_CONFIGS 256
+#define MAX_DEMOS 2048 // 256
+#define MAX_CONFIGS 256 // 256
 #define MAX_MOVIES 256
-#define MAX_PLAYERMODELS 256
+
+#define DEMO_DIRECTORY "demos"
+#define DEMO_EXTENSION "dm_"
+#define MAX_DEMOLIST (MAX_DEMOS * MAX_QPATH)
+
+#define MAX_MAPLIST (MAX_MAPS * MAX_QPATH)
+#define MAX_MODLIST (MAX_MODS * MAX_QPATH)
+#define MAX_MOVIELIST (MAX_MOVIES * MAX_QPATH)
+#define MAX_CONFIGLIST (MAX_CONFIGS * MAX_QPATH)
 
 //slothy
 #define MAX_HUDS 64
+#define MAX_HUDLIST (MAX_HUDS * MAX_QPATH)
 
 /*typedef struct {
 	const char *name;
@@ -383,7 +345,7 @@ typedef struct {
 	int teamClientNums[MAX_CLIENTS];
 
 	int mapCount;
-	mapInfo mapList[MAX_MAPS];
+	mapInfo_t mapList[MAX_MAPS];
 
 	int skillIndex;
 
@@ -391,9 +353,10 @@ typedef struct {
 	int modCount;
 	int modIndex;
 
-	const char *demoList[MAX_DEMOS];
+	char demoList[MAX_DEMOS][MAX_QPATH];
 	int demoCount;
 	int demoIndex;
+	int loadedDemos;
 
 	const char *cfgList[MAX_CONFIGS];
 	int cfgCount;
@@ -423,13 +386,6 @@ typedef struct {
 
 	int currentCrosshair;
 	int startPostGameTime;
-
-/*	int				q3HeadCount;
-	char			q3HeadNames[MAX_PLAYERMODELS][64];
-	qhandle_t		q3HeadIcons[MAX_PLAYERMODELS];
-	int				q3SelectedHead;*/
-
-	//int effectsColor;
 
 	qboolean inGameLoad;
 
@@ -677,19 +633,11 @@ void			UI_DrawTopBottom(float x, float y, float w, float h);
 void			UI_DrawSides(float x, float y, float w, float h);
 void			UI_UpdateScreen( void );
 void			UI_SetColor( const float *rgba );
-void			UI_LerpColor(vec4_t a, vec4_t b, vec4_t c, float t);
-void			UI_DrawBannerString( int x, int y, const char* str, int style, vec4_t color );
-float			UI_ProportionalSizeScale( int style );
-void			UI_DrawProportionalString( int x, int y, const char* str, int style, vec4_t color );
-int				UI_ProportionalStringWidth( const char* str );
-void			UI_DrawString( int x, int y, const char* str, int style, vec4_t color );
-void			UI_DrawChar( int x, int y, int ch, int style, vec4_t color );
 qboolean 		UI_CursorInRect (int x, int y, int width, int height);
 void			UI_AdjustFrom640( float *x, float *y, float *w, float *h );
 const char			*UI_Argv( int arg );
 const char			*UI_Cvar_VariableString( const char *var_name );
 void UI_SetEventHandling(int mode);
-void UI_LoadBestScores(const char *map, int game);
 // RR2DO2
 void			UI_Q3F_DrawProgress( rectDef_t *rect, int value, int maxvalue, vec4_t color, qhandle_t shader );
 // RR2DO2

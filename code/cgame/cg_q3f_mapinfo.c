@@ -96,7 +96,7 @@ static qboolean CG_Q3F_MI_GetToken( const char *requiredToken )
 
 static qboolean CG_Q3F_MI_IsSpace( const char c )
 {
-	return( c == ' ' || c == '\n' || c == '\t' || c == '\r' );
+	return( c == ' ' || (unsigned char)c-'\t' < 5);
 }
 
 static const char *matchStrings[] = {

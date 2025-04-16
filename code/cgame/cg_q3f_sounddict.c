@@ -40,7 +40,8 @@ If you have questions concerning this license or the applicable additional terms
 
 static char dictbuff[MAX_SOUND_DICT_BUFF];
 static cg_q3f_sounddict_t sounddict[MAX_SOUND_DICT];
-static int dictbuffsize, dictsize;
+static int dictsize;
+static size_t dictbuffsize;
 
 static char currsoundstring[MAX_STRING_CHARS];
 static char *soundptr;
