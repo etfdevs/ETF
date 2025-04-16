@@ -112,9 +112,11 @@ function(create_compiler_opts target)
 	elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 		target_compile_options(${target} INTERFACE ${CLANG_CXX_FLAGS})
 		target_link_options(${target} INTERFACE ${CLANG_LINK_FLAGS})
+		target_link_libraries(${target} INTERFACE ${CMAKE_DL_LIBS} m)
 	else() # default to GCC
 		target_compile_options(${target} INTERFACE ${GCC_CXX_FLAGS})
 		target_link_options(${target} INTERFACE ${GCC_LINK_FLAGS})
+		target_link_libraries(${target} INTERFACE ${CMAKE_DL_LIBS} m)
 	endif()
 	
 	target_compile_definitions(${target} INTERFACE 
