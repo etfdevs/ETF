@@ -471,6 +471,7 @@ struct gclient_s {
 	int			agentteam;				// Team agent is pretending to be.
 	gentity_t	*agentdata;				// Agent 'overlay' entity.
 	g_q3f_location_t *reportLoc, *deathLoc;	// Report and death locations.
+	g_q3f_location_t* gren1Loc, * gren2Loc; // Last gren1 location, last gren2 location
 	gentity_t	*sentry, *supplystation;	// Sentry and supplystation
 	int			buildTime;				// Time till next build is finished.
 	int			buildDelayTime;			// Time before we can build again.

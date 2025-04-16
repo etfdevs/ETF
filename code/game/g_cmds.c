@@ -1246,6 +1246,7 @@ static char *G_Q3F_ParseSayString( const char *srcptr, gentity_t *activator, gen
 	char curr;
 	g_q3f_location_t *loc;
 	bg_q3f_playerclass_t *cls;
+	bg_q3f_weapon_t *wp;
 	int colourstack[32], colourstacksize;
 	vec3_t pos;
 
@@ -1300,6 +1301,24 @@ canthandle:
 		case 'a':	// Armour
 			Q_strcat( buffptr, buffendptr - buffptr, va("%d",activator->client->ps.stats[STAT_ARMOR]));
 			break;
+		case 'o':	// Ammo in current weapon
+			{
+				wp = BG_Q3F_GetWeapon(activator->client->ps.weapon);
+				if ( activator->client->ps.weapon == WP_AXE )
+				{
+					if (activator->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_PARAMEDIC)
+						Q_strcat(buffptr, buffendptr - buffptr, va("%d", activator->client->ps.ammo[AMMO_MEDIKIT]));
+					else if ( activator->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_ENGINEER )
+						Q_strcat( buffptr, buffendptr - buffptr, va("%d", activator->client->ps.ammo[AMMO_CELLS]));
+					else
+						Q_strcat( buffptr, buffendptr - buffptr, "0");
+				}
+				else if ( wp->ammotype < AMMO_MEDIKIT && activator->client->ps.ammo[wp->ammotype] >= 0 )
+					Q_strcat( buffptr, buffendptr - buffptr, va("%d", activator->client->ps.ammo[wp->ammotype]));
+				else
+					Q_strcat( buffptr, buffendptr - buffptr, "0");
+			}
+			break;
 		case 'l':	// Location
 			loc = Team_GetLocation( activator );
 			Q_strcat( buffptr, buffendptr - buffptr, loc ? loc->str : "unknown location" );
@@ -1328,7 +1347,7 @@ canthandle:
 			break;
 		case 'y':	// Ammo name
 			{
-				const bg_q3f_weapon_t *wp = BG_Q3F_GetWeapon(activator->client->ps.weapon);
+				wp = BG_Q3F_GetWeapon(activator->client->ps.weapon);
 				if ( activator->client->ps.weapon == WP_AXE )
 				{
 					if ( activator->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_ENGINEER )
@@ -1397,6 +1416,14 @@ canthandle:
 			if( !cls || cls == bg_q3f_classlist[Q3F_CLASS_NULL] )
 				cls = BG_Q3F_GetClass( &activator->client->ps );
 			Q_strcat( buffptr, buffendptr - buffptr, BG_Q3F_GetGrenade( cls->gren2type )->name );
+			break;
+		case '3':	// Location player was last time gren1 was thrown
+			loc = activator->client->gren1Loc;
+			Q_strcat( buffptr, buffendptr - buffptr, loc ? loc->str : "unknown location");
+			break;
+		case '4':	// Location player was last time gren2 was thrown
+			loc = activator->client->gren2Loc;
+			Q_strcat( buffptr, buffendptr - buffptr, loc ? loc->str : "unknown location");
 			break;
 		case 'g':	// Disguise
 			if( G_Q3F_IsDisguised( activator) ) 

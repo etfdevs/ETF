@@ -1234,6 +1234,8 @@ qboolean G_Q3F_GrenadeCommand( gentity_t *ent )
 											((grentype == cls->gren1type) ? 1 : 0x100);
 
 	ent->client->lastgrenTime = throwtime;
+	
+	grentype == cls->gren1type ? ( ent->client->gren1Loc = Team_GetLocation( ent ) ) : ( ent->client->gren2Loc = Team_GetLocation( ent ) );
 
 	// Looks like we're rolling, spawn the grenade (and any special commands for it),
 	// then fire it off.

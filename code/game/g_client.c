@@ -1634,7 +1634,7 @@ qboolean ClientSpawn(gentity_t *ent) {
 	int					flags, savedPing, i;
 	g_q3f_playerclass_t	*cls;
 	qboolean			beginclass = qfalse;
-	g_q3f_location_t	*deathloc;
+	g_q3f_location_t	*deathloc, *gren1loc, *gren2loc;
 	int					eventSequence;
 	char				userinfo[MAX_INFO_STRING];
 
@@ -1729,6 +1729,8 @@ qboolean ClientSpawn(gentity_t *ent) {
 	savedSess = client->sess;
 	savedPing = client->ps.ping;
 	deathloc = client->deathLoc;
+	gren1loc = client->gren1Loc;
+	gren2loc = client->gren2Loc;
 	chargeEntity = client->chargeEntity;
 	sentry = client->sentry;
 	supplystation = client->supplystation;
@@ -1747,6 +1749,8 @@ qboolean ClientSpawn(gentity_t *ent) {
 	client->sess = savedSess;	
 	client->ps.ping = savedPing;
 	client->deathLoc = deathloc;
+	client->gren1Loc = gren1loc;
+	client->gren2Loc = gren2loc;
 	client->chargeEntity = chargeEntity;
 	client->sentry = sentry;
 	client->supplystation = supplystation;

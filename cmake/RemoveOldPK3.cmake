@@ -2,7 +2,7 @@ if (NOT PK3_PATH)
     message(FATAL_ERROR "PK3_PATH not specified")
 endif ()
 
-file(GLOB OLD_PK3_FILES "${PK3_PATH}/etjump-*.pk3")
+file(GLOB OLD_PK3_FILES "${PK3_PATH}/mp_bin.pk3")
 
 if (NOT OLD_PK3_FILES)
     message("No old PK3 files found.")
