@@ -272,7 +272,7 @@ void G_Q3F_DebugBox( const vec3_t origin, const vec3_t mins, const vec3_t maxs, 
 		( (int)(color[1] * 255)  << 8  ) |
 		( (int)(color[2] * 255)  << 16 ) |
 		( (int)(color[3] * 255)  << 24 );
-};
+}
 
 
 void G_Q3F_MuzzleTraceBox( gentity_t *ent, const vec3_t muzzle, const vec3_t forward ) {
