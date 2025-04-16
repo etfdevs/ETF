@@ -240,7 +240,7 @@ bg_q3f_weapon_t bg_q3f_weapon_pipelauncher = {
 
 bg_q3f_weapon_t bg_q3f_weapon_napalm = {
 	// The Napalm Cannon
-	1200,			// Time between shots.
+	1000,			// Time between shots. 1.6 Default: 1200
 	0,		// 2.0 seconds for a full clip
 	0,			// ... assuming 6 grens in a clip.
 	AMMO_ROCKETS,

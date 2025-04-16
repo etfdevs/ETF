@@ -125,13 +125,13 @@ bg_q3f_playerclass_t bg_q3f_playerclass_recon = {
 	WP_NAILGUN,			// Default Weapon
 
 	Q3F_GREN_FLASH,		Q3F_GREN_CONCUSS,		// Grenade types
-	2,					3,						// Initial grenades
+	4,					4,						// Initial grenades
 	4,					4,						// Max grenades
 
 	 50, 200,  25, 100, 0, 0,		// Maximum values for ammo: shells/nails/rockets/cells/medikit/charge
-	 25, 100,   0,  50,	0, 0,		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
+	 50, 200,   25,  100,	0, 0,		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
 
-	25,						// Initial armour
+	30,						// Initial armour
 
 	Q3F_ARMOUR_GREEN,	Q3F_ARMOUR_GREEN,	// Max/Initial armour type
 	0,					0,					// Max/initial armour class
@@ -181,7 +181,7 @@ bg_q3f_playerclass_t bg_q3f_playerclass_sniper = {
 	75,  100,  25,  50, 0, 0,		// Maximum values for ammo: shells/nails/rockets/cells/medikit/charge
 	65,   50,   0,   0, 0, 0, 		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
 
-	0,						// Initial armour
+	50,						// Initial armour
 
 	Q3F_ARMOUR_GREEN,	Q3F_ARMOUR_GREEN,				// Max/Initial armour type
 	DAMAGE_Q3F_SHELL|DAMAGE_Q3F_NAIL, 0,				// Max/initial armour class
@@ -226,12 +226,12 @@ bg_q3f_playerclass_t bg_q3f_playerclass_soldier = {
 
 	Q3F_GREN_NORMAL,	Q3F_GREN_NAIL,			// Grenade types
 	4,					1,						// Initial grenades
-	4,					2,						// Max grenades
+	4,					1,						// Max grenades
 
 	100, 100,  50,  50, 0, 0,		// Maximum values for ammo: shells/nails/rockets/cells/medikit/charge
-	50,    0,  10,   0, 0, 0,		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
+	100,    100,  50,  50, 0, 0,		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
 
-	100,						// Initial armour
+	200,						// Initial armour
 
 	Q3F_ARMOUR_RED,		Q3F_ARMOUR_RED,				// Max/Initial armour type
 	DAMAGE_Q3F_MASK,	0,							// Max/initial armour class
@@ -276,12 +276,12 @@ bg_q3f_playerclass_t bg_q3f_playerclass_grenadier = {
 
 	Q3F_GREN_NORMAL,	Q3F_GREN_CLUSTER,			// Grenade types
 	4,					2,						// Initial grenades
-	4,					4,						// Max grenades
+	4,					2,						// Max grenades
 
 	 75,  50,  50,  50, 0, 1,		// Maximum values for ammo: shells/nails/rockets/cells/medikit/charge
-	 30,   0,  20,   0, 0, 1,		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
+	 75,  50,  50,  50, 0, 1,		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
 
-	50,						// Initial armour
+	120,						// Initial armour
 
 	Q3F_ARMOUR_YELLOW,	Q3F_ARMOUR_YELLOW,			// Max/Initial armour type
 	DAMAGE_Q3F_MASK,	0,							// Max/initial armour class
@@ -326,12 +326,12 @@ bg_q3f_playerclass_t bg_q3f_playerclass_paramedic = {
 
 	Q3F_GREN_NORMAL,	Q3F_GREN_CONCUSS,		// Grenade types
 	3,					2,						// Initial grenades
-	3,					4,						// Max grenades
+	3,					2,						// Max grenades
 
 	 70, 150,  25,  50,	100, 0,	// Maximum values for ammo: shells/nails/rockets/cells/medikit/charge
-	 50,  50,   0,   0,	50, 0,	// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
+	 70, 150,  25,  50,	100, 0,	// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
 
-	50,						// Initial armour
+	100,						// Initial armour
 
 	Q3F_ARMOUR_YELLOW,	Q3F_ARMOUR_GREEN,			// Max/Initial armour type
 	DAMAGE_Q3F_SHELL|DAMAGE_Q3F_NAIL|DAMAGE_Q3F_SHOCK|DAMAGE_Q3F_FIRE, 0,	// Max/initial armour class
@@ -375,13 +375,13 @@ bg_q3f_playerclass_t bg_q3f_playerclass_minigunner = {
 	WP_MINIGUN,					// Default Weapon
 
 	Q3F_GREN_NORMAL,	Q3F_GREN_CLUSTER,			// Grenade types
-	4,					1,						// Initial grenades
-	4,					4,						// Max grenades
+	4,					2,						// Initial grenades
+	4,					2,						// Max grenades
 
 	200, 200,  25,  50,	0, 0, 	// Maximum values for ammo: shells/nails/rockets/cells/medikit/charge
-	200,   0,   0,  24, 0, 0,		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
+	200, 200,  25,  50, 0, 0,		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
 
-	200,					// Initial armour
+	300,					// Initial armour
 
 	Q3F_ARMOUR_RED,		Q3F_ARMOUR_RED,			// Max/Initial armour type
 	DAMAGE_Q3F_MASK,	0,						// Max/initial armour class
@@ -425,13 +425,13 @@ bg_q3f_playerclass_t bg_q3f_playerclass_flametrooper = {
 	WP_FLAMETHROWER,					// Default Weapon
 
 	Q3F_GREN_NORMAL,	Q3F_GREN_NAPALM,			// Grenade types
-	2,					2,						// Initial grenades
-	3,					3,						// Max grenades
+	3,					2,						// Initial grenades
+	3,					2,						// Max grenades
 
-	 40,  50,  60, 200, 0, 0,		// Maximum values for ammo: shells/nails/rockets/cells/medikit/charge
-	 20,  50,  15, 120, 0, 0, 		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
+	 40,  50,  90, 200, 0, 0,		// Maximum values for ammo: shells/nails/rockets/cells/medikit/charge
+	 40,  50,  90, 200, 0, 0, 		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
 
-	50,						// Initial armour
+	150,						// Initial armour
 
 	Q3F_ARMOUR_YELLOW,	Q3F_ARMOUR_YELLOW,		// Max/Initial armour type
 	DAMAGE_Q3F_SHELL|DAMAGE_Q3F_NAIL|DAMAGE_Q3F_SHOCK|DAMAGE_Q3F_FIRE, DAMAGE_Q3F_FIRE, // Max/initial armour class
@@ -475,13 +475,13 @@ bg_q3f_playerclass_t bg_q3f_playerclass_agent = {
 	WP_DARTGUN,					// Default Weapon  keeg changed
 
 	Q3F_GREN_NORMAL,	Q3F_GREN_GAS,			// Grenade types
-	2,					2,						// Initial grenades
-	4,					4,						// Max grenades
+	4,					2,						// Initial grenades
+	4,					2,						// Max grenades
 
 	 40, 100,  15,  100, 0, 0,		// Maximum values for ammo: shells/nails/rockets/cells/medikit/charge
-	 40,  50,   0,  30, 0, 0,		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
+	 40, 100,  15,  100, 0, 0,		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
 
-	0,						// Initial armour
+	100,						// Initial armour
 
 	Q3F_ARMOUR_YELLOW,	Q3F_ARMOUR_GREEN,		// Max/Initial armour type
 	DAMAGE_Q3F_SHELL|DAMAGE_Q3F_NAIL|DAMAGE_Q3F_SHOCK|DAMAGE_Q3F_FIRE, 0,	// Max/initial armour class
@@ -525,13 +525,13 @@ bg_q3f_playerclass_t bg_q3f_playerclass_engineer = {
 	WP_RAILGUN,					// Default Weapon
 
 	Q3F_GREN_NORMAL,	Q3F_GREN_EMP,			// Grenade types
-	2,					2,						// Initial grenades
-	4,					4,						// Max grenades
+	4,					2,						// Initial grenades
+	4,					2,						// Max grenades
 
 	 50,  50,  30, 200, 0, 0,		// Maximum values for ammo: shells/nails/rockets/cells/medikit/charge
-	 30,  25,   0, 100, 0, 0, 		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
+	 50,  50,  30, 200, 0, 0, 		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
 
-	25,						// Initial armour
+	50,						// Initial armour
 
 	Q3F_ARMOUR_YELLOW,	Q3F_ARMOUR_GREEN,		// Max/Initial armour type
 	DAMAGE_Q3F_SHELL|DAMAGE_Q3F_NAIL|DAMAGE_Q3F_SHOCK|DAMAGE_Q3F_FIRE, 0, // Max/initial armour class
