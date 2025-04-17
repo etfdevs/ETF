@@ -45,14 +45,14 @@ If you have questions concerning this license or the applicable additional terms
 
 static int QDECL WBA_SortFunc( const void *a, const void *b )
 {
-	g_q3f_waypoint_t *wa, *wb;
+	const g_q3f_waypoint_t *wa, *wb;
 
-	if( !((q3f_data_t *) a)->type )
+	if( !((const q3f_data_t *) a)->type )
 		return( 1 );
-	if( !((q3f_data_t *) b)->type )
+	if( !((const q3f_data_t *) b)->type )
 		return( -1 );
-	wa = (g_q3f_waypoint_t *)((q3f_data_t *) a)->d.intdata;
-	wb = (g_q3f_waypoint_t *)((q3f_data_t *) b)->d.intdata;
+	wa = (const g_q3f_waypoint_t *)((const q3f_data_t *) a)->d.intdata;
+	wb = (const g_q3f_waypoint_t *)((const q3f_data_t *) b)->d.intdata;
 
 	return( Q_stricmp( wa->str, wb->str ) );
 }
@@ -166,8 +166,7 @@ void G_Q3F_WaypointCommand( gentity_t *ent )
 		chanptr = G_Q3F_GetString( &location[1] );	// Find a stored copy
 		if( !chanptr ) 
 		{
-			chanptr = (char *)va( "print \"Channel '%s' is empty.\"\n", location );
-			trap_SendServerCommand( ent->s.number, chanptr );
+			trap_SendServerCommand( ent->s.number, va( "print \"Channel '%s' is empty.\"\n", location ) );
 			return;
 		}
 	}
@@ -190,8 +189,7 @@ void G_Q3F_WaypointCommand( gentity_t *ent )
 		index < 0 || index >= level.waypointarray->used ||
 		(index == 0 && location[0] != '0') )
 	{
-		chanptr = (char *)va( "print \"Invalid waypoint no. '%s'.\"\n", location );
-		trap_SendServerCommand( ent->s.number, chanptr );
+		trap_SendServerCommand( ent->s.number, va( "print \"Invalid waypoint no. '%s'.\"\n", location ) );
 		return;
 	}
 	wp = (g_q3f_waypoint_t *) level.waypointarray->data[index].d.ptrdata;

@@ -283,7 +283,7 @@ gentity_t *SelectCTFSpawnPoint ( int team, int teamstate, vec3_t origin, vec3_t 
 /*---------------------------------------------------------------------------*/
 
 static int QDECL SortClients( const void *a, const void *b ) {
-	return *(int *)a - *(int *)b;
+	return *(const int *)a - *(const int *)b;
 }
 
 

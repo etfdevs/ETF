@@ -222,13 +222,13 @@ static int QDECL AS_SortFunc( const void *a, const void *b )
 {
 	// Comparison function
 
-	if( !((q3f_data_t *) a)->type )
+	if( !((const q3f_data_t *) a)->type )
 		return( 1 );
-	if( !((q3f_data_t *) b)->type )
+	if( !((const q3f_data_t *) b)->type )
 		return( -1 );
-	if( ((q3f_data_t *) a)->d.intdata == ((q3f_data_t *) b)->d.intdata )
+	if( ((const q3f_data_t *) a)->d.intdata == ((const q3f_data_t *) b)->d.intdata )
 		return( 0 );
-	return( (((q3f_data_t *) a)->d.intdata < ((q3f_data_t *) b)->d.intdata) ? -1 : 1 );
+	return( (((const q3f_data_t *) a)->d.intdata < ((const q3f_data_t *) b)->d.intdata) ? -1 : 1 );
 }
 void G_Q3F_ArraySort( q3f_array_t *array )
 {
@@ -361,7 +361,7 @@ int G_Q3F_KeyPairArrayAdd( q3f_keypairarray_t *array, const char *key, byte type
 
 			ptr->value.flags	= flags;
 			ptr->value.type		= type;
-			G_Q3F_AddString( &ptr->key, (char *) key );
+			G_Q3F_AddString( &ptr->key, key );
 			if( (ptr->value.type = type) == Q3F_TYPE_STRING )
 				G_Q3F_AddString( &ptr->value.d.strdata, (char *) data );
 			else ptr->value.d.intdata = data;
@@ -483,13 +483,13 @@ static int QDECL KPAS_SortFunc( const void *a, const void *b )
 {
 	// Comparison function
 
-	if( !((q3f_keypair_t *) a)->value.type )
+	if( !((const q3f_keypair_t *) a)->value.type )
 		return( 1 );
-	if( !((q3f_keypair_t *) b)->value.type )
+	if( !((const q3f_keypair_t *) b)->value.type )
 		return( -1 );
-	if( ((q3f_keypair_t *) a)->key == ((q3f_keypair_t *) b)->key )
+	if( ((const q3f_keypair_t *) a)->key == ((const q3f_keypair_t *) b)->key )
 		return( 0 );
-	return( (((q3f_keypair_t *) a)->key < ((q3f_keypair_t *) b)->key) ? -1 : 1 );
+	return( (((const q3f_keypair_t *) a)->key < ((const q3f_keypair_t *) b)->key) ? -1 : 1 );
 }
 void G_Q3F_KeyPairArraySort( q3f_keypairarray_t *array )
 {

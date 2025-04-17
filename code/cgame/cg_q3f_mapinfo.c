@@ -193,10 +193,13 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 
 	int index, currGameIndex, foundItems, c1, c2;
 	char rawmapname[1024], buff[1024], fallbackbuff[128];
-	char *infoname, *ptr, *ptr2, *ptr3, *ptr4;
+	char *infoname;
+	const char* oldinfoname;
+	const char *ptr, *ptr2, *ptr3, *ptr4;
+	char *ptr5;
 
 		// Strip out the raw map name without path, extensions, or gameindex
-	for( ptr = ptr2 = (char *) mapname, ptr3 = ptr4 = NULL; *ptr; ptr++ )
+	for( ptr = ptr2 = mapname, ptr3 = ptr4 = NULL; *ptr; ptr++ )
 	{
 		if( *ptr == '/' )
 			ptr2 = ptr + 1;
@@ -208,7 +211,7 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 	ptr3 = ptr3 ? ptr3 : (ptr4 ? ptr4 : (ptr - 1));
 	for( infoname = rawmapname, ptr = rawmapname + sizeof(rawmapname) - 1; ptr2 < ptr3 && *ptr2 && infoname < ptr; )
 		*infoname++ = *ptr2++;
-	*infoname = 0;
+	*infoname = '\0';
 		// Extract the gameIndex from the mapname if not supplied explicitely.
 	if( ptr4 && !gameIndex )
 		gameIndex = atoi( ptr4 + 1 );
@@ -217,16 +220,14 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 	for( index = foundItems = 0; index < numItems; index++ )
 	{
 		if( _mapInfo[index].value )
-			*_mapInfo[index].value = 0;
+			*_mapInfo[index].value = '\0';
 	}
 
 		// Save out our mapname if desired.
 	if( CG_Q3F_MI_StoreMapInfoItem( "mapname", rawmapname, _mapInfo, numItems, qfalse ) )
 		foundItems++;
 
-	infoname = (char *)va( "%s/%s%s", MAPINFODIR, rawmapname, MAPINFOEXT );
-
-	if( (mi.infoHandle = trap_PC_LoadSource( infoname )) )
+	if( (mi.infoHandle = trap_PC_LoadSource( va( "%s/%s%s", MAPINFODIR, rawmapname, MAPINFOEXT ) )) )
 	{
 		index = 0;
 		currGameIndex = 0;
@@ -280,23 +281,21 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 			return( foundItems );
 	}
 
-
-
 		// That was a washout, we'll try the fallback mode.
 
 		// Reset our array.
 	for( index = foundItems = 0; index < numItems; index++ )
 	{
 		if( _mapInfo[index].value )
-			*_mapInfo[index].value = 0;
+			*_mapInfo[index].value = '\0';
 	}
 		// Save out our mapname if desired.
 	if( CG_Q3F_MI_StoreMapInfoItem( "mapname", rawmapname, _mapInfo, numItems, qfalse ) )
 		foundItems++;
 
 		// Attempt to load in the old mapinfo file, and parse out player limits.
-	infoname = (char *)va( "%s/%s%s", MAPINFODIR, rawmapname, OLDMAPINFOEXT );
-	if( (index = trap_FS_FOpenFile( infoname, &mi.infoHandle, FS_READ )) <= 0 )
+	oldinfoname = va( "%s/%s%s", MAPINFODIR, rawmapname, OLDMAPINFOEXT );
+	if( (index = trap_FS_FOpenFile( oldinfoname, &mi.infoHandle, FS_READ )) <= 0 )
 	{
 		if( index == 0 )
 			trap_FS_FCloseFile( mi.infoHandle );
@@ -306,9 +305,9 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 		index = (int)ARRAY_LEN(buff) - 1;
 	trap_FS_Read( buff, index, mi.infoHandle );
 	trap_FS_FCloseFile( mi.infoHandle );
-	buff[index] = 0;
+	buff[index] = '\0';
 	/* Ensiform - Add this so we can check what files cause the Unexpected end of info file error */
-	COM_BeginParseSession(infoname);
+	COM_BeginParseSession( oldinfoname );
 
 		// Save out our mapname if desired.
 	if( CG_Q3F_MI_StoreMapInfoItem( "mapinfo", buff, _mapInfo, numItems, qfalse ) )
@@ -330,9 +329,9 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 			{
 				// Check the marker.
 
-				for( ptr4 = fallbackbuff; ptr2 < ptr3 && ptr4 < fallbackbuff + sizeof(fallbackbuff) - 1; )
-					*ptr4++ = *ptr2++;
-				*ptr4 = 0;
+				for( ptr5 = fallbackbuff; ptr2 < ptr3 && ptr5 < fallbackbuff + sizeof(fallbackbuff) - 1; )
+					*ptr5++ = *ptr2++;
+				*ptr5 = '\0';
 				for( index = 0; matchStrings[index]; index++ )
 				{
 					if( !Q_stricmp( matchStrings[index], fallbackbuff ) )
@@ -364,5 +363,7 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 		}
 	}
 
+
 	return( foundItems );
+
 }

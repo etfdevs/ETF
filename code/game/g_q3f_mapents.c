@@ -478,7 +478,7 @@ q3f_keypairarray_t *G_Q3F_ProcessClientStatsString( const char *value )
 
 	targetarray = G_Q3F_KeyPairArrayCreate();
 
-	for( startptr = (char *) value; *startptr; )
+	for( startptr = value; *startptr; )
 	{
 		for( endptr = startptr; *endptr && ( *endptr != '=' && *endptr != '<' && *endptr != '>' ); endptr++ );
 		strsize = endptr - startptr + 1;
@@ -682,7 +682,7 @@ void G_Q3F_ProcessMapField( const char *key, const char *value, gentity_t *ent )
 			buff[10] = 't';
 		}
 
-		G_Q3F_KeyPairArrayAdd( ent->mapdata->other, (char *) key, Q3F_TYPE_STRING, flag, (intptr_t) buff );
+		G_Q3F_KeyPairArrayAdd( ent->mapdata->other, key, Q3F_TYPE_STRING, flag, (intptr_t) buff );
 	}
 }
 

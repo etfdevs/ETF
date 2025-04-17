@@ -235,7 +235,7 @@ q3f_keypairarray_t *G_Q3F_LoadMapInfo( const char *mapname )
 
 				for( ptr4 = keyname; ptr2 < ptr3 && ptr4 < keyname + sizeof(keyname) - 1; )
 					*ptr4++ = *ptr2++;
-				*ptr4 = 0;
+				*ptr4 = '\0';
 				for( index = 0; matchStrings[index]; index++ )
 				{
 					if( !Q_stricmp( matchStrings[index], keyname ) )

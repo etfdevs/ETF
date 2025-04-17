@@ -371,6 +371,7 @@ static void CG_Q3F_DumpLocation( void )
 	char locfilename[MAX_QPATH];
 	char locname[MAX_STRING_CHARS];
 	char *extptr, *buffptr;
+	const char *output;
 	fileHandle_t f;
 
 		// Check for argument
@@ -410,11 +411,11 @@ static void CG_Q3F_DumpLocation( void )
 		*(buffptr - 1) = 0;
 
 		// Build the entity definition
-	buffptr = (char*)va(	"{\n\"classname\" \"target_location\"\n\"origin\" \"%i %i %i\"\n\"message\" \"%s\"\n}\n\n",
+	output = va(	"{\n\"classname\" \"target_location\"\n\"origin\" \"%i %i %i\"\n\"message\" \"%s\"\n}\n\n",
 					(int) cg.snap->ps.origin[0], (int) cg.snap->ps.origin[1], (int) cg.snap->ps.origin[2], locname );
 
 		// And write out/acknowledge
-	trap_FS_Write( buffptr, strlen( buffptr ), f );
+	trap_FS_Write( output, strlen( output ), f );
 	trap_FS_FCloseFile( f );
 	CG_Printf(	BOX_PRINT_MODE_CHAT, "Entity dumped to '%s' (%i %i %i).\n", locfilename,
 				(int) cg.snap->ps.origin[0], (int) cg.snap->ps.origin[1], (int) cg.snap->ps.origin[2] );
