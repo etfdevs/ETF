@@ -17,7 +17,7 @@ set(RELEASE_PATH "${CMAKE_BINARY_DIR}/${RELEASE_NAME}.zip")
 
 add_custom_target(mod_release
 		COMMAND ${CMAKE_COMMAND}
-			-DINPUT="${BASE_DIR}/qagame*.so;${BASE_DIR}/qagame*.dll;${BASE_DIR}/qagame_mac;${BASE_DIR}/${PK3_NAME}.pk3"
+			-DINPUT="${BASE_DIR}/cgame*.so;${BASE_DIR}/cgame*.dll;${BASE_DIR}/cgame_mac;${BASE_DIR}/qagame*.so;${BASE_DIR}/qagame*.dll;${BASE_DIR}/qagame_mac;${BASE_DIR}/ui*.so;${BASE_DIR}/ui*.dll;${BASE_DIR}/ui_mac;${BASE_DIR}/${PK3_NAME}.pk3"
 			-DOUTPUT="${RELEASE_PATH}"
 			-P ${CMAKE_SOURCE_DIR}/cmake/AssetsPackager.cmake
 		WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
