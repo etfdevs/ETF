@@ -81,10 +81,11 @@ void trap_R_AddRefEntityToScene( const refEntity_t *re, const centity_t *cent ) 
 
 	if( cgs.media.celshader && re->reType == RT_MODEL ) {
 		qhandle_t realShader = re->customShader;
-
-		((refEntity_t *)re)->customShader = cgs.media.celshader;
+		refEntity_t temp;
+		memcpy(&temp, re, sizeof(*re));
+		temp.customShader = cgs.media.celshader;
 		trap_R_RealAddRefEntityToScene( re );
-		((refEntity_t *)re)->customShader = realShader;
+		temp.customShader = realShader;
 	}
 }
 

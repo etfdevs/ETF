@@ -495,10 +495,10 @@ static int QDECL LS_SortFunc( const void *a, const void *b )
 {
 	// Comparison function
 
-	cg_q3f_location_t *la, *lb;
+	const cg_q3f_location_t *la, *lb;
 
-	la = (cg_q3f_location_t *) a;
-	lb = (cg_q3f_location_t *) b;
+	la = (const cg_q3f_location_t *) a;
+	lb = (const cg_q3f_location_t *) b;
 	if( la->pos[0] != lb->pos[0] )
 		return( la->pos[0] - lb->pos[0] );
 	if( la->pos[1] != lb->pos[1] )

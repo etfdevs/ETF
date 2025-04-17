@@ -322,12 +322,12 @@ static inline uint32_t LongSwap(uint32_t v)
 }
 #endif
 
-static QINLINE void CopyShortSwap( void *dest, const void *src )
+static QINLINE void CopyShortSwap( void *dest, void *src )
 {
     *(uint16_t*)dest = ShortSwap(*(uint16_t*)src);
 }
 
-static QINLINE void CopyLongSwap( void *dest, const void *src )
+static QINLINE void CopyLongSwap( void *dest, void *src )
 {
     *(uint32_t*)dest = LongSwap(*(uint32_t*)src);
 }
@@ -358,8 +358,8 @@ static QINLINE float FloatSwap(float f)
 	#define BigLong
 	#define BigFloat
 #elif defined( Q3_LITTLE_ENDIAN )
-	#define CopyLittleShort( dest, src )	Com_Memcpy(dest, src, 2)
-	#define CopyLittleLong( dest, src )		Com_Memcpy(dest, src, 4)
+	#define CopyLittleShort( dest, src )	memcpy(dest, src, 2)
+	#define CopyLittleLong( dest, src )		memcpy(dest, src, 4)
 	#define LittleShort
 	#define LittleLong
 	#define LittleFloat

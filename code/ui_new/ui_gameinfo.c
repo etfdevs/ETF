@@ -45,11 +45,8 @@ UI_ServersQsortCompare
 =================
 */
 static int QDECL UI_MapsQsortCompare( const void *arg1, const void *arg2 ) {
-	const mapInfo_t *a1;
-	const mapInfo_t *a2;
-
-	a1 = (mapInfo_t *)arg1;
-	a2 = (mapInfo_t *)arg2;
+	const mapInfo_t *a1 = (const mapInfo_t *)arg1;
+	const mapInfo_t *a2 = (const mapInfo_t *)arg2;
 
 	return(Q_stricmp(a1->mapName, a2->mapName));
 }
@@ -94,7 +91,7 @@ UI_ServersQsortCompare
 =================
 */
 static int QDECL UI_HudsQsortCompare( const void *arg1, const void *arg2 ) {
-	return(Q_stricmp((char *)arg1, (char *)arg2));
+	return(Q_stricmp((const char *)arg1, (const char *)arg2));
 }
 
 

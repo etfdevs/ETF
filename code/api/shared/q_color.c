@@ -97,8 +97,8 @@ const vec4_t g_color_table[Q_COLOR_BITS+1] = {
 };
 
 qboolean GetColourFromHex( const char *string, vec4_t colour ) {
-	char hexvalue[2], *ptr;
-	char *digits = "0123456789ABCDEF\0";
+	char hexvalue[2];
+	const char *ptr, *digits = "0123456789ABCDEF\0";
 	int i;
 	char *a, *b;
 
@@ -107,7 +107,7 @@ qboolean GetColourFromHex( const char *string, vec4_t colour ) {
 	if( strlen(string) != 8 )
 		return( qfalse );	// bad string
 	else if( *string == '0' && *(string+1) == 'x' ) {
-		for( i = 0, ptr = (char*)(string + 2); *ptr && *(ptr + 1) && i <= 3; ptr+=2, i++ ) {
+		for( i = 0, ptr = (string + 2); *ptr && *(ptr + 1) && i <= 3; ptr+=2, i++ ) {
 			hexvalue[0] = *ptr;
 			hexvalue[1] = *(ptr + 1);
 

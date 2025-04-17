@@ -962,7 +962,7 @@ qboolean Info_SetValueForKey_s( char *s, int slen, const char *key, const char *
 }
 
 
-void *Q_LinearSearch( const void *key, const void *ptr, size_t count,
+/*void* Q_LinearSearch(const void* key, const void* ptr, size_t count,
 	size_t size, cmpFunc_t cmp )
 {
 	size_t i;
@@ -972,6 +972,6 @@ void *Q_LinearSearch( const void *key, const void *ptr, size_t count,
 		ptr = (const char *)ptr + size;
 	}
 	return NULL;
-}
+}*/
 
 //====================================================================

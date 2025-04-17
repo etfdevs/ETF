@@ -724,12 +724,12 @@ void CG_Q3F_UpdateCvarLimit( const char *cvarname, int *min, int *max ) {
 }
 
 void CG_Q3F_UpdateCvarLimits( ) {
-	char *ptr;
+	const char *ptr;
 	char cvarname[64], buff[16];
 	int min, max;
 	size_t len;
 
-	ptr = (char *)CG_ConfigString( CS_Q3F_CVARLIMITS );
+	ptr = CG_ConfigString( CS_Q3F_CVARLIMITS );
 
 	while( *ptr ) {
 		for( len = 0; *ptr && *ptr != ' ' && len < (sizeof(cvarname) - 1); len++ ) {
@@ -1800,8 +1800,8 @@ scoreInfo_t sortedScores[MAX_CLIENTS];
 	return NULL;
 }*/
 
-#define ta ((scoreInfo_t*)a)
-#define tb ((scoreInfo_t*)b)
+#define ta ((const scoreInfo_t*)a)
+#define tb ((const scoreInfo_t*)b)
 
 static int SB_SortFunc(const void* a, const void* b) {
 	int tmp;

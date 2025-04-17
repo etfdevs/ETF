@@ -68,7 +68,7 @@ static char *AddSoundString( char *str )
 
 // Little comparison function for qsort routine
 static int QDECL PSD_SortFunc( const void *a, const void *b )
-	{ return( strcmp( ((cg_q3f_sounddict_t *) a)->key, ((cg_q3f_sounddict_t *) b)->key ) ); }
+	{ return( strcmp( ((const cg_q3f_sounddict_t *) a)->key, ((const cg_q3f_sounddict_t *) b)->key ) ); }
 
 static qboolean sounddictionaryparsed;
 void CG_Q3F_ParseSoundDictionary(void)

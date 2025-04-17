@@ -141,7 +141,7 @@ void CG_Q3F_RenderCustomShaders(void)
 
 static int QDECL ParallaxLayer_SortFunc( const void *a, const void *b )
 {
-	float f = ((parallaxlayer_t *) b)->depth - ((parallaxlayer_t *) a)->depth;
+	const float f = ((const parallaxlayer_t *) b)->depth - ((const parallaxlayer_t *) a)->depth;
 	return( f < 0 ? -1 : (f ? 1 : 0) );
 }
 

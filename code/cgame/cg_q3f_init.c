@@ -96,7 +96,8 @@ void CG_Q3F_InitLog( const char *prefix, const char *entry, const char *suffix )
 
 	char time[16];
 	int passedtime;
-	char *src, *dest, *max;
+	const char *src, *max;
+	char *dest;
 #ifdef _DEBUG
 	int fhandle;
 #endif
@@ -106,15 +107,15 @@ void CG_Q3F_InitLog( const char *prefix, const char *entry, const char *suffix )
 	passedtime = trap_Milliseconds() - cgs.initTime;
 	Com_sprintf( time, sizeof(time), "%3i:%03i ", passedtime / 1000, passedtime % 1000 );
 
-	for( src = (char *) time; src && dest < max && *src; )
+	for( src = time; src && dest < max && *src; )
 		*dest++ = *src++;
-	for( src = (char *) prefix; src && dest < max && *src; )
+	for( src = prefix; src && dest < max && *src; )
 		*dest++ = *src++;
-	for( src = (char *) entry; src && dest < max && *src; )
+	for( src = entry; src && dest < max && *src; )
 		*dest++ = *src++;
-	for( src = (char *) suffix; src && dest < max && *src; )
+	for( src = suffix; src && dest < max && *src; )
 		*dest++ = *src++;
-	*dest = 0;
+	*dest = '\0';
 
 #ifdef _DEBUG
 	if( trap_FS_FOpenFile( "init.log", &fhandle, FS_APPEND ) >= 0 )
@@ -142,7 +143,9 @@ void CG_Q3F_LoadingMapInfo(void)
 		return;
 	}
 
-	COM_StripExtension( COM_SkipPath( cgs.mapname ), buffer, sizeof(buffer) );
+	Q_strncpyz(buffer, cgs.mapname, sizeof(buffer));
+	Q_strncpyz(buffer, COM_SkipPath(buffer), sizeof(buffer));
+	COM_StripExtension( buffer, buffer, sizeof(buffer) );
 
 	cgs.mapInfoLoaded = BG_LoadMapInfoFromFile( va("%s/%s%s", MAPINFODIR, buffer, MAPINFOEXT), &cgDC, &cgs.mapinfo, &dummy);
 }

@@ -163,7 +163,11 @@ void trap_R_ClearScene( void ) {
 
 void trap_R_AddRefEntityToScene( const refEntity_t *re ) {
 	// Arnout: Q3F PORT : ET HACK DUE TO BUG IN tr_light.cpp, R_SetupEntityLighting 
-	((refEntity_t *)re)->renderfx |= RF_THIRD_PERSON;
+	//((refEntity_t *)re)->renderfx |= RF_THIRD_PERSON;
+	// do we really even need this anymore???
+	refEntity_t temp;
+	memcpy(&temp, re, sizeof(*re));
+	temp.renderfx |= RF_THIRD_PERSON;
 
 	SystemCall( UI_R_ADDREFENTITYTOSCENE, re );
 }
