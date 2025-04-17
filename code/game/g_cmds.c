@@ -3066,8 +3066,8 @@ void G_Q3F_SavemeCommand( gentity_t *ent )
 	for( player = g_entities; player < &g_entities[level.maxclients]; player++ )
 	{
 		if(	player->inuse &&
-			player->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_PARAMEDIC &&
-			player->client->sess.sessionTeam == ent->client->sess.sessionTeam &&
+			((player->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_PARAMEDIC &&
+			G_Q3F_IsAllied(ent, player)) || (player->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_AGENT && !G_Q3F_IsAllied(ent, player) && player->client->agentclass == Q3F_CLASS_PARAMEDIC && player->client->agentteam == ent->client->sess.sessionTeam)) &&
 			player != ent && 
 			trap_InPVS( ent->r.currentOrigin, player->r.currentOrigin ) )
 		{
@@ -3126,8 +3126,8 @@ void G_Q3F_ArmormeCommand( gentity_t *ent )
 	for( player = g_entities; player < &g_entities[level.maxclients]; player++ )
 	{
 		if(	player->inuse &&
-			player->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_ENGINEER &&
-			player->client->sess.sessionTeam == ent->client->sess.sessionTeam &&
+			((player->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_ENGINEER &&
+			G_Q3F_IsAllied(ent, player)) || (player->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_AGENT && !G_Q3F_IsAllied(ent, player) && player->client->agentclass == Q3F_CLASS_ENGINEER && player->client->agentteam == ent->client->sess.sessionTeam)) &&
 			player != ent && 
 			trap_InPVS( ent->r.currentOrigin, player->r.currentOrigin ) )
 		{
