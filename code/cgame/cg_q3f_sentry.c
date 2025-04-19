@@ -171,14 +171,14 @@ static QINLINE int CG_Q3F_SupplyStationMaxHealth( int supplevel )
 	}
 }
 
-static QINLINE qboolean CG_Q3F_CanUpgrade(void)
+static QINLINE qboolean CG_Q3F_CanUpgradeSentry(void)
 {
 	return (cg.snap->ps.ammo[AMMO_CELLS] >= 130) ? qtrue : qfalse;
 }
 
 static QINLINE qboolean CG_Q3F_CanUpgradeSupply(void)
 {
-	return (cg.snap->ps.ammo[AMMO_CELLS] >= 130) ? qtrue : qfalse;
+	return (cg.snap->ps.ammo[AMMO_CELLS] >= 200) ? qtrue : qfalse;
 }
 
 static QINLINE qboolean CG_Q3F_HasCells(void)
@@ -242,7 +242,7 @@ static void CG_Q3F_BuildableSprites(centity_t * cent)
 			}
 			return;
 		}
-		if((level == 1 || level == 2) && CG_Q3F_CanUpgrade())
+		if((level == 1 || level == 2) && CG_Q3F_CanUpgradeSentry())
 		{
 			switch (level)
 			{
