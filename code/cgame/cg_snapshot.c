@@ -55,6 +55,7 @@ static void CG_ResetEntity( centity_t *cent ) {
 	}
 
 	cent->muzzleFlashTime = 0;
+	cent->miscTime = 0;
 }
 
 /*

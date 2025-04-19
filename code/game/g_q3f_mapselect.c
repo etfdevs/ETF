@@ -367,7 +367,7 @@ void G_Q3F_MapSelectInit(void)
 	level.mapSelectState	= Q3F_MAPSELECT_READY;//Q3F_MAPSELECT_QUERY;
 	mapSelectTime	= level.time;
 
-	buff[0] = 0;
+	buff[0] = '\0';
 	for( index = 0; index < mapSelectNumMaps; index++ )
 	{
 		if( index > 0 )
@@ -555,7 +555,7 @@ void G_Q3F_MapSelectVote( gentity_t *ent )
 		}
 	}
 
-	buff[0] = 0;
+	buff[0] = '\0';
 	for( index = 0; index < mapSelectNumMaps; index++ )
 		Q_strcat( buff, sizeof(buff), va( "%d ", mapSelectVotes[index] ) );
 	trap_SetConfigstring( CS_FORTS_MAPVOTETALLY, buff );

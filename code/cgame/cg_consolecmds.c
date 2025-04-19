@@ -260,7 +260,7 @@ static void CG_Q3F_EndAlias( void )
 		for( index = 0; index < MAXALIASCOMMANDS; index++ )
 		{
 			if( !Q_stricmp( currcommands[index], cmdbuff ) ) {
-				*currcommands[index] = 0;		// Remove command from list
+				*currcommands[index] = '\0';		// Remove command from list
 				trap_SendConsoleCommand( va( "vstr %sup\n", cmdbuff ) );
 			}
 		}

@@ -760,7 +760,7 @@ gentity_t *fire_nail (gentity_t *self, vec3_t start, vec3_t dir, int damage, int
 	bolt->think = G_ExplodeMissile;
 	bolt->s.eType = ET_MISSILE;
 	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
-	bolt->s.weapon = WP_NAILGUN;
+	bolt->s.weapon = mod == MOD_SUPERNAILGUN ? WP_SUPERNAILGUN : WP_NAILGUN;
 	bolt->r.ownerNum = self->s.number;
 	//Unlagged client check
 	bolt->s.otherEntityNum = self->s.number;

@@ -71,8 +71,8 @@ g_q3f_weapon_t q3f_weapon_none = {
 	// No weapon
 
 	&bg_q3f_weapon_none,
-	&(Q3F_No_CanFire),		// Check firing
-	&(Q3F_No_Fire),		// Fire
+	&Q3F_No_CanFire,		// Check firing
+	&Q3F_No_Fire,		// Fire
 };
 
 g_q3f_weapon_t q3f_weapon_axe = {

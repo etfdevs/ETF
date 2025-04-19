@@ -50,7 +50,7 @@ panelData_t panel;
 ***** Shared rendering code.
 ****/
 
-static vec3_t panelTeamRGBs[] = {
+static const vec3_t panelTeamRGBs[] = {
 	{ 0.5f,	0.5f, 0.5f },		// Q3F_TEAM_FREE
 	{ 1.0f,	0.3f, 0.3f },		// Q3F_TEAM_RED
 	{ 0.3f,	0.3f, 1.0f },		// Q3F_TEAM_BLUE
@@ -58,7 +58,7 @@ static vec3_t panelTeamRGBs[] = {
 	{ 0.3f,	1.0f, 0.3f },		// Q3F_TEAM_GREEN
 	{ 0.5f,	0.5f, 0.5f }		// Q3F_TEAM_SPECTATOR
 };
-static char *panelTeamNames[] = {
+static const char *panelTeamNames[] = {
 	"Free",			// Q3F_TEAM_FREE
 	"Red",			// Q3F_TEAM_RED
 	"Blue",			// Q3F_TEAM_BLUE
@@ -66,14 +66,14 @@ static char *panelTeamNames[] = {
 	"Green",		// Q3F_TEAM_GREEN
 	"Spectator"		// Q3F_TEAM_SPECTATOR
 };
-static char panelTeamCodes[] = {
+static const char panelTeamCodes[] = {
 	COLOR_WHITE, COLOR_RED, COLOR_BLUE, COLOR_YELLOW, COLOR_GREEN, COLOR_WHITE
 };
 void CG_Q3F_PanelCalculateTeamColour( int team, vec4_t colour )
 {
 	// Multiply the specified colour with that of the specified team. Set all colour fields to 1.0 for no conversion.
 
-	float *teamColour = panelTeamRGBs[team];
+	const float *teamColour = panelTeamRGBs[team];
 
 	colour[0] = teamColour[0] * colour[0];
 	colour[1] = teamColour[1] * colour[1];

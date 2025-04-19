@@ -98,7 +98,7 @@ qboolean ConcussExplode( gentity_t *ent )
 		G_Q3F_ForceFieldExtTrace( &trace, ent->r.currentOrigin, NULL, NULL, player->r.currentOrigin, (ent - level.gentities), ent->r.ownerNum, MASK_SOLID|CONTENTS_FORCEFIELD );
 		if( trace.contents & CONTENTS_FORCEFIELD )
 			continue;	// Let's not concuss them through a forcefield.
-		effect = 17000 * (1.0 - distance*distance / ((player == ent->activator) ? 145800.0 : 97200.0) );
+		effect = 10000 * (1.0 - distance*distance / ((player == ent->activator) ? 145800.0 : 97200.0) ); // 17000
 		if( trace.fraction != 1.0 && trace.entityNum != (player - level.gentities) ) {
 			effect *= 0.5;		// Reduce effect through walls
 		}
@@ -355,7 +355,7 @@ qboolean EmpExplode( gentity_t *emp )
 		VectorSubtract( vec, ent->r.currentOrigin, vec );
 		if( VectorLength( vec ) > EMPRADIUS )
 			continue;
-		if( ent->client )//&& (ent == emp->activator || g_friendlyFire.integer ||
+		if( ent->s.eType == ET_PLAYER && ent->client && ent->health > 0 )//&& (ent == emp->activator || g_friendlyFire.integer ||
 //			!G_Q3F_IsAllied( emp->activator, ent )) )
 		{
 			cls = BG_Q3F_GetClass(&ent->client->ps);
@@ -405,6 +405,11 @@ qboolean EmpExplode( gentity_t *emp )
 				G_Damage( ent, emp, emp->activator, dir, NULL, damage, DAMAGE_Q3F_SHOCK, MOD_PULSEGREN );
 				Q3F_CapClips(&(ent->client->ps));
 			}
+		}
+		else if( (ent->s.eType == ET_PLAYER && ent->client && ent->health <= 0) || ent->s.eType == ET_Q3F_CORPSE )
+		{
+			// its a dead player body unrespawned or bodyque corpse
+			G_Damage( ent, emp, emp->activator, NULL, NULL, 40, DAMAGE_Q3F_SHOCK, MOD_PULSEGREN );
 		}
 		else if(	(ent->s.eType == ET_Q3F_SENTRY || ent->s.eType == ET_Q3F_SUPPLYSTATION) )
 //					(g_friendlyFire.integer || !G_Q3F_IsAllied( emp->activator, ent )) )
@@ -579,7 +584,7 @@ void HallucinoGenicCheckFire(vec3_t flamepos,float flameradius,gentity_t * owner
 		VectorSubtract( vec, gasgren->r.currentOrigin, vec );
 		if(( VectorLength( vec )-flameradius) > GREN_GAS_RADIUS )
 			continue;
-		if( !Q_stricmp( gasgren->classname, "handgrenade" ) &&
+		if( gasgren->s.eType == ET_Q3F_GRENADE &&
 			gasgren->s.weapon == Q3F_GREN_GAS && 
 			!gasgren->freeAfterEvent &&
 			gasgren->think == HallucinogenicExplodeThink )

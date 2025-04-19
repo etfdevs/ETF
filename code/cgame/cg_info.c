@@ -48,7 +48,7 @@ static const char *DayAbbrev[] = {
 		"Thu","Fri","Sat"
 };
 
-void CG_ETF_DemoParseString(const char* in, char* out, int size) {
+void CG_ETF_DemoParseString(const char *in, char *out, int size) {
 	qtime_t time;
 	char tmp[2] = {0, 0};
 	const char* p;

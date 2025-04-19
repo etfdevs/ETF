@@ -2273,6 +2273,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, im
 		radius = 4;
 		break;
 
+	case WP_SUPERNAILGUN:
 	case WP_NAILGUN:
 	case WP_DARTGUN:
 		CG_BulletExplosion( origin, dir );

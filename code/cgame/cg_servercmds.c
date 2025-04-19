@@ -543,6 +543,8 @@ static void CG_MapRestart( void ) {
 		CG_MatchLogAddLine("info map_restart\n");
 	}
 
+	cg.centerPrintTime = 0;
+	cg.zoomTime = 0;
 
 	CG_ClearFlameChunks();
 	CG_InitSmokeSprites();

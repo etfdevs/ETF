@@ -43,7 +43,7 @@ CG_PlaceString
 Also called by scoreboard drawing
 ===================
 */
-const char	*CG_PlaceString( int rank ) {
+/*const char* CG_PlaceString(int rank) {
 	static char	str[64];
 	const char	*s, *t;
 
@@ -78,7 +78,7 @@ const char	*CG_PlaceString( int rank ) {
 
 	Com_sprintf( str, sizeof( str ), "%s%s", t, s );
 	return str;
-}
+}*/
 
 /*
 =============

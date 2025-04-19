@@ -248,10 +248,6 @@ typedef struct {
 void SP_info_player_start (gentity_t *ent);
 void SP_info_player_deathmatch (gentity_t *ent);
 void SP_info_player_intermission (gentity_t *ent);
-void SP_info_firstplace(gentity_t *ent);
-void SP_info_secondplace(gentity_t *ent);
-void SP_info_thirdplace(gentity_t *ent);
-void SP_info_podium(gentity_t *ent);
 
 void SP_func_plat (gentity_t *ent);
 void SP_func_static (gentity_t *ent);
@@ -277,7 +273,6 @@ void SP_target_delay (gentity_t *ent);
 void SP_target_speaker (gentity_t *ent);
 void SP_target_print (gentity_t *ent);
 void SP_target_laser (gentity_t *self);
-void SP_target_character (gentity_t *ent);
 void SP_target_score( gentity_t *ent );
 void SP_target_teleporter( gentity_t *ent );
 void SP_target_relay (gentity_t *ent);
@@ -301,7 +296,6 @@ void SP_misc_portal_surface(gentity_t *ent);
 void SP_Q3F_misc_flamethrower( gentity_t *ent );
 
 void SP_shooter_rocket( gentity_t *ent );
-void SP_shooter_plasma( gentity_t *ent );
 void SP_shooter_grenade( gentity_t *ent );
 
 void SP_team_CTF_redplayer( gentity_t *ent );
@@ -309,8 +303,6 @@ void SP_team_CTF_blueplayer( gentity_t *ent );
 
 void SP_team_CTF_redspawn( gentity_t *ent );
 void SP_team_CTF_bluespawn( gentity_t *ent );
-
-//void SP_item_botroam( gentity_t *ent ) {};
 
 void SP_Q3F_CTF_redflag( gentity_t *ent );
 void SP_Q3F_CTF_blueflag( gentity_t *ent );
@@ -334,7 +326,6 @@ spawn_t	spawns[] = {
 	{"func_door", SP_func_door},
 	{"func_static", SP_func_static},
 	{"func_rotating", SP_func_rotating},
-//	{"func_child_rotating", SP_func_child_rotating}, // RR2DO2: Func_rotating attached to another mover
 	{"func_bobbing", SP_func_bobbing},
 	{"func_pendulum", SP_func_pendulum},
 	{"func_train", SP_func_train},
@@ -411,7 +402,6 @@ spawn_t	spawns[] = {
 
 	{"shooter_rocket", SP_shooter_rocket},
 	{"shooter_grenade", SP_shooter_grenade},
-	{"shooter_plasma", SP_shooter_plasma},
 
 	{"team_CTF_redplayer", SP_Q3F_team_CTF_redplayer},//SP_team_CTF_redplayer},
 	{"team_CTF_blueplayer", SP_Q3F_team_CTF_blueplayer},//SP_team_CTF_blueplayer},
