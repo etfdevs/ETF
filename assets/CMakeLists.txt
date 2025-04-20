@@ -8,7 +8,7 @@ add_custom_target(mod_pk3
 			-DOUTPUT="${PK3_PATH}"
 			-P ${CMAKE_SOURCE_DIR}/cmake/AssetsPackager.cmake
 		WORKING_DIRECTORY ${BASE_DIR_PATH}
-		DEPENDS remove_old_pk3
+		DEPENDS cgame ui remove_old_pk3
 		COMMENT "Packing ${PK3_NAME}.pk3"
 )
 
