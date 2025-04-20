@@ -233,10 +233,6 @@ static qboolean UI_AdvancedConsole(void)
 	return qfalse;
 }
 
-void UI_SetEventHandling(int mode) {
-	uiInfo.eventHandling = mode;
-}
-
 void UI_AddToTextBox(char* text, char* buffer, int* times, int max, int bufferwidth) {
 	int i;
 

@@ -1260,7 +1260,7 @@ void G_Q3F_Weapon_Knife_Fire(struct gentity_s *ent)
 	vec3_t		end;
 	gentity_t	*tent;
 	gentity_t	*traceEnt;
-	int			damage;
+	int			damage, given;
 	vec3_t		muzzle, forward;
 
 	ent->client->pers.stats.data[STATS_WP + WP_AXE].shots++;
@@ -1306,6 +1306,7 @@ void G_Q3F_Weapon_Knife_Fire(struct gentity_s *ent)
 	CrossProduct(tright, tforward, xproduct);
 */
 
+	given = ent->client->pers.stats.data[STATS_WP + WP_AXE].given;
 	if(traceEnt->client)
 	{
 		if(fabs(AngleSubtract(ent->client->ps.viewangles[1],traceEnt->client->ps.viewangles[1])) > 90)
@@ -1324,9 +1325,9 @@ void G_Q3F_Weapon_Knife_Fire(struct gentity_s *ent)
 	G_Damage( traceEnt, ent, ent, forward, tr.endpos,
 		damage, DAMAGE_NO_GIB|DAMAGE_NO_ARMOR, MOD_KNIFE );
 
-	return;
-
-
+	if (given < ent->client->pers.stats.data[STATS_WP + WP_AXE].given) {
+		ent->client->pers.stats.data[STATS_WP + WP_AXE].hits++;
+	}
 }
 
 void G_Q3F_Heal_Armour(struct gentity_s *traceEnt, struct gentity_s *ent)
@@ -1448,9 +1449,10 @@ void G_Q3F_Weapon_BioAxe_Fire(struct gentity_s *ent)
 	vec3_t		end;
 	gentity_t	*tent;
 	gentity_t	*traceEnt;
-	int			damage;
+	int			damage, given;
 	vec3_t		muzzle, forward;
 
+	ent->client->pers.stats.data[STATS_WP + WP_AXE].shots++;
 	CalcMuzzlePoint( ent, muzzle, forward );
 	VectorMA (muzzle, G_Q3F_GAUNTLET_RANGE * 1.5, forward, end);
 	G_UnlaggedTrace( ent, &tr, muzzle, NULL, NULL, end, ent->s.number, MASK_SHOT );
@@ -1498,10 +1500,13 @@ void G_Q3F_Weapon_BioAxe_Fire(struct gentity_s *ent)
 			return;
 		}
 
-
+		given = ent->client->pers.stats.data[STATS_WP + WP_AXE].given;
 		damage = 10;
 		G_Damage( traceEnt, ent, ent, forward, tr.endpos,
 			damage, DAMAGE_NO_ARMOR, MOD_NEEDLE_PRICK ); // Ensiform: just hitting is just a prick, not the disease itself
+		if (given < ent->client->pers.stats.data[STATS_WP + WP_AXE].given ) {
+			ent->client->pers.stats.data[STATS_WP + WP_AXE].hits++;
+		}
 		G_Q3F_Disease_Person(traceEnt, ent, qfalse);
 		return;
 

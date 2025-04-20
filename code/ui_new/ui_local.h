@@ -452,8 +452,6 @@ typedef struct {
 	int				ETF_current_weapQuote_lines;
 	int				ETF_current_weapQuote_num;
 
-	int				eventHandling; // for handling messagemode through ui
-
 	qhandle_t		modelcache[Q3F_CLASS_MAX][3]; // model loadin ui side
 	F2RDef_t		*f2rcache[Q3F_CLASS_MAX][3];
 	qhandle_t		skincache[Q3F_CLASS_MAX][3];
@@ -534,11 +532,6 @@ typedef struct {
 }	uiInfo_t;
 
 extern uiInfo_t uiInfo;
-
-enum {
-  UI_EVENT_NONE,
-//  UI_EVENT_MESSAGEMODE,
-};
 
 //
 // ui_players.c
@@ -637,7 +630,6 @@ qboolean 		UI_CursorInRect (int x, int y, int width, int height);
 void			UI_AdjustFrom640( float *x, float *y, float *w, float *h );
 const char			*UI_Argv( int arg );
 const char			*UI_Cvar_VariableString( const char *var_name );
-void UI_SetEventHandling(int mode);
 // RR2DO2
 void			UI_Q3F_DrawProgress( rectDef_t *rect, int value, int maxvalue, vec4_t color, qhandle_t shader );
 // RR2DO2

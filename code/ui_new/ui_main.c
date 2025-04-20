@@ -302,6 +302,7 @@ int dll_com_trapGetValue;
 int dll_trap_R_AddRefEntityToScene2;
 int dll_trap_R_AddLinearLightToScene;
 int dll_trap_RemoveCommand;
+static qboolean engine_is_ETE = qfalse;
 
 /*
 ================
@@ -1372,7 +1373,6 @@ qboolean Load_Menu(int handle) {
 	return qfalse;
 }
 
-static qboolean engine_is_ETE = qfalse;
 const char *compiledate = __DATE__;
 int compileday, compilemonth, compileyear;
 
@@ -4329,13 +4329,11 @@ static void UI_RunMenuScript(const char **args) {
 			trap_Key_SetCatcher( KEYCATCH_UI );
 			Menus_CloseAll();
 			Menus_ActivateByName("setup_menu2");
-			UI_SetEventHandling(UI_EVENT_NONE);
 		} else if (Q_stricmp(name, "Leave") == 0) {
 			trap_Cmd_ExecuteText( EXEC_APPEND, "disconnect\n" );
 			trap_Key_SetCatcher( KEYCATCH_UI );
 			Menus_CloseAll();
 			Menus_ActivateByName("main");
-			UI_SetEventHandling(UI_EVENT_NONE);
 		} else if (Q_stricmp(name, "ServerSort") == 0) {
 			int sortColumn;
 			if (Int_Parse(args, &sortColumn)) {
@@ -4356,7 +4354,6 @@ static void UI_RunMenuScript(const char **args) {
 			trap_Key_ClearStates();
 			trap_Cvar_Set( "cl_paused", "0" );
 			Menus_CloseAll();
-			UI_SetEventHandling(UI_EVENT_NONE);
 /*		} else if (Q_stricmp(name, "voteMap") == 0) {
 			if (ui_currentNetMap.integer >=0 && ui_currentNetMap.integer < uiInfo.mapCount) {
 				trap_Cmd_ExecuteText( EXEC_APPEND, va("callvote map %s\n",uiInfo.mapList[ui_currentNetMap.integer].mapLoadName) );
@@ -4461,7 +4458,6 @@ static void UI_RunMenuScript(const char **args) {
 				trap_Key_ClearStates();
 				trap_Cvar_Set( "cl_paused", "0" );
 				Menus_CloseAll();
-				UI_SetEventHandling(UI_EVENT_NONE);
 			}
 		} else if (Q_stricmp(name, "voiceOrdersTeam") == 0) {
 			const char *orders;
@@ -4475,7 +4471,6 @@ static void UI_RunMenuScript(const char **args) {
 				trap_Key_ClearStates();
 				trap_Cvar_Set( "cl_paused", "0" );
 				Menus_CloseAll();
-				UI_SetEventHandling(UI_EVENT_NONE);
 			}
 		} else if (Q_stricmp(name, "voiceOrders") == 0) {
 			const char *orders;
@@ -4490,7 +4485,6 @@ static void UI_RunMenuScript(const char **args) {
 				trap_Key_ClearStates();
 				trap_Cvar_Set( "cl_paused", "0" );
 				Menus_CloseAll();
-				UI_SetEventHandling(UI_EVENT_NONE);
 			}
 		} else if (Q_stricmp(name, "glCustom") == 0) {
 			trap_Cvar_Set("ui_glCustom", "4");
@@ -6736,7 +6730,6 @@ static void UI_Pause(qboolean b) {
 		trap_Key_SetCatcher( trap_Key_GetCatcher() & ~KEYCATCH_UI );
 		trap_Key_ClearStates();
 		trap_Cvar_Set( "cl_paused", "0" );
-		UI_SetEventHandling(UI_EVENT_NONE);
 	}
 }
 
@@ -6780,7 +6773,7 @@ UI_Init
 =================
 */
 void UI_Init( void ) {
-	char ver[MAX_CVAR_VALUE_STRING];
+	char value[MAX_CVAR_VALUE_STRING];
 	const char *menuSet;
 	//int start;
 
@@ -6788,19 +6781,22 @@ void UI_Init( void ) {
 
 	UI_Q3F_SetVersion();
 
-	trap_Cvar_VariableStringBuffer( "//trap_GetValue", ver, sizeof( ver ) );
-	if ( ver[0] ) {
-		dll_com_trapGetValue = atoi( ver );
-		if ( trap_GetValue( ver, sizeof( ver ), "trap_R_AddRefEntityToScene2" ) ) {
-			dll_trap_R_AddRefEntityToScene2 = atoi( ver );
+	trap_Cvar_VariableStringBuffer( "//trap_GetValue", value, sizeof(value) );
+	if ( value[0] ) {
+		dll_com_trapGetValue = atoi( value );
+		if ( trap_GetValue( value, sizeof( value ), "engine_is_ete" ) ) {
+			engine_is_ETE = qtrue;
+		}
+		if ( trap_GetValue( value, sizeof( value ), "trap_R_AddRefEntityToScene2" ) ) {
+			dll_trap_R_AddRefEntityToScene2 = atoi( value );
 			intShaderTime = qtrue;
 		}
-		if ( trap_GetValue( ver, sizeof( ver ), "trap_R_AddLinearLightToScene_ETE" ) ) {
-			dll_trap_R_AddLinearLightToScene = atoi( ver );
+		if ( trap_GetValue( value, sizeof( value ), "trap_R_AddLinearLightToScene_ETE" ) ) {
+			dll_trap_R_AddLinearLightToScene = atoi( value );
 			linearLight = qtrue;
 		}
-		if ( trap_GetValue( ver, sizeof( ver ), "trap_RemoveCommand" ) ) {
-			dll_trap_RemoveCommand = atoi( ver );
+		if ( trap_GetValue( value, sizeof( value ), "trap_RemoveCommand" ) ) {
+			dll_trap_RemoveCommand = atoi( value );
 			removeCommand = qtrue;
 		}
 	}
@@ -6808,12 +6804,6 @@ void UI_Init( void ) {
 	UI_RegisterCvars();
 	UI_InitMemory();
 	trap_PC_RemoveAllGlobalDefines();
-
-	trap_Cvar_VariableStringBuffer( "version", ver, sizeof( ver ) );
-	if ( !strcmp( ver, "ET 2.60e") )
-		engine_is_ETE = qtrue;
-	else
-		engine_is_ETE = qfalse;
 
 	// cache redundant calulations
 	trap_GetGlconfig( &uiInfo.uiDC.glconfig );
@@ -6914,7 +6904,7 @@ void UI_Init( void ) {
 	uiInfo.uiDC.cursor	= trap_R_RegisterShaderNoMip( "menu/art/3_cursor2" );
 	uiInfo.uiDC.whiteShader = trap_R_RegisterShaderNoMip( "white" );
 
-	*uiInfo.mapMenuName = 0;
+	*uiInfo.mapMenuName = '\0';
 
 	AssetCache();
 
@@ -6949,8 +6939,6 @@ void UI_Init( void ) {
 	uiInfo.hudCount = 0;
 	uiInfo.hudVariationCount = 0;
 
-	trap_Cvar_Register(NULL, "debug_protocol", "", 0 );
-
 	trap_Cvar_Register(NULL, "g_gameindex", "1", CVAR_SERVERINFO | CVAR_LATCH);
 
 //	trap_Cvar_Set("ui_actualNetGameType", va("%d", ui_netGameType.integer));
@@ -6970,27 +6958,25 @@ UI_KeyEvent
 =================
 */
 void UI_KeyEvent( int key, qboolean down ) {
-	switch(uiInfo.eventHandling) {
-	default:
-		if (menuCount > 0) {
-			menuDef_t *menu = Menu_GetFocused();
-			if (menu) {
-				if (key == K_ESCAPE && down && !Menus_AnyFullScreenVisible()) {
-					Menus_CloseAll();
-				} else {
-					Menu_HandleKey( menu, key, down );
-				}
-			} else {
-				trap_Key_SetCatcher( trap_Key_GetCatcher() & ~KEYCATCH_UI );
-				trap_Key_ClearStates();
-			}
+	if (menuCount > 0) {
+		menuDef_t *menu = Menu_GetFocused();
+		if (menu) {
+			//if (key == K_ESCAPE && down && !Menus_AnyFullScreenVisible()) {
+			//	Menus_CloseAll();
+			//} else {
+			//	Menu_HandleKey( menu, key, down );
+			//}
+			// always have the menus do the proper handling
+			Menu_HandleKey( menu, key, down );
+		} else {
+			trap_Key_SetCatcher( trap_Key_GetCatcher() & ~KEYCATCH_UI );
+			trap_Key_ClearStates();
 		}
+	}
 
 	//if ((s > 0) && (s != menu_null_sound)) {
 		//  trap_S_StartLocalSound( s, CHAN_LOCAL_SOUND );
 	//}
-		break;
-	}
 }
 
 /*
@@ -7044,7 +7030,6 @@ void UI_SetActiveMenu( uiMenuCommand_t menu ) {
 			default:
 				return;
 			case UIMENU_NONE:
-				UI_SetEventHandling(UI_EVENT_NONE);
 				trap_Key_SetCatcher( trap_Key_GetCatcher() & ~KEYCATCH_UI );
 				trap_Key_ClearStates();
 				trap_Cvar_Set( "cl_paused", "0" );
@@ -7053,7 +7038,6 @@ void UI_SetActiveMenu( uiMenuCommand_t menu ) {
 			case UIMENU_MAIN:
 				//trap_Cvar_Set( "sv_killserver", "1" );
 				trap_Key_SetCatcher( trap_Key_GetCatcher() | KEYCATCH_UI );
-				UI_SetEventHandling(UI_EVENT_NONE);
 				//trap_S_StartLocalSound( trap_S_RegisterSound("sound/misc/menu_background.wav", qfalse) , CHAN_LOCAL_SOUND );
 //				trap_S_StartBackgroundTrack("music/sm_kesselrun.wav", NULL);
 				if (uiInfo.inGameLoad) {
@@ -7088,7 +7072,6 @@ void UI_SetActiveMenu( uiMenuCommand_t menu ) {
 				return;
 			case UIMENU_TEAM:
 				trap_Key_SetCatcher( KEYCATCH_UI );
-				UI_SetEventHandling(UI_EVENT_NONE);
 				Menus_ActivateByName("team");
 			return;
 			case UIMENU_NEED_CD:
@@ -7107,7 +7090,6 @@ void UI_SetActiveMenu( uiMenuCommand_t menu ) {
 				}
 
 				trap_Key_SetCatcher( trap_Key_GetCatcher() | KEYCATCH_UI ); // dont keep closing the console
-				UI_SetEventHandling(UI_EVENT_NONE);
 
 				Menus_CloseAll();
 				menubar = Menus_FindByName("ingame");
@@ -7148,7 +7130,6 @@ void UI_SetActiveMenu( uiMenuCommand_t menu ) {
 				}
 
 				trap_Key_SetCatcher( trap_Key_GetCatcher() | KEYCATCH_UI ); // dont keep closing the console
-				UI_SetEventHandling(UI_EVENT_NONE);
 
 				Menus_CloseAll();
 				menus = Menus_FindByName("endgame");
