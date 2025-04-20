@@ -270,7 +270,7 @@ typedef struct {
 	qboolean		barrelSpinning;
 
 	// Golliwog: Apparent team and class (e.g. after spy effects)
-	int				visibleTeam, visibleClass;
+	//int				visibleTeam, visibleClass;
 	// Golliwog.
 } playerEntity_t;
 
@@ -1971,7 +1971,7 @@ void CG_Q3F_Flamer( centity_t *cent );
 void CG_AdjustPositionForMover( const vec3_t in, int moverNum, int fromTime, int toTime, vec3_t out );
 
 void CG_PositionEntityOnTag( refEntity_t *entity, /*const*/ refEntity_t *parent, const char *tagName, int startIndex, vec3_t *offset );
-void CG_PositionRotatedEntityOnTag( refEntity_t *entity, const refEntity_t *parent, const char *tagName );
+void CG_PositionRotatedEntityOnTag( refEntity_t *entity, /*const*/ refEntity_t *parent, const char *tagName );
 void CG_GetTagFromModel( orientation_t *tag, qhandle_t hModel, const char *tagName );
 
 

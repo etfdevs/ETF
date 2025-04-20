@@ -850,8 +850,14 @@ void Spirit_RunScript( const SpiritScript_t *SpiritScript, const vec3_t origin, 
 	Spirit_RunSystem( SpiritScript->SpiritSystem, key, origin, oldorigin, axis );
 }
 
-
-void Spirit_RunModel( const SpiritScript_t *SpiritScript, /*const*/ refEntity_t *re, const char * tagname, intptr_t key ) {
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic push
+#endif
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif
+// We promise we aren't changing ref ent here
+void Spirit_RunModel( const SpiritScript_t *SpiritScript, const refEntity_t *re, const char * tagname, intptr_t key ) {
 	orientation_t	lerped;
 	vec3_t		origin, oldorigin;
 	matrix3_t	axis;
@@ -866,11 +872,11 @@ void Spirit_RunModel( const SpiritScript_t *SpiritScript, /*const*/ refEntity_t 
 	VectorAdd( origin, re->oldorigin, oldorigin );
 	VectorAdd( origin, re->origin, origin );
 	// had to cast away the const to avoid compiler problems...
-	MatrixMultiply( lerped.axis, /*((refEntity_t *)re)*/re->axis, axis );
+	MatrixMultiply( lerped.axis, ((refEntity_t *)re)->axis, axis );
 	Spirit_RunScript(SpiritScript, origin, oldorigin, axis, key );
 }
 
-qboolean Spirit_UpdateModel( const SpiritScript_t *SpiritScript, /*const*/ refEntity_t *re, const char * tagname, intptr_t key ) {
+qboolean Spirit_UpdateModel( const SpiritScript_t *SpiritScript, const refEntity_t *re, const char * tagname, intptr_t key ) {
 	orientation_t	lerped;
 	vec3_t		origin;
 	matrix3_t	axis;
@@ -881,9 +887,12 @@ qboolean Spirit_UpdateModel( const SpiritScript_t *SpiritScript, /*const*/ refEn
 	VectorMA( origin, lerped.origin[1], re->axis[1], origin );
 	VectorMA( origin, lerped.origin[2], re->axis[2], origin );
 	// had to cast away the const to avoid compiler problems...
-	MatrixMultiply( lerped.axis, /*((refEntity_t *)re)*/re->axis, axis );
+	MatrixMultiply( lerped.axis, ((refEntity_t *)re)->axis, axis );
 	return Spirit_UpdateScript( SpiritScript, origin , axis, key );
 }
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic pop
+#endif
 
 ////////////////////////////////////////////////////////
 // Spirit Scripting

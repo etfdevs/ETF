@@ -161,12 +161,12 @@ tryagain:
 UI_PositionEntityOnTag
 ======================
 */
-static void UI_PositionEntityOnTag( refEntity_t *entity, const refEntity_t *parent, char *tagName ) {
+static void UI_PositionEntityOnTag( refEntity_t *entity, /*const*/ refEntity_t *parent, const char *tagName ) {
 	int				i;
 	orientation_t	lerped;
 	
 	// lerp the tag
-	trap_CM_LerpTag( &lerped, (const refEntity_t *)parent, (const char *)tagName, 0 );
+	trap_CM_LerpTag( &lerped, parent, tagName, 0 );
 
 	// FIXME: allow origin offsets along tag?
 	VectorCopy( parent->origin, entity->origin );
@@ -175,7 +175,7 @@ static void UI_PositionEntityOnTag( refEntity_t *entity, const refEntity_t *pare
 	}
 
 	// cast away const because of compiler problems
-	MatrixMultiply( lerped.axis, ((refEntity_t*)parent)->axis, entity->axis );
+	MatrixMultiply( lerped.axis, /*((refEntity_t*)parent)*/parent->axis, entity->axis );
 	entity->backlerp = parent->backlerp;
 }
 
@@ -185,13 +185,13 @@ static void UI_PositionEntityOnTag( refEntity_t *entity, const refEntity_t *pare
 UI_PositionRotatedEntityOnTag
 ======================
 */
-static void UI_PositionRotatedEntityOnTag( refEntity_t *entity, const refEntity_t *parent, char *tagName ) {
+static void UI_PositionRotatedEntityOnTag( refEntity_t *entity, /*const*/ refEntity_t *parent, const char *tagName ) {
 	int				i;
 	orientation_t	lerped;
 	matrix3_t		tempAxis;
 
 	// lerp the tag
-	trap_CM_LerpTag( &lerped, (const refEntity_t *)parent, (const char *)tagName, 0 );
+	trap_CM_LerpTag( &lerped, parent, tagName, 0 );
 
 	// FIXME: allow origin offsets along tag?
 	VectorCopy( parent->origin, entity->origin );
@@ -200,7 +200,7 @@ static void UI_PositionRotatedEntityOnTag( refEntity_t *entity, const refEntity_
 	}
 
 	// cast away const because of compiler problems
-	MatrixMultiply( entity->axis, ((refEntity_t *)parent)->axis, tempAxis );
+	MatrixMultiply( entity->axis, /*((refEntity_t *)parent)*/parent->axis, tempAxis );
 	MatrixMultiply( lerped.axis, tempAxis, entity->axis );
 }
 

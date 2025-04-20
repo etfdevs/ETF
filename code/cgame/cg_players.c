@@ -1913,7 +1913,7 @@ void CG_Q3F_AddBackPack( centity_t *cent, clientInfo_t *ci, int renderfx ) {
 	}
 }
 
-void CG_AddPlayerEffects( centity_t *cent, const refEntity_t *torso, const refEntity_t *head )
+static void CG_AddPlayerEffects( centity_t *cent, /*const*/ refEntity_t *torso/*, const refEntity_t *head*/ )
 {
 	int clientNum = cent->currentState.clientNum;
 	vec3_t	origin;
@@ -2202,7 +2202,6 @@ void CG_Player( centity_t *cent ) {
 		CG_AddRefEntityWithPowerups( &legs, &cent->currentState, team );
 	}
 
-
 	// if the model failed, allow the default nullmodel to be displayed
 	if (!legs.hModel) {
 		return;
@@ -2257,7 +2256,7 @@ void CG_Player( centity_t *cent ) {
 
 	VectorCopy( cent->lerpOrigin, head.lightingOrigin );
 
-	CG_PositionRotatedEntityOnTag( &head, &torso,"tag_head" );
+	CG_PositionRotatedEntityOnTag( &head, &torso, "tag_head" );
 	VectorCopy( head.origin, head.oldorigin );
 
 	head.shadowPlane = shadowPlane;
@@ -2282,7 +2281,7 @@ void CG_Player( centity_t *cent ) {
 	// add powerups floating behind the player
 	if ( !corpse ) {
 		CG_PlayerPowerups( cent, &torso );
-		CG_AddPlayerEffects( cent, &torso, &head);
+		CG_AddPlayerEffects( cent, &torso );
 	}
 
 	// Golliwog: Store velocity and apparent team for later reference by sniper

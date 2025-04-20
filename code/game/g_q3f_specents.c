@@ -2016,6 +2016,13 @@ static char *q3f_fdrestoremessagekeys[3][8];	// Keep the strings for a little ex
 //static char *q3f_fdhealthmessagekeys[3][4];	// Keep the strings for a little extra speed
 //static char *q3f_fddamagemessagekeys[3][4];	// Keep the strings for a little extra speed
 //static char *q3f_fdrestoremessagekeys[3][4];	// Keep the strings for a little extra speed
+
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic push
+#endif
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
 static void G_Q3F_FuncDamageCalc( gentity_t *self, gentity_t *other, qboolean checkcriteria )
 {
 	// Think about where we are, and when next to think.
@@ -2239,6 +2246,9 @@ static void G_Q3F_FuncDamageCalc( gentity_t *self, gentity_t *other, qboolean ch
 	if( self->mapdata->state == Q3F_STATE_ACTIVE )
 		G_Q3F_TriggerEntity( self, other, Q3F_STATE_INACTIVE, NULL, qtrue );
 }
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic pop
+#endif
 
 static void G_Q3F_FuncDamageThink( gentity_t *ent )
 	{ G_Q3F_FuncDamageCalc( ent, NULL, qfalse ); }
@@ -3256,10 +3266,18 @@ void SP_Q3F_func_visibility(gentity_t * ent)
 ***** Accumulator.
 ****/
 
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic push
+#endif
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
+
 static int G_Q3F_TargetAccumulatorStateThink( gentity_t *ent, gentity_t *activator, int targetstate, int oldstate, int force, trace_t *trace )
 {
 	// Called every time the accumulator state changes.
 
+	const char *spawnkey;
 	char *key;
 	q3f_keypairarray_t *kpa;
 	q3f_keypair_t *kp;
@@ -3280,10 +3298,10 @@ static int G_Q3F_TargetAccumulatorStateThink( gentity_t *ent, gentity_t *activat
 
 		// Print off any appropriate messages.
 	memset( messagekeys, 0, sizeof(messagekeys) );
-	key = (char *)va( "%d", (int)ent->count );
-	G_Q3F_StateBroadcast( ent, activator, activator, "_message", &messagekeys[0],	Q3F_BROADCAST_TEXT, key );
-	G_Q3F_StateBroadcast( ent, activator, activator, "_sound", &messagekeys[1],		Q3F_BROADCAST_SOUND, key );
-	G_Q3F_StateBroadcast( ent, activator, activator, "_dict", &messagekeys[2],		Q3F_BROADCAST_DICT, key );
+	spawnkey = va( "%d", (int)ent->count );
+	G_Q3F_StateBroadcast( ent, activator, activator, "_message", &messagekeys[0],	Q3F_BROADCAST_TEXT, spawnkey );
+	G_Q3F_StateBroadcast( ent, activator, activator, "_sound", &messagekeys[1],		Q3F_BROADCAST_SOUND, spawnkey );
+	G_Q3F_StateBroadcast( ent, activator, activator, "_dict", &messagekeys[2],		Q3F_BROADCAST_DICT, spawnkey );
 
 	//BirdDawg: clean up allocated string memory, since these are going to be worthless to cache
 	for ( i = 0; i < 3 ; i++ )
@@ -3294,8 +3312,8 @@ static int G_Q3F_TargetAccumulatorStateThink( gentity_t *ent, gentity_t *activat
 		}
 	}
 
-	key = (char *)va( "target_%d", (int)ent->count );
-	if( (key = G_Q3F_GetString( key )) &&
+	spawnkey = va( "target_%d", (int)ent->count );
+	if( (key = G_Q3F_GetString( spawnkey )) &&
 		(kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, key)) )
 	{
 		if( kp->value.type == Q3F_TYPE_STRING )
@@ -3327,6 +3345,11 @@ static int G_Q3F_TargetAccumulatorStateThink( gentity_t *ent, gentity_t *activat
 
 	return( Q3F_STATE_INACTIVE );	// We always force back to inactive if we did something.
 }
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic pop
+#endif
+
+
 void SP_Q3F_target_accumulator( gentity_t *ent )
 {
 	// Allows triggering different entities based on the accumulator value.
@@ -3515,10 +3538,17 @@ static int G_Q3F_MiscMatchtimerStateThink( gentity_t *ent, gentity_t *activator,
 	return( targetstate );
 }
 
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic push
+#endif
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
 void G_Q3F_MiscMatchtimerThink( gentity_t *ent )
 {
 	// Called every time the accumulator state changes.
 
+	const char *spawnkey;
 	char *key;
 	q3f_keypairarray_t *kpa;
 	q3f_keypair_t *kp;
@@ -3535,26 +3565,26 @@ void G_Q3F_MiscMatchtimerThink( gentity_t *ent )
 
 	//G_Printf( "misc_matchtimer thinking: state %d: count: %d\n", ent->mapdata->state, ent->count );
 
-	key = (char *)va( "target_%d", (int)ent->count );
-	G_Q3F_StateBroadcast( ent, ent, ent, "_message",	&messagekeys[0], Q3F_BROADCAST_TEXT, key );
-	G_Q3F_StateBroadcast( ent, ent, ent, "_sound",		&messagekeys[1], Q3F_BROADCAST_SOUND, key );
-	G_Q3F_StateBroadcast( ent, ent, ent, "_dict",		&messagekeys[2], Q3F_BROADCAST_DICT, key );
+	spawnkey = va( "target_%d", (int)ent->count );
+	G_Q3F_StateBroadcast( ent, ent, ent, "_message",	&messagekeys[0], Q3F_BROADCAST_TEXT, spawnkey );
+	G_Q3F_StateBroadcast( ent, ent, ent, "_sound",		&messagekeys[1], Q3F_BROADCAST_SOUND, spawnkey );
+	G_Q3F_StateBroadcast( ent, ent, ent, "_dict",		&messagekeys[2], Q3F_BROADCAST_DICT, spawnkey );
 
 	//BirdDawg: clean up allocated string memory, since these are going to be worthless to cache
 	for ( i = 0; i < 3 ; i++ )
 	{
 		for ( j = 0; j < 8 ; j++ )
 		{
-		G_Q3F_RemString( &messagekeys[i][j] );
+			G_Q3F_RemString( &messagekeys[i][j] );
 		}		
 	}
 
-/*	G_Q3F_StateBroadcast_TeamedNoActivator( ent, "_message",	Q3F_BROADCAST_TEXT,		key );
-	G_Q3F_StateBroadcast_TeamedNoActivator( ent, "_sound",		Q3F_BROADCAST_SOUND,	key );
-	G_Q3F_StateBroadcast_TeamedNoActivator( ent, "_dict",		Q3F_BROADCAST_DICT,		key );*/
+/*	G_Q3F_StateBroadcast_TeamedNoActivator( ent, "_message",	Q3F_BROADCAST_TEXT,		spawnkey );
+	G_Q3F_StateBroadcast_TeamedNoActivator( ent, "_sound",		Q3F_BROADCAST_SOUND,	spawnkey );
+	G_Q3F_StateBroadcast_TeamedNoActivator( ent, "_dict",		Q3F_BROADCAST_DICT,		spawnkey );*/
 
-	key = (char *)va( "target_%d", (int)ent->count );
-	if( (key = G_Q3F_GetString( key )) &&
+	spawnkey = va( "target_%d", (int)ent->count );
+	if( (key = G_Q3F_GetString( spawnkey )) &&
 		(kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, key)) ) {
 
 		if( kp->value.type == Q3F_TYPE_STRING )
@@ -3571,16 +3601,16 @@ void G_Q3F_MiscMatchtimerThink( gentity_t *ent )
 	}
 
 	if(ent->count == ent->soundPos2 || ent->sound2to1 == 1) {
-		key = "active";
-		G_Q3F_StateBroadcast( ent, ent, ent, "_message",	&messagekeys[0], Q3F_BROADCAST_TEXT, key );
-		G_Q3F_StateBroadcast( ent, ent, ent, "_sound",		&messagekeys[1], Q3F_BROADCAST_SOUND, key );
-		G_Q3F_StateBroadcast( ent, ent, ent, "_dict",		&messagekeys[2], Q3F_BROADCAST_DICT, key );
+		spawnkey = "active";
+		G_Q3F_StateBroadcast( ent, ent, ent, "_message",	&messagekeys[0], Q3F_BROADCAST_TEXT, spawnkey );
+		G_Q3F_StateBroadcast( ent, ent, ent, "_sound",		&messagekeys[1], Q3F_BROADCAST_SOUND, spawnkey );
+		G_Q3F_StateBroadcast( ent, ent, ent, "_dict",		&messagekeys[2], Q3F_BROADCAST_DICT, spawnkey );
 
 		/*		G_Q3F_StateBroadcast_TeamedNoActivator( ent, "_message",	Q3F_BROADCAST_TEXT,		key );
 		G_Q3F_StateBroadcast_TeamedNoActivator( ent, "_sound",		Q3F_BROADCAST_SOUND,	key );
 		G_Q3F_StateBroadcast_TeamedNoActivator( ent, "_dict",		Q3F_BROADCAST_DICT,		key );*/
 
-		if( (key = G_Q3F_GetString( key )) &&
+		if( (key = G_Q3F_GetString(spawnkey)) &&
 			(kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, key)) ) {
 
 			if( kp->value.type == Q3F_TYPE_STRING )
@@ -3605,6 +3635,9 @@ void G_Q3F_MiscMatchtimerThink( gentity_t *ent )
 
 	return;
 }
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic pop
+#endif
 
 void SP_Q3F_misc_matchtimer( gentity_t *ent ) {
 	q3f_keypair_t* kp;

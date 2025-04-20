@@ -179,7 +179,7 @@ void G_Q3F_StateMessage( gentity_t *ent, gentity_t *activator );
 void G_Q3F_KillMessage( gentity_t *victim, gentity_t *inflictor, gentity_t *attacker );
 	// General message broadcast
 //void G_Q3F_StateBroadcast( gentity_t *ent, gentity_t *activator, gentity_t *queryent, char *messagesuffix, char *strarray[5][4], int type, char *prefix );
-void G_Q3F_StateBroadcast( gentity_t *ent, gentity_t *activator, gentity_t *queryent, char *messagesuffix, char *strarray[5][8], int type, char *prefix );
+void G_Q3F_StateBroadcast( gentity_t *ent, gentity_t *activator, gentity_t *queryent, char *messagesuffix, char *strarray[5][8], int type, const char *prefix );
 //void G_Q3F_StateBroadcast_TeamedNoActivator( gentity_t *ent, char *messagesuffix, int type, char *prefix );
 void G_Q3F_EntityMessage(const char * format, ... );
 
