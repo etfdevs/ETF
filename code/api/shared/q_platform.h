@@ -144,8 +144,20 @@ If you have questions concerning this license or the applicable additional terms
 
 	#define PATH_SEP '/'
 
-	#if !defined(ARCH_STRING)
-		#error ARCH_STRING should be defined by the build system
+	#if defined(__ppc__)
+		#define ARCH_STRING "ppc"
+		#define Q3_BIG_ENDIAN
+	#elif defined(__i386__)
+		#define ARCH_STRING "x86"
+		#define Q3_LITTLE_ENDIAN
+	#elif defined(__x86_64__)
+		#define idx64
+		#define ARCH_STRING "x86_64"
+		#define Q3_LITTLE_ENDIAN
+	#elif defined(__aarch64__)
+		#define arm64
+		#define ARCH_STRING "arm64"
+		#define Q3_LITTLE_ENDIAN
 	#endif
 
 	#if defined(__x86_64__)
@@ -181,8 +193,20 @@ If you have questions concerning this license or the applicable additional terms
 	#define QINLINE inline
 	#define PATH_SEP '/'
 
-	#if !defined(ARCH_STRING)
-		#error ARCH_STRING should be defined by the build system
+	#if defined(__ppc__)
+		#define ARCH_STRING "ppc"
+		#define Q3_BIG_ENDIAN
+	#elif defined(__i386__)
+		#define ARCH_STRING "x86"
+		#define Q3_LITTLE_ENDIAN
+	#elif defined(__x86_64__)
+		#define idx64
+		#define ARCH_STRING "x86_64"
+		#define Q3_LITTLE_ENDIAN
+	#elif defined(__aarch64__)
+		#define arm64
+		#define ARCH_STRING "arm64"
+		#define Q3_LITTLE_ENDIAN
 	#endif
 
 	#if defined(__amd64__)
