@@ -107,6 +107,12 @@ static const char *matchStrings[] = {
 *****	Main functions
 ****/
 
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic push
+#endif
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif
 char *G_Q3F_GetMapInfoEntry( const q3f_keypairarray_t *mpi, const char *key, int gameindex, const char *defstr )
 {
 	// Find the specified mapinfo key.
@@ -125,6 +131,9 @@ char *G_Q3F_GetMapInfoEntry( const q3f_keypairarray_t *mpi, const char *key, int
 
 	return( (char *)defstr );
 }
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic pop
+#endif
 
 q3f_keypairarray_t *G_Q3F_LoadMapInfo( const char *mapname )
 {

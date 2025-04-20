@@ -100,10 +100,16 @@ qboolean	G_SpawnVector( const char *key, const char *defaultString, float *out )
 	qboolean	present;
 
 	present = G_SpawnString( key, defaultString, &s );
-	sscanf( s, "%f %f %f", &out[0], &out[1], &out[2] );
+	(void)sscanf( s, "%f %f %f", &out[0], &out[1], &out[2] );
 	return present;
 }
 
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic push
+#endif
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif
 //Keeger for tracemap support
 qboolean G_SpawnStringExt( const char *key, const char *defaultString, char **out, const char* file, int line ) {
 	int		i;
@@ -126,13 +132,16 @@ qboolean G_SpawnStringExt( const char *key, const char *defaultString, char **ou
 	*out = (char *)defaultString;
 	return qfalse;
 }
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic pop
+#endif
 
 qboolean	G_SpawnVector2DExt( const char *key, const char *defaultString, float *out, const char* file, int line ) {
 	char		*s;
 	qboolean	present;
 
 	present = G_SpawnStringExt( key, defaultString, &s, file, line );
-	sscanf( s, "%f %f", &out[0], &out[1] );
+	(void)sscanf( s, "%f %f", &out[0], &out[1] );
 	return present;
 }
 //end keeg
@@ -200,7 +209,7 @@ qboolean	G_Q3F_SpawnVectorOverride( const char *key, const char *defaultString, 
 	qboolean	present;
 
 	present = G_Q3F_SpawnStringOverride( key, defaultString, &s );
-	sscanf( s, "%f %f %f", &out[0], &out[1], &out[2] );
+	(void)sscanf(s, "%f %f %f", &out[0], &out[1], &out[2]);
 	return present;
 }
 // Golliwog.

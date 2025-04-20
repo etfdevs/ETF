@@ -42,7 +42,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "../game/bg_q3f_weapon.h"
 #include "../../assets/ui/menudef.h"
 
-void CG_IntermissionScoreDump();
+void CG_IntermissionScoreDump(void);
 
 /*
 =================

@@ -63,47 +63,53 @@ static char *CG_Q3F_GetEntValue( const char *key )
 	return( NULL );
 }
 
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic push
+#endif
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif
 static qboolean CG_Q3F_SpawnString( const char *key, const char *defaultString, char **out ) {
-	const char		*s;
+	char		*s;
 	qboolean	present;
 
 	s = CG_Q3F_GetEntValue( key );
 	if( !(present = s != NULL) )
-		s = defaultString;
-	*out = (char *)s;
+		s = (char *)defaultString;
+	*out = s;
 	return present;
 }
 
 static qboolean CG_Q3F_SpawnFloat( const char *key, const char *defaultString, float *out ) {
-	const char		*s;
+	char		*s;
 	qboolean	present;
 
 	s = CG_Q3F_GetEntValue( key );
 	if( !(present = s != NULL) )
-		s = defaultString;
+		s = (char *)defaultString;
 	*out = atof( s );
 	return present;
 }
 
 static qboolean CG_Q3F_SpawnInt( const char *key, const char *defaultString, int *out ) {
-	const char		*s;
+	char		*s;
 	qboolean	present;
 
 	s = CG_Q3F_GetEntValue( key );
 	if( !(present = s != NULL) )
-		s = defaultString;
+		s = (char *)defaultString;
 	*out = atoi( s );
 	return present;
 }
 
 /*static qboolean CG_Q3F_SpawnBoolean( const char *key, const char *defaultString, qboolean *out ) {
-	const char		*s;
+	char		*s;
 	qboolean	present;
 
 	s = CG_Q3F_GetEntValue( key );
 
 	if( !(present = s != NULL) )
-		s = defaultString;
+		s = (char *)defaultString;
 	if ( !Q_stricmp( s, "qfalse" ) || !Q_stricmp( s, "false" ) || !Q_stricmp( s, "no" ) || !Q_stricmp( s, "0" ) ) {
 		*out = qfalse;
 	} else if ( !Q_stricmp( s, "qtrue" ) || !Q_stricmp( s, "true" ) || !Q_stricmp( s, "yes" ) || !Q_stricmp( s, "1" ) ) {
@@ -115,28 +121,30 @@ static qboolean CG_Q3F_SpawnInt( const char *key, const char *defaultString, int
 }*/
 
 static qboolean CG_Q3F_SpawnVector( const char *key, const char *defaultString, float *out ) {
-	const char		*s;
+	char		*s;
 	qboolean	present;
 
 	s = CG_Q3F_GetEntValue( key );
 	if( !(present = s != NULL) )
-		s = defaultString;
-	sscanf( s, "%f %f %f", &out[0], &out[1], &out[2] );
+		s = (char *)defaultString;
+	(void)sscanf( s, "%f %f %f", &out[0], &out[1], &out[2] );
 	return present;
 }
 
 //Keeger for tracemap
-qboolean CG_SpawnVector2D( const char *key, const char *defaultString, float *out ) {
-	const char		*s;
+static qboolean CG_SpawnVector2D( const char *key, const char *defaultString, float *out ) {
+	char		*s;
 	qboolean	present;
 
-	//present = CG_SpawnString( key, defaultString, &s );
 	s = CG_Q3F_GetEntValue(key);
 	if( !(present = s != NULL) )
-		s = defaultString;
-	sscanf( s, "%f %f", &out[0], &out[1] );
+		s = (char *)defaultString;
+	(void)sscanf( s, "%f %f", &out[0], &out[1] );
 	return present;
 }
+#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#pragma GCC diagnostic pop
+#endif
 
 static qboolean CG_Q3F_SpawnColor( const char *defaultString, float *out ) {
 	// Golliwog: Convenience function for colour keys.

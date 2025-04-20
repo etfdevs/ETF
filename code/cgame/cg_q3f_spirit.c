@@ -1562,5 +1562,3 @@ void Spirit_AddStandAlone( const char *script, vec3_t origin, vec3_t dir, float 
 	MakeNormalVectors( standalone->axis[2], standalone->axis[1], standalone->axis[0] );
 	RotateAroundDirection( standalone->axis, rotation );
 }
-
-

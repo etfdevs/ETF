@@ -1298,7 +1298,7 @@ qboolean G_Q3F_TriggerEntity( gentity_t *ent, gentity_t *activator, int state, t
 static char *q3f_killmessagekeys[3][8];	// Keep the strings for a little extra speed
 //static char *q3f_killmessagekeys[3][4];	// Keep the strings for a little extra speed
 
-#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#if !defined(__clang__) && (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
 #pragma GCC diagnostic push
 #endif
 #ifdef __GNUC__
@@ -1328,7 +1328,7 @@ void G_Q3F_StateMessage( gentity_t *ent, gentity_t *activator )
 	G_Q3F_StateBroadcast( ent, activator, activator, "_sound", q3f_soundkeys, Q3F_BROADCAST_SOUND, NULL );
 	G_Q3F_StateBroadcast( ent, activator, activator, "_dict", q3f_playstringkeys, Q3F_BROADCAST_DICT, NULL );
 }
-#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#if !defined(__clang__) && (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
 #pragma GCC diagnostic pop
 #endif
 

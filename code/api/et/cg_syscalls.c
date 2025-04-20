@@ -151,7 +151,7 @@ void	trap_UpdateScreen( void ) {
 }*/
 
 int		trap_CM_NumInlineModels( void ) {
-	return SystemCall( CG_CM_NUMINLINEMODELS );
+	return SystemCall_NoArgs( CG_CM_NUMINLINEMODELS );
 }
 
 clipHandle_t trap_CM_InlineModel( int index ) {
@@ -300,7 +300,7 @@ int trap_S_GetSoundLength(sfxHandle_t sfx)
 // ydnar: for timing looped sounds
 int trap_S_GetCurrentSoundTime( void )
 {
-	return SystemCall( CG_S_GETCURRENTSOUNDTIME );
+	return SystemCall_NoArgs( CG_S_GETCURRENTSOUNDTIME );
 }
 
 /*void	trap_S_StartBackgroundTrack( const char *intro, const char *loop, int fadeupTime ) {
@@ -480,7 +480,7 @@ qboolean	trap_GetServerCommand( int serverCommandNumber ) {
 }
 
 int			trap_GetCurrentCmdNumber( void ) {
-	return SystemCall( CG_GETCURRENTCMDNUMBER );
+	return SystemCall_NoArgs( CG_GETCURRENTCMDNUMBER );
 }
 
 qboolean	trap_GetUserCmd( int cmdNumber, usercmd_t *ucmd ) {

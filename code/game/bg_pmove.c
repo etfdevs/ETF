@@ -2948,5 +2948,4 @@ void Pmove (pmove_t *pmove) {
 	}
 
 	//PM_CheckStuck();
-
 }

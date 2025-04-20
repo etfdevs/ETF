@@ -1940,7 +1940,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 			return;
 		}
 
-		name[0] = 0;
+		name[0] = '\0';
 		_mapinfo = G_Q3F_LoadMapInfo( arg2 );								// Load associated map information file.
 		if(_mapinfo) {
 			ptr = G_Q3F_GetMapInfoEntry( _mapinfo, "longname", gi ? gi : 1, "<unknown>" );

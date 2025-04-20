@@ -423,7 +423,7 @@ int trap_PC_AddGlobalDefine( const char *define ) {
 }
 
 int trap_PC_RemoveAllGlobalDefines( void ) {
-	return SystemCall( UI_PC_REMOVE_ALL_GLOBAL_DEFINES );
+	return SystemCall_NoArgs( UI_PC_REMOVE_ALL_GLOBAL_DEFINES );
 }
 
 int trap_PC_LoadSource( const char *filename ) {
