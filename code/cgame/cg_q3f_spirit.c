@@ -851,7 +851,7 @@ void Spirit_RunScript( const SpiritScript_t *SpiritScript, const vec3_t origin, 
 }
 
 
-void Spirit_RunModel( const SpiritScript_t *SpiritScript, const refEntity_t *re, const char * tagname, intptr_t key ) {
+void Spirit_RunModel( const SpiritScript_t *SpiritScript, /*const*/ refEntity_t *re, const char * tagname, intptr_t key ) {
 	orientation_t	lerped;
 	vec3_t		origin, oldorigin;
 	matrix3_t	axis;
@@ -866,11 +866,11 @@ void Spirit_RunModel( const SpiritScript_t *SpiritScript, const refEntity_t *re,
 	VectorAdd( origin, re->oldorigin, oldorigin );
 	VectorAdd( origin, re->origin, origin );
 	// had to cast away the const to avoid compiler problems...
-	MatrixMultiply( lerped.axis, ((refEntity_t *)re)->axis, axis );
+	MatrixMultiply( lerped.axis, /*((refEntity_t *)re)*/re->axis, axis );
 	Spirit_RunScript(SpiritScript, origin, oldorigin, axis, key );
 }
 
-qboolean Spirit_UpdateModel( const SpiritScript_t *SpiritScript, const refEntity_t *re, const char * tagname, intptr_t key ) {
+qboolean Spirit_UpdateModel( const SpiritScript_t *SpiritScript, /*const*/ refEntity_t *re, const char * tagname, intptr_t key ) {
 	orientation_t	lerped;
 	vec3_t		origin;
 	matrix3_t	axis;
@@ -881,7 +881,7 @@ qboolean Spirit_UpdateModel( const SpiritScript_t *SpiritScript, const refEntity
 	VectorMA( origin, lerped.origin[1], re->axis[1], origin );
 	VectorMA( origin, lerped.origin[2], re->axis[2], origin );
 	// had to cast away the const to avoid compiler problems...
-	MatrixMultiply( lerped.axis, ((refEntity_t *)re)->axis, axis );
+	MatrixMultiply( lerped.axis, /*((refEntity_t *)re)*/re->axis, axis );
 	return Spirit_UpdateScript( SpiritScript, origin , axis, key );
 }
 

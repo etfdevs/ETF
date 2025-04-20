@@ -60,10 +60,10 @@ void NORETURN trap_Error( const char *str ) {
 }
 
 int		trap_Milliseconds( void ) {
-	return SystemCall( G_MILLISECONDS ); 
+	return SystemCall_NoArgs( G_MILLISECONDS );
 }
 int		trap_Argc( void ) {
-	return SystemCall( G_ARGC );
+	return SystemCall_NoArgs( G_ARGC );
 }
 
 void	trap_Argv( int n, char *buffer, int bufferLength ) {

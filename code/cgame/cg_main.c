@@ -723,7 +723,7 @@ void CG_Q3F_UpdateCvarLimit( const char *cvarname, int *min, int *max ) {
 	}
 }
 
-void CG_Q3F_UpdateCvarLimits( ) {
+void CG_Q3F_UpdateCvarLimits(void) {
 	const char *ptr;
 	char cvarname[64], buff[16];
 	int min, max;

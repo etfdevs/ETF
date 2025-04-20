@@ -243,6 +243,8 @@ typedef int32_t qhandle_t, thandle_t, fxHandle_t, sfxHandle_t, fileHandle_t, cli
 
 #define SystemCall(...) EXPAND(GET_SYSCALL_MACRO(__VA_ARGS__, SystemCall_14, SystemCall_13, SystemCall_12, SystemCall_11, SystemCall_10, SystemCall_9, SystemCall_8, SystemCall_7, SystemCall_6, SystemCall_5, SystemCall_4, SystemCall_3, SystemCall_2, SystemCall_1, SystemCall_0)(__VA_ARGS__))
 
+#define SystemCall_NoArgs(arg) syscall(arg, VM_CALL_END)
+
 // angle indexes
 #define	PITCH				0		// up / down
 #define	YAW					1		// left / right

@@ -4026,7 +4026,7 @@ qboolean KeyBinder_HandleKey(int key, qboolean down) {
 	return qtrue;
 }
 
-static void HUD_BuildPlayerList();
+static void HUD_BuildPlayerList(void);
 
 static const char * keyStr[] = {
 	"COMMAND",

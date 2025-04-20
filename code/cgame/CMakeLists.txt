@@ -96,6 +96,7 @@ add_library(cgame MODULE
 	"cg_weapons.c"
 	"../ui_new/ui_shared.c"
 	"../ui_new/ui_shared.h"
+	"../../assets/ui/menudef.h"
 )
 
 if(USE_BOTS)

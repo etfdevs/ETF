@@ -45,7 +45,7 @@ Modifies the entities position and axis by the given
 tag location
 ======================
 */
-void CG_PositionEntityOnTag( refEntity_t *entity, const refEntity_t *parent, const char *tagName, int startIndex, vec3_t *offset ) {
+void CG_PositionEntityOnTag( refEntity_t *entity, /*const*/ refEntity_t* parent, const char* tagName, int startIndex, vec3_t* offset) {
 	int				i;
 	orientation_t	lerped;
 	
@@ -64,7 +64,7 @@ void CG_PositionEntityOnTag( refEntity_t *entity, const refEntity_t *parent, con
 	}
 
 	// had to cast away the const to avoid compiler problems...
-	MatrixMultiply( lerped.axis, ((refEntity_t *)parent)->axis, entity->axis );
+	MatrixMultiply( lerped.axis, /*((refEntity_t *)parent)*/parent->axis, entity->axis );
 	entity->backlerp = parent->backlerp;
 }
 
@@ -77,7 +77,7 @@ Modifies the entities position and axis by the given
 tag location
 ======================
 */
-void CG_PositionRotatedEntityOnTag( refEntity_t *entity, const refEntity_t *parent, const char *tagName ) {
+void CG_PositionRotatedEntityOnTag( refEntity_t *entity, /*const*/ refEntity_t *parent, const char *tagName ) {
 	int				i;
 	orientation_t	lerped;
 	matrix3_t		tempAxis;
@@ -93,7 +93,7 @@ void CG_PositionRotatedEntityOnTag( refEntity_t *entity, const refEntity_t *pare
 
 	MatrixMultiply( entity->axis, lerped.axis, tempAxis );
 	// had to cast away the const to avoid compiler problems...
-	MatrixMultiply( tempAxis, ((refEntity_t *)parent)->axis, entity->axis );
+	MatrixMultiply( tempAxis, /*((refEntity_t *)parent)*/parent->axis, entity->axis );
 }
 
 void CG_GetTagFromModel( orientation_t *tag, qhandle_t hModel, const char *tagName ) {

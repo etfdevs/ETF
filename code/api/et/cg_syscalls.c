@@ -52,7 +52,7 @@ void trap_PumpEventLoop( void ) {
 	if( !cgs.initing ) {
 		return;
 	}
-	SystemCall( CG_PUMPEVENTLOOP );
+	SystemCall_NoArgs( CG_PUMPEVENTLOOP );
 }
 
 
@@ -66,7 +66,7 @@ void NORETURN trap_Error( const char *fmt ) {
 }
 
 int		trap_Milliseconds( void ) {
-	return SystemCall( CG_MILLISECONDS ); 
+	return SystemCall_NoArgs( CG_MILLISECONDS );
 }
 
 void	trap_Cvar_Register( vmCvar_t *vmCvar, const char *varName, const char *defaultValue, int flags ) {
@@ -90,7 +90,7 @@ void trap_Cvar_LatchedVariableStringBuffer( const char *var_name, char *buffer, 
 }
 
 int	trap_Argc( void ) {
-	return SystemCall( CG_ARGC );
+	return SystemCall_NoArgs( CG_ARGC );
 }
 
 void	trap_Argv( int n, char *buffer, int bufferLength ) {
@@ -142,7 +142,7 @@ void	trap_SendClientCommand( const char *s ) {
 }
 
 void	trap_UpdateScreen( void ) {
-	SystemCall( CG_UPDATESCREEN );
+	SystemCall_NoArgs( CG_UPDATESCREEN );
 }
 
 /*void	trap_CM_LoadMap( const char *mapname ) {
@@ -215,7 +215,7 @@ void		trap_R_ProjectDecal( qhandle_t hShader, int numPoints, vec3_t *points, vec
 
 void		trap_R_ClearDecals( void )
 {
-	SystemCall( CG_R_CLEARDECALS );
+	SystemCall_NoArgs( CG_R_CLEARDECALS );
 }
 
 
@@ -254,7 +254,7 @@ void	trap_S_RealStartLocalSound( sfxHandle_t sfx, int channelNum, const char* fi
 }
 
 /*void	trap_S_ClearLoopingSounds( void ) {
-	SystemCall( CG_S_CLEARLOOPINGSOUNDS );
+	SystemCall_NoArgs( CG_S_CLEARLOOPINGSOUNDS );
 }*/
 
 void	trap_S_ClearSounds( qboolean killmusic ) {
@@ -359,7 +359,7 @@ void trap_R_RegisterFont(const char *fontName, int pointSize, fontInfo_t *font) 
 }*/
 
 void	trap_R_ClearScene( void ) {
-	SystemCall( CG_R_CLEARSCENE );
+	SystemCall_NoArgs( CG_R_CLEARSCENE );
 }
 
 void	trap_R_RealAddRefEntityToScene( const refEntity_t *re ) {
@@ -411,15 +411,15 @@ void	trap_R_RenderScene( const refdef_t *fd ) {
 }
 
 // Mad Doctor I, 11/4/2002.	
-void	trap_R_SaveViewParms(  ) 
+void	trap_R_SaveViewParms( void ) 
 {
-	SystemCall( CG_R_SAVEVIEWPARMS );
+	SystemCall_NoArgs( CG_R_SAVEVIEWPARMS );
 }
 
 // Mad Doctor I, 11/4/2002.	
-void	trap_R_RestoreViewParms(  ) 
+void	trap_R_RestoreViewParms( void ) 
 {
-	SystemCall( CG_R_RESTOREVIEWPARMS );
+	SystemCall_NoArgs( CG_R_RESTOREVIEWPARMS );
 }
 
 void	trap_R_SetColor( const float *rgba ) {
@@ -496,7 +496,7 @@ void		trap_SetClientLerpOrigin( float x, float y, float z ) {
 }
 
 int trap_MemoryRemaining( void ) {
-	return SystemCall( CG_MEMORY_REMAINING );
+	return SystemCall_NoArgs( CG_MEMORY_REMAINING );
 }
 
 qboolean trap_loadCamera( int camNum, const char *name ) {
@@ -521,11 +521,11 @@ qboolean trap_Key_IsDown( int keynum ) {
 }
 
 int trap_Key_GetCatcher( void ) {
-	return SystemCall( CG_KEY_GETCATCHER );
+	return SystemCall_NoArgs( CG_KEY_GETCATCHER );
 }
 
 qboolean trap_Key_GetOverstrikeMode( void ) {
-	return SystemCall( CG_KEY_GETOVERSTRIKEMODE );
+	return SystemCall_NoArgs( CG_KEY_GETOVERSTRIKEMODE );
 }
 
 void trap_Key_SetOverstrikeMode( qboolean state ) {
@@ -571,7 +571,7 @@ int trap_PC_UnReadToken( int handle ) {
 }
 
 void	trap_S_StopBackgroundTrack( void ) {
-	SystemCall( CG_S_STOPBACKGROUNDTRACK );
+	SystemCall_NoArgs( CG_S_STOPBACKGROUNDTRACK );
 }
 
 int trap_RealTime(qtime_t *qtime) {
@@ -803,36 +803,30 @@ void trap_GetHunkData( int* hunkused, int* hunkexpected ) {
 
 //zinx - binary message channel
 void trap_SendMessage( char *buf, int buflen ) {
-	syscall( CG_SENDMESSAGE, buf, buflen );
 	SystemCall( CG_SENDMESSAGE, buf, buflen );
 }
 
 messageStatus_t trap_MessageStatus( void ) {
-	return syscall( CG_MESSAGESTATUS );
-	return SystemCall( CG_MESSAGESTATUS );
+	return SystemCall_NoArgs( CG_MESSAGESTATUS );
 }
 
 //bani - dynamic shaders
 qboolean trap_R_LoadDynamicShader( const char *shadername, const char *shadertext ) {
-	return syscall( CG_R_LOADDYNAMICSHADER, shadername, shadertext );
 	return SystemCall( CG_R_LOADDYNAMICSHADER, shadername, shadertext );
 }
 
 // fretn - render to texture
 void trap_R_RenderToTexture( int textureid, int x, int y, int w, int h ) {
-	syscall( CG_R_RENDERTOTEXTURE, textureid, x, y, w, h );
 	SystemCall( CG_R_RENDERTOTEXTURE, textureid, x, y, w, h );
 }
 
 int trap_R_GetTextureId( const char *name ) {
-	return syscall( CG_R_GETTEXTUREID, name );
 	return SystemCall( CG_R_GETTEXTUREID, name );
 }
 
 // bani - sync rendering
 void trap_R_Finish( void ) {
-	syscall( CG_R_FINISH );
-	SystemCall( CG_R_FINISH );
+	SystemCall_NoArgs( CG_R_FINISH );
 }
 
 // extension interface

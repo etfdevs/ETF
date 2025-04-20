@@ -55,7 +55,7 @@ void trap_S_ClearLoopingSounds( qboolean killall ) {
 	SystemCall( CG_S_CLEARLOOPINGSOUNDS, killall );
 #endif
 #ifdef API_ET
-	SystemCall( CG_S_CLEARLOOPINGSOUNDS );
+	SystemCall_NoArgs( CG_S_CLEARLOOPINGSOUNDS );
 #endif
 }
 

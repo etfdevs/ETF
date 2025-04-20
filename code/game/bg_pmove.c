@@ -2060,7 +2060,7 @@ PM_FinishWeaponReload		-- JT
 */
 #ifdef CGAME
 // RR2DO2 - ugly
-extern void CG_Q3F_EndReload();
+void CG_Q3F_EndReload(void);
 #endif
 
 static void PM_FinishWeaponReload( void ) {

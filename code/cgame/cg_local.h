@@ -1970,7 +1970,7 @@ void CG_Q3F_Beam( centity_t *cent );
 void CG_Q3F_Flamer( centity_t *cent );
 void CG_AdjustPositionForMover( const vec3_t in, int moverNum, int fromTime, int toTime, vec3_t out );
 
-void CG_PositionEntityOnTag( refEntity_t *entity, const refEntity_t *parent, const char *tagName, int startIndex, vec3_t *offset );
+void CG_PositionEntityOnTag( refEntity_t *entity, /*const*/ refEntity_t *parent, const char *tagName, int startIndex, vec3_t *offset );
 void CG_PositionRotatedEntityOnTag( refEntity_t *entity, const refEntity_t *parent, const char *tagName );
 void CG_GetTagFromModel( orientation_t *tag, qhandle_t hModel, const char *tagName );
 
@@ -2454,12 +2454,6 @@ void		trap_R_Add2dPolys( polyVert_t* verts, int numverts, qhandle_t hShader );
 void		trap_R_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs );
 //int			trap_R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagName, int startIndex );
 void		trap_R_RemapShader( const char *oldShader, const char *newShader, const char *timeOffset );
-
-// Save out the old render info so we don't kill the LOD system here
-void trap_R_SaveViewParms(void);
-
-// Reset the view parameters
-void trap_R_RestoreViewParms(void);
 
 // Save out the old render info so we don't kill the LOD system here
 void trap_R_SaveViewParms(void);

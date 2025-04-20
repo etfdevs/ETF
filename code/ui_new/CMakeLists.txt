@@ -31,6 +31,7 @@ add_library(ui MODULE
 	"ui_shared.c"
 	"ui_shared.h"
 	"../api/et/ui_syscalls.c"
+	"../../assets/ui/menudef.h"
 )
 target_compile_definitions(ui PRIVATE UI_EXPORTS API_ET)
 target_link_libraries(ui PRIVATE cxx_compiler_opts)

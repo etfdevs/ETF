@@ -56,7 +56,7 @@ void NORETURN trap_Error( const char *string ) {
 }
 
 int trap_Milliseconds( void ) {
-	return SystemCall( UI_MILLISECONDS ); 
+	return SystemCall_NoArgs( UI_MILLISECONDS );
 }
 
 void trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int flags ) {
@@ -102,7 +102,7 @@ void trap_Cvar_InfoStringBuffer( int bit, char *buffer, int bufsize ) {
 }
 
 int trap_Argc( void ) {
-	return SystemCall( UI_ARGC );
+	return SystemCall_NoArgs( UI_ARGC );
 }
 
 void trap_Argv( int n, char *buffer, int bufferLength ) {
@@ -158,7 +158,7 @@ qhandle_t trap_R_RegisterShaderNoMip( const char *name ) {
 }
 
 void trap_R_ClearScene( void ) {
-	SystemCall( UI_R_CLEARSCENE );
+	SystemCall_NoArgs( UI_R_CLEARSCENE );
 }
 
 void trap_R_AddRefEntityToScene( const refEntity_t *re ) {
@@ -215,7 +215,7 @@ void trap_R_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs ) {
 }
 
 void trap_UpdateScreen( void ) {
-	SystemCall( UI_UPDATESCREEN );
+	SystemCall_NoArgs( UI_UPDATESCREEN );
 }
 
 /*int trap_CM_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagName, int startIndex ) {
@@ -266,7 +266,7 @@ qboolean trap_Key_IsDown( int keynum ) {
 }
 
 qboolean trap_Key_GetOverstrikeMode( void ) {
-	return SystemCall( UI_KEY_GETOVERSTRIKEMODE );
+	return SystemCall_NoArgs( UI_KEY_GETOVERSTRIKEMODE );
 }
 
 void trap_Key_SetOverstrikeMode( qboolean state ) {
@@ -274,11 +274,11 @@ void trap_Key_SetOverstrikeMode( qboolean state ) {
 }
 
 void trap_Key_ClearStates( void ) {
-	SystemCall( UI_KEY_CLEARSTATES );
+	SystemCall_NoArgs( UI_KEY_CLEARSTATES );
 }
 
 int trap_Key_GetCatcher( void ) {
-	return SystemCall( UI_KEY_GETCATCHER );
+	return SystemCall_NoArgs( UI_KEY_GETCATCHER );
 }
 
 void trap_Key_SetCatcher( int catcher ) {
@@ -302,7 +302,7 @@ int trap_GetConfigString( int index, char* buff, int buffsize ) {
 }
 
 int	trap_LAN_GetLocalServerCount( void ) {
-	return SystemCall( UI_LAN_GETLOCALSERVERCOUNT );
+	return SystemCall_NoArgs( UI_LAN_GETLOCALSERVERCOUNT );
 }
 
 void trap_LAN_GetLocalServerAddressString( int n, char *buf, int buflen ) {
@@ -310,7 +310,7 @@ void trap_LAN_GetLocalServerAddressString( int n, char *buf, int buflen ) {
 }
 
 int trap_LAN_GetGlobalServerCount( void ) {
-	return SystemCall( UI_LAN_GETGLOBALSERVERCOUNT );
+	return SystemCall_NoArgs( UI_LAN_GETGLOBALSERVERCOUNT );
 }
 
 void trap_LAN_GetGlobalServerAddressString( int n, char *buf, int buflen ) {
@@ -318,7 +318,7 @@ void trap_LAN_GetGlobalServerAddressString( int n, char *buf, int buflen ) {
 }
 
 int trap_LAN_GetPingQueueCount( void ) {
-	return SystemCall( UI_LAN_GETPINGQUEUECOUNT );
+	return SystemCall_NoArgs( UI_LAN_GETPINGQUEUECOUNT );
 }
 
 void trap_LAN_ClearPing( int n ) {
@@ -379,11 +379,11 @@ qboolean trap_LAN_ServerIsInFavoriteList( int source, int n  ) {
 }
 
 void trap_LAN_SaveCachedServers( void ) {
-	SystemCall( UI_LAN_SAVECACHEDSERVERS );
+	SystemCall_NoArgs( UI_LAN_SAVECACHEDSERVERS );
 }
 
 void trap_LAN_LoadCachedServers( void ) {
-	SystemCall( UI_LAN_LOADCACHEDSERVERS );
+	SystemCall_NoArgs( UI_LAN_LOADCACHEDSERVERS );
 }
 
 void trap_LAN_MarkServerVisible( int source, int n, qboolean visible ) {
@@ -407,7 +407,7 @@ void trap_LAN_ResetPings(int n) {
 // -NERVE - SMF
 
 int trap_MemoryRemaining( void ) {
-	return SystemCall( UI_MEMORY_REMAINING );
+	return SystemCall_NoArgs( UI_MEMORY_REMAINING );
 }
 
 void trap_GetCDKey( char *buf, int buflen ) {
@@ -447,7 +447,7 @@ int trap_PC_UnReadToken( int handle ) {
 }
 
 void trap_S_StopBackgroundTrack( void ) {
-	SystemCall( UI_S_STOPBACKGROUNDTRACK );
+	SystemCall_NoArgs( UI_S_STOPBACKGROUNDTRACK );
 }
 
 /*void trap_S_StartBackgroundTrack( const char *intro, const char *loop, int fadeupTime) {
@@ -521,11 +521,11 @@ char* trap_TranslateString( const char *string ) {
 
 // DHM - Nerve
 void trap_CheckAutoUpdate( void ) {
-	SystemCall( UI_CHECKAUTOUPDATE );
+	SystemCall_NoArgs( UI_CHECKAUTOUPDATE );
 }
 
 void trap_GetAutoUpdate( void ) {
-	SystemCall( UI_GET_AUTOUPDATE );
+	SystemCall_NoArgs( UI_GET_AUTOUPDATE );
 }
 // DHM - Nerve
 

@@ -74,7 +74,9 @@ console doesn't pause the game.
 
 =============================================================================
 */
-void OmnibotRenderDebugLines();
+#ifdef BUILD_BOTS
+void OmnibotRenderDebugLines(void);
+#endif
 /*
 =================
 CG_TestModel_f

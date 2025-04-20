@@ -758,7 +758,7 @@ static void VoteMenu(void)
 	Q_strncpyz(menu_menuname, "menubox_vote", sizeof(menu_menuname));
 }
 
-void MenuCheckVoteTally() 
+void MenuCheckVoteTally(void) 
 {
 	const char *buffer;
 
