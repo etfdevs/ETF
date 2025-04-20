@@ -6961,13 +6961,13 @@ void UI_KeyEvent( int key, qboolean down ) {
 	if (menuCount > 0) {
 		menuDef_t *menu = Menu_GetFocused();
 		if (menu) {
-			//if (key == K_ESCAPE && down && !Menus_AnyFullScreenVisible()) {
-			//	Menus_CloseAll();
-			//} else {
-			//	Menu_HandleKey( menu, key, down );
-			//}
+			if (key == K_ESCAPE && down && !Menus_AnyFullScreenVisible()) {
+				Menus_CloseAll();
+			} else {
+				Menu_HandleKey( menu, key, down );
+			}
 			// always have the menus do the proper handling
-			Menu_HandleKey( menu, key, down );
+			//Menu_HandleKey( menu, key, down );
 		} else {
 			trap_Key_SetCatcher( trap_Key_GetCatcher() & ~KEYCATCH_UI );
 			trap_Key_ClearStates();
