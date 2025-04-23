@@ -230,20 +230,20 @@ struct gentity_s {
 
 // Golliwog: Admin levels
 typedef enum {
-	ADMIN_NONE,
+	ADMIN_NONE = 0,
 	ADMIN_MATCH,
 	ADMIN_FULL,
 } adminLevel_t;
 // Golliwog.
 
 typedef enum {
-	CON_DISCONNECTED,
+	CON_DISCONNECTED = 0,
 	CON_CONNECTING,
 	CON_CONNECTED
 } clientConnected_t;
 
 typedef enum {
-	SPECTATOR_NOT,
+	SPECTATOR_NOT = 0,
 	SPECTATOR_FREE,
 	SPECTATOR_FOLLOW,
 	SPECTATOR_CHASE,
@@ -252,7 +252,7 @@ typedef enum {
 } spectatorState_t;
 
 typedef enum {
-	TEAM_BEGIN,		// Beginning a team game, spawn at base
+	TEAM_BEGIN = 0,		// Beginning a team game, spawn at base
 	TEAM_ACTIVE		// Now actively playing
 } playerTeamStateState_t;
 
@@ -306,8 +306,6 @@ typedef struct {
 	// Golliwog: I'm also keeping data here that should stay across team changes
 	// and the like - mostly, cheat tracking.
 	qboolean	versionOK;		// We've version checked them successfully
-	char		*ipStr;
-	char		guidStr[33];
 	int			adminAttempts;
 	int			adminLevel;
 	int			lastTeamChangeTime;
@@ -353,6 +351,9 @@ typedef struct {
 	int			teamkills;
 } clientStats_t;
 
+#define MAX_IP_LENGTH 48
+#define MAX_GUID_LENGTH 33
+
 // client data that stays across multiple respawns, but is cleared
 // on each level change or team change at ClientBegin()
 typedef struct {
@@ -393,6 +394,9 @@ typedef struct {
 
 	// Canabis, stats block
 	clientStats_t stats;
+
+	char		ipStr[MAX_IP_LENGTH];
+	char		guidStr[MAX_GUID_LENGTH];
 } clientPersistant_t;
 
 #define NUM_CLIENT_HISTORY 17

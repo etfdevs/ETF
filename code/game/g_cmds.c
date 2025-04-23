@@ -2056,7 +2056,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 			if( (player->r.svFlags & SVF_BOT) )
 				Com_sprintf( level.voteString, sizeof( level.voteString ), "clientkick %d", (int)(player-g_entities));
 			else
-				Com_sprintf( level.voteString, sizeof( level.voteString ), "addip %s %d \"Vote Kicked\"", player->client->sess.ipStr, Q3F_ADMIN_TEMPBAN_TIME);
+				Com_sprintf( level.voteString, sizeof( level.voteString ), "addip %s %d \"Vote Kicked\"", player->client->pers.ipStr, Q3F_ADMIN_TEMPBAN_TIME);
 			//Com_sprintf( level.voteString, sizeof( level.voteString ), "clientkick %d", count);
 		}
 		else {
@@ -2110,7 +2110,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 			if( (player->r.svFlags & SVF_BOT) )
 				Com_sprintf( level.voteString, sizeof( level.voteString ), "clientkick %d", pnum);
 			else
-				Com_sprintf( level.voteString, sizeof( level.voteString ), "addip %s %d \"Vote Kicked\"", player->client->sess.ipStr, Q3F_ADMIN_TEMPBAN_TIME);
+				Com_sprintf( level.voteString, sizeof( level.voteString ), "addip %s %d \"Vote Kicked\"", player->client->pers.ipStr, Q3F_ADMIN_TEMPBAN_TIME);
 			//Com_sprintf( level.voteString, sizeof( level.voteString ), "clientkick %d", count);
 		}
 		else {
@@ -3675,7 +3675,7 @@ static void G_Q3F_SetTalkIcon_f( gentity_t *ent, qboolean enabled ) {
 											time.tm_mday, time.tm_mon + 1, time.tm_year + 1900,
 											time.tm_hour, time.tm_min,
 											ent->client->pers.netname, ent->client->ps.clientNum,
-											ent->client->sess.ipStr, gluid );
+											ent->client->pers.ipStr, gluid );
 		trap_FS_Write( buf, strlen(buf), fh );
 		trap_FS_FCloseFile( fh );
 	}

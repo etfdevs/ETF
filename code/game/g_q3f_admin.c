@@ -105,7 +105,7 @@ static void G_Q3F_AdminPrint( gentity_t *admin, const char *fmt, ... )
 	}
 }
 
-qboolean StringToFilter( gentity_t *admin, char *s, g_q3f_extIpFilter_t *f )
+qboolean StringToFilter( gentity_t *admin, const char *s, g_q3f_extIpFilter_t *f )
 {
 	// Extended version of the original, accepts single numbers
 	// as well as IP addresses. Assumes that if you give it a
@@ -156,17 +156,17 @@ qboolean StringToFilter( gentity_t *admin, char *s, g_q3f_extIpFilter_t *f )
 			G_Q3F_AdminPrint( admin, "No client with number %i\n", b[0] );
 			return( qfalse );
 		}
-		if( /*(ent->r.svFlags & SVF_BOT) ||*/ ent->client->pers.localClient )
+		if( (ent->r.svFlags & SVF_BOT) || ent->client->pers.localClient )
 		{
 			G_Q3F_AdminPrint( admin, "Cannot ban local clients\n" );
 			return( qfalse );
 		}
-		if( !ent->client->sess.ipStr || !*ent->client->sess.ipStr )
+		if( !*ent->client->pers.ipStr )
 		{
 			G_Q3F_AdminPrint( admin, "Unknown client IP?\n" );
 			return( qfalse );
 		}
-		return( StringToFilter( admin, ent->client->sess.ipStr, f ) );
+		return( StringToFilter( admin, ent->client->pers.ipStr, f ) );
 	}
 	else {
 		f->mask = *(unsigned *)m;
@@ -238,12 +238,12 @@ void UpdateIPBans (void)
 G_FilterPacket
 =================
 */
-qboolean G_FilterPacket( char *from, char **reason )
+qboolean G_FilterPacket( const char *from, char **reason )
 {
 	intptr_t	i;
 	unsigned	in;
 	byte m[4];
-	char *p;
+	const char *p;
 	q3f_data_t *data;
 	g_q3f_extIpFilter_t *filter;
 
@@ -281,7 +281,7 @@ qboolean G_FilterPacket( char *from, char **reason )
 AddIP
 =================
 */
-void AddIP( gentity_t *admin, char *str, int time, const char *reason )
+void AddIP( gentity_t *admin, const char *str, int time, const char *reason )
 {
 	g_q3f_extIpFilter_t *filter, *scan;
 	q3f_data_t *data;
@@ -410,7 +410,7 @@ static void G_Q3F_AdminStatus( gentity_t *admin )
 		if( player->inuse && player->client )
 		{
 			G_Q3F_AdminPrint(	admin, "%3d %21s %4d %6s %5d %s\n",
-								player->s.number, player->client->sess.ipStr,
+								player->s.number, player->client->pers.ipStr,
 								player->client->pers.realPing,//ps.ping
 								(player->client->sess.sessionTeam ? g_q3f_teamlist[player->client->sess.sessionTeam].name : "spec"),
 								player->client->ps.persistant[PERS_SCORE],
@@ -419,7 +419,7 @@ static void G_Q3F_AdminStatus( gentity_t *admin )
 		else if( player->client && player->client->pers.connected == CON_CONNECTING )
 		{
 			G_Q3F_AdminPrint(	admin, "%3d %21s %4d %6s %5d %s\n",
-								(int)(player-g_entities), player->client->sess.ipStr,
+								(int)(player-g_entities), player->client->pers.ipStr,
 								player->client->ps.ping,
 								"conn",
 								player->client->ps.persistant[PERS_SCORE],
@@ -442,10 +442,10 @@ static void G_Q3F_AdminClientIPs( gentity_t *admin )
 
 	for( player = g_entities; player < &g_entities[level.maxclients]; player++ ) {
 		if( player->inuse && player->client ) {
-			Q_strcat(buffer, 1024, va("%21s ", player->client->sess.ipStr));
+			Q_strcat(buffer, 1024, va("%21s ", player->client->pers.ipStr));
 		}
 		else if( player->client && player->client->pers.connected == CON_CONNECTING ) {
-			Q_strcat(buffer, 1024, va("%21s ", player->client->sess.ipStr));
+			Q_strcat(buffer, 1024, va("%21s ", player->client->pers.ipStr));
 		}
 	}
 
@@ -1159,7 +1159,7 @@ void G_Q3F_RCONPasswordCommand( gentity_t *ent ) {
 	char password[MAX_STRING_CHARS];
 	char buff[MAX_STRING_CHARS];
 
-	if( !(ent->r.svFlags & SVF_BOT) && !strcmp(ent->client->sess.ipStr, "localhost") && trap_Cvar_VariableIntegerValue("cl_running") > 0 ) {
+	if( !(ent->r.svFlags & SVF_BOT) && !strcmp(ent->client->pers.ipStr, "localhost") && trap_Cvar_VariableIntegerValue("cl_running") > 0 ) {
 		ent->client->sess.adminLevel = ADMIN_FULL;
 		trap_SendServerCommand( ent->s.number, "hud_auth_rcon 1" );
 		trap_SendServerCommand( ent->s.number, "hud_auth_admin 1" );
@@ -1312,7 +1312,7 @@ void G_Q3F_AdminCheckBannedPlayers(void)
 		if( player->inuse && player->client &&
 			/*!(player->r.svFlags & SVF_BOT) &&*/
 			!player->client->pers.localClient &&
-			G_FilterPacket( player->client->sess.ipStr, &reason ) )
+			G_FilterPacket( player->client->pers.ipStr, &reason ) )
 		{
 			Q_strncpyz( banbuff, "Banned: ", sizeof(banbuff) );
 			Q_strcat( banbuff, sizeof(banbuff), reason );
@@ -1322,7 +1322,7 @@ void G_Q3F_AdminCheckBannedPlayers(void)
 		else if( player->client && player->client->pers.connected == CON_CONNECTING &&
 			/*!(player->r.svFlags & SVF_BOT) &&*/
 			!player->client->pers.localClient &&
-			G_FilterPacket( player->client->sess.ipStr, &reason ) )
+			G_FilterPacket( player->client->pers.ipStr, &reason ) )
 		{
 			Q_strncpyz( banbuff, "Banned: ", sizeof(banbuff) );
 			Q_strcat( banbuff, sizeof(banbuff), reason );
@@ -1341,7 +1341,7 @@ void G_Q3F_AdminTempBan( gentity_t *player, const char *reason, int time )
 
 	trap_SendServerCommand( player->s.number, va("print \"Temp ban: %s\"", reason));
 
-	AddIP( NULL, player->client->sess.ipStr, time, reason );
+	AddIP( NULL, player->client->pers.ipStr, time, reason );
 	G_Q3F_AdminCheckBannedPlayers();
 	g_q3f_banCheckTime = G_Q3F_AdminNextExpireBans();
 }

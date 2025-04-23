@@ -50,10 +50,10 @@ typedef struct g_q3f_adminCmd_s {
 extern q3f_array_t *ipFilters;
 extern int g_q3f_banCheckTime;
 
-qboolean StringToFilter( gentity_t *admin, char *s, g_q3f_extIpFilter_t *f );
+qboolean StringToFilter( gentity_t *admin, const char *s, g_q3f_extIpFilter_t *f );
 void UpdateIPBans (void);
-qboolean G_FilterPacket( char *from, char **reason );
-void AddIP( gentity_t *admin, char *str, int time, const char *reason );
+qboolean G_FilterPacket( const char *from, char **reason );
+void AddIP( gentity_t *admin, const char *str, int time, const char *reason );
 void G_ProcessIPBans(void);
 void G_Q3F_AdminCommand( gentity_t *admin );
 void G_Q3F_AdminCommand_ClientOnly( gentity_t* admin );

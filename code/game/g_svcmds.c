@@ -789,7 +789,7 @@ void	G_ETF_BanNum( void ) {
 					return;
 				}
 
-				AddIP( NULL, player->client->sess.ipStr, time, reason );
+				AddIP( NULL, player->client->pers.ipStr, time, reason );
 				G_Q3F_AdminCheckBannedPlayers();
 				g_q3f_banCheckTime = G_Q3F_AdminNextExpireBans();
 				return;
@@ -808,7 +808,7 @@ void	G_ETF_BanNum( void ) {
 					return;
 				}
 
-				AddIP( NULL, player->client->sess.ipStr, time, reason );
+				AddIP( NULL, player->client->pers.ipStr, time, reason );
 				G_Q3F_AdminCheckBannedPlayers();
 				g_q3f_banCheckTime = G_Q3F_AdminNextExpireBans();
 				return;
@@ -864,7 +864,7 @@ void	G_ETF_BanName( void ) {
 				return;
 			}
 
-			AddIP( NULL, player->client->sess.ipStr, time, reason );
+			AddIP( NULL, player->client->pers.ipStr, time, reason );
 			G_Q3F_AdminCheckBannedPlayers();
 			g_q3f_banCheckTime = G_Q3F_AdminNextExpireBans();
 			return;
@@ -883,7 +883,7 @@ void	G_ETF_BanName( void ) {
 				return;
 			}
 
-			AddIP( NULL, player->client->sess.ipStr, time, reason );
+			AddIP( NULL, player->client->pers.ipStr, time, reason );
 			G_Q3F_AdminCheckBannedPlayers();
 			g_q3f_banCheckTime = G_Q3F_AdminNextExpireBans();
 			return;

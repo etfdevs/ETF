@@ -178,7 +178,7 @@ static qboolean CG_Q3F_ForceFieldAllowDirection( vec3_t direction, const vec3_t 
 	return( dot >= 0 );
 }
 
-void CG_SpectatorTrace( trace_t *result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, 
+static void CG_SpectatorTrace( trace_t *result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, 
 					   int skipNumber, int mask ) {
 	trace_t t;
 
@@ -191,7 +191,7 @@ void CG_SpectatorTrace( trace_t *result, const vec3_t start, const vec3_t mins, 
 
 // Activator is cgs.clientinfo[skipNumber]
 // Ent is the forcefield
-qboolean CG_Q3F_CheckCriteria( const centity_t *clAct, const clientInfo_t *activator, const centity_t *ent )
+static qboolean CG_Q3F_CheckCriteria( const centity_t *clAct, const clientInfo_t *activator, const centity_t *ent )
 {
 	// Return true if the activator passes the criteria on the specified entity.
 

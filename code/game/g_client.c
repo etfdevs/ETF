@@ -986,7 +986,7 @@ if desired.
 qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 	gentity_t *ent;
 	const char	*s;
-	char	oldname[MAX_STRING_CHARS];
+	char	oldname[MAX_NETNAME];
 	gclient_t	*client;
 	//char	c1[MAX_INFO_STRING];
 	char	userinfo[MAX_INFO_STRING];
@@ -1086,7 +1086,7 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 	{
 		G_LogPrintf("%d changed name. new = %s, ct = %d, t = %d\n", clientNum, client->pers.newnetname, client->pers.namechangeTime, level.time);
 		Q_strncpyz( client->pers.netname, client->pers.newnetname, sizeof(client->pers.netname) );
-		client->pers.newnetname[0] = 0;
+		client->pers.newnetname[0] = '\0';
 		client->pers.namechangeTime = level.time + 2000;
 	}
 	// Golliwog.
@@ -1168,40 +1168,29 @@ Too bad for timed-out clients on a LAN, of course...
 ===========
 */
 
-void G_Q3F_CheckClones( char *ipstr ) {
+static void G_Q3F_CheckClones( int clientNum, const char *ipStr ) {
 	gentity_t *ent;
-
 	for( ent = g_entities; ent < &g_entities[MAX_CLIENTS]; ent++ ) {
+		if ( ent->s.number == clientNum )
+			continue;
 		if( ent->client && ent->inuse && (!(ent->r.svFlags & SVF_BOT)) &&
 			(ent->client->ps.ping >= 999 || !ent->client->ps.ping) &&
 			ent->client->activityTime < (level.time - 3000) &&
-			ent->client->sess.ipStr &&
-			!strcmp( ent->client->sess.ipStr, ipstr ) ) {
+			*ent->client->pers.ipStr &&
+			ent->client->pers.connected == CON_CONNECTED &&
+			!strcmp( ent->client->pers.ipStr, ipStr ) ) {
 			G_Q3F_DropClient( ent, "Suspected 'ghost' client." );
 		}
 	}
 }
-
-// Barrowing this code from my jka mod
-#define MAX_IP_LENGTH	48
-
-#if 0
-typedef struct {
-	char	ip[MAX_IP_LENGTH];
-	char	name[MAX_NETNAME];
-	int		time;
-	int		clientNum;
-} plConnectInfo;
-
-plConnectInfo plConnectList[MAX_CLIENTS];
-#endif
 
 /*
 ============
 G_StripPort
 ============
 */
-void G_StripPort( const char *in, char *out, int destsize )
+// fixme ipv6
+static void G_StripPort( const char *in, char *out, int destsize )
 {
 	const char *colon = strrchr(in, ':');
 	if (colon)
@@ -1234,127 +1223,22 @@ restarts.
 const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 {
 	char		*reason;
-	const char	*value, *name, *ip;// , *guid;
+	const char	*value, *name, *ip, *guid;
 	gclient_t	*client;
 	char		userinfo[MAX_INFO_STRING];
-	char		con_name[MAX_NETNAME];
-	char		con_ip[MAX_IP_LENGTH];
-	char		guid_str[33] = { 0 };
+	char		cleanip[MAX_IP_LENGTH];
+	//char		guid_str[33] = { 0 };
 #ifdef BUILD_LUA
 	char		lua_reason[MAX_STRING_CHARS] = "";
 #endif
 	gentity_t	*ent;
+	qboolean	isLocal;
 
-#if 0
-	int i;
-	qboolean	abuse;
-	static int	plIndex = 0;
-	static qboolean doonce = qtrue;
-
-	if ( doonce && sv_maxConnections.integer > 0 ) {
-		for ( i = 0 ; i < sv_maxConnections.integer ; i++ ) {
-			Q_strncpyz( plConnectList[i].ip, "NOTSET", MAX_IP_LENGTH );
-			Q_strncpyz( plConnectList[i].name, "NOTSET", MAX_NETNAME );
-			plConnectList[i].time = 0;
-		}
-		doonce = qfalse;
-	}
-
-	if ( plIndex >= sv_maxConnections.integer )
-		plIndex = 0;
-#endif
+	if ( clientNum >= level.maxclients ) {
+ 		return "Bad connection slot.";
+ 	}
 
 	ent = &g_entities[ clientNum ];
-
-	ent->client = level.clients + clientNum;
-	client = ent->client;
-
-	trap_GetUserinfo( clientNum, userinfo, sizeof( userinfo ) );
-
-	//value = Info_ValueForKey (userinfo, "cl_anonymous");
-	name = Info_ValueForKey (userinfo, "name");
-	ip = Info_ValueForKey (userinfo, "ip");
-	Q_strncpyz( guid_str, Info_ValueForKey( userinfo, "cl_guid" ), sizeof( guid_str ) );
-	if ( isBot )
-		Q_strncpyz( guid_str, "BOT", sizeof( guid_str ) );
-	else if ( !*guid_str || !Q_stricmp( guid_str, "unknown") )
-		Q_strncpyz( guid_str, "NOGUID", sizeof( guid_str ) );
-	ClientCleanName( clientNum, name, con_name, sizeof(con_name) );
-	G_StripPort( ip, con_ip, sizeof(con_ip) );
-	/*if ( *value && strcmp(value, "0" ) ) {
-		trap_SendServerCommand( -1, va("print \"Banned player: %s^7, tried to connect.\"", con_name));
-		G_LogPrintf("ClientConnect: [Connection Refused: q3unban exploit attempt] %i [%s] \"%s^7\"\n", clientNum, con_ip, con_name);
-		return "Banned: q3unban exploit attempt";
-	}*/
-
-	if( /*!con_ip ||*/ !*con_ip ) {
-		trap_SendServerCommand( -1, va("print \"Banned player: %s^7, tried to connect.\"", con_name));
-		G_LogPrintf("ClientConnect: [Connection Refused: q3unban exploit attempt] %i [%s] \"%s^7\"\n", clientNum, con_ip, con_name);
-		return "Banned: q3unban exploit attempt";
-	}
-
-	// check to see if they are on the banned IP list
-	//value = Info_ValueForKey (userinfo, "ip");
-	if ( G_FilterPacket( con_ip, &reason ) ) {
-		trap_SendServerCommand( -1, va("print \"Banned player: %s^7, tried to connect.\"", con_name));
-		G_LogPrintf("ClientConnect: [Connection Refused: IP Banned] %i [%s] \"%s^7\"\n", clientNum, con_ip, con_name);
-		return va( "Banned: %s", reason );
-	}
-
-#if 0
-	/* if flood connect is activated and this is a first time and not a bot, proceed */
-	if (sv_maxConnections.integer > 0 && firstTime && !isBot && strcmp(con_ip, "localhost") != 0) {
-		i = plConnectList[plIndex].time;
-
-		Q_strncpyz(plConnectList[plIndex].ip, con_ip, MAX_IP_LENGTH);
-		Q_strncpyz(plConnectList[plIndex].name, con_name, MAX_NETNAME);
-		plConnectList[plIndex].time = level.time;
-		plConnectList[plIndex].clientNum = clientNum;
-
-		abuse = (plConnectList[plIndex].time - i) < (sv_maxConnectionTime.integer*1000) ? qtrue : qfalse;
-
-		if (abuse) {
-			for (i = 0; i < sv_maxConnections.integer; i++) {
-				abuse = abuse && (!strcmp(plConnectList[i].ip, con_ip)) ? qtrue : qfalse;
-			}
-		}
-
-		plIndex++;
-
-		if (abuse) {
-			if (sv_maxConnectionBan.integer) {
-				trap_SendServerCommand( -1, va("print \"Banned player: %s^7, tried to connect.\"", con_name));
-				G_LogPrintf("ClientConnect: [Connection Refused + Banned: Too many connections per IP: %i] %i [%s] \"%s\"\n", sv_maxConnections.integer, clientNum, con_ip, con_name);
-				AddIP(NULL, con_ip, -1, va("Too many connections per IP: %i", sv_maxConnections.integer));
-				if (sv_maxConnectionKick.integer) {
-					for (i = 0; i < sv_maxConnections.integer; i++) {
-						if (plConnectList[i].clientNum >= 0 && plConnectList[i].clientNum != clientNum) {
-							G_LogPrintf("ClientConnect: [Auto Kicking Client] %i [%s] \"%s\"\n", plConnectList[i].clientNum, plConnectList[i].ip, plConnectList[i].name);
-							G_Q3F_DropClient(&g_entities[plConnectList[i].clientNum], va("Banned: Too many connections per IP: %i", sv_maxConnections.integer));
-						}
-						plConnectList[i].clientNum = -1;
-					}
-					G_Q3F_AdminCheckBannedPlayers(); // this is an extra check for ingame players as the above will catch all ghosts
-				}
-				g_q3f_banCheckTime = G_Q3F_AdminNextExpireBans();
-				return va("Connection Dropped... Exceeded Maximum Connections Per IP: %i", sv_maxConnections.integer);
-			} else {
-				trap_SendServerCommand( -1, va("print \"Banned player: %s^7, tried to connect.\"", con_name));
-				G_LogPrintf("ClientConnect: [Connection Refused: Too many connections per IP: %i] %i [%s] \"%s\"\n", sv_maxConnections.integer, clientNum, con_ip, con_name);
-				if (sv_maxConnectionKick.integer) {
-					for (i = 0; i < sv_maxConnections.integer; i++) {
-						if (plConnectList[i].clientNum >= 0 && plConnectList[i].clientNum != clientNum) {
-							G_LogPrintf("ClientConnect: [Auto Kicking Client] %i [%s] \"%s\"\n", plConnectList[i].clientNum, plConnectList[i].ip, plConnectList[i].name);
-							G_Q3F_DropClient(&g_entities[plConnectList[i].clientNum], va("Banned: Too many connections per IP: %i", sv_maxConnections.integer));
-						}
-						plConnectList[i].clientNum = -1;
-					}
-				}
-				return va("Connection Dropped... Exceeded Maximum Connections Per IP: %i", sv_maxConnections.integer);
-			}
-		}
-	}
-#endif
 
 	// Golliwog: If this is a reconnection, destroy any existing buildings.
 	// Mystery of the day: Why does it just pick client zero again for the 'new'
@@ -1364,76 +1248,142 @@ const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 	// RR2DO2: MrElusive says: the only problem I could find was that when a client
 	// times out... and then reconnects using the same ip address within a certain
 	// amount of time... then client disconnect is not called!
-	if( ent->inuse )
-	{
-		if( client->sentry )
-			G_Damage( client->sentry, NULL, NULL, NULL, NULL, 100000, DAMAGE_NO_PROTECTION, MOD_CUSTOM );
-		if( client->supplystation )
-			G_Damage( client->supplystation, NULL, NULL, NULL, NULL, 100000, DAMAGE_NO_PROTECTION, MOD_CUSTOM );
-		G_Q3F_DropAllFlags( ent, qtrue, qtrue );		// RR2DO2: Drop any flags carried.
-	}
-
-	memset( client, 0, sizeof(*client) );
-
-	if(!isBot && !(ent->r.svFlags & SVF_BOT))
-		G_Q3F_CheckClones( con_ip );		// Golliwog: Kick any timed-out same-IP clients UNLESS I'M A BOT
-
-	if(!isBot && !(ent->r.svFlags & SVF_BOT)) 
-	{
-		// check for a password
-		value = Info_ValueForKey (userinfo, "password");
-		if ( g_password.string[0] && Q_stricmp( g_password.string, "none" ) &&
-			strcmp( g_password.string, value) != 0) {
-				char privpass[64];
-				trap_Cvar_VariableStringBuffer("sv_privatepassword", privpass, 64);
-
-				if(privpass[0]) {							// also allow private client password if necessary
-					if(strcmp( privpass, value) != 0)
-						return "Invalid password";
-				}
-				else
-					return "Invalid password";
+	if ( firstTime ) {
+		// cleanup previous data manually
+		// because client may silently (re)connect without ClientDisconnect in case of crash for example
+		if ( level.clients[ clientNum ].pers.connected != CON_DISCONNECTED || ent->inuse ) {
+			G_LogPrintf( "Forcing disconnect on active client: %i\n", clientNum );
+			ClientDisconnect( clientNum );
 		}
-	}
-
-	// Set some stuff up for the bot.
-	if(isBot) 
-	{
+		// remove old entity from the world
+		trap_UnlinkEntity( ent );
+		ent->r.contents = 0;
+		ent->s.eType = ET_INVISIBLE;
+		ent->s.solid = 0;
+		ent->s.eFlags = 0;
+		ent->s.modelindex = 0;
+		ent->s.clientNum = clientNum;
 		ent->s.number = clientNum;
-		ent->r.svFlags |= SVF_BOT;
-		ent->inuse = qtrue;
+		ent->takedamage = qfalse;
+
+		/*if (ent->inuse)
+		{
+			if (client->sentry)
+				G_Damage(client->sentry, NULL, NULL, NULL, NULL, 100000, DAMAGE_NO_PROTECTION, MOD_CUSTOM);
+			if (client->supplystation)
+				G_Damage(client->supplystation, NULL, NULL, NULL, NULL, 100000, DAMAGE_NO_PROTECTION, MOD_CUSTOM);
+			G_Q3F_DropAllFlags(ent, qtrue, qtrue);		// RR2DO2: Drop any flags carried.
+		}*/
 	}
 
-	// they can connect
-	client->pers.connected = CON_CONNECTING;
+	ent->r.svFlags &= ~SVF_BOT;
+	ent->inuse = qfalse;
 
-	// read or initialize the session data
-	if ( firstTime || level.newSession ) {
-		G_InitClientSessionData( client, userinfo );
+	trap_GetUserinfo( clientNum, userinfo, sizeof( userinfo ) );
+
+	ip = Info_ValueForKey( userinfo, "ip" );
+	G_StripPort( ip, cleanip, sizeof(cleanip) );
+	name = Info_ValueForKey( userinfo, "name" );
+	guid = Info_ValueForKey( userinfo, "cl_guid" );
+
+	if ( !strcmp( ip, "localhost" ) && !isBot )
+		isLocal = qtrue;
+	else
+		isLocal = qfalse;
+
+	if ( ip[0] == '\0' || cleanip[0] == '\0' ) {
+		trap_SendServerCommand( -1, va( "print \"Banned player: %s^7, tried to connect.\"", name ) );
+		G_LogPrintf( "ClientConnect: [Connection Refused: q3unban exploit attempt] %i [%s] \"%s^7\"\n", clientNum, ip, name );
+		return "Banned: q3unban exploit attempt";
 	}
-	G_ReadClientSessionData( client );
 
-	if(isBot) 
-	{
-		client->sess.versionOK = qtrue;
+	if ( isLocal && !isBot && G_FilterPacket( ip, &reason ) ) {
+		trap_SendServerCommand( -1, va( "print \"Banned player: %s^7, tried to connect.\"", name ) );
+		G_LogPrintf( "ClientConnect: [Connection Refused: IP Banned] %i [%s] \"%s^7\"\n", clientNum, ip, name );
+		return va("Banned: %s", reason);
 	}
 
 #ifdef BUILD_LUA
 	// LUA API callbacks (check with Lua scripts)
-	if (G_LuaHook_ClientConnect(clientNum, firstTime, isBot, lua_reason))
-	{
-		if (!isBot && !(ent->r.svFlags & SVF_BOT))
-		{
+	if ( G_LuaHook_ClientConnect( clientNum, firstTime, isBot, lua_reason ) ) {
+		if ( !isBot ) {
 			return va("You are excluded from this server. %s\n", lua_reason);
 		}
 	}
 #endif
 
+	if ( !isBot && !isLocal ) {
+		// check for a password
+		value = Info_ValueForKey( userinfo, "password" );
+		if ( g_password.string[0] && Q_stricmp( g_password.string, "none" ) && strcmp( g_password.string, value) != 0) {
+			char privpass[MAX_CVAR_VALUE_STRING];
+			trap_Cvar_VariableStringBuffer( "sv_privatepassword", privpass, sizeof(privpass) );
+
+			if ( privpass[0] ) {
+				if(strcmp( privpass, value) != 0)
+					return "Invalid password";
+			}
+			else
+				return "Invalid password";
+		}
+	}
+
+	ent->client = level.clients + clientNum;
+	client = ent->client;
+
+	memset( client, 0, sizeof( *client ) );
+
+	if ( !isBot && !isLocal )
+		G_Q3F_CheckClones( clientNum, cleanip );		// Golliwog: Kick any timed-out same-IP clients UNLESS I'M A BOT
+
+	client->ps.clientNum = clientNum;
+
+	if ( !ClientUserinfoChanged( clientNum, "connect" ) ) {
+		return ban_reason;
+	}
+
+	// read or initialize the session data
+	if ( firstTime || level.newSession ) {
+		if ( firstTime ) {
+			if ( client->pers.ipStr[0] == '\0' || Q_stricmp( client->pers.ipStr, cleanip ) != 0 ) {
+				Q_strncpyz( client->pers.ipStr, cleanip, sizeof(client->pers.ipStr) );
+			}
+		}
+
+		G_InitClientSessionData( client, userinfo );
+	}
+
+	G_ReadClientSessionData( client );
+
+	if ( isBot )
+		Q_strncpyz( client->pers.guidStr, "BOT", sizeof(client->pers.guidStr));
+	else if ( guid[0] == '\0' || !Q_stricmp( guid, "unknown") )
+		Q_strncpyz( client->pers.guidStr, "NOGUID", sizeof(client->pers.guidStr));
+	else
+		Q_strncpyz( client->pers.guidStr, guid, sizeof(client->pers.guidStr) );
+
+	if (isBot) {
+		ent->s.number = clientNum;
+		ent->r.svFlags |= SVF_BOT;
+		client->sess.versionOK = qtrue;
+	}
+
+	ent->inuse = qtrue;
+
 	// get and distribute relevent paramters
 	G_LogPrintf( "ClientConnect: %i\n", clientNum );
-	#ifdef BUILD_BOTS
+#ifdef BUILD_BOTS
 	Bot_Event_ClientConnected( ent, isBot );
-	#endif
+#endif
+#ifdef DREVIL_BOT_SUPPORT
+	if( isBot )
+		Bot_Interface_SendGlobalEvent( GAME_ID_BOTCONNECTED, clientNum, 0, 0 );
+	else
+		Bot_Interface_SendGlobalEvent( GAME_ID_CLIENTCONNECTED, clientNum, 0, 0 );
+#endif
+
+	client->pers.connected = CON_CONNECTING;
+
 	ClientUserinfoChanged( clientNum, "connect" );
 
 	// don't do the "xxx connected" messages if they were caried over from previous level
@@ -1444,40 +1394,20 @@ const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 	client->sess.lives = -2;		// Golliwog: Magic 'set lives appropriately' flag for first connection
 
 	if ( g_teamAutoJoin.integer ) {	// RR2DO2
-		if (!firstTime) {
+		if ( !firstTime ) {
 			client->sess.sessionTeam = PickAutoJoinTeam( clientNum );
 		}
 		BroadcastTeamChange( client, -1 );
 	}
 
-#ifdef DREVIL_BOT_SUPPORT
-	if(ent->r.svFlags & SVF_BOT)
-		Bot_Interface_SendGlobalEvent(GAME_ID_BOTCONNECTED, clientNum, 0,0);
-	else
-		Bot_Interface_SendGlobalEvent(GAME_ID_CLIENTCONNECTED, clientNum, 0,0);
-#endif
 	// count current clients and rank for scoreboard
 	CalculateRanks();
 
-	// Golliwog: Get IP for first-time players
-	//value = Info_ValueForKey (userinfo, "ip");
-	if( /*con_ip &&*/ *con_ip && (!client->sess.ipStr || Q_stricmp( client->sess.ipStr, con_ip )) )
-	{
-		G_Q3F_AddString( &reason, con_ip );
-		G_Q3F_RemString( &client->sess.ipStr );
-		client->sess.ipStr = reason;
+	if (g_unlagged.integer) {
+		trap_SendServerCommand(clientNum, "print \"This server is Unlagged: full lag compensation is ON!\n\"");
 	}
-	// Golliwog.
-
-	if( /*guid &&*/ *guid_str && (!*client->sess.guidStr || Q_stricmp( client->sess.guidStr, guid_str )) )
-	{
-		Q_strncpyz( client->sess.guidStr, guid_str, sizeof(client->sess.guidStr) );
-	}
-
-	if ( g_unlagged.integer ) {
-		trap_SendServerCommand( clientNum, "print \"This server is Unlagged: full lag compensation is ON!\n\"" );
-	} else {
-		trap_SendServerCommand( clientNum, "print \"This server is Unlagged: full lag compensation is OFF!\n\"" );
+	else {
+		trap_SendServerCommand(clientNum, "print \"This server is Unlagged: full lag compensation is OFF!\n\"");
 	}
 
 	return NULL;
@@ -1510,8 +1440,7 @@ void ClientBegin( int clientNum ) {
 	client = level.clients + clientNum;
 
 #ifdef BUILD_LUA
-	if (client->pers.connected == CON_CONNECTING)
-	{
+	if ( client->pers.connected == CON_CONNECTING ) {
 		firsttime = qtrue;
 	}
 #endif
@@ -1523,6 +1452,9 @@ void ClientBegin( int clientNum ) {
 	ent->touch = 0;
 	ent->pain = 0;
 	ent->client = client;
+
+	if ( client->pers.connected == CON_DISCONNECTED )
+		return;
 
 	client->pers.connected = CON_CONNECTED;
 	client->pers.enterTime = level.time;
@@ -1905,7 +1837,7 @@ void ClientDisconnect( int clientNum ) {
 
 	ent = g_entities + clientNum;
 
-	if ( !ent->client ) {
+	if ( !ent->client || ent->client->pers.connected == CON_DISCONNECTED ) {
 		return;
 	}
 
@@ -1919,8 +1851,7 @@ void ClientDisconnect( int clientNum ) {
 #endif
 
 	if(ent->client->pers.netname[0]) {
-		trap_SendServerCommand( -1, va("print \"%s ^1has disconnected.\n\"",
-			ent->client->pers.netname ) );
+		trap_SendServerCommand( -1, va("print \"%s ^1has disconnected.\n\"", ent->client->pers.netname ) );
 	}
 
 	// Slothy - used to zero out kill stats
@@ -1969,12 +1900,19 @@ void ClientDisconnect( int clientNum ) {
 	}
 
 	trap_UnlinkEntity (ent);
+	ent->r.contents = 0;
+ 	ent->s.eType = ET_INVISIBLE;
+ 	ent->s.solid = 0;
+ 	ent->s.eFlags = 0;
 	ent->s.modelindex = 0;
 	ent->inuse = qfalse;
 	ent->classname = "disconnected";
 	ent->client->pers.connected = CON_DISCONNECTED;
 	ent->client->ps.persistant[PERS_TEAM] = Q3F_TEAM_FREE;
+	ent->client->ps.persistant[PERS_CURRCLASS] = Q3F_CLASS_NULL;
+	ent->client->sess.sessionClass = Q3F_CLASS_NULL;
 	ent->client->sess.sessionTeam = Q3F_TEAM_FREE;
+	ent->takedamage = qfalse;
 
 	trap_SetConfigstring( CS_PLAYERS + clientNum, "");
 
@@ -1984,6 +1922,4 @@ void ClientDisconnect( int clientNum ) {
 	G_Q3F_ArrayDestroy( ent->client->chatchannels );
 	ent->client->chatchannels = NULL;
 	// Golliwog.
-
-	G_Q3F_RemString( &ent->client->sess.ipStr );	// Gollwog: Remove old IP address string
 }

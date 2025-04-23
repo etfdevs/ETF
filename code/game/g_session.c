@@ -90,8 +90,6 @@ static void G_WriteClientSessionData( const gclient_t *client ) {
 	cJSON_AddNumberToObject( root, "shoutcaster", !!sess->shoutcaster );
 	cJSON_AddNumberToObject( root, "ignoreClients0", client->sess.ignoreClients[0] );
 	cJSON_AddNumberToObject( root, "ignoreClients1", client->sess.ignoreClients[1] );
-	cJSON_AddStringToObject( root, "ipStr", sess->ipStr ? sess->ipStr : "" );
-	cJSON_AddStringToObject( root, "guidStr", *sess->guidStr ? sess->guidStr : "" );
 
 	trap_FS_FOpenFile( fileName, &f, FS_WRITE );
 
@@ -171,22 +169,6 @@ void G_ReadClientSessionData( gclient_t *client ) {
 	}
 	if ( (object = cJSON_GetObjectItem( root, "ignoreClients1" )) ) {
 		sess->ignoreClients[1] = object->valueint;
-	}
-	if ( (object = cJSON_GetObjectItem( root, "ipStr" )) ) {
-		// Golliwog: This is seriously nasty, but IP Addresses appear not to
-		// be preserved over map changes, so they're stored and extracted here.
-		char *ipstr;
-		if ( (tmp = object->valuestring) ) {
-			G_Q3F_AddString( &ipstr, tmp );
-			G_Q3F_RemString( &sess->ipStr );
-			sess->ipStr = ipstr;
-		}
-		// Golliwog.
-	}
-	if ( (object = cJSON_GetObjectItem( root, "guidStr" )) ) {
-		if ( (tmp = object->valuestring) ) {
-			Q_strncpyz( sess->guidStr, tmp, sizeof(sess->guidStr) );
-		}
 	}
 
 	if ( !g_matchState.integer ) 

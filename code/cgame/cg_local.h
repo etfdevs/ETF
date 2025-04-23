@@ -910,7 +910,7 @@ typedef struct {
 
 	// slothy flaginfo hud item
 	int			fi_endtime;
-	char		finfo[MAX_SAY_TEXT];
+	char		finfo[MAX_STRING_CHARS];
 
 	// slothy class info
 	int			classInfoTime;

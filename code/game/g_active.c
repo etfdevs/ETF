@@ -677,16 +677,14 @@ but any server game effects are handled here
 ================
 */
 void ClientEvents( gentity_t *ent, int oldEventSequence ) {
-	int		i, j;
+	int		i;
 	int		event;
 	gclient_t *client;
 	int		damage = 0;
 	vec3_t	dir;
 	vec3_t	origin, angles;
 //	qboolean	fired;
-	gitem_t *item;
-	gentity_t *drop;
-	bg_q3f_playerclass_t *cls;
+	const bg_q3f_playerclass_t *cls;
 
 	client = ent->client;
 	cls = BG_Q3F_GetClass( &client->ps );
@@ -769,12 +767,14 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 			break;
 
 		case EV_PLACE_BUILDING:
+#ifdef SENTRY_MOVE
 			{
 				if(ent->client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_MOVING))
 				{
 					
 				}
 			}
+#endif
 			break;
 
 		case EV_CHANGE_WEAPON:
@@ -783,20 +783,7 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 			break;
 
 		case EV_USE_ITEM1:		// teleporter
-			// drop flags in CTF
-			item = NULL;
-			j = 0;
-
-			if ( item ) {
-				drop = Drop_Item( ent, item, 0 );
-				// decide how many seconds it has left
-				drop->count = ( ent->client->ps.powerups[ j ] - level.time ) / 1000;
-				if ( drop->count < 1 ) {
-					drop->count = 1;
-				}
-
-				ent->client->ps.powerups[ j ] = 0;
-			}
+			G_Q3F_DropAllFlags( ent, qfalse, qtrue );
 
 			SelectSpawnPoint( ent->client->ps.origin, origin, angles, ent );
 			TeleportPlayer( ent, origin, angles );
@@ -1230,9 +1217,11 @@ void ClientThink_real( gentity_t *ent ) {
 	if ( client->ps.powerups[PW_HASTE] ) {
 		client->ps.speed *= 1.3;
 	}
+#ifdef SENTRY_MOVE
 	if ( client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_MOVING)) {
 		client->ps.speed *= 0.5;
 	}
+#endif
 	// Sniper shots to legs.
 	if(client->legwounds) {
 		client->ps.speed -= 0.1 * client->ps.speed * client->legwounds;

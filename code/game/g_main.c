@@ -95,7 +95,7 @@ vmCvar_t	g_motd;
 vmCvar_t	g_synchronousClients;
 vmCvar_t	g_warmup;
 vmCvar_t	g_restarted;
-vmCvar_t	g_log;
+vmCvar_t	g_logFile;
 vmCvar_t	g_logSync;
 vmCvar_t	g_blood;
 vmCvar_t	g_allowVote;
@@ -233,9 +233,9 @@ static cvarTable_t		gameCvarTable[] = {
 
 	// change anytime vars
 	{ &g_dmflags, "dmflags", "0", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue  },
-	{ &g_fraglimit, "fraglimit", "20", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
+	{ &g_fraglimit, "fraglimit", "0", /*CVAR_SERVERINFO |*/ CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
 	{ &g_timelimit, "timelimit", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
-	{ &g_capturelimit, "capturelimit", "8", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
+	{ &g_capturelimit, "capturelimit", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
 
 	{ &g_synchronousClients, "g_synchronousClients", "0", CVAR_SYSTEMINFO, 0, qfalse  },
 
@@ -243,7 +243,7 @@ static cvarTable_t		gameCvarTable[] = {
 
 	{ &g_teamAutoJoin, "g_teamAutoJoin", "0", CVAR_ARCHIVE  },
 
-	{ &g_log, "g_log", "games.log", CVAR_ARCHIVE, 0, qfalse  },
+	{ &g_logFile, "g_log", "games.log", CVAR_ARCHIVE, 0, qfalse  },
 	{ &g_logSync, "g_logSync", "0", CVAR_ARCHIVE, 0, qfalse  },
 
 	{ &g_password, "g_password", "", CVAR_USERINFO, 0, qfalse  },
@@ -1041,9 +1041,9 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_VersionDebug_Init();
 #endif
 
-	if ( g_log.string[0] ) {
+	if ( g_logFile.string[0] ) {
 		char buffer[MAX_CVAR_VALUE_STRING];
-		G_ETF_LogParseString(g_log.string, mapname, g_gameindex.integer, buffer, MAX_CVAR_VALUE_STRING);
+		G_ETF_LogParseString(g_logFile.string, mapname, g_gameindex.integer, buffer, MAX_CVAR_VALUE_STRING);
 		if ( g_logSync.integer ) {
 			trap_FS_FOpenFile( buffer, &level.logFile, FS_APPEND_SYNC );
 		} else {

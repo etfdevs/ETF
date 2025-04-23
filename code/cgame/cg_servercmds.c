@@ -865,7 +865,7 @@ static void CG_ServerCommand( void ) {
 
    // slothy
    if( !strcmp( cmd, "finfo")) {
-	   trap_Argv(1, cg.finfo, MAX_SAY_TEXT);
+	   trap_Argv( 1, cg.finfo, sizeof(cg.finfo) );
 	   cg.fi_endtime = cg.time + 5000;
 	   return;
    }
