@@ -110,7 +110,6 @@ void G_ReadClientSessionData( gclient_t *client ) {
 	char *buffer = NULL;
 	fileHandle_t f = NULL_FILE;
 	int len = 0;
-	const char *tmp = NULL;
 
 	Com_sprintf( fileName, sizeof(fileName), "session/client%02i.json", (int)(client - level.clients) );
 	len = trap_FS_FOpenFile( fileName, &f, FS_READ );

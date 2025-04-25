@@ -1559,16 +1559,17 @@ void CG_DrawObits(void)
 //==================================================================================
 
 //bani
-void CG_DrawDemoRecording( void ) {
+static void CG_DrawDemoRecording( void ) {
 	char status[1024];
 	char demostatus[128];
 	char wavestatus[128];
+	int align = ITEM_ALIGN_LEFT;
 
 	if( !cl_demorecording.integer && !cl_waverecording.integer ) {
 		return;
 	}
 
-	if( !cg_recording_statusline.integer ) {
+	if( !cg_drawDemoRecording.integer ) {
 		return;
 	}
 
@@ -1586,7 +1587,14 @@ void CG_DrawDemoRecording( void ) {
 
 	Com_sprintf( status, sizeof( status ), "RECORDING%s%s", demostatus, wavestatus );
 
-	CG_Text_Paint( 5, cg_recording_statusline.integer, 0.2f, colorWhite, status, 0, 0, 0, NULL, ITEM_ALIGN_LEFT );
+	if (cg_drawDemoRecording.integer == 2) {
+		align = ITEM_ALIGN_CENTER;
+	}
+	else if (cg_drawDemoRecording.integer == 3) {
+		align = ITEM_ALIGN_RIGHT;
+	}
+
+	CG_Text_Paint( cg_demoLineX.integer, cg_demoLineY.integer, 0.2f, colorWhite, status, 0, 0, 0, NULL, align );
 }
 
 void CG_demoAviFPSDraw( void ) {

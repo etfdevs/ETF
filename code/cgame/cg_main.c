@@ -315,7 +315,9 @@ vmCvar_t	ui_altObitsY;
 vmCvar_t	ui_altObitsX;
 //slothy
 
-vmCvar_t	cg_recording_statusline;			// slothy ET 2.60 cvar
+vmCvar_t	cg_drawDemoRecording;			// slothy ET 2.60 cvar
+vmCvar_t	cg_demoLineX;
+vmCvar_t	cg_demoLineY;
 vmCvar_t	cl_demorecording;
 vmCvar_t	cl_demofilename;
 vmCvar_t	cl_demooffset;
@@ -490,9 +492,9 @@ static cvarTable_t		cvarTable[] = {
 	{ &cg_drawParticleCount,		"cg_drawParticleCount",		"0",		CVAR_CHEAT },
 	{ &cg_cameraMode,				"com_cameraMode",			"0",		CVAR_CHEAT },
 	{ &cg_cameraOrbit,				"cg_cameraOrbit",			"0",		CVAR_CHEAT },
-	{ &cg_gun_x,					"cg_gunX",					"0",		CVAR_CHEAT },
-	{ &cg_gun_y,					"cg_gunY",					"0",		CVAR_CHEAT },
-	{ &cg_gun_z,					"cg_gunZ",					"0",		CVAR_CHEAT },
+	{ &cg_gun_x,					"cg_gunX",					"0",		CVAR_ARCHIVE },
+	{ &cg_gun_y,					"cg_gunY",					"0",		CVAR_ARCHIVE },
+	{ &cg_gun_z,					"cg_gunZ",					"0",		CVAR_ARCHIVE },
 	{ &cg_centertime,				"cg_centertime",			"3",		CVAR_CHEAT },
 	{ &cg_swingSpeed,				"cg_swingSpeed",			"0.3",		CVAR_CHEAT },
 	{ &cg_animSpeed,				"cg_animspeed",				"1",		CVAR_CHEAT },
@@ -540,7 +542,9 @@ static cvarTable_t		cvarTable[] = {
 	{ &cg_predictItems,				"cg_predictItems",			"1",		CVAR_ARCHIVE },
 	{ &cg_predictWeapons,			"cg_predictWeapons",		"0",		CVAR_ARCHIVE },
 
-	{ &cg_recording_statusline,		"cg_recording_statusline",	"9",		CVAR_ARCHIVE },
+	{ &cg_drawDemoRecording,		"cg_drawDemoRecording",		"1",		CVAR_ARCHIVE },
+	{ &cg_demoLineX,				"cg_demoLineX",				"5",		CVAR_ARCHIVE },
+	{ &cg_demoLineY,				"cg_demoLineY",				"9",		CVAR_ARCHIVE },
 	{ &cl_demorecording,			"cl_demorecording",			"0",		CVAR_ROM },
 	{ &cl_demofilename,				"cl_demofilename",			"",			CVAR_ROM },
 	{ &cl_demooffset,				"cl_demooffset",			"0",		CVAR_ROM },

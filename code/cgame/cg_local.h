@@ -155,7 +155,7 @@ If you have questions concerning this license or the applicable additional terms
 extern const char *teamnames[4];
 
 typedef enum {
-	FOOTSTEP_NORMAL,
+	FOOTSTEP_NORMAL = 0,
 	FOOTSTEP_BOOT,
 	FOOTSTEP_FLESH,
 	FOOTSTEP_MECH,
@@ -167,13 +167,13 @@ typedef enum {
 } footstep_t;
 
 typedef enum {
-	IMPACTSOUND_DEFAULT,
+	IMPACTSOUND_DEFAULT = 0,
 	IMPACTSOUND_METAL,
 	IMPACTSOUND_FLESH
 } impactSound_t;
 
 typedef enum { 
-	Q3F_ALERT_NULL,
+	Q3F_ALERT_NULL = 0,
 	Q3F_ALERT_WAVES,
 	Q3F_ALERT_PAIN,
 	Q3F_ALERT_TRIGGER,
@@ -1703,7 +1703,9 @@ extern	vmCvar_t		ui_altObitsX;
 
 // demo recording
 extern	vmCvar_t		cl_demorecording;
-extern	vmCvar_t		cg_recording_statusline;
+extern	vmCvar_t		cg_drawDemoRecording;
+extern	vmCvar_t		cg_demoLineX;
+extern	vmCvar_t		cg_demoLineY;
 extern	vmCvar_t		cl_demofilename;
 extern	vmCvar_t		cl_demooffset;
 extern	vmCvar_t		cl_waverecording;

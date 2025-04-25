@@ -392,7 +392,7 @@ Load it now, taking the disk hits.
 This will usually be deferred to a safe time
 ===================
 */
-static void CG_LoadClientInfo( int clientNum ) {
+/*static void CG_LoadClientInfo(int clientNum) {
 	int i;
 
 	// reset any existing players and bodies, because they might be in bad
@@ -402,7 +402,7 @@ static void CG_LoadClientInfo( int clientNum ) {
 			CG_ResetPlayerEntity( &cg_entities[i] );
 		}
 	}
-}
+}*/
 
 
 /*
@@ -450,7 +450,7 @@ void CG_NewClientInfo( int clientNum ) {
 	v = Info_ValueForKey( configstring, "sc" );
 	newInfo.shoutcaster = atoi( v ) != 0;
 
-	CG_LoadClientInfo( clientNum );
+	//CG_LoadClientInfo( clientNum );
 
 	// replace whatever was there with the new one
 	newInfo.infoValid = qtrue;
@@ -460,7 +460,7 @@ void CG_NewClientInfo( int clientNum ) {
 	if ( cg.snap && cg.snap->ps.clientNum == clientNum /*&& cgDC.playerClass != newInfo.cls */ ) {
 		char pclass[25];
 
-		pclass[0] = 0;
+		pclass[0] = '\0';
 		cgDC.playerClass = 0;
 		if (CG_Q3F_IsSpectator(&cg.snap->ps) || newInfo.cls == Q3F_CLASS_NULL || newInfo.team == Q3F_TEAM_SPECTATOR) {
 			cgDC.playerClass = CLASS_SPECTATOR;
@@ -596,7 +596,10 @@ void CG_RunLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, fl
 			lf->animationTime = cg.time;
 			//lf->oldFrameTime = cg.time;
 			lf->backlerp = 0;
-			lf->frame = lf->animation->firstFrame; // shouldn't ever have null lf->animation in this case but we could probably try to resolve this
+			if ( lf->animation )
+				lf->frame = lf->animation->firstFrame; // shouldn't ever have null lf->animation in this case but we could probably try to resolve this
+			else
+				lf->frame = lf->animblock->firstFrame;
 			return;
 		}
 	}
@@ -2040,14 +2043,14 @@ void CG_Player( centity_t *cent ) {
 	if ( !ci->infoValid || !(cgs.teams & (1 << team)) || (cent->currentState.eFlags & EF_Q3F_NOSPAWN) )
 	{
 		if( cg_debugAnim.integer && !ci->infoValid )
-			CG_Printf( BOX_PRINT_MODE_CHAT, "Invalid clientinfo for %d\n.", clientNum );
+			CG_Printf( BOX_PRINT_MODE_CHAT, "Invalid clientinfo for %d (%s)\n.", clientNum, corpse ? "corpse" : "player" );
 		return;
 	}
 	// Golliwog: Check the class is valid too
 	if( !(cgs.classes & (1 << cls)) )
 	{
 		if( cg_debugAnim.integer )
-			CG_Printf( BOX_PRINT_MODE_CHAT, "Invalid class (%d) for %d\n.", cls, clientNum );
+			CG_Printf( BOX_PRINT_MODE_CHAT, "Invalid class (%d) for %d (%s)\n.", cls, clientNum, corpse ? "corpse" : "player"  );
 		return;
 	}
 
