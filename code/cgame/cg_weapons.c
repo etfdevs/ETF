@@ -1257,10 +1257,35 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		}
 	}	
 
-	if( weaponNum == WP_AXE )
-		CG_PositionEntityOnTag( &gun, parent, "tag_melee", 0, NULL );
-	else
-		CG_PositionEntityOnTag( &gun, parent, "tag_weapon", 0, NULL );
+	//if( weaponNum == WP_AXE )
+	//	CG_PositionEntityOnTag( &gun, parent, "tag_melee", 0, NULL );
+	//else
+	//	CG_PositionEntityOnTag( &gun, parent, "tag_weapon", 0, NULL );
+
+	{
+		int				i;
+		orientation_t	lerped;
+
+		// lerp the tag
+		trap_R_LerpTag( &lerped, parent, weaponNum == WP_AXE ? "tag_melee" : "tag_weapon", 0 );
+
+		// allow origin offsets along tag?
+		VectorCopy( parent->origin, gun.origin );
+
+		VectorMA( gun.origin, lerped.origin[0], parent->axis[0], gun.origin );
+
+		// Make weapon appear left-handed for 2 and centered for 3
+		if ( ps && cg_drawGun.integer == 2 )
+			VectorMA( gun.origin, -lerped.origin[1], parent->axis[1], gun.origin );
+		else if(!ps || cg_drawGun.integer != 3)
+	       	VectorMA( gun.origin, lerped.origin[1], parent->axis[1], gun.origin );
+
+		VectorMA( gun.origin, lerped.origin[2], parent->axis[2], gun.origin );
+
+		// had to cast away the const to avoid compiler problems...
+		MatrixMultiply( lerped.axis, parent->axis, gun.axis );
+		gun.backlerp = parent->backlerp;
+	}
 
 	if( scaleup )
 	{

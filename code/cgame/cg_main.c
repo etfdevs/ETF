@@ -544,7 +544,7 @@ static cvarTable_t		cvarTable[] = {
 
 	{ &cg_drawDemoRecording,		"cg_drawDemoRecording",		"1",		CVAR_ARCHIVE },
 	{ &cg_demoLineX,				"cg_demoLineX",				"5",		CVAR_ARCHIVE },
-	{ &cg_demoLineY,				"cg_demoLineY",				"9",		CVAR_ARCHIVE },
+	{ &cg_demoLineY,				"cg_demoLineY",				"60",		CVAR_ARCHIVE },
 	{ &cl_demorecording,			"cl_demorecording",			"0",		CVAR_ROM },
 	{ &cl_demofilename,				"cl_demofilename",			"",			CVAR_ROM },
 	{ &cl_demooffset,				"cl_demooffset",			"0",		CVAR_ROM },

@@ -1825,7 +1825,7 @@ void CG_DrawWeaponSwitchBox (rectDef_t* rect, int anchorx, int anchory, qhandle_
 	}
 }
 
-static char *sentrynames[5][4] = {
+static const char *sentrynames[5][4] = {
 	{ "bored",		"rusty",			"useless",		"pathetic"	},		// "Bored" data.
 	{ "feeble",		"puny",				"basic",		"standard"	},
 	{ "potent",		"dual-barrel",		"upgraded",		"enhanced"	},
@@ -1833,14 +1833,14 @@ static char *sentrynames[5][4] = {
 	{ "diabolical",	"stupendous",		"outrageous",	"nitro-boosted"	},
 };
 
-vec3_t idteamcolours[Q3F_TEAM_NUM_TEAMS] = {
+/*vec3_t idteamcolours[Q3F_TEAM_NUM_TEAMS] = {
 	{ 1, 1, 1 },		// Q3F_TEAM_FREE
 	{ 1, 0.3f, 0.3f },	// Q3F_TEAM_RED
 	{ 0.5f, 0.5f, 1 },	// Q3F_TEAM_BLUE
 	{ 1, 1, 0.3f },		// Q3F_TEAM_YELLOW
 	{ 0.3f, 1, 0.3f },	// Q3F_TEAM_GREEN
 	{ 1, 1, 1 },		// Q3F_TEAM_SPECTATOR
-};
+};*/
 	
 static void CG_DrawClassIcon (rectDef_t* rect ) {
 	vec4_t colour;
@@ -2254,7 +2254,7 @@ qboolean CG_GetExpandingTextBox_Text( int ownerdraw, char* out, float* alpha, qb
 	int i;
 	float*	clr;
 	char* p = out;
-	char* level;
+	const char* level;
 
 	*changed = qfalse;
 

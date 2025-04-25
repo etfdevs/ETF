@@ -2284,7 +2284,7 @@ typedef enum {
 	INITPHASE_NUM,
 } initPhase_t;
 
-extern vec3_t idteamcolours[Q3F_TEAM_NUM_TEAMS];
+//extern vec3_t idteamcolours[Q3F_TEAM_NUM_TEAMS];
 
 //
 // system traps
