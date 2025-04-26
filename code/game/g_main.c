@@ -188,7 +188,7 @@ vmCvar_t	sv_floodProtect;
 vmCvar_t	g_debugBullets;
 //Unlagged 
 vmCvar_t	g_unlagged;
-vmCvar_t	g_unlaggedVersion;
+//vmCvar_t	g_unlaggedVersion;
 vmCvar_t	g_truePing;
 vmCvar_t	sv_fps;
 
@@ -384,7 +384,7 @@ static cvarTable_t		gameCvarTable[] = {
 	//Unlagged related 
 	{ &g_smoothClients, "g_smoothClients", "1", CVAR_ARCHIVE , 0, qfalse},
 	{ &g_unlagged, "g_unlagged", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qtrue },
-	{ &g_unlaggedVersion, "g_unlaggedVersion", "2.0", CVAR_ROM | CVAR_SERVERINFO, 0, qfalse },
+	//{ &g_unlaggedVersion, "g_unlaggedVersion", "2.0", CVAR_ROM | CVAR_SERVERINFO, 0, qfalse },
 	{ &g_truePing, "g_truePing", "1", CVAR_ARCHIVE, 0, qtrue },
 	// it's CVAR_SYSTEMINFO so the client's sv_fps will be automagically set to its value
 	{ &sv_fps, "sv_fps", "20", CVAR_SYSTEMINFO | CVAR_ARCHIVE, 0, qfalse },
@@ -1063,8 +1063,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 		G_Printf( "Not logging to disk.\n" );
 	}
 
-	G_VersionCheck_Init();
-
 	G_ReadSessionData();
 
 	// Load Camera Data
@@ -1200,8 +1198,6 @@ void G_ShutdownGame( int restart )
 #ifdef DEBUG_MEM
 	G_MemDebug_Close();
 #endif
-
-	G_VersionCheck_Close();
 
 	G_Printf ("==== ShutdownGame ====\n");
 

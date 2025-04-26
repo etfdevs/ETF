@@ -368,6 +368,7 @@ typedef struct {
 	int			namechangeTime;				// Time name was last changed.
 	int			maxHealth;			// for handicapping
 	int			enterTime;			// level.time the client entered the game
+	int			connectTime;
 	playerTeamState_t teamState;	// status in teamplay games
 	int			voteCount;			// to prevent people from constantly calling votes
 	int			autoReload;			// CaNaBiS 0,1,2 Different types of weapon reloading
@@ -574,7 +575,6 @@ typedef struct {
 
 	fileHandle_t	logFile;
 	fileHandle_t	memLogFile;
-	fileHandle_t	versionLogFile;
 
 	// store latched cvars here that we want to get at often
 	int			maxclients;
@@ -1019,11 +1019,6 @@ void G_MemDebug_Init(void);				// djbob: debugging
 void G_MemDebug_Close(void);
 #endif
 
-void G_VersionCheck_Init(void);
-void G_VersionCheck_Close(void);
-void G_VersionLogUser( gentity_t *ent );
-void QDECL G_VersionLogPrintf( const char *fmt, ... ) FORMAT_PRINTF(1,2);
-
 // Golliwog: String handling commands
 // g_q3f_string.c
 //
@@ -1286,7 +1281,7 @@ extern	vmCvar_t	sv_floodProtect;
 extern	vmCvar_t	g_debugBullets;
 //Unlagged
 extern	vmCvar_t	g_unlagged;
-extern	vmCvar_t	g_unlaggedVersion;
+//extern	vmCvar_t	g_unlaggedVersion;
 extern	vmCvar_t	g_truePing;
 extern	vmCvar_t	sv_fps;
 

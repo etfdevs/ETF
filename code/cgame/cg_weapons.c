@@ -1263,7 +1263,6 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	//	CG_PositionEntityOnTag( &gun, parent, "tag_weapon", 0, NULL );
 
 	{
-		int				i;
 		orientation_t	lerped;
 
 		// lerp the tag

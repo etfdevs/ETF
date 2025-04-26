@@ -662,7 +662,7 @@ static void SpawnCTFCompatibilityFlag( gentity_t *ent )
 	qboolean isred;
 	vec3_t origin;
 	vec3_t angle;
-	char *teamstr, *nonteamstr;
+	const char *teamstr, *nonteamstr;
 
 	isred = ent->s.otherEntityNum;
 	VectorCopy( ent->s.origin, origin );
@@ -795,7 +795,7 @@ void SP_Q3F_CTF_blueflag( gentity_t *ent )
 static void SpawnCTFAmmoConversion ( gentity_t * ent )
 {
 	vec3_t origin;
-	char* classname = ent->classname;
+	const char* classname = ent->classname;
 	VectorCopy( ent->s.origin, origin );
 
 	level.numSpawnVars = level.numSpawnVarChars = 0;
@@ -1248,7 +1248,7 @@ void G_Q3F_TargetCommandTouch( gentity_t *ent, gentity_t *other, trace_t *trace 
 				}
 			}
 			else if( !Q_stricmp( cmdbuff, "map" ) ) {
-				// Magic ceasefire command
+				// Magic map change command
 				trap_SendConsoleCommand( EXEC_APPEND, va(
 					(*databuff ? "set nextmap \"map %s; set nextmap %s\"\n" : "set nextmap \"map %s\"\n")
 					, &cmdbuff[spaceindex], databuff ) );

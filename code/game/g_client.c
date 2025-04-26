@@ -1383,6 +1383,7 @@ const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 #endif
 
 	client->pers.connected = CON_CONNECTING;
+	client->pers.connectTime = level.time;
 
 	ClientUserinfoChanged( clientNum, "connect" );
 

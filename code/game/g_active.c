@@ -1580,95 +1580,6 @@ void SpectatorClientEndFrame( gentity_t *ent ) {
 	}
 }
 
-void G_VersionCheck_Init(void) {
-	trap_FS_FOpenFile( "version.log", &level.versionLogFile, FS_APPEND );
-	if ( !level.versionLogFile ) {
-		G_Printf( "WARNING: Couldn't open logfile: version.log\n");
-	} else {
-		G_VersionLogPrintf("------------------------------------------------------------\n" );
-		G_VersionLogPrintf("VersionCheck Init:\n" );
-	}
-}
-
-void G_VersionCheck_Close(void) {
-	if ( !level.versionLogFile ) {
-		return;
-	}
-
-	G_VersionLogPrintf("VersionCheck Shutdown:\n");
-	G_VersionLogPrintf("------------------------------------------------------------\n" );
-
-	trap_FS_FCloseFile( level.versionLogFile );
-}
-
-void G_VersionLogUser( gentity_t *ent ) {
-	char		string[1024];
-	char		userinfo[BIG_INFO_KEY+BIG_INFO_VALUE+2];
-	char		key[BIG_INFO_KEY], value[BIG_INFO_VALUE];
-	const char *info;
-	int			min, tens, sec;
-
-	if ( !level.versionLogFile ) {
-		return;
-	}
-
-	sec = level.time / 1000;
-
-	min = sec / 60;
-	sec -= min * 60;
-	tens = sec / 10;
-	sec -= tens * 10;
-
-	Com_sprintf( string, sizeof(string), "%3i:%i%i Client Version Check Failed For %s" S_COLOR_WHITE " (%d)\n", min, tens, sec, ent->client->pers.netname, (int)(ent-level.gentities) );
-
-	trap_FS_Write( string, strlen( string ), level.versionLogFile );
-
-	Com_sprintf( string, sizeof(string), "%3i:%i%i Userinfo:\n", min, tens, sec );
-
-	trap_FS_Write( string, strlen( string ), level.versionLogFile );
-
-	trap_GetUserinfo( ent-level.gentities, userinfo, sizeof( userinfo ) );
-	info = &userinfo[0];
-
-	// Loop through each key/value pair and write them to file with the timestamp
-	while( 1 )
-	{
-		Info_NextPair( info, key, value );
-		if( !*info )
-			return;
-
-		Com_sprintf( string, sizeof(string), "%3i:%i%i %-20s%s\n", min, tens, sec, key, value );
-		trap_FS_Write( string, strlen( string ), level.versionLogFile );
-	}
-}
-
-void QDECL FORMAT_PRINTF(1,2) G_VersionLogPrintf( const char *fmt, ... ) {
-	va_list		argptr;
-	char		string[1024];
-	int			min, tens, sec;
-	int			offset;
-
-	if ( !level.versionLogFile ) {
-		return;
-	}
-
-	sec = level.time / 1000;
-
-	min = sec / 60;
-	sec -= min * 60;
-	tens = sec / 10;
-	sec -= tens * 10;
-
-	Com_sprintf( string, sizeof(string), "%3i:%i%i ", min, tens, sec );
-	offset = strlen(string);
-
-	va_start( argptr, fmt );
-	Q_vsnprintf( string + offset, sizeof(string) - offset, fmt, argptr );
-	va_end( argptr );
-
-	trap_FS_Write( string, strlen( string ), level.versionLogFile );
-}
-
 /*
 ==============
 ClientEndFrame
@@ -1687,9 +1598,12 @@ void ClientEndFrame( gentity_t *ent ) {
 		return;
 
 	/* Ensiform - FIXME Happens to people randomly for no reason? */
-	if (!ent->client->sess.versionOK && ent->client->pers.enterTime + 5000 < level.time && !g_allowAllVersions.integer ) {
-		G_VersionLogUser( ent );
-		G_Q3F_DropClient( ent, "Client doesn't have version " FORTS_VERSION);
+	if (ent->inuse && ent->client->pers.connected == CON_CONNECTED && !ent->client->sess.versionOK && (level.time - ent->client->pers.enterTime) >= 45000 && !g_allowAllVersions.integer ) {
+		char userinfo[MAX_INFO_STRING];
+
+		trap_GetUserinfo( ent->s.number, userinfo, sizeof(userinfo) );
+		G_LogPrintf( "CheckVersion: %d \"%s\" \"%s\"\n", ent->s.number, ent->client->pers.netname, userinfo );
+		G_Q3F_DropClient( ent, va( "Client doesn't have version %s (has %s)", FORTS_VERSION, Info_ValueForKey( userinfo, "cg_etfVersion" ) ) );
 		return;
 	}
 
@@ -1788,5 +1702,3 @@ void ClientEndFrame( gentity_t *ent ) {
 	// store the client's position for backward reconciliation later
 	G_StoreHistory( ent );
 }
-
-

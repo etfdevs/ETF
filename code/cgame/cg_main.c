@@ -516,7 +516,7 @@ static cvarTable_t		cvarTable[] = {
 	{ &snaps,						"snaps",					"40",		CVAR_USERINFO | CVAR_ARCHIVE },
 	{ &cg_gender,					"cg_gender",				"0",		CVAR_USERINFO | CVAR_ARCHIVE },
 	{ &cg_initializing,				"init",						"1",		CVAR_USERINFO | CVAR_ROM },
-    { &cg_etfVersion,				"cg_etfversion",			"0",		CVAR_USERINFO | CVAR_ROM },
+    { &cg_etfVersion,				"cg_etfversion",			"",			CVAR_USERINFO | CVAR_ROM },
 
 	{ &g_spectatorMode,				"g_spectatorMode",			"0",		CVAR_SYSTEMINFO },
 
