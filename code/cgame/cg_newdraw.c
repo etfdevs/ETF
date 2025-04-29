@@ -3228,6 +3228,23 @@ void CG_Q3F_DrawHUDIcons(rectDef_t *rect, float tscale, vec4_t color, int textSt
 			trap_R_DrawStretchPic(	(x + 32) - (w / 2), (y + 32) - (h / 2),
 									w, h, 0, 0, 1, 1,
 									cgs.gameShaders[cent->currentState.modelindex] );
+
+			if (cent->currentState.eFlags & EF_TEAMVOTED) {
+				// recalc
+				x = rect->x + ((64 * (slot / 5)) * scale);
+				y = rect->y + ((64 * (slot % 5)) * scale);
+				w = 64 * cent->currentState.apos.trBase[0] * scale;	// 64 * scale (0 to 1)
+				h = 64 * cent->currentState.apos.trBase[0] * scale;
+
+				int t = cent->currentState.constantLight - cg.time;
+				if (t > 0) {
+					char buf[16];
+					Com_sprintf(buf, sizeof(buf), "%d", (int)t/1000);
+					y += (h - CG_Text_Height(buf, tscale, 0, font)) / 2;
+
+					CG_Text_Paint(x + text_x + (w/2) + 5, y + text_y + 2, tscale, colorWhite, buf, 0, 0, textStyle, font, textalignment);
+				}
+			}
 		} else if( cent->currentState.eFlags & EF_VOTED ) {
 			int secs, mins;
 			vec4_t clr;

@@ -1126,6 +1126,8 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 
 	G_Q3F_CTFCompatAdjust();
 
+	G_Q3F_SetFlagHudTimers();
+
 	// Sort the location data
 	G_Q3F_LocationSort();
 	G_Q3F_WaypointBuildArray();
@@ -2177,7 +2179,7 @@ void CheckVote( void ) {
 CountPipes
 ==================
 */
-void CountPipes( void ) {
+static void CountPipes( void ) {
 	int i;
 	int	teamcount[Q3F_TEAM_NUM_TEAMS];
 	gentity_t *cl;
@@ -2684,5 +2686,3 @@ void G_RunFrame( int levelTime ) {
 	// accepting commands from connected clients
 	level.frameStartTime = trap_Milliseconds();
 }
-
-

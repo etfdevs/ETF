@@ -203,6 +203,8 @@ struct gentity_s {
 	gentity_t	*teamchain;		// next entity in team
 	gentity_t	*teammaster;	// master of the team
 
+	gentity_t	*hud_ent;
+
 	int			watertype;
 	int			waterlevel;
 

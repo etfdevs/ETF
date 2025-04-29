@@ -774,7 +774,6 @@ qboolean G_Q3F_UseEntity( gentity_t *ent, gentity_t *other, gentity_t *attacker 
 		{
 			if (g_mapentDebug.integer)
 			{
-
 				G_Printf("Attempted G_Q3F_UseEntity(%s) without a use function defined\n", ent->classname ? ent->classname : "");
 			}
 			return( qfalse );
@@ -941,7 +940,7 @@ qboolean G_Q3F_TriggerEntity( gentity_t *ent, gentity_t *activator, int state, t
 	q3f_mapent_t		*mapdata;
 	q3f_keypairarray_t	*propogator;
 	int					newstate, oldstate;
-	const char *actname = 0, *entname = 0;
+	const char *actname = NULL, *entname = NULL;
 
 	if( level.ceaseFire )
 		return( qfalse );			// Nothing is triggered during ceasefires

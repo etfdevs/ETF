@@ -270,6 +270,8 @@ void SP_Q3F_item_flagreturn_team2( gentity_t *ent );
 void SP_Q3F_item_flagreturn_team1( gentity_t *ent );
 void G_Q3F_CTFCompatAdjust(void);
 
+void G_Q3F_SetFlagHudTimers(void);
+
 // Force-field aware trace function
 void G_Q3F_ForceFieldExtTrace( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int realOwner, int contentmask );
 void G_Q3F_ForceFieldTrace( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs,	const vec3_t end, int passEntityNum, int contentmask );

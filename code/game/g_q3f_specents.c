@@ -493,6 +493,10 @@ void G_Q3F_UpdateHUD( gentity_t *ent )
 				ent->s.eFlags |= EF_TALK;
 			}
 		}
+
+		if (ent->flags == 666 && (ent->s.eFlags & EF_TEAMVOTED) && ent->soundLoop > 0) {
+			ent->s.constantLight = ent->soundLoop;
+		}
 	}
 
 		// Set colour
@@ -1179,6 +1183,41 @@ void G_Q3F_OdiumFix( void )
 		AddCTFSpawnVar("targetname", "explosion1");
 
 		G_SpawnGEntityFromSpawnVars(qfalse, NULL);
+	}
+}
+
+
+void G_Q3F_SetFlagHudTimers(void) {
+	gentity_t *goalitem;
+	intptr_t index, targindex;
+	q3f_keypair_t* curr, * targetkp;
+	q3f_array_t* targetarray;
+	q3f_data_t* target;
+	for (goalitem = g_entities; goalitem < &g_entities[level.num_entities]; goalitem++)
+	{
+		if (!goalitem->inuse)
+			continue;
+		if ((goalitem->s.eType == ET_Q3F_GOAL) && goalitem->mapdata && (goalitem->mapdata->flags & Q3F_FLAG_CARRYABLE) &&
+			goalitem->mapdata->activetarget && goalitem->mapdata->activetarget->used)
+		{
+			for (index = -1; (curr = G_Q3F_KeyPairArrayTraverse(goalitem->mapdata->activetarget, &index)); )
+			{
+				if (!(targetkp = G_Q3F_KeyPairArrayFind(level.targetnameArray, curr->key))) {
+					continue;
+				}
+				targetarray = targetkp->value.d.arraydata;
+				for (targindex = -1; (target = G_Q3F_ArrayTraverse(targetarray, &targindex)); )
+				{
+					gentity_t *hud = target->d.entitydata;
+					if (hud->s.eType == ET_Q3F_HUD) {
+						goalitem->hud_ent = hud;
+						hud->flags = 666;
+						hud->s.eFlags &= ~EF_TEAMVOTED;
+						hud->s.constantLight = 0;
+					}
+				}
+			}
+		}
 	}
 }
 

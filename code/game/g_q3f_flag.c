@@ -384,6 +384,13 @@ void Q3F_func_flag_touch( gentity_t *self, gentity_t *other, trace_t *trace )
 		self->mapdata->waittime  = self->nextthink;
 	}
 
+	if ( self->hud_ent && self->hud_ent->inuse && self->mapdata && self->mapdata->state != Q3F_STATE_ACTIVE ) {
+		if (self->hud_ent->s.eFlags & EF_TEAMVOTED)
+			self->hud_ent->s.eFlags &= ~EF_TEAMVOTED;
+		if (self->hud_ent->s.constantLight != 0)
+			self->hud_ent->s.constantLight = 0;
+	}
+
 //#ifdef DREVIL_BOT_SUPPORT
 //	g_BotUserData.entity = (GameEntity)self;
 //	Bot_Interface_SendGlobalEvent(MESSAGE_FLAG_PICKUP, other->s.number, 0, &g_BotUserData);
@@ -403,6 +410,13 @@ void Q3F_func_flag_think( gentity_t *self )
 	G_Printf( "Base Angles: %d %d %d\n", (int) self->pos3[0], (int) self->pos3[1], (int) self->pos3[2] );
 	G_Printf( "Now: %d Waittime: %d Nextthink %d\n", level.time, self->mapdata->waittime, self->nextthink );
 #endif
+
+	if ( self->hud_ent && self->hud_ent->inuse && self->mapdata->state != Q3F_STATE_ACTIVE ) {
+		if (self->hud_ent->s.eFlags & EF_TEAMVOTED)
+			self->hud_ent->s.eFlags &= ~EF_TEAMVOTED;
+		if (self->hud_ent->s.constantLight != 0)
+			self->hud_ent->s.constantLight = 0;
+	}
 
 	if( self->mapdata->state == Q3F_STATE_DISABLED || self->mapdata->state == Q3F_STATE_INVISIBLE )
 	{
@@ -596,6 +610,11 @@ void G_Q3F_DropFlag( gentity_t *ent )
 				ent->s.number, activator->client->pers.netname,
 				(ent->nextthink - level.time) / 1000 );
 #endif
+
+	if (ent->hud_ent) {
+		ent->hud_ent->soundLoop = ent->nextthink;
+		ent->hud_ent->s.eFlags |= EF_TEAMVOTED;
+	}
 
 	ent->activator = NULL;
 	ent->mapdata->lastTriggerer = NULL;
