@@ -1224,6 +1224,21 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 	cgs.screenXScale = cgs.glconfig.vidWidth / 640.0;
 	cgs.screenYScale = cgs.glconfig.vidHeight / 480.0;
 
+	cgs.crosshairxbias = 0;
+	cgs.crosshairybias = 0;
+
+	if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
+		// wide screen, scale by height
+		cgs.crosshairxscale = cgs.crosshairyscale = cgs.glconfig.vidHeight * (1.0/480.0);
+		cgs.crosshairxbias = 0.5 * ( cgs.glconfig.vidWidth - ( cgs.glconfig.vidHeight * (640.0/480.0) ) );
+	}
+	else {
+		// no wide screen, scale by width
+		cgs.crosshairxscale = cgs.crosshairyscale = cgs.glconfig.vidWidth * (1.0/640.0);
+		cgs.crosshairybias = 0.5 * ( cgs.glconfig.vidHeight - ( cgs.glconfig.vidWidth * (480.0/640.0) ) );
+	}
+
+
 	// get the gamestate from the client system
 	trap_GetGameState( &cgs.gameState );
 

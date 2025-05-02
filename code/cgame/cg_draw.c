@@ -876,6 +876,14 @@ static qboolean CG_ScanForFriendlyCrosshairEntity( void ) {
 	return qtrue;
 }
 
+void CG_CrosshairAdjustFrom640(float *x, float *y, float *w, float *h) {
+	// scale for screen sizes
+	*x = *x * cgs.crosshairxscale + cgs.crosshairxbias;
+	*y = *y * cgs.crosshairyscale + cgs.crosshairybias;
+	*w *= cgs.crosshairxscale;
+	*h *= cgs.crosshairyscale;
+}
+
 /*
 =================
 CG_DrawCrosshair
@@ -922,7 +930,7 @@ static void CG_DrawCrosshair(void) {
 	x = cg_crosshairX.integer + x2;
 	y = cg_crosshairY.integer + y2;
 
-	CG_AdjustFrom640( &x, &y, &w, &h );
+	CG_CrosshairAdjustFrom640( &x, &y, &w, &h );
 
 	if(!isSpec)
 		ca = cg_drawCrosshair.integer;
@@ -934,14 +942,14 @@ static void CG_DrawCrosshair(void) {
 
 	hShader = cgs.media.crosshairShader[ ca % NUM_CROSSHAIRS ];
 
-   trap_R_DrawStretchPic( x + cg.refdef.x + 0.5 * (cg.refdef.width - w), 
-        y + cg.refdef.y + 0.5 * (cg.refdef.height - h),
-        w, h, 0, 0, 1, 1, hShader );
+	trap_R_DrawStretchPic( x + cg.refdef.x + 0.5 * ( cg.refdef.width - w ) - cgs.crosshairxbias,
+		y + cg.refdef.y + 0.5 * ( cg.refdef.height - h ) - cgs.crosshairybias,
+		w, h, 0, 0, 1, 1, hShader );
    if ( cg.crosshairShaderAlt[ ca % NUM_CROSSHAIRS ] ) {
 	   w = h = cg_crosshairSize.value;
 	   x = cg_crosshairX.integer + x2;
 	   y = cg_crosshairY.integer + y2;
-	   CG_AdjustFrom640( &x, &y, &w, &h );
+	   CG_CrosshairAdjustFrom640( &x, &y, &w, &h );
 
 	   if(cg_crosshairHealth.integer) {
 			trap_R_SetColor(hcolor);				// slothy - old health support
@@ -949,8 +957,8 @@ static void CG_DrawCrosshair(void) {
 		   trap_R_SetColor(cg.xhairColorAlt);		// slothy
 	   }
 
-	   trap_R_DrawStretchPic( x + cg.refdef.x + 0.5 * (cg.refdef.width - w), 
-            y + cg.refdef.y + 0.5 * (cg.refdef.height - h),
+	   trap_R_DrawStretchPic( x + cg.refdef.x + 0.5 * (cg.refdef.width - w) - cgs.crosshairxbias,
+            y + cg.refdef.y + 0.5 * (cg.refdef.height - h) - cgs.crosshairybias,
             w, h, 0, 0, 1, 1, cg.crosshairShaderAlt[ ca % NUM_CROSSHAIRS ] );
    }
    trap_R_SetColor( NULL );

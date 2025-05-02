@@ -2921,7 +2921,9 @@ const vec3_t q3f_timer_positions[] = {
 	{4, 1,	1},
 };
 
-void CG_DrawAnalogueShader( rectDef_t *rect, vec4_t color, qhandle_t shader, int msec, int msecPerRound ) {
+void CG_CrosshairAdjustFrom640(float* x, float* y, float* w, float* h);
+
+static void CG_DrawAnalogueShader( rectDef_t *rect, vec4_t color, qhandle_t shader, int msec, int msecPerRound, qboolean crosshair ) {
 	float			x, y, w, h;
 	refdef_t		refdef;
 	polyVert_t		verts[10];
@@ -2960,17 +2962,31 @@ void CG_DrawAnalogueShader( rectDef_t *rect, vec4_t color, qhandle_t shader, int
 	refdef.fov_x = 30;
 	refdef.fov_y = 30;
 
-	x = rect->x;
-	y = rect->y;
-	w = rect->w;
-	h = rect->h;
+	if (crosshair) {
+		x = cg_crosshairX.integer;//rect->x;
+		y = cg_crosshairY.integer;//rect->y;
+		w = rect->w;
+		h = rect->h;
 
-	CG_AdjustFrom640( &x, &y, &w, &h );
+		CG_CrosshairAdjustFrom640( &x, &y, &w, &h );
 
-	refdef.x = x;
-	refdef.y = y;
-	refdef.width = w;
-	refdef.height = h;
+		refdef.x = x + cg.refdef.x + 0.5 * ( cg.refdef.width - w ) - cgs.crosshairxbias;
+		refdef.y = y + cg.refdef.y + 0.5 * ( cg.refdef.height - h ) - cgs.crosshairybias;
+		refdef.width = w;
+		refdef.height = h;
+	}
+	else {
+		x = rect->x;
+		y = rect->y;
+		w = rect->w;
+		h = rect->h;
+		CG_AdjustFrom640( &x, &y, &w, &h );
+
+		refdef.x = x;
+		refdef.y = y;
+		refdef.width = w;
+		refdef.height = h;
+	}
 
 	refdef.time = cg.time;
 
@@ -3106,7 +3122,7 @@ void CG_Q3F_DrawPowerupIcon( rectDef_t *rect, float scale, vec4_t color, int tex
 		y = r.y + ((r.h + CG_Text_Height(buffer, scale, 0, font)) * 0.5);
 		x = r.x + (r.w * 0.5f);
 
-		CG_DrawAnalogueShader(&r, colorWhite, trap_R_RegisterShaderNoMip(pw->icon), time, 30000);
+		CG_DrawAnalogueShader(&r, colorWhite, trap_R_RegisterShaderNoMip(pw->icon), time, 30000, qfalse);
 
 		CG_Text_Paint(x, y, scale, color, buffer, 0, 0, textStyle, font, ITEM_ALIGN_CENTER);
 
@@ -3153,7 +3169,7 @@ void CG_Q3F_DrawPowerupIconRev( rectDef_t *rect, float scale, vec4_t color, int 
 		y = r.y + ((r.h + CG_Text_Height(buffer, scale, 0, font)) * 0.5);
 		x = r.x + (r.w * 0.5f);
 
-		CG_DrawAnalogueShader(&r, colorWhite, trap_R_RegisterShaderNoMip(pw->icon), time, 30000);
+		CG_DrawAnalogueShader(&r, colorWhite, trap_R_RegisterShaderNoMip(pw->icon), time, 30000, qfalse);
 
 		CG_Text_Paint(x, y, scale, color, buffer, 0, 0, textStyle, font, ITEM_ALIGN_CENTER);
 
@@ -3815,7 +3831,7 @@ void CG_OwnerDraw( itemDef_t *item, float x, float y, float w, float h, float te
 		case CG_GREN_ANALOGUE:
 			if(cg.grenadeHudTime != 0)		// slothy - do not display grentimer at map start
 				//CG_DrawPlayerGrenadeBar( &rect, color );
-				CG_DrawAnalogueShader( &rect, color, cgs.media.hudTimerShader, cg.grenadeHudTime + Q3F_GRENADE_PRIME_TIME - cg.time, Q3F_GRENADE_PRIME_TIME);
+				CG_DrawAnalogueShader( &rect, color, cgs.media.hudTimerShader, cg.grenadeHudTime + Q3F_GRENADE_PRIME_TIME - cg.time, Q3F_GRENADE_PRIME_TIME, qtrue);
 			break;
 		case CG_ALERT_ICON:
 			CG_Q3F_DrawAlertIcon( &rect, anchorx, anchory, item->special );
