@@ -934,7 +934,7 @@ G_InitGame
 */
 
 /* Ensiform - Fixes the misc_beam on blue base not returning back on after blueflag returns to base */
-void G_Q3F_MuonFix( void );
+//void G_Q3F_MuonFix( void );
 void G_Q3F_OdiumFix( void );
 
 char bigTextBuffer[100000];
@@ -1118,8 +1118,8 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_SpawnEntitiesFromString();
 
 	/* Ensiform - Fixes the misc_beam on blue base not returning back on after blueflag returns to base */
-	if(!Q_stricmp(mapname, "maps\\etf_muon"))
-		G_Q3F_MuonFix();
+	//if(!Q_stricmp(mapname, "maps\\etf_muon"))
+	//	G_Q3F_MuonFix();
 
 	if(!Q_stricmp(mapname, "maps\\etf_odium"))
 		G_Q3F_OdiumFix();
@@ -1165,10 +1165,10 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_DefragmentMemory();
 	level.mapInfo = NULL;
 
-	trap_Cvar_Set( "players_red" , "" );
-	trap_Cvar_Set( "players_blue" , "" );
-	trap_Cvar_Set( "players_yellow" , "" );
-	trap_Cvar_Set( "players_green" , "" );
+	trap_Cvar_Set( "players_red", "" );
+	trap_Cvar_Set( "players_blue", "" );
+	trap_Cvar_Set( "players_yellow", "" );
+	trap_Cvar_Set( "players_green", "" );
 	// RR2DO2
 
 #ifdef DEBUGLOG
@@ -1278,7 +1278,7 @@ SortRanks
 =============
 */
 int QDECL SortRanks( const void *a, const void *b ) {
-	gclient_t	*ca, *cb;
+	const gclient_t	*ca, *cb;
 
 	ca = &level.clients[*(const int *)a];
 	cb = &level.clients[*(const int *)b];

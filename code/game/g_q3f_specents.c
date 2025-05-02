@@ -1130,20 +1130,20 @@ void G_Q3F_CTFCompatAdjust(void)
 }
 
 /* Ensiform - Fixes the misc_beam on blue base not returning back on after blueflag returns to base */
-void G_Q3F_MuonFix( void )
-{
-	// Add info_notnull
-	level.numSpawnVars = level.numSpawnVarChars = 0;
-	AddCTFSpawnVar("classname", "info_notnull");
-	AddCTFSpawnVar("origin", "-1316 2944 844");
-	AddCTFSpawnVar("gameindex", "1,3");
-	AddCTFSpawnVar("groupname", "blue_flag_arc_activate");
-	AddCTFSpawnVar("inactivetarget", "blue_flag_arc=~inactive,blue_flag_checker");
-	AddCTFSpawnVar("spawnflags", "1");
-	AddCTFSpawnVar("wait", "1");
-
-	G_SpawnGEntityFromSpawnVars(qfalse, NULL);
-}
+//void G_Q3F_MuonFix( void )
+//{
+//	// Add info_notnull
+//	level.numSpawnVars = level.numSpawnVarChars = 0;
+//	AddCTFSpawnVar("classname", "info_notnull");
+//	AddCTFSpawnVar("origin", "-1316 2944 844");
+//	AddCTFSpawnVar("gameindex", "1,3");
+//	AddCTFSpawnVar("groupname", "blue_flag_arc_activate");
+//	AddCTFSpawnVar("inactivetarget", "blue_flag_arc=~inactive,blue_flag_checker");
+//	AddCTFSpawnVar("spawnflags", "1");
+//	AddCTFSpawnVar("wait", "1");
+//
+//	G_SpawnGEntityFromSpawnVars(qfalse, NULL);
+//}
 
 /* Ensiform - Fixes the spectator bug & adds line of sight */
 void G_Q3F_OdiumFix( void )
@@ -1186,7 +1186,7 @@ void G_Q3F_OdiumFix( void )
 	}
 }
 
-
+// TODO bringit uses func_goalitem->info_notnulls->func_hud
 void G_Q3F_SetFlagHudTimers(void) {
 	gentity_t *goalitem;
 	intptr_t index, targindex;
