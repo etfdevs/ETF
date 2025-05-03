@@ -1936,7 +1936,7 @@ void CG_TrailItem( centity_t *cent, qhandle_t hModel );
 qboolean CG_Q3F_UseFakeAgentModel( int modelpart );
 void CG_Q3F_CalcAgentVisibility( qboolean *drawmodel, float *shaderalpha, qboolean *newmodel, float fracstart, float fracend, entityState_t *agentstate );
 void CG_LightVerts( vec3_t normal, int numVerts, polyVert_t *verts, qboolean keepSrcColor );
-void CG_RunLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, float speedScale, qboolean isweapon );
+void CG_RunLerpFrame( centity_t *cent, clientInfo_t *ci, F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, float speedScale, qboolean isweapon );
 qhandle_t       CG_Q3F_ShaderForQuad(int team);
 float          *CG_Q3F_LightForQuad(int team);
 
@@ -2156,6 +2156,7 @@ void CG_LoadHud_f( void );
 void CG_Respawn( void );
 void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops );
 void CG_CheckChangedPredictableEvents( playerState_t *ps );
+qboolean CG_Q3F_IsSpectator(const playerState_t* ps);
 
 // Keeger
 //

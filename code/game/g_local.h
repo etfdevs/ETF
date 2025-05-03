@@ -945,7 +945,6 @@ qboolean SpotWouldTelefrag( gentity_t *spot );
 void G_Q3F_DropClient( gentity_t *ent, const char *reason );
 void G_Q3F_MuteClient( gentity_t *ent, qboolean mute );
 
-
 //
 // g_svcmds.c
 //
@@ -957,11 +956,6 @@ qboolean	ConsoleCommand( void );
 // g_weapon.c
 //
 void FireWeapon( gentity_t *ent );
-
-
-//
-// g_pweapon.c
-//
 
 
 //

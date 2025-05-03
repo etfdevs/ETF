@@ -61,7 +61,7 @@ void G_Q3F_FlagInfo( gentity_t *queryent )
 	//const size_t lengthOfCenter = 6;// strlen( "cp \"\"\n" );
 	//const size_t lengthOfPrint = 9;// strlen( "print \"\"\n" );
 
-	fihud[0] = 0;
+	fihud[0] = '\0';
 
 	/* Ensiform - This loop is the source of flaginfo bug me thinks */
 	/* valid pointer was not checked per-se and <= is wrong!!! */

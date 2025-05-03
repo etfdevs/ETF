@@ -14,6 +14,8 @@ add_library(cgame MODULE
 	"../api/shared/q_string.h"
 	"../api/et/q_shared.c"
 	"../api/et/q_shared.h"
+	"../game/bg_events.h"
+	"../game/bg_mod.h"
 	"../game/bg_local.h"
 	"../game/bg_misc.c"
 	"../game/bg_public.h"

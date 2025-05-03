@@ -1804,7 +1804,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 
 	// animate
 	//slothy -- note to self.. this is weapon movement animation, eg needle stabbing, axe chopping etc
-	CG_RunLerpFrame( F2RScript, &cent->pe.hands, animNumber, 1.f, qtrue );
+	CG_RunLerpFrame( cent, ci, F2RScript, &cent->pe.hands, animNumber, 1.f, qtrue );
 	hand.oldframe = cent->pe.hands.oldFrame;
 	hand.frame = cent->pe.hands.frame;
 	hand.backlerp = cent->pe.hands.backlerp;

@@ -509,7 +509,7 @@ static void CG_Q3F_DumpSpeaker( void )
 CG_Q3F_PlaySound
 ======================
 */
-void CG_Q3F_PlaySound( void )
+static void CG_Q3F_PlaySound( void )
 {
 	// Play a sound on the announcer channel (like \play)
 

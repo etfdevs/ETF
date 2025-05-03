@@ -532,7 +532,9 @@ CG_SetLerpFrameAnimation
 may include ANIM_TOGGLEBIT
 ===============
 */
-static void CG_SetLerpFrameAnimation( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, qboolean isweapon ) {
+static void CG_SetLerpFrameAnimation( centity_t *cent, clientInfo_t *ci, F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, qboolean isweapon ) {
+	int num = cent && cent->currentValid ? cent->currentState.clientNum : -1;
+	qboolean corpse = cent && cent->currentValid && (cent->currentState.eType == ET_Q3F_CORPSE || (cent->currentState.eFlags & EF_DEAD)) ? qtrue : qfalse;
 	animation_t	*anim;
 
 	lf->animationNumber = newAnimation;
@@ -540,18 +542,18 @@ static void CG_SetLerpFrameAnimation( F2RDef_t *F2RScript, lerpFrame_t *lf, int 
 
 	if ( newAnimation < 1 || newAnimation > ANI_NUM ) {
 		if ( isweapon )
-			CG_Error( "CG_SetLerpFrameAnimation: Bad animation number: %i (VIEWWEAPON)", newAnimation );
+			CG_Error( "CG_SetLerpFrameAnimation: Bad animation number: %i (VIEWWEAPON) [client id %d %s %s]", newAnimation, num, ci->name, corpse ? "corpse" : "" );
 		else
-			CG_Error( "CG_SetLerpFrameAnimation: Bad animation number: %i", newAnimation );
+			CG_Error( "CG_SetLerpFrameAnimation: Bad animation number: %i [client id %d %s %s]", newAnimation, num, ci->name, corpse ? "corpse" : "" );
 	}
 
 	anim = F2RScript->animations[newAnimation - 1];
 
 	if ( !anim ) {
 		if ( isweapon )
-			CG_Error( "CG_SetLerpFrameAnimation: Missing animation number %i in '%s' (VIEWWEAPON)", newAnimation, F2RScript->F2RFile );
+			CG_Error( "CG_SetLerpFrameAnimation: Missing animation number %i in '%s' (VIEWWEAPON) [client id %d %s %s]", newAnimation, F2RScript->F2RFile, num, ci->name, corpse ? "corpse" : "" );
 		else
-			CG_Error( "CG_SetLerpFrameAnimation: Missing animation number %i in '%s'", newAnimation, F2RScript->F2RFile );
+			CG_Error( "CG_SetLerpFrameAnimation: Missing animation number %i in '%s' [client id %d %s %s]", newAnimation, F2RScript->F2RFile, num, ci->name, corpse ? "corpse" : "" );
 	}
 
 	lf->animation = anim;
@@ -571,7 +573,7 @@ Sets cg.snap, cg.oldFrame, and cg.backlerp
 cg.time should be between oldFrameTime and frameTime after exit
 ===============
 */
-void CG_RunLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, float speedScale, qboolean isweapon ) {
+void CG_RunLerpFrame( centity_t *cent, clientInfo_t *ci, F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, float speedScale, qboolean isweapon ) {
 	int			f, numFrames;
 	animation_t	*anim;
 
@@ -585,7 +587,7 @@ void CG_RunLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, fl
 	if(	newAnimation != lf->animationNumber || !lf->animation || F2RScript->animations[0] != lf->animblock )
 	{
 		// If we've switched 
-		CG_SetLerpFrameAnimation( F2RScript, lf, newAnimation, isweapon );
+		CG_SetLerpFrameAnimation( cent, ci, F2RScript, lf, newAnimation, isweapon );
 
 		if( F2RScript->animations[0] != lf->animblock )
 		{
@@ -677,7 +679,7 @@ void CG_RunLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, fl
 CG_ClearLerpFrame
 ===============
 */
-static void CG_ClearLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int animationNumber ) {
+static void CG_ClearLerpFrame( centity_t *cent, clientInfo_t *ci, F2RDef_t *F2RScript, lerpFrame_t *lf, int animationNumber ) {
 	lf->frameTime = lf->oldFrameTime = cg.time;
 
 	if ( !F2RScript ) {
@@ -685,7 +687,7 @@ static void CG_ClearLerpFrame( F2RDef_t *F2RScript, lerpFrame_t *lf, int animati
 		return;
 	}
 
-	CG_SetLerpFrameAnimation( F2RScript, lf, animationNumber, qfalse );
+	CG_SetLerpFrameAnimation( cent, ci, F2RScript, lf, animationNumber, qfalse );
 	if ( lf->animation ) {
 		lf->oldFrame = lf->frame = lf->animation->firstFrame;
 	}
@@ -729,6 +731,7 @@ static void CG_PlayerAnimation( centity_t *cent, refEntity_t *legs, refEntity_t 
 		F2RScript = CG_Q3F_LegsF2RScript( cent->currentState.modelindex2 );
 	}
 	else if ( gasEffect ) {
+		fakeplayerclass = cg.gasPlayerClass[cent->currentState.number];
 		F2RScript = CG_Q3F_LegsF2RScript( cg.gasPlayerClass[cent->currentState.number] );
 	}
 	else {
@@ -751,7 +754,7 @@ static void CG_PlayerAnimation( centity_t *cent, refEntity_t *legs, refEntity_t 
 
 	// do the shuffle turn frames locally
 	if ( cent->pe.legs.yawing && ( cent->currentState.legsAnim & ~ANIM_TOGGLEBIT ) == ANI_MOVE_IDLESTAND ) {
-		CG_RunLerpFrame( F2RScript, &cent->pe.legs, ANI_MOVE_TURN, speedScale, qfalse );
+		CG_RunLerpFrame( cent, ci, F2RScript, &cent->pe.legs, ANI_MOVE_TURN, speedScale, qfalse );
 		legs->animNumber = ANI_MOVE_TURN;
 	} else {
 		// remap leg anims if needed
@@ -762,10 +765,10 @@ static void CG_PlayerAnimation( centity_t *cent, refEntity_t *legs, refEntity_t 
 			if( animNumber == ANI_SPECIAL )
 				animNumber = ANI_MOVE_IDLESTAND;
 
-			CG_RunLerpFrame( F2RScript, &cent->pe.legs, animNumber, speedScale, qfalse );
+			CG_RunLerpFrame( cent, ci, F2RScript, &cent->pe.legs, animNumber, speedScale, qfalse );
 			legs->animNumber = animNumber;
 		} else {
-			CG_RunLerpFrame( F2RScript, &cent->pe.legs, cent->currentState.legsAnim, speedScale, qfalse );
+			CG_RunLerpFrame( cent, ci, F2RScript, &cent->pe.legs, cent->currentState.legsAnim, speedScale, qfalse );
 			legs->animNumber = cent->currentState.legsAnim & ~ANIM_TOGGLEBIT;
 		}
 	}
@@ -804,14 +807,14 @@ static void CG_PlayerAnimation( centity_t *cent, refEntity_t *legs, refEntity_t 
 
 		animNumber = BG_Q3F_GetRemappedAnimFromWeaponNumAndAnim( cent->currentState.weapon, ci->cls, weapNumber, fakeplayerclass, animNumber );
 
-		CG_RunLerpFrame( F2RScript, &cent->pe.torso, animNumber, speedScale, qfalse );
+		CG_RunLerpFrame( cent, ci, F2RScript, &cent->pe.torso, animNumber, speedScale, qfalse );
 		torso->animNumber = animNumber;
 	} else {
 		if ( cent->currentState.eType == ET_Q3F_CORPSE )
 			F2RScript = CG_Q3F_TorsoF2RScript( cent->currentState.modelindex2 );
 		else
 			F2RScript = CG_Q3F_TorsoF2RScript( ci->cls );
-		CG_RunLerpFrame( F2RScript, &cent->pe.torso, cent->currentState.torsoAnim, speedScale, qfalse );
+		CG_RunLerpFrame( cent, ci, F2RScript, &cent->pe.torso, cent->currentState.torsoAnim, speedScale, qfalse );
 		torso->animNumber = cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT;
 	}
 
@@ -2318,26 +2321,28 @@ void CG_ResetPlayerEntity( centity_t *cent ) {
 	cent->errorTime = -99999;		// guarantee no error decay added
 	cent->extrapolated = qfalse;
 
-	CG_ClearLerpFrame( cgs.media.f2rcache[cgs.clientinfo[ cent->currentState.clientNum ].cls][0], &cent->pe.legs, cent->currentState.legsAnim );
-	CG_ClearLerpFrame( cgs.media.f2rcache[cgs.clientinfo[ cent->currentState.clientNum ].cls][1], &cent->pe.torso, cent->currentState.torsoAnim );
+	if ( !( cent->currentState.eFlags & EF_DEAD ) ) {
+		CG_ClearLerpFrame( cent, &cgs.clientinfo[ cent->currentState.clientNum ], cgs.media.f2rcache[cgs.clientinfo[ cent->currentState.clientNum ].cls][0], &cent->pe.legs, cent->currentState.legsAnim );
+		CG_ClearLerpFrame( cent, &cgs.clientinfo[ cent->currentState.clientNum ], cgs.media.f2rcache[cgs.clientinfo[ cent->currentState.clientNum ].cls][1], &cent->pe.torso, cent->currentState.torsoAnim );
+
+		memset(&cent->pe.legs, 0, sizeof(cent->pe.legs));
+		cent->pe.legs.yawAngle = cent->rawAngles[YAW];
+		cent->pe.legs.yawing = qfalse;
+		cent->pe.legs.pitchAngle = 0;
+		cent->pe.legs.pitching = qfalse;
+
+		memset(&cent->pe.torso, 0, sizeof(cent->pe.torso));
+		cent->pe.torso.yawAngle = cent->rawAngles[YAW];
+		cent->pe.torso.yawing = qfalse;
+		cent->pe.torso.pitchAngle = cent->rawAngles[PITCH];
+		cent->pe.torso.pitching = qfalse;
+	}
 
 	BG_EvaluateTrajectory( &cent->currentState.pos, cg.time, cent->lerpOrigin );
 	BG_EvaluateTrajectory( &cent->currentState.apos, cg.time, cent->lerpAngles );
 
 	VectorCopy( cent->lerpOrigin, cent->rawOrigin );
 	VectorCopy( cent->lerpAngles, cent->rawAngles );
-
-	memset( &cent->pe.legs, 0, sizeof( cent->pe.legs ) );
-	cent->pe.legs.yawAngle = cent->rawAngles[YAW];
-	cent->pe.legs.yawing = qfalse;
-	cent->pe.legs.pitchAngle = 0;
-	cent->pe.legs.pitching = qfalse;
-
-	memset( &cent->pe.torso, 0, sizeof( cent->pe.torso ) );
-	cent->pe.torso.yawAngle = cent->rawAngles[YAW];
-	cent->pe.torso.yawing = qfalse;
-	cent->pe.torso.pitchAngle = cent->rawAngles[PITCH];
-	cent->pe.torso.pitching = qfalse;
 
 	cent->pe.EffectFlags = 0;
 

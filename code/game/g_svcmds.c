@@ -379,8 +379,6 @@ static const char* entityTypeNames[] = {
 	"ET_EVENTS"
 };
 
-extern const char *eventnames[];
-
 /*
 ===================
 Svcmd_EntityList_f
