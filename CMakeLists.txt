@@ -10,9 +10,9 @@ set(VERSION_MINOR "${CMAKE_MATCH_1}")
 string(REGEX MATCH "VERSION_PATCH ([0-9]+)" _patch_match "${version_content}")
 set(VERSION_PATCH "${CMAKE_MATCH_1}")
 
-project(etf VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" HOMEPAGE_URL "etfgame.com" LANGUAGES C CXX)
+project(etf VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" HOMEPAGE_URL "etfgame.com" LANGUAGES C) #CXX
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 14)
+#set(CMAKE_CXX_STANDARD 14)
 
 # provide individual options too in case a compiler only supports some sanitizers
 option(USE_SANITIZERS "Enable address, leak and undefined behavior sanitizers on supported compilers" OFF)
@@ -50,7 +50,7 @@ if (USE_SANITIZERS)
 	set(USE_ASAN ON CACHE BOOL "Enable address sanitizer" FORCE)
 
 	# don't enable these on MSVC as they are not supported
-	if (NOT CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+	if (NOT CMAKE_C_COMPILER_ID MATCHES "MSVC")
 		set(USE_LSAN ON CACHE BOOL "Enable leak sanitizer" FORCE)
 		set(USE_UBSAN ON CACHE BOOL "Enable undefined behavior sanitizer" FORCE)
 	endif ()

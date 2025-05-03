@@ -20,7 +20,7 @@ function(create_compiler_opts target)
 			-O3					# max optimization
 			-s>)				# strip symbols
 
-	set(GCC_CXX_FLAGS
+	set(GCC_C_FLAGS
 		-pipe
 		-fPIC
 		-fvisibility=hidden
@@ -53,7 +53,7 @@ function(create_compiler_opts target)
 			-O3									# max optimization
 			$<IF:$<PLATFORM_ID:Darwin>,,-s>>)	# strip symbols
 
-	set(CLANG_CXX_FLAGS
+	set(CLANG_C_FLAGS
 		-pipe
 		-fPIC
 		-fvisibility=hidden
@@ -79,7 +79,7 @@ function(create_compiler_opts target)
 		$<$<CONFIG:Release>:
 			/LTCG>) # perform link time optimizations
 
-	set(MSVC_CXX_FLAGS
+	set(MSVC_C_FLAGS
 		/wd4068                # ignore GCC pragmas
 		/wd4267                # ignore integer narrowing warnings
 		/wd4250                # ignore function hiding with virtual
@@ -108,15 +108,15 @@ function(create_compiler_opts target)
 	string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
 	add_definitions("-DSOURCE_PATH_SIZE=${SOURCE_PATH_SIZE}")
 
-	if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-		target_compile_options(${target} INTERFACE ${MSVC_CXX_FLAGS})
+	if (CMAKE_C_COMPILER_ID MATCHES "MSVC")
+		target_compile_options(${target} INTERFACE ${MSVC_C_FLAGS})
 		target_link_options(${target} INTERFACE ${MSVC_LINK_FLAGS})
-	elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-		target_compile_options(${target} INTERFACE ${CLANG_CXX_FLAGS})
+	elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
+		target_compile_options(${target} INTERFACE ${CLANG_C_FLAGS})
 		target_link_options(${target} INTERFACE ${CLANG_LINK_FLAGS})
 		target_link_libraries(${target} INTERFACE ${CMAKE_DL_LIBS} m)
 	else() # default to GCC
-		target_compile_options(${target} INTERFACE ${GCC_CXX_FLAGS})
+		target_compile_options(${target} INTERFACE ${GCC_C_FLAGS})
 		target_link_options(${target} INTERFACE ${GCC_LINK_FLAGS})
 		target_link_libraries(${target} INTERFACE ${CMAKE_DL_LIBS} m)
 	endif()
@@ -124,7 +124,7 @@ function(create_compiler_opts target)
 	target_compile_definitions(${target} INTERFACE 
 		$<$<CONFIG:Release>:NDEBUG>
 		$<$<CONFIG:Debug>:_DEBUG>
-		$<$<CXX_COMPILER_ID:MSVC>:
+		$<$<C_COMPILER_ID:MSVC>:
 			WIN32_LEAN_AND_MEAN 
 			_CRT_SECURE_NO_DEPRECATE 
 			_CRT_SECURE_NO_WARNINGS 
@@ -132,6 +132,6 @@ function(create_compiler_opts target)
 			_SCL_SECURE_NO_WARNINGS>
 		${arg_DEFINE})
 
-	target_compile_features(${target} INTERFACE cxx_std_14)
+	#target_compile_features(${target} INTERFACE cxx_std_14)
 	target_compile_features(${target} INTERFACE c_std_11)
 endfunction()
