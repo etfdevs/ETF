@@ -1622,8 +1622,8 @@ void CG_LoadMenus(const char *menuFile, qboolean resetHud) {
 	}
 
 	if ( len >= MAX_MENUDEFFILE ) {
-		trap_Error( va( S_COLOR_RED "menu file too large: %s is %i, max allowed is %i", menuFile, len, MAX_MENUDEFFILE ) );
 		trap_FS_FCloseFile( f );
+		trap_Error( va( S_COLOR_RED "menu file too large: %s is %i, max allowed is %i", menuFile, len, MAX_MENUDEFFILE ) );
 		return;
 	}
 

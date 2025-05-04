@@ -1277,21 +1277,6 @@ static void CG_Q3F_ScreenshotJPEG_f( void ) {
 	trap_SendConsoleCommand(va("screenshotjpeg \"%s\"\n", buffer));
 }
 
-#ifdef _ETXREAL
-static void CG_Q3F_ScreenshotPNG_f( void ) {
-	char buffer[256], str[128];
-
-	trap_Argv(1, str, 128);
-
-	if(!*str) {
-		Q_strncpyz(str, "$Y-$a-$d_$h$m-$s_$l", 128);
-	}
-
-	CG_ETF_DemoParseString(str, buffer, 256);
-	trap_SendConsoleCommand(va("screenshotpng \"%s\"\n", buffer));
-}
-#endif
-
 extern qboolean debugMode;
 
 static void CG_Q3F_DebugHud_f( void ) {
@@ -1378,7 +1363,6 @@ void CG_ShowSpecs_f( void ) {
 	else
 		Com_Printf("No spectators\n");
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1490,9 +1474,6 @@ static const consoleCommand_t	commands[] = {
 	{ "record_etf",			CG_Q3F_RecordDemo_f			},
 	{ "screenshotJPEG_etf",	CG_Q3F_ScreenshotJPEG_f		},
 	{ "screenshot_etf",		CG_Q3F_ScreenshotTGA_f		},
-#ifdef _ETXREAL
-	{ "screenshotPNG_etf",	CG_Q3F_ScreenshotPNG_f		},
-#endif
 
 	{ "discard",			CG_Q3F_Discard_f			},
 	{ "generateTracemap",	CG_GenerateTracemap			},
@@ -1504,7 +1485,6 @@ static const consoleCommand_t	commands[] = {
 	{ "keyon",				CG_keyOn_f					},
 
 	{ "showspecs",			CG_ShowSpecs_f				},
-
 };
 
 static const size_t numCG_Commands = ARRAY_LEN(commands);

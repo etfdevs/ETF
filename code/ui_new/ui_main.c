@@ -438,9 +438,9 @@ static void AssetCache(void) {
 //		uiInfo.uiDC.Assets.Q3F_BM_MiddleModel =		trap_R_RegisterModel( "ui/models/middle.md3" );
 
 // RR2DO2
-		uiInfo.Q3F_BackModelOpenSound = trap_S_RegisterSound("ui/sound/menuopen.wav", qfalse);			// old: "ui/sound/backmodelopen.wav", qfalse);
-		uiInfo.Q3F_BackModelReOpenSound = trap_S_RegisterSound("ui/sound/menureopen.wav", qfalse);		// "ui/sound/backmodelreopen.wav", qfalse);
-		uiInfo.Q3F_BackModelCloseSound = trap_S_RegisterSound("ui/sound/menuclose.wav", qfalse);		// "ui/sound/backmodelclose.wav", qfalse);
+		//uiInfo.Q3F_BackModelOpenSound = trap_S_RegisterSound("ui/sound/menuopen.wav", qfalse);			// old: "ui/sound/backmodelopen.wav", qfalse);
+		//uiInfo.Q3F_BackModelReOpenSound = trap_S_RegisterSound("ui/sound/menureopen.wav", qfalse);		// "ui/sound/backmodelreopen.wav", qfalse);
+		//uiInfo.Q3F_BackModelCloseSound = trap_S_RegisterSound("ui/sound/menuclose.wav", qfalse);		// "ui/sound/backmodelclose.wav", qfalse);
 	//	uiInfo.Q3F_BackModelStartupSound = trap_S_RegisterSound("ui/sound/backmodelstart.wav", qfalse);
 		uiInfo.Q3F_TransitionStaticSound1 = trap_S_RegisterSound("ui/sound/transition1.wav", qfalse);
 		uiInfo.Q3F_TransitionStaticSound2 = trap_S_RegisterSound("ui/sound/transition2.wav", qfalse);
@@ -1472,18 +1472,6 @@ void UI_Load(void) {
 	Menus_ActivateByName(lastName);
 }
 
-static const char *handicapValues[] = {"None","95","90","85","80","75","70","65","60","55","50","45","40","35","30","25","20","15","10","5",NULL};
-//static int numHandicaps = sizeof(handicapValues) / sizeof(const char*);
-
-static void UI_DrawHandicap(rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font) {
-  int i, h;
-
-  h = Com_Clamp( 5, 100, trap_Cvar_VariableValue("handicap") );
-  i = 20 - h / 5;
-
-  Text_Paint(rect->x + text_x, rect->y + text_y, scale, color, handicapValues[i], 0, 0, textStyle, font, textalignment);
-}
-
 /*static void UI_DrawClanName(rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font) {
   Text_Paint(rect->x + text_x, rect->y + text_y, scale, color, UI_Cvar_VariableString("ui_teamName"), 0, 0, textStyle, font, textalignment);
 }*/
@@ -1641,14 +1629,10 @@ static qboolean UI_OwnerDrawSize( int ownerDraw, rectDef_t* in, rectDef_t* out, 
 }
 
 static int UI_OwnerDrawWidth(int ownerDraw, float scale, fontStruct_t *parentfont) {
-	int i, h;
 	const char *s = NULL;
 
 	switch (ownerDraw) {
     case UI_HANDICAP:
-		h = Com_Clamp( 5, 100, trap_Cvar_VariableValue("handicap") );
-		i = 20 - h / 5;
-		s = handicapValues[i];
 		break;
 /*    case UI_GAMETYPE:
 		s = Q3FGameTypes[ui_gameType.integer];
@@ -1682,9 +1666,9 @@ static int UI_OwnerDrawWidth(int ownerDraw, float scale, fontStruct_t *parentfon
 	return 0;
 }
 
-void checkfname( const char * in, char *out) {
-	int i;
-	int num = strlen(in);
+static void checkfname( const char *in, char *out ) {
+	size_t i;
+	size_t num = strlen(in);
 
 	for(i = 0; i < num; i++) {
 		if(*in == ' ')
@@ -2725,7 +2709,7 @@ static void UI_OwnerDraw( itemDef_t *item, float x, float y, float w, float h, f
 
 	switch (ownerDraw) {
 	case UI_HANDICAP:
-		UI_DrawHandicap(&rect, scale, color, textStyle, textalignment, text_x, text_y, parentfont );
+		//UI_DrawHandicap(&rect, scale, color, textStyle, textalignment, text_x, text_y, parentfont );
 		break;
     case UI_EFFECTS:
 		//UI_DrawEffects(&rect, scale, color);
@@ -4493,14 +4477,14 @@ static void UI_RunMenuScript(const char **args) {
 		} else if (Q_stricmp(name, "openFORTBackModels") == 0 ) {	// rotates and zooms the backmodels to show a menu
 			if( (uiInfo.Q3F_BackModelStatus == Q3F_BM_CLOSED) || (uiInfo.Q3F_BackModelStatus == Q3F_BM_STARTUP)) {			// closed
 				uiInfo.Q3F_BackModelStatus = Q3F_BM_OPENED;				// opening
-				trap_S_StartLocalSound(uiInfo.Q3F_BackModelOpenSound, CHAN_ITEM);
+				//trap_S_StartLocalSound(uiInfo.Q3F_BackModelOpenSound, CHAN_ITEM);
 				String_Parse(args, &uiInfo.Q3F_BackModelMenuToOpen);
 				Menus_ShowByName( uiInfo.Q3F_BackModelMenuToOpen );
 				uiInfo.Q3F_BackModelMenuCurrent = uiInfo.Q3F_BackModelMenuToOpen;
 			} else if( uiInfo.Q3F_BackModelStatus == Q3F_BM_OPENED ) {	// opened (close it then open it again)
 				String_Parse(args, &uiInfo.Q3F_BackModelMenuToOpen);
 				if(Q_stricmp(uiInfo.Q3F_BackModelMenuToOpen, uiInfo.Q3F_BackModelMenuCurrent) != 0) {
-					trap_S_StartLocalSound(uiInfo.Q3F_BackModelReOpenSound, CHAN_ITEM);
+					//trap_S_StartLocalSound(uiInfo.Q3F_BackModelReOpenSound, CHAN_ITEM);
 					Menus_CloseByName( uiInfo.Q3F_BackModelMenuCurrent );
 					Menus_ShowByName( uiInfo.Q3F_BackModelMenuToOpen );
 					uiInfo.Q3F_BackModelMenuCurrent = uiInfo.Q3F_BackModelMenuToOpen;
@@ -4510,7 +4494,7 @@ static void UI_RunMenuScript(const char **args) {
 		} else if (Q_stricmp(name, "closeFORTBackModels") == 0 ) {	// rotates and zooms the backmodels to hide a menu
 			if( uiInfo.Q3F_BackModelStatus == Q3F_BM_OPENED ) {			// opened
 				uiInfo.Q3F_BackModelStatus = Q3F_BM_CLOSED;				// closing
-				trap_S_StartLocalSound(uiInfo.Q3F_BackModelCloseSound, CHAN_ITEM);
+				//trap_S_StartLocalSound(uiInfo.Q3F_BackModelCloseSound, CHAN_ITEM);
 				Menus_CloseByName( uiInfo.Q3F_BackModelMenuCurrent );
 				uiInfo.Q3F_BackModelMenuCurrent = NULL;
 			}
@@ -4532,7 +4516,7 @@ static void UI_RunMenuScript(const char **args) {
 			if( uiInfo.Q3F_BackModelMenuToOpen ) {
 				uiInfo.Q3F_BackModelMenuCurrent = uiInfo.Q3F_BackModelMenuToOpen;
 				uiInfo.Q3F_BackModelMenuToOpen = NULL;
-				trap_S_StartLocalSound(uiInfo.Q3F_BackModelOpenSound, CHAN_ITEM);
+				//trap_S_StartLocalSound(uiInfo.Q3F_BackModelOpenSound, CHAN_ITEM);
 				Menus_ShowByName( uiInfo.Q3F_BackModelMenuCurrent );
 			}
 
@@ -4542,7 +4526,7 @@ static void UI_RunMenuScript(const char **args) {
 			uiInfo.Q3F_BackModelStatus = Q3F_BM_STARTUP;
 			uiInfo.Q3F_BackModelStartupTime = 0;
 			uiInfo.Q3F_BackModelRotateEndTime = uiInfo.uiDC.realTime;
-			trap_S_StartLocalSound(uiInfo.Q3F_BackModelStartupSound, CHAN_ITEM);
+			//trap_S_StartLocalSound(uiInfo.Q3F_BackModelStartupSound, CHAN_ITEM);
 		} else if (Q_stricmp(name, "MoveMenuToY" ) == 0 ) { 
 			const char *txt1;
 			int newY;
@@ -4781,7 +4765,7 @@ static void UI_RunMenuScript(const char **args) {
 			}
 
 			uiInfo.Q3F_BackModelStatus = Q3F_BM_CLOSED;				// closing
-			trap_S_StartLocalSound(uiInfo.Q3F_BackModelCloseSound, CHAN_ITEM);
+			//trap_S_StartLocalSound(uiInfo.Q3F_BackModelCloseSound, CHAN_ITEM);
 			Menus_CloseByName( uiInfo.Q3F_BackModelMenuCurrent );
 			uiInfo.Q3F_BackModelMenuCurrent = NULL;
 

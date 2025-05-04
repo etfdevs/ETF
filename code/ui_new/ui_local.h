@@ -399,10 +399,10 @@ typedef struct {
 // djbob
 	int			Q3F_BackModelStartupTime;
 
-	sfxHandle_t	Q3F_BackModelOpenSound;
-	sfxHandle_t Q3F_BackModelReOpenSound;
-	sfxHandle_t	Q3F_BackModelCloseSound;
-	sfxHandle_t	Q3F_BackModelStartupSound;
+	//sfxHandle_t	Q3F_BackModelOpenSound;
+	//sfxHandle_t Q3F_BackModelReOpenSound;
+	//sfxHandle_t	Q3F_BackModelCloseSound;
+	//sfxHandle_t	Q3F_BackModelStartupSound;
 
 	sfxHandle_t Q3F_TransitionStaticSound1;
 	sfxHandle_t Q3F_TransitionStaticSound2;

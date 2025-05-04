@@ -91,7 +91,7 @@ void multi_trigger( gentity_t *ent, gentity_t *activator ) {
 		ent->touch = 0;
 		ent->nextthink = 0;
 		if( ent->mapdata )
-		ent->mapdata->inactivetarget = 0;
+			ent->mapdata->inactivetarget = 0;
 		//ent->think = G_FreeEntity;
 		// Golliwog
 	}
