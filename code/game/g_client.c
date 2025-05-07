@@ -930,7 +930,7 @@ static void ClientCleanName( int clientNum, const char *in, char *out, int outSi
 
 	// don't allow empty names
 	if( *p == 0 || colorlessLen == 0 ) {
-		Q_strncpyz( p, "UnnamedPlayer", outSize );
+		Q_strncpyz( p, "ETF_Player", outSize );
 	}
 
 	// djbob: stop colliding nicks
@@ -942,7 +942,7 @@ static void ClientCleanName( int clientNum, const char *in, char *out, int outSi
 	for( i = 0; i < MAX_CLIENTS; i++ ) {
 		char buf[128], buf_2[128];
 
-		if(!g_entities[i].inuse || g_entities[i].s.clientNum == clientNum) {
+		if(!g_entities[i].inuse || g_entities[i].s.number == clientNum) {
 			continue;
 		}
 

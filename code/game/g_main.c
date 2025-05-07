@@ -510,7 +510,7 @@ void G_Q3F_Global_Think(void) {
 
 void FORMAT_PRINTF(1,2) QDECL G_Printf( const char *fmt, ... ) {
 	va_list		argptr;
-	char		text[1024];
+	char		text[BIG_INFO_STRING];
 
 	va_start (argptr, fmt);
 	Q_vsnprintf (text, sizeof(text), fmt, argptr);
@@ -525,7 +525,7 @@ void FORMAT_PRINTF(1,2) QDECL G_Printf( const char *fmt, ... ) {
 
 void NORETURN FORMAT_PRINTF(1,2) QDECL G_Error( const char *fmt, ... ) {
 	va_list		argptr;
-	char		text[1024];
+	char		text[BIG_INFO_STRING];
 
 	va_start (argptr, fmt);
 	Q_vsnprintf (text, sizeof(text), fmt, argptr);
