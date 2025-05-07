@@ -3246,13 +3246,14 @@ void CG_Q3F_DrawHUDIcons(rectDef_t *rect, float tscale, vec4_t color, int textSt
 									cgs.gameShaders[cent->currentState.modelindex] );
 
 			if (cent->currentState.eFlags & EF_TEAMVOTED) {
+				int t;
 				// recalc
 				x = rect->x + ((64 * (slot / 5)) * scale);
 				y = rect->y + ((64 * (slot % 5)) * scale);
 				w = 64 * cent->currentState.apos.trBase[0] * scale;	// 64 * scale (0 to 1)
 				h = 64 * cent->currentState.apos.trBase[0] * scale;
 
-				int t = cent->currentState.constantLight - cg.time;
+				t = cent->currentState.constantLight - cg.time;
 				if (t > 0) {
 					char buf[16];
 					Com_sprintf(buf, sizeof(buf), "%d", (int)t/1000);
