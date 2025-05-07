@@ -46,7 +46,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifdef EVENT_ENUMS
 DECLARE_EVENT( EV_NONE ) = 0,
 #elif defined(EVENT_STRINGS)
-DECLARE_EVENT( EV_NONE )
+DECLARE_EVENT( EV_NONE ),
 #endif
 
 DECLARE_EVENT( EV_FOOTSTEP ),

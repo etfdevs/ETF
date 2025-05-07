@@ -183,9 +183,9 @@ typedef struct cplane_s {
 	byte	pad[2];
 } cplane_t;
 
-void SetPlaneSignbits( cplane_t *out );
-int	PlaneTypeForNormal( const vec3_t normal );
-int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, cplane_t *p);
+//void SetPlaneSignbits( cplane_t *out );
+//int	PlaneTypeForNormal( const vec3_t normal );
+//int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, cplane_t *p);
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -316,7 +316,7 @@ void VectorSet5( vec5_t vec, float x, float y, float z, float w, float u );
 //      ROTATION MATRIX
 //
 ///////////////////////////////////////////////////////////////////////////
-void CreateRotationMatrix(const vec3_t angles, vec3_t matrix[3]);
+void CreateRotationMatrix(const vec3_t angles, matrix3_t matrix);
 void TransposeMatrix(matrix3_t matrix, matrix3_t transpose);
 
 

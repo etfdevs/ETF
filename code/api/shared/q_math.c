@@ -873,6 +873,7 @@ void AddPointToBounds( const vec3_t v, vec3_t mins, vec3_t maxs ) {
 //      PLANE
 //
 ///////////////////////////////////////////////////////////////////////////
+#if 0
 void SetPlaneSignbits( cplane_t *out )
 {
 	int	bits, j;
@@ -908,7 +909,7 @@ BoxOnPlaneSide
 Returns 1, 2, or 1 + 2
 ==================
 */
-int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, cplane_t *p)
+int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, cplane_t* p)
 {
 	float	dist[2];
 	int		sides, b, i;
@@ -943,6 +944,7 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, cplane_t *p)
 
 	return sides;
 }
+#endif
 
 
 

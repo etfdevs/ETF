@@ -46,7 +46,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifdef MOD_ENUMS
 DECLARE_MOD( MOD_UNKNOWN ) = 0,
 #elif defined(MOD_STRINGS)
-DECLARE_MOD( MOD_UNKNOWN )
+DECLARE_MOD( MOD_UNKNOWN ),
 #endif
 DECLARE_MOD( MOD_SHOTGUN ),
 DECLARE_MOD( MOD_AXE ),

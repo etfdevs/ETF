@@ -217,6 +217,8 @@ typedef int32_t qhandle_t, thandle_t, fxHandle_t, sfxHandle_t, fileHandle_t, cli
 
 #define ARRAY_LEN(x)			(sizeof(x) / sizeof(*(x)))
 #define STRARRAY_LEN(x)			(ARRAY_LEN(x) - 1)
+#define STRING(x)				#x
+#define XSTRING(x)				STRING(x)
 
 // We need to use EXPAND because the Microsoft MSVC preprocessor does not expand the va_args the same way as other preprocessors
 // http://stackoverflow.com/questions/5134523/msvc-doesnt-expand-va-args-correctly
