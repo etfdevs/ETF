@@ -275,8 +275,8 @@ bg_q3f_playerclass_t bg_q3f_playerclass_grenadier = {
 	WP_GRENADE_LAUNCHER,					// Default Weapon
 
 	Q3F_GREN_NORMAL,	Q3F_GREN_CLUSTER,			// Grenade types
-	4,					2,						// Initial grenades
-	4,					2,						// Max grenades
+	4,					1,						// Initial grenades
+	4,					1,						// Max grenades
 
 	 75,  50,  50,  50, 0, 1,		// Maximum values for ammo: shells/nails/rockets/cells/medikit/charge
 	 75,  50,  50,  50, 0, 1,		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
@@ -375,8 +375,8 @@ bg_q3f_playerclass_t bg_q3f_playerclass_minigunner = {
 	WP_MINIGUN,					// Default Weapon
 
 	Q3F_GREN_NORMAL,	Q3F_GREN_CLUSTER,			// Grenade types
-	4,					2,						// Initial grenades
-	4,					2,						// Max grenades
+	4,					1,						// Initial grenades
+	4,					1,						// Max grenades
 
 	200, 200,  25,  50,	0, 0, 	// Maximum values for ammo: shells/nails/rockets/cells/medikit/charge
 	200, 200,  25,  50, 0, 0,		// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
