@@ -40,10 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "bg_q3f_weapon.h"
 #include "bg_q3f_util.h"
 
-// Declare cvars before using them
-cvar_t *pm_airaccelerate_cvar;
-cvar_t *pm_accelerate_cvar;
-cvar_t *pm_friction_cvar;
 pmove_t		*pm;
 pml_t		pml;
 
@@ -80,7 +76,7 @@ float	pm_airmaxspeeddiff = AMSD_ASYNC; // this is the actual max acceleration
 
 float	pm_airfriction = 6.0f;			// Air friction, ignores vertical values, default 6.0
 float	pm_waterfriction = 2.0f;
-float	pm_flightfriction = 6.0f;
+float	pm_flightfriction = 3.0f;
 float	pm_spectatorfriction = 5.0f;
 float	pm_ladderfriction = 3000.0f;  // Friction is high enough so you don't slip down
 
@@ -579,7 +575,7 @@ static qboolean PM_CheckJump( void ) {
 //	}
 
     // Ensure the player is on the ground
-    if (pm->ps->groundEntityNum == ENTITYNUM_NONE) {
+    if (pm->ps->groundEntityNum == ENTITYNUM_NONE && !pml.ladder ) {
         return qfalse;
     }
 	
@@ -754,7 +750,7 @@ void PM_CheckLadderMove( void )
 	VectorNormalize (flatforward);
 
 	VectorMA( pm->ps->origin, 1, flatforward, spot );
-	pm->trace( &trace, pm->ps->origin, pm->mins, pm->maxs, spot, pm->ps->clientNum, MASK_PLAYERSOLID );
+	pm->trace( &trace, pm->ps->origin, pm->mins, pm->maxs, spot, pm->ps->clientNum, pm->tracemask );
 	if ((trace.fraction < 1) && (trace.surfaceFlags & SURF_LADDER))
 	{
 		if( pml.groundPlane && (pml.forward[2]*pm->cmd.forwardmove + pml.right[2]*pm->cmd.rightmove) < 0 )
