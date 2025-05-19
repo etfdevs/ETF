@@ -161,7 +161,7 @@ Cmd_Score_f
 Request current scoreboard information
 ==================
 */
-void Cmd_Score_f( gentity_t *ent ) {
+static void Cmd_Score_f( gentity_t *ent ) {
 	ent->client->wantsscore = qtrue;
 }
 
@@ -238,7 +238,7 @@ char	*ConcatArgs( int start ) {
 	c = trap_Argc();
 	for ( i = start ; i < c ; i++ ) {
 		trap_Argv( i, arg, sizeof( arg ) );
-		tlen = strlen( arg );
+		tlen = (int)strlen( arg );
 		if ( len + tlen >= MAX_STRING_CHARS - 1 ) {
 			break;
 		}
@@ -250,7 +250,7 @@ char	*ConcatArgs( int start ) {
 		}
 	}
 
-	line[len] = 0;
+	line[len] = '\0';
 
 	return line;
 }
@@ -262,9 +262,9 @@ SanitizeString
 Remove case and control characters
 ==================
 */
-void SanitizeString( char *in, char *out ) {
+static void SanitizeString( const char *in, char *out, qboolean lower ) {
 	while ( *in ) {
-		if ( *in == 27 ) {
+		if ( Q_IsColorString( in ) ) {
 			in += 2;		// skip color code
 			continue;
 		}
@@ -272,10 +272,10 @@ void SanitizeString( char *in, char *out ) {
 			in++;
 			continue;
 		}
-		*out++ = tolower( *in++ );
+		*out++ = lower? tolower( *in++ ) : *in++;
 	}
 
-	*out = 0;
+	*out = '\0';
 }
 
 /*
@@ -286,7 +286,7 @@ Returns a player number for either a number or name string
 Returns -1 if invalid
 ==================
 */
-int ClientNumberFromString( gentity_t *to, char *s ) {
+int ClientNumberFromString( gentity_t *to, const char *s ) {
 	gclient_t	*cl;
 	int			idnum;
 	char		s2[MAX_STRING_CHARS];
@@ -309,12 +309,12 @@ int ClientNumberFromString( gentity_t *to, char *s ) {
 	}
 
 	// check for a name match
-	SanitizeString( s, s2 );
+	SanitizeString( s, s2, qtrue );
 	for ( idnum=0,cl=level.clients ; idnum < level.maxclients ; idnum++,cl++ ) {
 		if ( cl->pers.connected != CON_CONNECTED ) {
 			continue;
 		}
-		SanitizeString( cl->pers.netname, n2 );
+		SanitizeString( cl->pers.netname, n2, qtrue );
 		if ( !strcmp( n2, s2 ) ) {
 			return idnum;
 		}
@@ -435,14 +435,6 @@ static void Cmd_Give_f (gentity_t *ent)
 		if (!give_all)
 			return;
 	}
-
-#ifdef PENTAGRAM_POWERUP
-	if (Q_stricmp(name, "pent") == 0 || Q_stricmp(name, "pentagram") == 0) {
-		ent->client->ps.powerups[PW_PENTAGRAM] = level.time + 100*1000;
-		if (!give_all)
-			return;
-	}
-#endif
 
 	if (Q_stricmp(name, "excellent") == 0) {
 		ent->client->ps.persistant[PERS_EXCELLENT_COUNT]++;
@@ -669,7 +661,7 @@ void BroadcastTeamChange( gclient_t *client, int oldTeam )
 SetTeam
 =================
 */
-qboolean SetTeam( gentity_t *ent, char *s ) {
+qboolean SetTeam( gentity_t *ent, const char *s ) {
 	int					team, oldTeam;
 	gclient_t			*client;
 	int					clientNum;
@@ -684,13 +676,12 @@ qboolean SetTeam( gentity_t *ent, char *s ) {
 	// see what change is requested
 	//
 	client = ent->client;
-
 	clientNum = client - level.clients;
 	//specClient = 0;
 
-	if(level.clients[clientNum].punishTime) {
-		if(level.clients[clientNum].punishTime < level.time) {
-			level.clients[clientNum].punishTime = 0;
+	if(client->punishTime) {
+		if(client->punishTime < level.time) {
+			client->punishTime = 0;
 		}
 		else
 		{
@@ -1272,7 +1263,7 @@ static char *G_Q3F_ParseSayString( const char *srcptr, gentity_t *activator, gen
 		if( curr != '%' && curr != '$' ) {
 canthandle:
 			*buffptr++ = curr;
-			if( Q_IsColorStringPtr( srcptr - 1 ) )
+			if( Q_IsColorString( srcptr - 1 ) )
 			{
 				if( *srcptr < '0' || toupper(*srcptr) > 'O' )
 				{
@@ -1681,10 +1672,10 @@ static void Cmd_Say_f( gentity_t *ent, int mode ) {
 		G_Say( ent, NULL, mode, NULL, 1 );
 }
 
-void Cmd_Ignore_f( gentity_t* ent ) {
+static void Cmd_Ignore_f( gentity_t* ent ) {
 	char cmd[MAX_TOKEN_CHARS];
 	int cnum;
-	gentity_t *player;
+	const gclient_t *target;
 
 	trap_Argv( 1, cmd, sizeof( cmd ) );
 
@@ -1693,40 +1684,33 @@ void Cmd_Ignore_f( gentity_t* ent ) {
 		return;
 	}
 
-	cnum = atoi(cmd);
-
-	// sanity check if it's a number
-	if(cmd[0] >= '0' && cmd[0] <= '9')
-	{
-		for(player = g_entities; player < &g_entities[MAX_CLIENTS]; player++) {
-			if(!player->inuse || !player->client || player->s.number != cnum)
-				continue;
-
-			if ( cnum == ent->s.number )
-			{
-				trap_SendServerCommand( ent - g_entities, "print \"Cannot ignore oneself\n\"" );
-				return;
-			}
-
-			if ( COM_BitCheck( ent->client->sess.ignoreClients, cnum ) )
-			{
-				trap_SendServerCommand( ent - g_entities, va( "print \"%s^7 is already on your ignore list.\n\"", player->client->pers.netname ) );
-				return;
-			}
-
-			COM_BitSet( ent->client->sess.ignoreClients, cnum );
-			trap_SendServerCommand( ent-g_entities, va( "print \"Added %s^7 to your ignore list.\n\"", player->client->pers.netname ) );
-			return;
-		}
+	if ( ( cnum = ClientNumberFromString( ent, cmd ) ) == -1 ) {
+		return;
 	}
 
-	trap_SendServerCommand( ent-g_entities, "print \"Invalid player index\n\"");
+	if ( cnum == ent->s.number ) {
+		trap_SendServerCommand( ent - g_entities, "print \"Cannot ignore oneself\n\"" );
+		return;
+	}
+
+	target = level.clients + cnum;
+
+	if (!target)
+		return;
+
+	if ( COM_BitCheck( ent->client->sess.ignoreClients, cnum ) ) {
+		trap_SendServerCommand( ent - g_entities, va( "print \"%s^7 is already on your ignore list.\n\"", target->pers.netname ) );
+		return;
+	}
+
+	COM_BitSet( ent->client->sess.ignoreClients, cnum );
+	trap_SendServerCommand( ent - g_entities, va( "print \"Added %s^7 to your ignore list.\n\"", target->pers.netname ) );
 }
 
-void Cmd_UnIgnore_f( gentity_t* ent ) {
+static void Cmd_UnIgnore_f( gentity_t* ent ) {
 	char cmd[MAX_TOKEN_CHARS];
 	int cnum;
-	gentity_t *player;
+	const gclient_t *target;
 
 	trap_Argv( 1, cmd, sizeof( cmd ) );
 
@@ -1735,34 +1719,26 @@ void Cmd_UnIgnore_f( gentity_t* ent ) {
 		return;
 	}
 
-	cnum = atoi(cmd);
-
-	// sanity check if it's a number
-	if(cmd[0] >= '0' && cmd[0] <= '9')
-	{
-		for(player = g_entities; player < &g_entities[MAX_CLIENTS]; player++) {
-			if(!player->inuse || !player->client || player->s.number != cnum)
-				continue;
-
-			if ( cnum == ent->s.number )
-			{
-				//trap_SendServerCommand( ent - g_entities, "print \"Cannot unignore oneself\n\"" );
-				return;
-			}
-
-			if ( !COM_BitCheck( ent->client->sess.ignoreClients, cnum ) )
-			{
-				trap_SendServerCommand( ent - g_entities, va( "print \"%s^7 is not on your ignore list.\n\"", player->client->pers.netname ) );
-				return;
-			}
-
-			COM_BitClear( ent->client->sess.ignoreClients, cnum );
-			trap_SendServerCommand( ent-g_entities, va( "print \"Removed %s^7 from your ignore list.\n\"", player->client->pers.netname ) );
-			return;
-		}
+	if ( ( cnum = ClientNumberFromString( ent, cmd ) ) == -1 ) {
+		return;
 	}
 
-	trap_SendServerCommand( ent-g_entities, "print \"Invalid player index\n\"");
+	if ( cnum == ent->s.number ) {
+		return;
+	}
+
+	target = level.clients + cnum;
+
+	if (!target)
+		return;
+
+	if ( !COM_BitCheck( ent->client->sess.ignoreClients, cnum ) ) {
+		trap_SendServerCommand( ent - g_entities, va( "print \"%s^7 is not on your ignore list.\n\"", target->pers.netname ) );
+		return;
+	}
+
+	COM_BitClear( ent->client->sess.ignoreClients, cnum );
+	trap_SendServerCommand(ent - g_entities, va("print \"Removed %s^7 from your ignore list.\n\"", target->pers.netname));
 }
 
 /*

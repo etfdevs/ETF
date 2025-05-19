@@ -599,7 +599,7 @@ void G_FindTeams( void ) {
 G_Q3F_UpdateCvarLimits
 =================
 */
-void G_Q3F_UpdateCvarLimits(void) {
+static void G_Q3F_UpdateCvarLimits(void) {
 	trap_SetConfigstring( CS_Q3F_CVARLIMITS, va( "snaps %i -1 rate %i -1", g_minSnaps.integer, g_minRate.integer ) );
 }
 
@@ -608,7 +608,7 @@ void G_Q3F_UpdateCvarLimits(void) {
 G_RegisterCvars
 =================
 */
-void G_RegisterCvars( void ) {
+static void G_RegisterCvars( void ) {
 	int			i;
 	cvarTable_t	*cv;
 //	qboolean remapped = qfalse;
@@ -621,16 +621,10 @@ void G_RegisterCvars( void ) {
 	}
 
 	// check some things
-
-	//if ( g_gametype.integer < 0 || g_gametype.integer >= GT_MAX_GAME_TYPE ) {
-	//	G_Printf( "g_gametype %i is out of range, defaulting to 0\n", g_gametype.integer );
-		trap_Cvar_Set( "g_gametype", "0" );
-	//}
+	trap_Cvar_Set( "g_gametype", "0" );
 
 	/* Ensiform - Forcing this to 0 here as it can sometimes be imported from ET configs and set to 1, thus CVAR_ROM would be bad */
 	trap_Cvar_Set( "sv_floodProtect", "0" );
-
-//	trap_Cvar_Set( "g_gametype", "5" );		// Golliwog: Coerce to Q3F no matter what
 
 	level.warmupModificationCount = g_warmup.modificationCount;
 
@@ -672,7 +666,7 @@ static int G_Q3F_ParseFriendlyFire( char *ffstring )
 		while( *ffstring == ' ' || *ffstring == '_' || *ffstring == '-' ) ffstring++;
 		for( ptr = buff; (ptr - buff) < 15 && *ffstring != ' ' && *ffstring; ptr++, ffstring++ )
 			*ptr = *ffstring;
-		*ptr = 0;
+		*ptr = '\0';
 
 		ptr = buff;
 		if( !Q_strncmp( ptr, "mirror", 6 ) )
@@ -692,7 +686,7 @@ static int G_Q3F_ParseFriendlyFire( char *ffstring )
 	return( mask );
 }
 
-void G_Q3F_UpdateTeamNames(void) {
+static void G_Q3F_UpdateTeamNames(void) {
 	trap_SetConfigstring(CS_TEAMNAMES, va("\\g_etf_redTeam\\%s\\g_etf_blueTeam\\%s\\g_etf_yellowTeam\\%s\\g_etf_greenTeam\\%s", 
 		g_redteam.string, g_blueteam.string, g_yellowteam.string, g_greenteam.string));
 }
@@ -711,7 +705,7 @@ void G_SetMatchState(int state) {
 G_UpdateCvars
 =================
 */
-void G_UpdateCvars( void ) {
+static void G_UpdateCvars( void ) {
 	int			i;
 	cvarTable_t	*cv;
 //	qboolean remapped = qfalse;

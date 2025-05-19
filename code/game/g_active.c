@@ -57,16 +57,11 @@ void P_DamageFeedback( gentity_t *player ) {
 	gclient_t	*client;
 	float	count;
 	vec3_t	angles;
-	qboolean pentagram = qfalse;
 
 	client = player->client;
 	if ( client->ps.pm_type == PM_DEAD ) {
 		return;
 	}
-
-	// player has pentagram, don't send damage effects
-	// even though armor still takes a hit
-	pentagram = client->ps.powerups[PW_PENTAGRAM] > level.time;
 
 	// total points of damage shot at the player this frame
 	count = client->damage_blood + client->damage_armor;
@@ -94,7 +89,7 @@ void P_DamageFeedback( gentity_t *player ) {
 	}
 
 	// play an apropriate pain sound
-	if ( (level.time > player->pain_debounce_time) && !(player->flags & FL_GODMODE) && !pentagram ) {
+	if ( (level.time > player->pain_debounce_time) && !(player->flags & FL_GODMODE) ) {
 		player->pain_debounce_time = level.time + 700;
 		// RR2DO2 - players found this too irritating, limit it quite a lot - to low health
 		if( client->damage_fromFire && player->health <= 25 )
@@ -135,7 +130,7 @@ Check for lava / slime contents and drowning
 =============
 */
 void P_WorldEffects( gentity_t *ent ) {
-	qboolean	envirosuit, aqualung, pentagram;
+	qboolean	envirosuit, aqualung;
 	int			waterlevel;
 
 	if ( ent->client->noclip ) {
@@ -146,7 +141,6 @@ void P_WorldEffects( gentity_t *ent ) {
 	waterlevel = ent->waterlevel;
 
 	envirosuit	= ent->client->ps.powerups[PW_BATTLESUIT] > level.time;
-	pentagram	= ent->client->ps.powerups[PW_PENTAGRAM] > level.time;
 	aqualung	= ent->client->ps.powerups[PW_Q3F_AQUALUNG] > level.time;
 
 	//
@@ -154,7 +148,7 @@ void P_WorldEffects( gentity_t *ent ) {
 	//
 	if ( waterlevel == 3 ) {
 		// envirosuit give air
-		if ( envirosuit || pentagram || aqualung ) {
+		if ( envirosuit || aqualung ) {
 			ent->client->airOutTime = level.time + 10000;
 		}
 
@@ -198,8 +192,6 @@ void P_WorldEffects( gentity_t *ent ) {
 
 			if ( envirosuit ) {
 				G_AddEvent( ent, EV_POWERUP_BATTLESUIT, 0 );
-			} else if ( pentagram ) {
-				G_AddEvent( ent, EV_POWERUP_PENTAGRAM, 0 );
 			} else {
 				if (ent->watertype & CONTENTS_LAVA) {
 					G_Damage (ent, NULL, NULL, NULL, NULL, 

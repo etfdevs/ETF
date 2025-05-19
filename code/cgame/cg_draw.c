@@ -114,7 +114,7 @@ int CG_Text_Width(const char *text, float scale, int limit, fontStruct_t *parent
 
 		while (s && *s && count < len) {
 			if (*s >= GLYPH_CHARSTART) {
-				if ( Q_IsColorStringPtr( s ) ) {
+				if ( Q_IsColorString( s ) ) {
 					s += 2;
 					continue;
 				} else {
@@ -167,7 +167,7 @@ void CG_Text_Width_To_Max(char *text, float scale, int max, fontStruct_t *parent
 		}
 		while (s && *s) {
 			if (*s >= GLYPH_CHARSTART) {
-				if ( Q_IsColorStringPtr(s) ) {
+				if ( Q_IsColorString(s) ) {
 					s += 2;
 					continue;
 				} else {
@@ -227,7 +227,7 @@ int CG_Text_Height(const char *text, float scale, int limit, fontStruct_t *paren
 
 		while (s && *s && count < len) {
 			if(*s >= GLYPH_CHARSTART) {
-				if ( Q_IsColorStringPtr(s) ) {
+				if ( Q_IsColorString(s) ) {
 					s += 2;
 					continue;
 				} else {
@@ -328,7 +328,7 @@ void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text
 			if (*s >= GLYPH_CHARSTART) {
 				glyph = &font->glyphs[(unsigned char)*s];
 
-				if ( Q_IsColorStringPtr( s ) ) {
+				if ( Q_IsColorString( s ) ) {
 					if ( *( s + 1 ) == COLOR_NULL ) {
 						memcpy( &newColor[0], &color[0], sizeof( vec4_t ) );
 					} else {
@@ -754,24 +754,13 @@ static void CG_DrawReward( void ) {
 	}
 
 	trap_R_SetColor( color );
-
-	if ( cg.rewardCount[0] >= 10 ) {
-		y = 56;
-		x = 320 - ICON_SIZE/2;
-		CG_DrawPic( x, y, ICON_SIZE-4, ICON_SIZE-4, cg.rewardShader[0] );
+	y = 56;
+	x = 320 - ICON_SIZE/2;
+	CG_DrawPic( x, y, ICON_SIZE-4, ICON_SIZE-4, cg.rewardShader[0] );
+	if ( cg.rewardCount[0] > 1 ) {
 		Com_sprintf(buf, sizeof(buf), "%d", cg.rewardCount[0]);
 		x = ( SCREEN_WIDTH - CG_Text_Width( buf, 0.27f, 0, NULL) ) / 2.f;
 		CG_Text_Paint( x, y + (ICON_SIZE * 0.5f), 0.27f, color, buf, 0, 0, 0, NULL, ITEM_ALIGN_LEFT);
-	}
-	else {
-		count = cg.rewardCount[0];
-
-		y = 56;
-		x = 320 - count * ICON_SIZE/2;
-		for ( i = 0 ; i < count ; i++ ) {
-			CG_DrawPic( x, y, ICON_SIZE-4, ICON_SIZE-4, cg.rewardShader[0] );
-			x += ICON_SIZE;
-		}
 	}
 	trap_R_SetColor( NULL );
 }
@@ -1605,7 +1594,7 @@ static void CG_DrawDemoRecording( void ) {
 	CG_Text_Paint( cg_demoLineX.integer, cg_demoLineY.integer, 0.2f, colorWhite, status, 0, 0, 0, NULL, align );
 }
 
-void CG_demoAviFPSDraw( void ) {
+static void CG_demoAviFPSDraw( void ) {
 	qboolean fKeyDown = cgs.fKeyPressed[K_F1] | cgs.fKeyPressed[K_F2] | cgs.fKeyPressed[K_F3] | cgs.fKeyPressed[K_F4] | cgs.fKeyPressed[K_F5];
 
 	if ( cg.demoPlayback && fKeyDown && cgs.aviDemoRate >= 0 ) {
@@ -1615,7 +1604,7 @@ void CG_demoAviFPSDraw( void ) {
 	}
 }
 
-void CG_demoTimescaleDraw( void ) {
+static void CG_demoTimescaleDraw( void ) {
 	if ( cg.demoPlayback && demo_drawTimeScale.integer != 0 ) {
 		if( !cgs.demoPaused && cgs.timescaleUpdate > cg.time ) {
 			const char *s = va( "^3TimeScale: ^7%.1f", cg_timescale.value );
@@ -1731,7 +1720,7 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 	float		separation;
 	vec3_t		baseOrg;//, ttOrigin, ttAngles;
 	int			flashtime;
-	float		flashcol[4];
+	float		flashcol[4] = { 0 };
 
 	// optionally draw the info screen instead
 	if ( !cg.snap ) {
@@ -1789,7 +1778,7 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 			}
 		}
 		CG_Q3F_Waypoint();
-		CG_FillRect( 0, 0, 640, 480, flashcol );
+		CG_FillRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, flashcol );
 	}
 	else {
 		// draw 3D view
@@ -1806,12 +1795,12 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 
 	// Golliwog: Render 'sniper wash' if required
 	if( cg.sniperWashColour[3] )
-		CG_FillRect( 0, 0, 640, 480, cg.sniperWashColour );
+		CG_FillRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, cg.sniperWashColour );
 	// Golliwog.
 
 	// Golliwog: Agent gas colour effect
 	if( cg.gasCurrColour[3] )
-		CG_FillRect( 0, 0, 640, 480, cg.gasCurrColour );
+		CG_FillRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, cg.gasCurrColour );
 	// Golliwog.
 
 	// djbob: pain flash
@@ -1827,14 +1816,14 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 
 			flash[3] = (1 - ((cg.time - cg.bleedtime)/Q3F_BLOODFLASH_TIME)) * alphascale;
 
-			CG_FillRect(0, 0, 640, 480, flash);
+			CG_FillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, flash);
 		}
 	}
 	// djbob
 	
 	// RR2DO2: Lensflare blinding
 	if( cg.lensflare_blinded[3] ) {
-		CG_FillRectAdditive( 0, 0, 640, 480, cg.lensflare_blinded );
+		CG_FillRectAdditive( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, cg.lensflare_blinded );
 	}
 	// RR2DO2
 

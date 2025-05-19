@@ -465,21 +465,6 @@ static void UI_Q3F_ScreenshotJPEG_f( void ) {
 	trap_Cmd_ExecuteText(EXEC_APPEND, va("screenshotjpeg \"%s\"\n", buffer));
 }
 
-#ifdef _ETXREAL
-static void UI_Q3F_ScreenshotPNG_f( void ) {
-	char buffer[256], str[128];
-
-	trap_Argv(1, str, 128);
-
-	if(!*str) {
-		Q_strncpyz(str, "$Y-$a-$d_$h$m-$s_$l", 128);
-	}
-
-	UI_ETF_DemoParseString(str, buffer, 256);
-	trap_Cmd_ExecuteText(EXEC_APPEND, va("screenshotpng \"%s\"\n", buffer));
-}
-#endif
-
 static void UI_ETFMap_f( void ) {
 	char strmap[MAX_QPATH], index[10];
 	trap_Argv(1, strmap, sizeof(strmap));
@@ -621,9 +606,6 @@ static const consoleCommand_t commands[] = {
 	{ "ui_updatemapvotetally", UI_Q3F_MapSelectTally },
 	{ "screenshot_etf", UI_Q3F_ScreenshotTGA_f },
 	{ "screenshotJPEG_etf", UI_Q3F_ScreenshotJPEG_f },
-#ifdef _ETXREAL
-	{ "screenshotPNG_etf", UI_Q3F_ScreenshotPNG_f },
-#endif
 	{ "etfmap", UI_ETFMap_f },
 	{ "etfdevmap", UI_ETFDevMap_f },
 	//{ "glconfig", UI_GLConfig_f },

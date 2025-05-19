@@ -199,7 +199,7 @@ void CG_Q3F_PanelFill( int shader, float offset )
 	// Fill the specified panel layer with the specified panel.
 
 	CG_Q3F_PanelPrepareCoords( offset );
-	CG_Q3F_PanelDrawPoly( 0, 0, 640, 480, 0, 0, 1, 1, NULL, shader, qfalse );
+	CG_Q3F_PanelDrawPoly( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 1, 1, NULL, shader, qfalse );
 }
 
 void CG_Q3F_PanelDrawShader( float x, float y, float width, float height, vec4_t rgba, qhandle_t shader, qboolean clip )
@@ -550,7 +550,7 @@ void CG_Q3F_MessageString( char *srcptr, clientInfo_t *activator, clientInfo_t *
 		}
 		else {
 			*buffptr++ = *srcptr++;
-			if( Q_IsColorStringPtr( srcptr - 1 ) )
+			if( Q_IsColorString( srcptr - 1 ) )
 			{
 				if( *srcptr < '0' || *srcptr > 'O' )
 				{
@@ -849,9 +849,9 @@ static int CG_Q3F_PanelFuncTimer(void)
 	colour[2] = panel.transrgba[2] * ((float) (cent->currentState.time2 & 0xFF)) / 255.0f;
 	colour[3] = panel.transrgba[3];
 
-	size = 640.0f / size;
+	size = (float)SCREEN_WIDTH / size;
 	CG_Q3F_PanelPrepareCoords( PANEL_LAYER_MAIN );
-	CG_Q3F_PanelDrawString( str, 0, 0.5 * (480 - size * panel.aspect), size, 640, 480, PANEL_STR_CENTER, colour );
+	CG_Q3F_PanelDrawString( str, 0, 0.5 * (SCREEN_HEIGHT - size * panel.aspect), size, SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_STR_CENTER, colour );
 
 	return( 1 );
 }
@@ -1008,10 +1008,10 @@ static int CG_Q3F_PanelFuncMessage(void)
 							&cgs.clientinfo[cg.clientNum], COLOR_WHITE, buff, 2000 );
 	CG_Q3F_PanelFitString(	&numLines, &size,
 							buff, PANEL_STR_WRAP,
-							640, 480 );
+							SCREEN_WIDTH, SCREEN_HEIGHT );
 	yoff = 0.5 * (480 - numLines * size * panel.aspect);
 	CG_Q3F_PanelPrepareCoords( PANEL_LAYER_MAIN );
-	CG_Q3F_PanelDrawString( buff, 0, yoff, size, 640, 480,
+	CG_Q3F_PanelDrawString( buff, 0, yoff, size, SCREEN_WIDTH, SCREEN_HEIGHT,
 							PANEL_STR_CENTER|PANEL_STR_WRAP|PANEL_STR_COLOUR|PANEL_STR_SPACEBREAK,
 							panel.transrgba );
 
@@ -1026,7 +1026,6 @@ static int CG_Q3F_PanelFuncMessage(void)
 // trailTime		- Time panel was last active.
 // dustTrailTime	- Time panel was last inactive.
 
-qhandle_t portal;
 qboolean CG_Q3F_RenderPanel(	qhandle_t backshader, qhandle_t foreshader, int transitionid,
 								vec3_t origin, vec3_t angles, float width, float height, float maxdist,
 								panelRenderFunc_t *renderFunc, void *renderData,

@@ -2081,16 +2081,9 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 		trap_S_StartSound (NULL, es->number, CHAN_ITEM, cgs.media.protectSound );
 		break;
-#ifdef PENTAGRAM_POWERUP
 	case EV_POWERUP_PENTAGRAM:
 		DEBUGNAME("EV_POWERUP_PENTAGRAM");
-		if ( es->number == cg.snap->ps.clientNum ) {
-			cg.powerupActive = PW_PENTAGRAM;
-			cg.powerupTime = cg.time;
-		}
-		//trap_S_StartSound (NULL, es->number, CHAN_ITEM, cgs.media.protectEvilSound );
 		break;
-#endif
 	case EV_POWERUP_REGEN:
 		DEBUGNAME("EV_POWERUP_REGEN");
 		if ( es->number == cg.snap->ps.clientNum ) {
@@ -2162,7 +2155,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			Spirit_RunScript( cgs.spirit.explosion_flash, es->pos.trBase, es->pos.trBase, axisDefault, 0 ); 
 			break;
 		default:
-			if ( cg_no3DExplosions.value  ) {
+			if ( cg_no3DExplosions.value ) {
 				Spirit_RunScript( cgs.spirit.explosion_simple, es->pos.trBase, es->pos.trBase, axisDefault, 0 ); 
 			} else {
 				if(es->powerups & (1 << PW_QUAD)) {
@@ -2329,6 +2322,10 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_ETF_FLAMETHROWER_EFFECT:
 		DEBUGNAME("EV_ETF_FLAMETHROWER_EFFECT");
 		CG_FireFlameChunks( cent, cent->currentState.origin, cent->currentState.apos.trBase, qtrue );
+		break;
+
+	case EV_RAILTRAIL:
+		DEBUGNAME("EV_RAILTRAIL");
 		break;
 
 	default:

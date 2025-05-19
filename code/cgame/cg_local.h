@@ -686,9 +686,6 @@ typedef struct {
 	// low ammo warning state
 	int			lowAmmoWarning;		// 1 = low, 2 = empty
 
-	// kill timers for carnage reward
-	int			lastKillTime;
-
 	// crosshair client ID
 	int			crosshairClientNum;
 	int			crosshairClientTime;		// Golliwog: Slow down ID system
@@ -1667,19 +1664,12 @@ extern	vmCvar_t		r_nocull;
 extern	vmCvar_t		r_nocurves;
 extern	vmCvar_t		r_noportals;
 extern	vmCvar_t		r_novis;
-//extern	vmCvar_t		r_showclusters;
 extern	vmCvar_t		r_lightmap;
 extern	vmCvar_t		cg_fallingBob;
 extern	vmCvar_t		cg_weaponBob;
-/*extern	vmCvar_t		cg_redTeamName;
-extern	vmCvar_t		cg_blueTeamName;
-extern	vmCvar_t		cg_yellowTeamName;
-extern	vmCvar_t		cg_greenTeamName;*/
 extern	vmCvar_t		cg_adjustAgentSpeed;
-//extern	vmCvar_t		cg_drawHudSlots;
 extern	vmCvar_t		cg_playClassSound;
 extern	vmCvar_t		cg_drawParticleCount;
-//extern	vmCvar_t		cg_noProjectileTrail;
 extern	vmCvar_t		cg_initializing;
 extern	vmCvar_t		cg_drawPanel;
 extern	vmCvar_t		cg_debugPanel;
@@ -1733,7 +1723,6 @@ extern	vmCvar_t		cg_plOut;
 extern	vmCvar_t		cg_predictItems;
 extern	vmCvar_t		cg_predictWeapons;
 
-
 extern	vmCvar_t		demo_avifpsF1;
 extern	vmCvar_t		demo_avifpsF2;
 extern	vmCvar_t		demo_avifpsF3;
@@ -1744,7 +1733,6 @@ extern	vmCvar_t		demo_drawTimeScale;
 extern	vmCvar_t		demo_infoWindow;
 extern	vmCvar_t		demo_baseFOV;
 extern	vmCvar_t		demo_scoresToggle;
-
 
 extern	vmCvar_t		cg_drawFollowText;
 
@@ -1975,7 +1963,7 @@ void CG_SetEntitySoundPosition( centity_t *cent );
 void CG_AddPacketEntities( void );
 void CG_Beam( centity_t *cent );
 void CG_Q3F_Beam( centity_t *cent );
-void CG_Q3F_Flamer( centity_t *cent );
+//void CG_Q3F_Flamer( centity_t *cent );
 void CG_AdjustPositionForMover( const vec3_t in, int moverNum, int fromTime, int toTime, vec3_t out );
 
 void CG_PositionEntityOnTag( refEntity_t *entity, /*const*/ refEntity_t *parent, const char *tagName, int startIndex, vec3_t *offset );

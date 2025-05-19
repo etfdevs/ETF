@@ -672,7 +672,7 @@ sfxHandle_t	trap_S_RealRegisterSound( const char *sample, qboolean compressed ) 
 	}
 	// if the number returned is negative or above this number its bad
 	// trying to detect where the random sound handles go wrong
-	// 4096 is the size of the s_knownSfx array in th engine
+	// 4096 is the size of the s_knownSfx array in the engine
 	if(snd < 0 || snd >= 4096) {
 		Com_Printf("^1Warning: Failed to load sound: %s (out of range handle %i)\n", sample, snd);
 	}

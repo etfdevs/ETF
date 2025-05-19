@@ -71,6 +71,8 @@ void Q_strcat( char *dest, int size, const char *src );
 
 const char *Q_stristr( const char *s, const char *find);
 
+qboolean Q_IsColorString( const char *p );
+
 // strlen that discounts Quake color sequences
 int Q_PrintStrlen( const char *string );
 

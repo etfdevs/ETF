@@ -389,15 +389,15 @@ typedef enum {
 
 // The extFlags field is an 8-bit (presently) space for extra flags.
 // Ensiform: This is actually 32-bit in ETF.
-#define EXTF_UNUSED1		0x01
-#define EXTF_UNUSED2		0x02
-#define	EXTF_BURNING		0x04			// Player is burning
-#define	EXTF_TRANQED		0x08			// Player is tranqed
-#define	EXTF_CONTROL		0x10			// Player is controlling something instead of running around.
+#define EXTF_UNUSED1		0x001
+#define EXTF_UNUSED2		0x002
+#define	EXTF_BURNING		0x004			// Player is burning
+#define	EXTF_TRANQED		0x008			// Player is tranqed
+#define	EXTF_CONTROL		0x010			// Player is controlling something instead of running around.
 
-#define EXTF_ANI_THROWING	0x20			// Player is in a throwing animation
-#define EXTF_ANI_SPECIAL	0x40			// Player is in a special anim (one per class)
-#define EXTF_ANI_OPERATING	0x80			// Player is operating with a supplystation
+#define EXTF_ANI_THROWING	0x020			// Player is in a throwing animation
+#define EXTF_ANI_SPECIAL	0x040			// Player is in a special anim (one per class)
+#define EXTF_ANI_OPERATING	0x080			// Player is operating with a supplystation
 
 #define EXTF_LEGWOUNDS		0x100			// Player has been legshot
 
@@ -421,7 +421,7 @@ typedef enum {
 	PW_Q3F_AQUALUNG,
 	PW_Q3F_CEASEFIRE,
 
-	PW_PENTAGRAM,
+	PW_PENTAGRAM, // must stay or things get messed up
 
 	PW_NUM_POWERUPS
 } powerup_t;

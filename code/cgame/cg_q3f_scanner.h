@@ -52,7 +52,7 @@ typedef struct scannerdata_s
 	int last_updated;
 } scannerdata_t;
 
-void CG_Q3F_ScannerDraw(void);
+//void CG_Q3F_ScannerDraw(void);
 void CG_Q3F_CheckForScannerData(struct centity_s *cent);
 /* void CG_UpdateScanner(struct centity_s *cent); */
 void CG_Q3F_ColorForTeam(vec4_t hcolor, int teamnum);

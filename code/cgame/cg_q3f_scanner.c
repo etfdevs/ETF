@@ -115,6 +115,7 @@ void CG_Q3F_CheckForScannerData(struct centity_s *cent)
  END JT*/
 }
 
+#if 0
 void CG_Q3F_ScannerDraw(void)
 {
 	int i;
@@ -217,6 +218,7 @@ void CG_Q3F_ScannerDraw(void)
 		trap_R_SetColor( NULL );
 	}
 }
+#endif
 
 void CG_Q3F_ColorForTeam(vec4_t hcolor, int teamnum)
 {

@@ -942,7 +942,7 @@ static void ClientCleanName( int clientNum, const char *in, char *out, int outSi
 	for( i = 0; i < MAX_CLIENTS; i++ ) {
 		char buf[128], buf_2[128];
 
-		if(!g_entities[i].inuse || g_entities[i].s.number == clientNum) {
+		if(!g_entities[i].inuse || g_entities[i].s.number == clientNum || (g_entities[i].client->pers.connected < CON_CONNECTING)) {
 			continue;
 		}
 
@@ -1082,7 +1082,7 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 	Q_strncpyz ( oldname, client->pers.netname, sizeof( oldname ) );
 	s = Info_ValueForKey (userinfo, "name");
 	ClientCleanName( clientNum, s, client->pers.newnetname, sizeof(client->pers.newnetname) );
-	if( (client->pers.namechangeTime <= level.time) && client->pers.newnetname[0] )
+	if( (client->pers.namechangeTime <= level.time) || (client->pers.connected < CON_CONNECTED && strcmp(reason, "connect") == 0 ) && client->pers.newnetname[0])
 	{
 		G_LogPrintf("%d changed name. new = %s, ct = %d, t = %d\n", clientNum, client->pers.newnetname, client->pers.namechangeTime, level.time);
 		Q_strncpyz( client->pers.netname, client->pers.newnetname, sizeof(client->pers.netname) );
@@ -1190,13 +1190,31 @@ G_StripPort
 ============
 */
 // fixme ipv6
-static void G_StripPort( const char *in, char *out, int destsize )
-{
-	const char *colon = strrchr(in, ':');
-	if (colon)
-		Q_strncpyz(out, in, (destsize < colon-in+1 ? destsize : colon-in+1));
-	else
-		Q_strncpyz(out, in, destsize);
+static void G_StripPort( const char *in, char *out, int destsize ) {
+	if ( !*in ) {
+		out[0] = '\0';
+		return;
+	}
+
+	// Only IPv4 can contain dots
+	if (strchr(in, '.') != NULL) {
+		const char *colon = strrchr(in, ':');
+		if (colon) {
+			Q_strncpyz(out, in, (destsize < colon - in + 1 ? destsize : colon - in + 1));
+			return;
+		}
+	}
+
+	// IPv6 addresses are enclosed within [] if they have a port attached
+	if (in[0] == '[' && in[1] != '\0') {
+		const char* bracket = strrchr(in, ']');
+		if (bracket) {
+			Q_strncpyz(out, in+1, (destsize < bracket - in + 1 ? destsize : bracket - in + 1));
+			return;
+		}
+	}
+
+	Q_strncpyz(out, in, destsize);
 }
 
 

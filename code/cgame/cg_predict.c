@@ -1015,5 +1015,3 @@ void CG_PredictPlayerState( void ) {
 		}
 	}
 }
-
-

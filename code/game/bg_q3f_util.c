@@ -194,4 +194,3 @@ int Q3F_GetClipValue(int weapon, const playerState_t *playstate)
 		return((playstate->ammo[offset] & 0x7f00)>>8);
 	}
 }
-

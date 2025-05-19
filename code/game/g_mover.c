@@ -1244,7 +1244,7 @@ Touch_Plat
 Don't allow decent if a living player is on it
 ===============
 */
-void Touch_Plat( gentity_t *ent, gentity_t *other, trace_t *trace ) {
+/*void Touch_Plat(gentity_t* ent, gentity_t* other, trace_t* trace) {
 	if ( !other->client || other->client->ps.stats[STAT_HEALTH] <= 0 ) {
 		return;
 	}
@@ -1253,9 +1253,9 @@ void Touch_Plat( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 	if ( ent->moverState == MOVER_POS2 ) {
 		ent->nextthink = level.time + 1000;
 	}
-}
+}*/
 
-void Use_Plat( gentity_t *ent, gentity_t *other, gentity_t *activator )
+static void Use_Plat( gentity_t *ent, gentity_t *other, gentity_t *activator )
 {
 	if ( !activator->client ) {
 		return;
@@ -1277,7 +1277,7 @@ Touch_PlatCenterTrigger
 If the plat is at the bottom position, start it going up
 ===============
 */
-void Touch_PlatCenterTrigger(gentity_t *ent, gentity_t *other, trace_t *trace ) {
+static void Touch_PlatCenterTrigger(gentity_t *ent, gentity_t *other, trace_t *trace ) {
 	if ( !other->client || Q3F_IsSpectator( other->client ) ) {
 		return;
 	}
@@ -1301,7 +1301,7 @@ Elevator cars require that the trigger extend through the entire low position,
 not just sit on top of it.
 ================
 */
-void SpawnPlatTrigger( gentity_t *ent ) {
+static void SpawnPlatTrigger( gentity_t *ent ) {
 	gentity_t	*trigger;
 	vec3_t	tmin, tmax;
 
@@ -1346,6 +1346,9 @@ void SpawnPlatTrigger( gentity_t *ent ) {
 /*QUAKED func_plat (0 .5 .8) ?
 Plats are always drawn in the extended position so they will light correctly.
 
+NOTE: Must specify "_fixedwait" "1" to support wait key due to bug in all Q3-based games that override wait key to 1 second
+Or use func_lift that behaves identically except that wait key works as intended without special flag
+
 "lip"		default 8, protrusion above rest position
 "height"	total height of movement, defaults to model height
 "speed"		overrides default 200.
@@ -1353,9 +1356,12 @@ Plats are always drawn in the extended position so they will light correctly.
 "model2"	.md3 model to also draw
 "color"		constantLight color
 "light"		constantLight radius
+"wait"		override the default 1 second wait (-1 = never return) SEE NOTES
+"_fixedwait" tells game you want to use the wait key correctly
 */
 void SP_func_plat (gentity_t *ent) {
 	float		lip, height;
+	qboolean	dummy;
 
 	G_Q3F_SetMoverSound( ent );
 	ent->timestamp = EV_LIFT;
@@ -1367,13 +1373,20 @@ void SP_func_plat (gentity_t *ent) {
 	G_SpawnFloat( "wait", "1", &ent->wait );
 	G_SpawnFloat( "lip", "8", &lip );
 
-	/* Ensiform - Lets print a note to mappers/server about their custom waits on func_plats that don't actually work */
-	/* Doing this because we don't want to fuck up any timings of existing maps */
-	if ( ent->wait != 1.f ) {
-		G_Printf ("func_plat with custom wait set to %.2f being ignored (forced to 1 second)!\n", ent->wait);
-	}
+	G_SpawnBoolean( "_fixedwait", "0", &dummy );
 
-	ent->wait = 1000;
+	if (!dummy) {
+		/* Ensiform - Lets print a note to mappers/server about their custom waits on func_plats that don't actually work */
+		/* Doing this because we don't want to fuck up any timings of existing maps */
+		if (ent->wait != 1.f) {
+			G_Printf("func_plat with custom wait set to %.2f being ignored (forced to 1 second)!\n", ent->wait);
+		}
+
+		ent->wait = 1000;
+	}
+	else {
+		ent->wait *= 1000;
+	}
 
 	// create second position
 	trap_SetBrushModel( ent, ent->model );
@@ -1419,7 +1432,7 @@ Touch_Lift
 Don't allow decent if a living player is on it
 ===============
 */
-void Touch_Lift( gentity_t *ent, gentity_t *other, trace_t *trace ) {
+/*void Touch_Lift(gentity_t* ent, gentity_t* other, trace_t* trace) {
 	if ( !other->client || other->client->ps.stats[STAT_HEALTH] <= 0 ) {
 		return;
 	}
@@ -1428,9 +1441,9 @@ void Touch_Lift( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 	if ( ent->moverState == MOVER_POS2 ) {
 		ent->nextthink = level.time + 1000;
 	}
-}
+}*/
 
-void Use_Lift( gentity_t *ent, gentity_t *other, gentity_t *activator )
+static void Use_Lift( gentity_t *ent, gentity_t *other, gentity_t *activator )
 {
 	if ( !activator->client ) {
 		return;
@@ -1452,7 +1465,7 @@ Touch_PlatCenterTrigger
 If the plat is at the bottom position, start it going up
 ===============
 */
-void Touch_LiftCenterTrigger(gentity_t *ent, gentity_t *other, trace_t *trace ) {
+static void Touch_LiftCenterTrigger(gentity_t *ent, gentity_t *other, trace_t *trace ) {
 	if ( !other->client || Q3F_IsSpectator( other->client ) ) {
 		return;
 	}
@@ -1476,7 +1489,7 @@ Elevator cars require that the trigger extend through the entire low position,
 not just sit on top of it.
 ================
 */
-void SpawnLiftTrigger( gentity_t *ent ) {
+static void SpawnLiftTrigger( gentity_t *ent ) {
 	gentity_t	*trigger;
 	vec3_t	tmin, tmax;
 
@@ -1484,7 +1497,7 @@ void SpawnLiftTrigger( gentity_t *ent ) {
 	// above the starting position
 	trigger = G_Spawn();
 	trigger->classname = "lift_trigger";
-	trigger->touch = Touch_PlatCenterTrigger;
+	trigger->touch = Touch_LiftCenterTrigger;
 	trigger->r.contents = CONTENTS_TRIGGER;
 	trigger->parent = ent;
 	ent->target_ent = trigger;
@@ -1640,7 +1653,16 @@ void SP_func_button( gentity_t *ent ) {
 	vec3_t		size;
 	float		lip;
 
-	ent->sound1to2 = G_SoundIndex("sound/movers/switches/butn2.wav");
+	if (ent->mapdata && ent->mapdata->other)
+	{
+		q3f_keypair_t *kp = G_Q3F_KeyPairArrayFind(ent->mapdata->other, G_Q3F_GetString("button_sound"));
+		if (kp)
+			ent->sound1to2 = *kp->value.d.strdata ? G_SoundIndex(kp->value.d.strdata) : 0;
+		else ent->sound1to2 = G_SoundIndex("sound/movers/switches/butn2.wav");
+	}
+	else {
+		ent->sound1to2 = G_SoundIndex("sound/movers/switches/butn2.wav");
+	}
 	ent->timestamp = EV_VISUAL_TRIGGER;	/* Ensiform - Fix the missing event spam with buttons */
 	
 	if ( !ent->speed ) {

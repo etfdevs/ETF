@@ -1101,10 +1101,6 @@ void CG_AddWeaponWithPowerups( refEntity_t *gun, entityState_t *state, int team 
 			gun->customShader = cgs.media.battleWeaponShader;
 			trap_R_AddRefEntityToScene( gun, NULL );
 		}
-		if ( state->powerups & ( 1 << PW_PENTAGRAM ) ) {
-			gun->customShader = cgs.media.battleWeaponShader;
-			trap_R_AddRefEntityToScene( gun, NULL );
-		}
 		if ( state->extFlags & EXTF_BURNING ) {
 			gun->customShader = cgs.media.onFireShader0;
 			trap_R_AddRefEntityToScene( gun, NULL );

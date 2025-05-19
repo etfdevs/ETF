@@ -33,7 +33,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_local.h"
 #include "g_q3f_playerclass.h" /* Ensiform - For Spectator Check and Q3F_CLASS_NULL */
 
-#include "cJSON.h"
+#include <cJSON.h>
 
 
 /*

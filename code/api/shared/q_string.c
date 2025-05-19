@@ -443,6 +443,22 @@ const char *Q_stristr( const char *s, const char *find )
 	return s;
 }
 
+qboolean Q_IsColorString( const char *p ) {
+	if (!p)
+		return qfalse;
+
+	if (p[0] != Q_COLOR_ESCAPE)
+		return qfalse;
+
+	if (p[1] == '\0' || p[1] < 0)
+		return qfalse;
+
+	if (p[1] == Q_COLOR_ESCAPE || p[1] == ';')
+		return qfalse;
+
+	return qtrue;
+}
+
 int Q_PrintStrlen( const char *string ) {
 	int			len;
 	const char	*p;
@@ -454,7 +470,7 @@ int Q_PrintStrlen( const char *string ) {
 	len = 0;
 	p = string;
 	while( *p ) {
-		if( Q_IsColorStringPtr( p ) ) {
+		if( Q_IsColorString( p ) ) {
 			p += 2;
 			continue;
 		}
@@ -474,7 +490,7 @@ char *Q_CleanStr( char *string ) {
 	s = string;
 	d = string;
 	while ((c = *s) != 0 ) {
-		if ( Q_IsColorStringPtr( s ) ) {
+		if ( Q_IsColorString( s ) ) {
 			s++;
 		}
 		else if ( c >= 0x20 && c <= 0x7E ) {
@@ -547,7 +563,7 @@ void Q_StripColor(char *text)
 		read = write = text;
 		while ( *read )
 		{
-			if ( Q_IsColorStringPtr(read) )
+			if ( Q_IsColorString(read) )
 			{
 				doPass = qtrue;
 				read += 2;

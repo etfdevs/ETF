@@ -758,7 +758,7 @@ void G_SendScore(gentity_t *ent);
 qboolean CheatsOk( gentity_t *ent, qboolean silent );
 void StopFollowing( gentity_t *ent, qboolean resetclient );
 void BroadcastTeamChange( gclient_t *client, int oldTeam );
-qboolean SetTeam( gentity_t *ent, char *s );
+qboolean SetTeam( gentity_t *ent, const char *s );
 void Cmd_FollowCycle_f( gentity_t *ent, int dir, spectatorState_t state );
 
 //

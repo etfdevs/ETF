@@ -163,9 +163,6 @@ configData_t configDataTable_Misc[] = {
 	{"Scores (hold)",			"+alias score",			-1, -1, -1, CONFIG_TYPE_BIND},
 	{"Screenshot (TGA)",		"screenshot_etf",		-1, -1, -1, CONFIG_TYPE_BIND},
 	{"Screenshot (JPG)",		"screenshotJPEG_etf",	-1, -1, -1, CONFIG_TYPE_BIND},  //keeg
-#ifdef _ETXREAL
-	{"Screenshot (PNG)",		"screenshotPNG_etf",	-1, -1, -1, CONFIG_TYPE_BIND},  //Ensiform
-#endif
 	{"Record Demo",				"record_etf",			-1,	-1,	-1,	CONFIG_TYPE_BIND},
 //	{"Use Item",				"+button2",				-1, -1, -1, CONFIG_TYPE_BIND},
 //	{"Scoreboard Down",			"hudscript scrolldown scoreboard scoreboard",	-1, -1, -1, CONFIG_TYPE_BIND},
@@ -542,7 +539,7 @@ int Text_Width(const char *text, float scale, int limit, fontStruct_t *parentfon
 		count = 0;
 		while (s && *s && count < len) {
 			if (*s >= GLYPH_CHARSTART || *s == '\n') {
-				if ( Q_IsColorStringPtr(s) ) {
+				if ( Q_IsColorString(s) ) {
 					s += 2;
 					continue;
 				} else if( *s == '\n' ) {
@@ -596,7 +593,7 @@ int Text_Height(const char *text, float scale, int limit, fontStruct_t *parentfo
 		count = 0;
 		while (s && *s && count < len) {
 			if (*s >= GLYPH_CHARSTART || *s == '\n') {
-				if ( Q_IsColorStringPtr(s) ) {
+				if ( Q_IsColorString(s) ) {
 					s += 2;
 					continue;
 				} else if( *s == '\n' ) {
@@ -690,7 +687,7 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, f
 				//int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
 				//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
 
-				if ( Q_IsColorStringPtr( s ) ) {
+				if ( Q_IsColorString( s ) ) {
 					if ( *( s + 1 ) == COLOR_NULL ) {
 						memcpy( &newColor[0], &color[0], sizeof( vec4_t ) );
 					} else {
@@ -776,7 +773,7 @@ void Text_Width_To_Max(char *text, float scale, int max, fontStruct_t *parentfon
 				return;
 			}
 			if (*s >= GLYPH_CHARSTART) {
-				if ( Q_IsColorStringPtr(s) ) {
+				if ( Q_IsColorString(s) ) {
 					s += 2;
 					continue;
 				} else {
@@ -845,7 +842,7 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 				glyph = &font->glyphs[(unsigned char)*s];
 			//int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
 			//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
-				if ( Q_IsColorStringPtr( s ) ) {
+				if ( Q_IsColorString( s ) ) {
 					if ( *( s + 1 ) == COLOR_NULL ) {
 						memcpy( &newColor[0], &color[0], sizeof( vec4_t ) );
 					} else {
@@ -966,7 +963,7 @@ static void Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4_t 
 		while (s && *s && count < len) {
 			if (*s >= GLYPH_CHARSTART) {
 				glyph = &font->glyphs[(unsigned char)*s];
-				if ( Q_IsColorStringPtr( s ) ) {
+				if ( Q_IsColorString( s ) ) {
 					if ( *( s + 1 ) == COLOR_NULL ) {
 						memcpy( &newColor[0], &color[0], sizeof( vec4_t ) );
 					} else {
@@ -6875,9 +6872,6 @@ void UI_Init( void ) {
 	// let's add some of our commands
 	trap_AddCommand("screenshot_etf");
 	trap_AddCommand("screenshotJPEG_etf");
-#ifdef _ETXREAL
-	trap_AddCommand("screenshotPNG_etf");
-#endif
 	trap_AddCommand("etfmap");
 	trap_AddCommand("etfdevmap");
 	// slothy
@@ -6958,10 +6952,6 @@ void UI_KeyEvent( int key, qboolean down ) {
 			trap_Key_ClearStates();
 		}
 	}
-
-	//if ((s > 0) && (s != menu_null_sound)) {
-		//  trap_S_StartLocalSound( s, CHAN_LOCAL_SOUND );
-	//}
 }
 
 /*
@@ -6985,8 +6975,6 @@ void UI_MouseEvent( int dx, int dy )
 		uiInfo.uiDC.cursory = SCREEN_HEIGHT;
 
 	if (menuCount > 0) {
-		//menuDef_t *menu = Menu_GetFocused();
-		//Menu_HandleMouseMove(menu, uiInfo.uiDC.cursorx, uiInfo.uiDC.cursory);
 		Display_MouseMove(NULL, uiInfo.uiDC.cursorx, uiInfo.uiDC.cursory);
 	}
 
@@ -9089,7 +9077,7 @@ void HUD_DrawChatBox (rectDef_t *rect, float scale, vec4_t color, int textStyle,
 	
 	s = p = buffer;
 	while(*p) {
-		if(Q_IsColorStringPtr(p)) {
+		if(Q_IsColorString(p)) {
 			clrCode = *(p+1);
 			p++;
 		} else if(*p == '\n') {

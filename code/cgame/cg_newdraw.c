@@ -113,21 +113,15 @@ static void CG_DrawAttacker( rectDef_t* rect, float scale, int style, fontStruct
 }
 
 static void CG_DrawPlayerArmorIcon( rectDef_t *rect ) {
-	// ENSI PENTAGRAM LOGO if PW_PENTAGRAM
 	CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cgs.media.hud_armourShader );	// RR2DO2: another id bug
 }
 
 static void CG_DrawPlayerArmorValue(rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font) {
 	char	num[16];
 	int		value;
-	playerState_t	*ps;
+	const playerState_t	*ps = &cg.snap->ps;
 
-	ps = &cg.snap->ps;
-
-	if ( ps->powerups[PW_PENTAGRAM] )
-		value = 666;
-	else
-		value = ps->stats[STAT_ARMOR];
+	value = ps->stats[STAT_ARMOR];
 
 	if (shader) {
 		trap_R_SetColor( color );
@@ -135,40 +129,29 @@ static void CG_DrawPlayerArmorValue(rectDef_t *rect, float scale, vec4_t color, 
 		trap_R_SetColor( NULL );
 	} else {
 		Com_sprintf (num, sizeof(num), "%i", value);
-		//value = CG_Text_Width(num, scale, 0, font);
-		CG_Text_Paint(rect->x /*+ (rect->w - value) / 2*/ + text_x, rect->y + rect->h + text_y, scale, color, num, 0, 0, textStyle, font, textalignment);
+		CG_Text_Paint(rect->x + text_x, rect->y + rect->h + text_y, scale, color, num, 0, 0, textStyle, font, textalignment);
 	}
 }
 
 static void CG_DrawPlayerArmorBar(rectDef_t *rect) {
 	vec4_t			hcolor;
-	playerState_t	*ps;
-	qboolean		pentagram;
-
-	ps = &cg.snap->ps;
-
-	pentagram = (ps->powerups[PW_PENTAGRAM] > 0) ? qtrue : qfalse;
+	const playerState_t	*ps = &cg.snap->ps;
 
 	// get the armour colour
 	hcolor[0] = hcolor[1] = hcolor[2] = 0.0f;
 	hcolor[3] = 1.0f;
-	if ( pentagram ) {
+
+	if ( ps->stats[STAT_ARMORTYPE] < Q3F_ARMOUR_YELLOW )
+		hcolor[1] = 1.0f;
+	else if ( ( ps->stats[STAT_ARMORTYPE] >= Q3F_ARMOUR_YELLOW ) && ( ps->stats[STAT_ARMORTYPE] < Q3F_ARMOUR_RED ) )
+		hcolor[0] = hcolor[1] = 1.0f;
+	else if ( ps->stats[STAT_ARMORTYPE] >= Q3F_ARMOUR_RED )
 		hcolor[0] = 1.0f;
-	}
-	else {
-		if ( ps->stats[STAT_ARMORTYPE] < Q3F_ARMOUR_YELLOW )
-			hcolor[1] = 1.0f;
-		else if ( ( ps->stats[STAT_ARMORTYPE] >= Q3F_ARMOUR_YELLOW ) && ( ps->stats[STAT_ARMORTYPE] < Q3F_ARMOUR_RED ) )
-			hcolor[0] = hcolor[1] = 1.0f;
-		else if ( ps->stats[STAT_ARMORTYPE] >= Q3F_ARMOUR_RED )
-			hcolor[0] = 1.0f;
-	}
 	CG_Q3F_DrawProgress( rect->x, rect->y, rect->w, rect->h, 
 						 bg_q3f_classlist[cg.predictedPlayerState.persistant[PERS_CURRCLASS]]->maxarmour,
 						 bg_q3f_classlist[cg.predictedPlayerState.persistant[PERS_CURRCLASS]]->maxarmour,
-						 pentagram ? 666 : ps->stats[STAT_ARMOR],
+						 ps->stats[STAT_ARMOR],
 						 cgs.media.hud_armourShader,
-						 //pentagram ? cgs.media.hud_armourShader : cgs.media.hud_armourShader,
 						 hcolor);
 }
 
@@ -1173,7 +1156,7 @@ int CG_GetCurrentPowerUp( int *pups ) {
 
 	// sort the list by time remaining
 	active = 0;
-	for ( i = PW_QUAD ; i <= PW_FLIGHT ; i++ ) { // TODO PENTAGRAM
+	for ( i = PW_QUAD ; i <= PW_FLIGHT ; i++ ) {
 		if ( !ps->powerups[ i ] ) {
 			continue;
 		}
@@ -1626,7 +1609,7 @@ static void CG_Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4
 		while (s && *s && count < len) {
 			glyph = &font->glyphs[(unsigned char)*s];
 	
-			if ( Q_IsColorStringPtr( s ) ) {
+			if ( Q_IsColorString( s ) ) {
 				if ( *( s + 1 ) == COLOR_NULL ) {
 					memcpy( &newColor[0], &color[0], sizeof( vec4_t ) );
 				} else {
@@ -2130,7 +2113,7 @@ void CG_ExpandingTextBox_AutoWrapHeight( char* instr, float scale, fontStruct_t*
 			lines[line++] = c;
 			*s++ = '\0';
 			c = s;
-		} else if(Q_IsColorStringPtr(s)) {
+		} else if(Q_IsColorString(s)) {
 /*			if(!clrcodes[line]) {
 				clrcodes[line] = *(s+1);
 			}*/
@@ -2562,7 +2545,7 @@ void CG_DrawExpandingTextBox (int ownerdraw, rectDef_t *rect, float scale, vec4_
 	
 	s = p = buffer;
 	while(*p) {
-		if(Q_IsColorStringPtr(p)) {
+		if(Q_IsColorString(p)) {
 			clrCode = *(p+1);
 			p++;
 		} else if(*p == '\n') {

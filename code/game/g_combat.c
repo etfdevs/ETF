@@ -505,7 +505,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 CheckArmor
 ================
 */
-float CheckArmor (gentity_t *ent, float damage, int dflags, float adamagescale )
+static float CheckArmor (gentity_t *ent, float damage, int dflags, float adamagescale )
 {
 	gclient_t	*client;
 	float		save, count, temp;
@@ -613,7 +613,6 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	float		damagescale, adamagescale, take, /*save,*/ asave, fdamage;
 	bg_q3f_playerclass_t *cls;
 	qboolean	isallied;
-	qboolean	pentagram = qfalse;
 #ifdef DEBUGLOG
 	int			origdamage, origtake, origarmour;
 #endif
@@ -889,16 +888,6 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		fdamage *= 0.5f;
 	}
 
-	// pentagram of protection protects from all radius damage (but takes knockback)
-	// and protects against all damage (but still takes armor)
-	if ( targ->client && targ->client->ps.powerups[PW_PENTAGRAM] ) {
-		G_AddEvent( targ, EV_POWERUP_PENTAGRAM, 0 );
-		//if ( ( dflags & DAMAGE_RADIUS ) || ( mod == MOD_FALLING ) ) {
-		//	return;
-		//}
-		pentagram = qtrue;
-	}
-
 	if(	targ->s.eType == ET_Q3F_SENTRY && (dflags & (DAMAGE_Q3F_SHELL|DAMAGE_Q3F_SHOCK|DAMAGE_Q3F_NAIL|DAMAGE_Q3F_EXPLOSION|DAMAGE_Q3F_FIRE)) ) {
 		// Sentry 40% resistant to non-shock direct damage below midline, or 10% otherwise.
 		// Vulnerable to shock damage, resistant to nails and fire.
@@ -964,11 +953,6 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		take -= asave;
 	}
 	else asave = 0;
-
-	if ( pentagram && !( dflags & ( DAMAGE_NO_PROTECTION ) ) )
-	{
-		take = damagescale = 0;
-	}
 
 #ifdef DEBUGLOG
 	origtake = take;

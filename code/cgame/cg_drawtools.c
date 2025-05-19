@@ -220,7 +220,7 @@ int CG_DrawStrlen( const char *str ) {
 	int count = 0;
 
 	while ( *s ) {
-		if ( Q_IsColorStringPtr( s ) ) {
+		if ( Q_IsColorString( s ) ) {
 			s += 2;
 		} else {
 			count++;

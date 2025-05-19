@@ -827,25 +827,6 @@ gitem_t	bg_itemlist[] =
 /* sounds */ "sound/items/flight.wav"
 	},
 
-#ifdef PENTAGRAM_POWERUP
-/*QUAKED item_pentagram (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
-*/
-	{
-		"item_pentagram",
-		"sound/items/protect3.wav",
-        { "models/powerups/instant/pentagram.md3", 
-		"models/powerups/instant/pentagram_ring.md3", 
-		0, 0 },
-/* icon */		"icons/pentagram",
-/* pickup */	"Pentagram of Protection",
-		30,
-		IT_POWERUP,
-		PW_PENTAGRAM,
-/* precache */ "",
-/* sounds */ "sound/items/protect3.wav"
-	},
-#endif
-
 /*QUAKED team_CTF_redflag (1 0 0) (-16 -16 -16) (16 16 16)
 Only in CTF games
 */

@@ -1268,7 +1268,7 @@ void CG_Q3F_Beam( centity_t *cent ) {
 }
 // RR2DO2
 
-
+#if 0
 void CG_Q3F_Flamer( centity_t *cent ) {
 	refEntity_t			ent;
 	entityState_t		*s1;
@@ -1423,6 +1423,7 @@ void CG_Q3F_Flamer( centity_t *cent ) {
 		}
 	}
 }
+#endif
 
 
 /*

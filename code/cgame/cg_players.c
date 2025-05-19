@@ -542,18 +542,18 @@ static void CG_SetLerpFrameAnimation( centity_t *cent, clientInfo_t *ci, F2RDef_
 
 	if ( newAnimation < 1 || newAnimation > ANI_NUM ) {
 		if ( isweapon )
-			CG_Error( "CG_SetLerpFrameAnimation: Bad animation number: %i (VIEWWEAPON) [client id %d %s %s]", newAnimation, num, ci->name, corpse ? "corpse" : "" );
+			CG_Error( "CG_SetLerpFrameAnimation: Bad animation number: %i (VIEWWEAPON) [client id %d %s %s]", newAnimation, num, ci->name, corpse ? " corpse" : "" );
 		else
-			CG_Error( "CG_SetLerpFrameAnimation: Bad animation number: %i [client id %d %s %s]", newAnimation, num, ci->name, corpse ? "corpse" : "" );
+			CG_Error( "CG_SetLerpFrameAnimation: Bad animation number: %i [client id %d %s%s]", newAnimation, num, ci->name, corpse ? " corpse" : "" );
 	}
 
 	anim = F2RScript->animations[newAnimation - 1];
 
 	if ( !anim ) {
 		if ( isweapon )
-			CG_Error( "CG_SetLerpFrameAnimation: Missing animation number %i in '%s' (VIEWWEAPON) [client id %d %s %s]", newAnimation, F2RScript->F2RFile, num, ci->name, corpse ? "corpse" : "" );
+			CG_Error( "CG_SetLerpFrameAnimation: Missing animation number %i in '%s' (VIEWWEAPON) [client id %d %s%s]", newAnimation, F2RScript->F2RFile, num, ci->name, corpse ? " corpse" : "" );
 		else
-			CG_Error( "CG_SetLerpFrameAnimation: Missing animation number %i in '%s' [client id %d %s %s]", newAnimation, F2RScript->F2RFile, num, ci->name, corpse ? "corpse" : "" );
+			CG_Error( "CG_SetLerpFrameAnimation: Missing animation number %i in '%s' [client id %d %s%s]", newAnimation, F2RScript->F2RFile, num, ci->name, corpse ? " corpse" : "" );
 	}
 
 	lf->animation = anim;
@@ -1122,7 +1122,7 @@ static void CG_PlayerPowerups( centity_t *cent, refEntity_t *torso ) {
 		}
 	}
 
-	if ( powerups & ( 1 << PW_BATTLESUIT ) || powerups & ( 1 << PW_PENTAGRAM ) ) {
+	if ( powerups & ( 1 << PW_BATTLESUIT ) ) {
 		trap_R_AddLightToScene( cent->lerpOrigin, 150, 1.25f + ( rand() & 31 ), 1, 0.84f, 0.1f, 0, 0 );		// GOLD RGB
 	}
 
@@ -1507,10 +1507,6 @@ void CG_AddRefEntityWithPowerups( refEntity_t *ent, entityState_t *state, int te
 			trap_R_AddRefEntityToScene( ent, NULL );
 		}
 		if ( state->powerups & ( 1 << PW_BATTLESUIT ) ) {
-			ent->customShader = cgs.media.battleSuitShader;
-			trap_R_AddRefEntityToScene( ent, NULL );
-		}
-		if ( state->powerups & ( 1 << PW_PENTAGRAM ) ) {
 			ent->customShader = cgs.media.battleSuitShader;
 			trap_R_AddRefEntityToScene( ent, NULL );
 		}

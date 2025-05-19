@@ -562,7 +562,7 @@ qboolean NapalmExplode( gentity_t *napalm )
 		temp->s.powerups = 1 << PW_QUAD;
 		temp->s.otherEntityNum = napalm->activator->s.number;
 	}
-	temp->s.angles[1] = bg_q3f_grenade_flash.damage;
+	temp->s.angles[1] = bg_q3f_grenade_napalm.damage;
 	temp->r.svFlags = SVF_BROADCAST;	// send to everyone
 
 	return( qtrue );

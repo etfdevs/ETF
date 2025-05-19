@@ -329,11 +329,11 @@ void trap_SendMessage( int clientNum, char *buf, int buflen ) {
 }
 
 messageStatus_t trap_MessageStatus( int clientNum ) {
-	return SystemCall( G_MESSAGESTATUS, clientNum );
+	return (messageStatus_t)SystemCall( G_MESSAGESTATUS, clientNum );
 }
 
 // extension interface
 
 qboolean trap_GetValue( char *value, int valueSize, const char *key ) {
-	return SystemCall( dll_com_trapGetValue, value, valueSize, key );
+	return (qboolean)SystemCall( dll_com_trapGetValue, value, valueSize, key );
 }

@@ -663,7 +663,7 @@ static void CG_OffsetFirstPersonView( void ) {
 
 //======================================================================
 
-void CG_ZoomDown_f( void ) { 
+void CG_ZoomDown_f( void ) {
 	if ( cg.zoomed ) {
 		return;
 	}
@@ -671,7 +671,7 @@ void CG_ZoomDown_f( void ) {
 	cg.zoomTime = cg.time;
 }
 
-void CG_ZoomUp_f( void ) { 
+void CG_ZoomUp_f( void ) {
 	if ( !cg.zoomed ) {
 		return;
 	}

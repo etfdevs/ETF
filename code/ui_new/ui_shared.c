@@ -3904,7 +3904,7 @@ void Item_MLText_Paint(itemDef_t *item) {
 	do {
 		p++;
 
-		/*if(Q_IsColorStringPtr(p)) {
+		/*if(Q_IsColorString(p)) {
 			clrCode = *(p+1);
 		}*/
 

@@ -253,26 +253,18 @@ vmCvar_t	r_nocull;
 vmCvar_t	r_nocurves;
 vmCvar_t	r_noportals;
 vmCvar_t	r_novis;
-//vmCvar_t	r_showclusters;
 vmCvar_t	r_singleShader;
 vmCvar_t	r_lightmap;
 vmCvar_t	cg_fallingBob;
 vmCvar_t	cg_weaponBob;
-/*vmCvar_t 	cg_redTeamName;
-vmCvar_t 	cg_blueTeamName;
-vmCvar_t 	cg_yellowTeamName;
-vmCvar_t 	cg_greenTeamName;*/
 vmCvar_t	cg_adjustAgentSpeed;
-//vmCvar_t	cg_drawHudSlots;
 vmCvar_t	cg_playClassSound;
 vmCvar_t	cg_drawParticleCount;
-//vmCvar_t	cg_noProjectileTrail;
 vmCvar_t	cg_initializing;
 vmCvar_t	cg_debugPanel;
 vmCvar_t	cg_drawPanel;
 vmCvar_t	cg_smallFont;
 vmCvar_t	cg_bigFont;
-//vmCvar_t	cg_hudFiles;
 vmCvar_t	cg_userHud;
 vmCvar_t	r_flares;
 vmCvar_t	cg_flares;
@@ -367,7 +359,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &cg_sniperDotScale,			"cg_sniperDotScale",		"0.3",								CVAR_ARCHIVE },
 	{ &cg_adjustAgentSpeed,			"cg_adjustAgentSpeed",		"1",								CVAR_ARCHIVE | CVAR_USERINFO},
 	{ &cg_atmosphericEffects,		"cg_atmosphericEffects",	"1",								CVAR_ARCHIVE },
-//	{ &cg_drawHudSlots,				"cg_drawHudSlots",			"1",								CVAR_ARCHIVE },
 	{ &cg_drawPanel,				"cg_drawPanel",				"1",								CVAR_ARCHIVE },
 	{ &cg_execClassConfigs,			"cg_execClassConfigs",		"0",								CVAR_ARCHIVE },	
 	{ &cg_execMapConfigs,			"cg_execMapConfigs",		"1",								CVAR_ARCHIVE },
@@ -484,7 +475,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &r_nocurves,					"r_nocurves",				"0",		CVAR_CHEAT },
 	{ &r_noportals,					"r_noportals",				"0",		CVAR_CHEAT },
 	{ &r_novis,						"r_novis",					"0",		CVAR_CHEAT },
-	//{ &r_showclusters,				"r_showclusters",			"0",		CVAR_CHEAT },
 	{ &r_lightmap,					"r_lightmap",				"0",		CVAR_CHEAT },
 	{ &r_showNormals,				"r_showNormals",			"0",		CVAR_CHEAT },
 	{ &r_showTris,					"r_showTris",				"0",		CVAR_CHEAT },
@@ -639,7 +629,6 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	{ &r_nocurves,			"r_nocurves",			0,		0,		0,		0,	0,	qfalse },
 	{ &r_noportals,			"r_noportals",			0,		0,		0,		0,	0,	qfalse },
 	{ &r_novis,				"r_novis",				0,		0,		0,		0,	0,	qfalse },
-	//{ &r_showclusters,		"r_showclusters",		0,		0,		0,		0,	0,	qfalse },
 	{ &r_lightmap,			"r_lightmap",			0,		0,		0,		0,	0,	qfalse },
 	//Unlagged cvars
 	{ &cg_cmdTimeNudge,		"cg_cmdTimeNudge",		0,		0,		999,	0,	0,	qtrue },

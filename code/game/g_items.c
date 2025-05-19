@@ -132,7 +132,7 @@ static int Pickup_Powerup( gentity_t *ent, gentity_t *other ) {
 		client->ps.persistant[PERS_PLAYEREVENTS] ^= PLAYEREVENT_DENIEDREWARD;
 	}
 
-	return ent->item->giTag == PW_PENTAGRAM ? 500 : RESPAWN_POWERUP;
+	return RESPAWN_POWERUP;
 }
 
 //======================================================================
@@ -959,14 +959,6 @@ void G_SpawnItem (gentity_t *ent, gitem_t *item) {
 	G_SpawnFloat( "wait", "0", &ent->wait );
 
 	RegisterItem( item );
-
-#ifndef PENTAGRAM_POWERUP
-	if (item->giType == IT_POWERUP && item->giTag == PW_PENTAGRAM)
-	{
-		G_FreeEntity(ent);
-		return;
-	}
-#endif
 
 	ent->item = item;
 	// some movers spawn on the second frame, so delay item
