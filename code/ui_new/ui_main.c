@@ -6787,6 +6787,15 @@ void UI_Init( void ) {
 	UI_InitMemory();
 	trap_PC_RemoveAllGlobalDefines();
 
+	trap_Cvar_VariableStringBuffer("scoredown", value, sizeof(value) );
+	if (!value[0]) {
+		trap_Cvar_Set("scoredown", "+scores");
+	}
+	trap_Cvar_VariableStringBuffer("scoreup", value, sizeof(value));
+	if (!value[0]) {
+		trap_Cvar_Set("scoreup", "+scores");
+	}
+
 	// cache redundant calulations
 	trap_GetGlconfig( &uiInfo.uiDC.glconfig );
 
