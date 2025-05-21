@@ -1399,7 +1399,7 @@ void UI_LoadMenus(const char *menuFile, qboolean reset) {
 	trap_PC_AddGlobalDefine(va("BUILD_DAY \"%d\"", compileday));
 
 	trap_PC_AddGlobalDefine(va("BUILD_ARCH \"%s\"", ARCH_STRING));
-	trap_PC_AddGlobalDefine(va("BUILD_GIT_VERSION \"%s\"", GIT_COMMIT_HASH_SHORT));
+	//trap_PC_AddGlobalDefine(va("BUILD_GIT_VERSION \"%s\"", GIT_COMMIT_HASH_SHORT));
 
 	handle = trap_PC_LoadSource( menuFile );
 	if (!handle) {
