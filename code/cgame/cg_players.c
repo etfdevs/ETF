@@ -533,35 +533,64 @@ may include ANIM_TOGGLEBIT
 ===============
 */
 static void CG_SetLerpFrameAnimation( centity_t *cent, clientInfo_t *ci, F2RDef_t *F2RScript, lerpFrame_t *lf, int newAnimation, qboolean isweapon ) {
-	int num = cent && cent->currentValid ? cent->currentState.clientNum : -1;
-	qboolean corpse = cent && cent->currentValid && (cent->currentState.eType == ET_Q3F_CORPSE || (cent->currentState.eFlags & EF_DEAD)) ? qtrue : qfalse;
-	animation_t	*anim;
+    int num = cent && cent->currentValid ? cent->currentState.clientNum : -1;
+    qboolean corpse = cent && cent->currentValid && (cent->currentState.eType == ET_Q3F_CORPSE || (cent->currentState.eFlags & EF_DEAD)) ? qtrue : qfalse;
+    animation_t *anim;
+    int fallbackAnim = 1; // Default fallback (generic idle)
 
-	lf->animationNumber = newAnimation;
-	newAnimation &= ~ANIM_TOGGLEBIT;
+    lf->animationNumber = newAnimation;
+    newAnimation &= ~ANIM_TOGGLEBIT;
 
-	if ( newAnimation < 1 || newAnimation > ANI_NUM ) {
-		if ( isweapon )
-			CG_Error( "CG_SetLerpFrameAnimation: Bad animation number: %i (VIEWWEAPON) [client id %d %s %s]", newAnimation, num, ci->name, corpse ? " corpse" : "" );
-		else
-			CG_Error( "CG_SetLerpFrameAnimation: Bad animation number: %i [client id %d %s%s]", newAnimation, num, ci->name, corpse ? " corpse" : "" );
-	}
+    // Tulkas - Map reload animations to idle animations for weapons with missing reloads -- This may just be temporary
+    if (isweapon && cent && cent->currentValid) {
+        int weapon = cent->currentState.weapon;
+        switch (newAnimation) {
+            case 38: // ANI_WEAPON_SHOTGUN_RELOAD
+                fallbackAnim = 36; // ANI_WEAPON_SHOTGUN_IDLE
+                break;
+            case 41: // ANI_WEAPON_SSHOTGUN_RELOAD
+                fallbackAnim = 39; // ANI_WEAPON_SSHOTGUN_IDLE
+                break;
+            case 48: // ANI_WEAPON_GLAUNCHER_RELOAD
+                fallbackAnim = 46; // ANI_WEAPON_GLAUNCHER_IDLE
+                break;
+            case 51: // ANI_WEAPON_RLAUNCHER_RELOAD
+                fallbackAnim = 49; // ANI_WEAPON_RLAUNCHER_IDLE
+                break;
+            case 66: // ANI_WEAPON_PLAUNCHER_RELOAD
+                fallbackAnim = 64; // ANI_WEAPON_PLAUNCHER_IDLE
+                break;
+            default:
+                fallbackAnim = newAnimation; // No fallback needed
+                break;
+        }
+    }
 
-	anim = F2RScript->animations[newAnimation - 1];
+    if ( newAnimation < 1 || newAnimation > ANI_NUM ) {
+        Com_Printf( "Warning: Bad animation number %i for '%s' (VIEWWEAPON=%d) [client id %d %s%s], using fallback %i\n", 
+                    newAnimation, F2RScript ? F2RScript->F2RFile : "unknown", isweapon, num, ci->name, corpse ? " corpse" : "", fallbackAnim );
+        newAnimation = fallbackAnim;
+    }
 
-	if ( !anim ) {
-		if ( isweapon )
-			CG_Error( "CG_SetLerpFrameAnimation: Missing animation number %i in '%s' (VIEWWEAPON) [client id %d %s%s]", newAnimation, F2RScript->F2RFile, num, ci->name, corpse ? " corpse" : "" );
-		else
-			CG_Error( "CG_SetLerpFrameAnimation: Missing animation number %i in '%s' [client id %d %s%s]", newAnimation, F2RScript->F2RFile, num, ci->name, corpse ? " corpse" : "" );
-	}
+    anim = F2RScript->animations[newAnimation - 1];
 
-	lf->animation = anim;
-	lf->animationTime = lf->frameTime + anim->initialLerp;
+    if ( !anim ) {
+        Com_Printf( "Warning: Missing animation number %i in '%s' (VIEWWEAPON=%d) [client id %d %s%s], using fallback %i\n", 
+                    newAnimation, F2RScript->F2RFile, isweapon, num, ci->name, corpse ? " corpse" : "", fallbackAnim );
+        newAnimation = fallbackAnim;
+        anim = F2RScript->animations[fallbackAnim - 1];
+        if ( !anim ) {
+            Com_Printf( "Error: No valid fallback animation %i in '%s'\n", fallbackAnim, F2RScript->F2RFile );
+            return; // Skip animation
+        }
+    }
 
-	if ( cg_debugAnim.integer ) {
-		CG_Printf( BOX_PRINT_MODE_CHAT, "Anim: %i\n", newAnimation );
-	}
+    lf->animation = anim;
+    lf->animationTime = lf->frameTime + anim->initialLerp;
+
+    if ( cg_debugAnim.integer ) {
+        CG_Printf( BOX_PRINT_MODE_CHAT, "Anim: %i\n", newAnimation );
+    }
 }
 
 /*

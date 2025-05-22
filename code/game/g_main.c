@@ -212,6 +212,7 @@ vmCvar_t	g_spawnFullStats;
 
 vmCvar_t	g_balancedDeathAmmo;
 vmCvar_t	g_newPulseGren;
+vmCvar_t	g_alternateReload;
 
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
@@ -238,6 +239,8 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_capturelimit, "capturelimit", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
 
 	{ &g_synchronousClients, "g_synchronousClients", "0", CVAR_SYSTEMINFO, 0, qfalse  },
+
+	{ &g_alternateReload, "g_alternateReload", "0", CVAR_ARCHIVE | CVAR_SERVERINFO },
 
 	{ &g_friendlyFire, "g_friendlyFire", "Full", CVAR_ARCHIVE, 0, qtrue  },
 
@@ -418,6 +421,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_spawnFullStats, "g_spawnFullStats", "1", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_balancedDeathAmmo, "g_balancedDeathAmmo", "1", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_newPulseGren, "g_newPulseGren", "0", CVAR_ARCHIVE, 0, qfalse },
+
 	
 };
 
