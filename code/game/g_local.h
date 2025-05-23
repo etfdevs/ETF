@@ -1092,7 +1092,7 @@ void G_Q3F_WaypointCommand( gentity_t *ent );
 // g_session.c
 //
 void G_ReadClientSessionData( gclient_t *client );
-void G_InitClientSessionData( gclient_t *client, char *userinfo );
+void G_InitClientSessionData( gclient_t *client/*, char *userinfo*/ );
 
 void G_ReadSessionData( void );
 void G_WriteSessionData( void );

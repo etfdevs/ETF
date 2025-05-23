@@ -345,6 +345,8 @@ vmCvar_t	cg_shotgunPuff;
 
 vmCvar_t	cl_anonymous;
 
+vmCvar_t	cg_cl_yawspeed;
+
 typedef struct {
 	vmCvar_t	*vmCvar;
 	char		*cvarName;
@@ -577,6 +579,8 @@ static cvarTable_t		cvarTable[] = {
 	{ &cg_shotgunPuff,				"cg_shotgunPuff",			"1",		CVAR_ARCHIVE },
 
 	{ &cl_anonymous,				"cl_anonymous",				"0",		CVAR_CHEAT },
+
+	{ &cg_cl_yawspeed,				"cl_yawspeed",				"140",		CVAR_ARCHIVE_ND },
 };
 
 static const int cvarTableSize = (int)ARRAY_LEN( cvarTable );
@@ -640,6 +644,8 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	{ &com_hunkmegs,		"com_hunkmegs",			128,		128,		-1,		0,	0,	qfalse },
 
 	{ &cl_anonymous,		"cl_anonymous",			0,		0,		0,		0,	0,	qfalse },
+
+	{ &cg_cl_yawspeed,		"cl_yawspeed",			140,	0,		0,		0,	0,	qfalse },
 };
 
 static const int cvarLimitTableSize = (int)ARRAY_LEN( cvarLimitTable );

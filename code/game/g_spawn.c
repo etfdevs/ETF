@@ -283,6 +283,7 @@ void SP_target_location (gentity_t *ent);
 void SP_target_push (gentity_t *ent);
 
 void SP_light (gentity_t *self);
+void SP_lightJunior (gentity_t* self);
 void SP_info_null (gentity_t *self);
 void SP_info_notnull (gentity_t *self);
 void SP_info_camp (gentity_t *self);
@@ -390,6 +391,7 @@ spawn_t	spawns[] = {
 	{"target_reset",	SP_Q3F_target_reset},		// RR2DO2: Resetting entities by killing them and respawning them from the map
 
 	{"light", SP_light},
+	{"lightJunior", SP_lightJunior},
 	{"path_corner", SP_path_corner},
 	{"path_spline", SP_path_spline},
 

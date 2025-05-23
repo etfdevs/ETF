@@ -1368,7 +1368,7 @@ const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 			}
 		}
 
-		G_InitClientSessionData( client, userinfo );
+		G_InitClientSessionData( client );
 	}
 
 	G_ReadClientSessionData( client );

@@ -660,7 +660,7 @@ qboolean G_Q3F_ChangeClassCommand( struct gentity_s *ent, const char *cmd )
 	{
 		cls = bg_q3f_classlist[index];
 		matched = qfalse;
-		if(	cls && bg_q3f_classlist[index]->commandstring &&
+		if(	/*cls &&*/ bg_q3f_classlist[index]->commandstring &&
 			*bg_q3f_classlist[index]->commandstring &&
 			!Q_stricmp( bg_q3f_classlist[index]->commandstring, cmd ) )
 			matched = qtrue;

@@ -193,7 +193,7 @@ G_InitSessionData
 Called on a first-time connect
 ================
 */
-void G_InitClientSessionData( gclient_t *client, char *userinfo ) {
+void G_InitClientSessionData( gclient_t *client/*, char* userinfo*/ ) {
 	clientSession_t	*sess = &client->sess;
 
 	// initial team determination

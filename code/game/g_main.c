@@ -390,7 +390,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &sv_fps, "sv_fps", "20", CVAR_SYSTEMINFO | CVAR_ARCHIVE, 0, qfalse },
 	{ NULL, "sv_pure", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qtrue },
 	{ NULL, "sv_numbots", "0", CVAR_SERVERINFO, 0, qtrue },
-	{ NULL, "g_maxlives", "0", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },	// Slothy: pure info for server browser info
+	{ NULL, "g_maxlives", "1", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },	// Slothy: pure info for server browser info
 	{ NULL, "g_heavyWeaponRestriction", FORTS_SHORTVERSION, CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },		// Ensiform: ETF shortversion for server browser info
 	{ NULL, "g_balancedteams", "0", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },			// Ensiform: bot count for server browser info
 	{ NULL, "g_antilag", "1", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qfalse }, // gameindex for server browser
