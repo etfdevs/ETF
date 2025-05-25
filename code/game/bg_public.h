@@ -754,8 +754,8 @@ void BG_Q3F_FlushTraceBuffer(void);
 #define	Q3F_GRENADE_PRIME_TIME	4000	// Time between prime and detonate on handgrenades
 
 #define	Q3F_NUM_NAILGRENADES	10		// Allow 10 nail grenades at once
-#define	Q3F_NUM_NAILGRENNAILS	200		// Ensure it's divisible by 16 (max 200)
-#define	Q3F_NAILGRENADETIME		10000	// Lasts 10000 milliseconds
+#define	Q3F_NUM_NAILGRENNAILS	100		// Ensure it's divisible by 16 (max 200)
+#define	Q3F_NAILGRENADETIME		5000	// Lasts 10000 milliseconds
 #define	Q3F_NAILSPEED			900		// Units per second (not millisecond)
 #define	Q3F_NAILGRENINTERVAL	50		// Milliseconds between nails
 #define	Q3F_NAILGRENANGLE		31		// Angle offset for each succeeding nail
