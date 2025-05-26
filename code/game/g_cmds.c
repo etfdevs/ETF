@@ -47,6 +47,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_lua.h"
 #endif
 
+extern vmCvar_t g_alternateReload;
+
 // 2147483647 10 digits int32
 
 // 2 digits cl num
@@ -3694,6 +3696,40 @@ static void G_Q3F_PlayerStatus( gentity_t *ent )
 
 /*
 =================
+G_Q3F_Cmd_Weapon_f
+=================
+*/
+void G_Q3F_Cmd_Weapon_f(gentity_t *ent) {
+    char arg[MAX_TOKEN_CHARS];
+    int weaponNum;
+
+    if (!ent || !ent->client) {
+        return;
+    }
+
+    // Block switching during reloading unless g_alternateReload is enabled
+    if (ent->client->ps.weaponstate == WEAPON_RELOADING && !g_alternateReload.integer) {
+        return;
+    }
+
+    trap_Argv(1, arg, sizeof(arg));
+    weaponNum = atoi(arg);
+
+    if (weaponNum <= WP_NONE || weaponNum >= WP_NUM_WEAPONS) {
+        return;
+    }
+
+    if (!(ent->client->ps.stats[STAT_WEAPONS] & (1 << weaponNum))) {
+        return;
+    }
+
+    ent->client->ps.weapon = weaponNum;
+    ent->client->ps.weaponstate = WEAPON_DROPPING;
+    ent->client->ps.weaponTime += 90;
+}
+
+/*
+=================
 ClientCommand
 =================
 */
@@ -3822,6 +3858,11 @@ void ClientCommand( int clientNum ) {
 
 	if( Q_stricmp("ClassinfoRequest", cmd) == 0 ) {
 		G_Q3F_SendClassInfo( ent );
+		return;
+	}
+
+	if (Q_stricmp(cmd, "weapon") == 0) {
+		G_Q3F_Cmd_Weapon_f(ent);
 		return;
 	}
 

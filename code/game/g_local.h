@@ -500,6 +500,8 @@ struct gclient_s {
 	int			minigunLastFireTime;	// When did they last fire?
 
 	int			torsoanimEndTime;	// when does the dropanim end
+	int			reloadShotCount;    // Number of shots reloaded so far
+	int			reloadNextShotTime; // Time when the next shot can be reloaded
 
 	// Canabis: Taunt limits
 	int			tauntTime;
@@ -1153,6 +1155,7 @@ extern	vmCvar_t	g_OmniBotFlags;
 extern	vmCvar_t	g_OmniBotPlaying;
 
 extern	vmCvar_t	g_gametype;
+extern 	vmCvar_t 	g_alternateReload; // Tulkas
 extern	vmCvar_t	g_gameindex;
 extern	vmCvar_t	g_dedicated;
 extern	vmCvar_t	g_cheats;
@@ -1301,11 +1304,16 @@ void	trap_Argv( int n, char *buffer, int bufferLength );
 void	trap_Args( char *buffer, int bufferLength );
 int		trap_FS_FOpenFile( const char *qpath, fileHandle_t *f, fsMode_t mode );
 void	trap_FS_Read( void *buffer, int len, fileHandle_t f );
-int		trap_FS_Write( const void *buffer, int len, fileHandle_t f );
+#ifndef CGAME
+int 	trap_FS_Write(const void *buffer, int len, fileHandle_t f);
+void 	trap_SendConsoleCommand(int exec_when, const char *text);
+#else
+void 	trap_FS_Write(const void *buffer, int len, fileHandle_t f);
+void 	trap_SendConsoleCommand(const char *text);
+#endif
 int		trap_FS_Rename( const char *from, const char *to );
 void	trap_FS_FCloseFile( fileHandle_t f );
 int		trap_FS_GetFileList( const char *path, const char *extension, char *listbuf, int bufsize );
-void	trap_SendConsoleCommand( int exec_when, const char *text );
 void	trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int flags );
 void	trap_Cvar_Update( vmCvar_t *cvar );
 void	trap_Cvar_Set( const char *var_name, const char *value );

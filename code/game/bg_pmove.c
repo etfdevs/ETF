@@ -39,6 +39,22 @@ If you have questions concerning this license or the applicable additional terms
 #include "bg_q3f_playerclass.h"
 #include "bg_q3f_weapon.h"
 #include "bg_q3f_util.h"
+#ifdef CGAME
+#include "cg_local.h"
+#endif
+#ifndef CGAME
+#include "g_local.h"
+#endif
+
+int GetAlternateReload(void) {
+#ifdef CGAME
+    char buffer[16];
+    trap_Cvar_VariableStringBuffer("g_alternateReload", buffer, sizeof(buffer));
+    return atoi(buffer);
+#else
+    return g_alternateReload.integer;
+#endif
+}
 
 pmove_t		*pm;
 pml_t		pml;
@@ -1996,6 +2012,11 @@ static void PM_BeginWeaponChange( int weapon ) {
 		return;
 	}
 
+    // Block switching during reloading unless g_alternateReload is enabled
+    if ( pm->ps->weaponstate == WEAPON_RELOADING && !GetAlternateReload() ) {
+        return;
+    }
+
 	PM_AddEvent( EV_CHANGE_WEAPON );
 	pm->ps->weaponstate = WEAPON_DROPPING;
 	pm->ps->weaponTime += 90;
@@ -2039,14 +2060,33 @@ static void PM_FinishWeaponChange( void ) {
 PM_BeginWeaponReload
 ===================
 */
-static void PM_BeginWeaponReload( void ) {
-	PM_AddEvent( EV_COCK_WEAPON );
-	pm->ps->weaponstate = WEAPON_RDROPPING;
-	pm->ps->weaponTime += 200;
-	pm->ps->stats[STAT_Q3F_FLAGS] &= ~(1<<Q3F_WEAPON_RELOAD);	// Reset Flag
-	PM_ForceTorsoAnim( PM_GetReloadAnim( pm->ps->weapon, pm->ps->persistant[PERS_CURRCLASS] ) );
-	pm->ps->torsoTimer = 200;
+// Modified to support per-shot reloading - Tulkas
+static void PM_BeginWeaponReload(void) {
+    int weapon = pm->ps->weapon;
+    bg_q3f_weapon_t *wp = BG_Q3F_GetWeapon(weapon);
+    PM_AddEvent(EV_COCK_WEAPON);
+    pm->ps->weaponstate = WEAPON_RDROPPING;
+    pm->ps->stats[STAT_Q3F_FLAGS] &= ~(1 << Q3F_WEAPON_RELOAD); // Reset Flag
+    PM_ForceTorsoAnim(PM_GetReloadAnim(weapon, pm->ps->persistant[PERS_CURRCLASS]));
+    if (GetAlternateReload() && wp->clipsize > 0) {
+        // Alternate reload: prepare for per-shot loading
+        int curammo = Q3F_GetClipValue(weapon, pm->ps);
+        if (curammo < wp->clipsize && pm->ps->ammo[wp->ammotype] > 0) {
+            pm->ps->weaponTime = 100; // Minimal timer for first shot
+            pm->ps->torsoTimer = 100;
+        } else {
+            pm->ps->weaponTime = 100;
+            pm->ps->torsoTimer = 100;
+        }
+    } else {
+        // Default reload: prepare for full clip
+        pm->ps->weaponTime = 200;
+        pm->ps->torsoTimer = 200;
+    }
+    Com_Printf("PM_BeginWeaponReload: Started reload, curammo=%i, weaponTime=%i\n", 
+               Q3F_GetClipValue(weapon, pm->ps), pm->ps->weaponTime);
 }
+
 /* JT */
 
 /*
@@ -2054,45 +2094,72 @@ static void PM_BeginWeaponReload( void ) {
 PM_FinishWeaponReload		-- JT
 ===============
 */
-#ifdef CGAME
-// RR2DO2 - ugly
-void CG_Q3F_EndReload(void);
-#endif
-
-static void PM_FinishWeaponReload( void ) {
-	pm->ps->weaponstate = WEAPON_RAISING;
-	pm->ps->weaponTime += 250;
-	PM_StartTorsoAnim( PM_GetIdleAnim( pm->ps->weapon, pm->ps->persistant[PERS_CURRCLASS] ) );
-	pm->ps->torsoTimer = 0;
-
-#ifdef CGAME
-// RR2DO2 - ugly
-	CG_Q3F_EndReload();
-#endif
+// Modified to continue per-shot reloading and sync HUD - Tulkas
+static void PM_FinishWeaponReload(void) {
+    int weapon = pm->ps->weapon;
+    bg_q3f_weapon_t *wp = BG_Q3F_GetWeapon(weapon);
+    int curammo = Q3F_GetClipValue(weapon, pm->ps);
+    
+    if (GetAlternateReload() && wp->clipsize > 0) {
+        if (curammo < wp->clipsize && pm->ps->ammo[wp->ammotype] > 0) {
+            // Load one shot and continue reloading
+            Q3F_SetClipValue(weapon, curammo + 1, pm->ps);
+            pm->ps->ammo[wp->ammotype]--;
+            // Use normal reload time per shot
+            pm->ps->weaponTime = wp->reloadtime / wp->clipsize;
+            pm->ps->weaponstate = WEAPON_RELOADING;
+            pm->ps->torsoTimer = pm->ps->weaponTime;
+            PM_ForceTorsoAnim(PM_GetReloadAnim(weapon, pm->ps->persistant[PERS_CURRCLASS]));
+            Com_Printf("PM_FinishWeaponReload: Loaded shot %i/%i, ammo left %i, weaponTime=%i, staying in WEAPON_RELOADING\n", 
+                       curammo + 1, wp->clipsize, pm->ps->ammo[wp->ammotype], pm->ps->weaponTime);
+            return;
+        } else {
+            Com_Printf("PM_FinishWeaponReload: Clip full (%i/%i) or no ammo (%i), exiting to WEAPON_RAISING\n", 
+                       curammo, wp->clipsize, pm->ps->ammo[wp->ammotype]);
+        }
+    }
+    // Clip is full, no ammo, or not alternate reload; transition to RAISING
+    pm->ps->weaponstate = WEAPON_RAISING;
+    pm->ps->weaponTime = 100; // Reduced for faster transition
+    PM_StartTorsoAnim(PM_GetIdleAnim(weapon, pm->ps->persistant[PERS_CURRCLASS]));
+    pm->ps->torsoTimer = 0;
 }
 
-static void PM_DoWeaponReload(void)
-{
-	int ammo;
-	int curammo;
-	float reloadtime;
-	bg_q3f_weapon_t *wp;
-	wp = BG_Q3F_GetWeapon(pm->ps->weapon);
+/*
+===============
+PM_DoWeaponReload
+===============
+*/
+// Modified to support per-shot reloading and maintain reload time - Tulkas
+static void PM_DoWeaponReload(void) {
+    int weapon = pm->ps->weapon;
+    bg_q3f_weapon_t *wp = BG_Q3F_GetWeapon(weapon);
+    int ammo = wp->clipsize;
+    int curammo = Q3F_GetClipValue(weapon, pm->ps);
+    float reloadtime;
 
-	ammo = wp->clipsize;
-	
-	if(ammo > pm->ps->ammo[wp->ammotype]) {
-		ammo = pm->ps->ammo[wp->ammotype];
-	}
-	
-	// JT - Work out how many clips we're putting back in, and hence how long the delay must be.
-	curammo = Q3F_GetClipValue(pm->ps->weapon, pm->ps);
-	reloadtime = (wp->reloadtime)*((float)(ammo-curammo)/(float)ammo);
-	pm->ps->weaponTime += reloadtime;
-	pm->ps->weaponstate = WEAPON_RELOADING;
-	Q3F_SetClipValue(pm->ps->weapon, ammo, pm->ps);
-	pm->ps->torsoTimer += reloadtime;
+    if (ammo > pm->ps->ammo[wp->ammotype]) {
+        ammo = pm->ps->ammo[wp->ammotype];
+    }
+
+    if (GetAlternateReload() && wp->clipsize > 0) {
+        // Alternate reload: transition to RELOADING for next shot
+        reloadtime = wp->reloadtime / wp->clipsize;
+        pm->ps->weaponTime = reloadtime;
+        pm->ps->weaponstate = WEAPON_RELOADING;
+        pm->ps->torsoTimer = reloadtime;
+    } else {
+        // Default reload: fill clip fully
+        reloadtime = (wp->reloadtime) * ((float)(ammo - curammo) / (float)ammo);
+        pm->ps->weaponTime = reloadtime;
+        pm->ps->weaponstate = WEAPON_RELOADING;
+        Q3F_SetClipValue(weapon, ammo, pm->ps);
+        pm->ps->torsoTimer = reloadtime;
+    }
+    Com_Printf("PM_DoWeaponReload: Transition to RELOADING, curammo=%i, weaponTime=%i\n", 
+               Q3F_GetClipValue(weapon, pm->ps), pm->ps->weaponTime);
 }
+
 
 
 /*
@@ -2123,330 +2190,324 @@ PM_Weapon
 Generates weapon events and modifes the weapon counter
 ==============
 */
-static void PM_Weapon( void ) {
-	int		addTime;
-	int q3f_ammo_type;
-	bg_q3f_playerclass_t *cls;
-	bg_q3f_weapon_t *wp, *wp2;
-	vec3_t testvel;
-	qboolean inwater;
-	//vec3_t point;
+static void PM_Weapon(void) {
+    int q3f_ammo_type;
+    bg_q3f_playerclass_t *cls;
+    bg_q3f_weapon_t *wp, *wp2;
+    vec3_t testvel;
+    qboolean inwater;
 
-	// don't allow attack until all buttons are up
-	if ( pm->ps->pm_flags & PMF_RESPAWNED ) {
- 		return;
-	}
-	// ignore if spectator
-	if ( pm->ps->persistant[PERS_TEAM] == Q3F_TEAM_SPECTATOR ) {
-		return;
-	}
+    // Don't allow attack until all buttons are up
+    if (pm->ps->pm_flags & PMF_RESPAWNED) {
+        return;
+    }
+    // Ignore if spectator
+    if (pm->ps->persistant[PERS_TEAM] == Q3F_TEAM_SPECTATOR) {
+        return;
+    }
+    // Check for dead player
+    if (pm->ps->stats[STAT_HEALTH] <= 0) {
+        pm->ps->weapon = WP_NONE;
+        return;
+    }
 
-	// check for dead player
-	if ( pm->ps->stats[STAT_HEALTH] <= 0 ) {
-		pm->ps->weapon = WP_NONE;
-		return;
-	}
+    // Check for item using
+    cls = BG_Q3F_GetClass(pm->ps);
+    wp = BG_Q3F_GetWeapon(pm->ps->weapon);
+    q3f_ammo_type = wp->ammotype;
 
-	// check for item using
-	// Golliwog: Limit Medikit against class health
-	cls = BG_Q3F_GetClass( pm->ps );
-	wp = BG_Q3F_GetWeapon(pm->ps->weapon);
-	q3f_ammo_type = wp->ammotype;
+    if (pm->cmd.buttons & BUTTON_USE_HOLDABLE) {
+        if (!(pm->ps->pm_flags & PMF_USE_ITEM_HELD)) {
+            if (bg_itemlist[pm->ps->stats[STAT_HOLDABLE_ITEM]].giTag == HI_MEDKIT
+                && pm->ps->stats[STAT_HEALTH] >= cls->maxhealth) {
+                // Don't use medkit if at max health
+            } else {
+                pm->ps->pm_flags |= PMF_USE_ITEM_HELD;
+                PM_AddEvent(EV_USE_ITEM0 + bg_itemlist[pm->ps->stats[STAT_HOLDABLE_ITEM]].giTag);
+                pm->ps->stats[STAT_HOLDABLE_ITEM] = 0;
+            }
+            return;
+        }
+    } else {
+        pm->ps->pm_flags &= ~PMF_USE_ITEM_HELD;
+    }
 
-	if ( pm->cmd.buttons & BUTTON_USE_HOLDABLE ) {
-		if ( ! ( pm->ps->pm_flags & PMF_USE_ITEM_HELD ) ) {
-			if ( bg_itemlist[pm->ps->stats[STAT_HOLDABLE_ITEM]].giTag == HI_MEDKIT
-				&& pm->ps->stats[STAT_HEALTH] >= cls->maxhealth ) {
-				// don't use medkit if at max health
-			} else {
-				pm->ps->pm_flags |= PMF_USE_ITEM_HELD;
-				PM_AddEvent( EV_USE_ITEM0 + bg_itemlist[pm->ps->stats[STAT_HOLDABLE_ITEM]].giTag );
-				pm->ps->stats[STAT_HOLDABLE_ITEM] = 0;
-			}
-			return;
-		}
-	} else {
-		pm->ps->pm_flags &= ~PMF_USE_ITEM_HELD;
-	}
-	// Golliwog.
+    // Make sure aiming flag is only set if needed
+    if (pm->ps->weapon != WP_MINIGUN && pm->ps->weapon != WP_SNIPER_RIFLE)
+        pm->ps->eFlags &= ~EF_Q3F_AIMING;
 
+    // Make weapon function
+    if (pm->ps->weaponTime > 0) {
+        pm->ps->weaponTime -= pml.msec;
+    }
 
-	// JT: Make _ABSOLUTELY_ sure that the aiming flag is only set if needed:
+    // Check for weapon change
+    if ((pm->ps->weaponTime <= 0 && pm->ps->weaponstate != WEAPON_AIMING) || pm->ps->weaponstate == WEAPON_RAISING ||
+        pm->ps->weaponstate == WEAPON_DROPPING || pm->ps->weaponstate == WEAPON_READY) {
+        wp2 = BG_Q3F_GetWeapon(pm->cmd.weapon);
+        if (pm->ps->weapon != pm->cmd.weapon &&
+            (pm->ps->ammo[wp2->ammotype] >= wp2->numammo || !wp2->numammo)) {
+            PM_BeginWeaponChange(pm->cmd.weapon);
+        }
+    }
 
-	if(pm->ps->weapon != WP_MINIGUN && pm->ps->weapon != WP_SNIPER_RIFLE)
-		pm->ps->eFlags &= ~EF_Q3F_AIMING;
+    if (pm->cmd.wbuttons & WBUTTON_RELOAD)
+        BG_Q3F_Request_Reload(pm->ps);
 
-	// make weapon function
-	if ( pm->ps->weaponTime > 0 ) {
-		pm->ps->weaponTime -= pml.msec;
-	}
+    // Check for reload request
+    if (pm->ps->weaponstate == WEAPON_READY && 
+        (pm->ps->stats[STAT_Q3F_FLAGS] & (1 << Q3F_WEAPON_RELOAD))
+        && wp->clipsize && pm->ps->ammo[wp->ammotype] >= wp->numammo) {
+        PM_BeginWeaponReload();
+        return;
+    }
 
-	// check for weapon change
-	// can't change if weapon is firing, but can change
-	// again if lowering or raising
-	if (  (pm->ps->weaponTime <= 0 && pm->ps->weaponstate != WEAPON_AIMING) || pm->ps->weaponstate == WEAPON_RAISING ||
-		pm->ps->weaponstate == WEAPON_DROPPING || pm->ps->weaponstate == WEAPON_READY) {
-		//wp2 = BG_Q3F_GetWeapon( cls->weaponslot[pm->cmd.weapon] );
-		wp2= BG_Q3F_GetWeapon( pm->cmd.weapon );
-		if( pm->ps->weapon != pm->cmd.weapon &&
-			(pm->ps->ammo[wp2->ammotype] >= wp2->numammo || !wp2->numammo ))
-		{
-			PM_BeginWeaponChange( pm->cmd.weapon );
-		} 
-	}
-	
-	if ( pm->cmd.wbuttons & WBUTTON_RELOAD)
-		BG_Q3F_Request_Reload( pm->ps );
+    if (pm->ps->weaponTime > 0) {
+        return;
+    }
 
-// JT ->
-	if( pm->ps->weaponstate == WEAPON_READY && 
-		(pm->ps->stats[STAT_Q3F_FLAGS] & (1 << Q3F_WEAPON_RELOAD))
-		&& wp->clipsize && pm->ps->ammo[wp->ammotype] >= wp->numammo )
-	{
-		PM_BeginWeaponReload();
-		return;
-	}
-// <- JT
+    // Change weapon if time
+    if (pm->ps->weaponstate == WEAPON_DROPPING) {
+        PM_FinishWeaponChange();
+        return;
+    }
 
-	if ( pm->ps->weaponTime > 0 ) {
-		return;
-	}
+    // If we're reloading, start the reload timer
+    if (pm->ps->weaponstate == WEAPON_RDROPPING) {
+        PM_DoWeaponReload();
+        return;
+    }
 
-	// change weapon if time
-	if ( pm->ps->weaponstate == WEAPON_DROPPING ) {
-		PM_FinishWeaponChange();
-		return;
-	}
+	// Handle WEAPON_RELOADING
+    if (pm->ps->weaponstate == WEAPON_RELOADING) {
+        int weapon = pm->ps->weapon;
+        bg_q3f_weapon_t *wp = BG_Q3F_GetWeapon(weapon);
+        int curammo = Q3F_GetClipValue(weapon, pm->ps);
+        int q3f_ammo_type = wp->ammotype;
+        qboolean isSuperShotgun = (weapon == WP_SUPERSHOTGUN);
+        int minAmmoToFire = isSuperShotgun ? 2 : wp->numammo;
 
-// JT ->
-	// If we're reloading, start the reload timer.
-	if(pm->ps->weaponstate == WEAPON_RDROPPING) {
-		PM_DoWeaponReload();
-		return;
-	}
+        // Check for BUTTON_ATTACK to interrupt reload and fire
+        if (pm->cmd.buttons & BUTTON_ATTACK && curammo >= minAmmoToFire) {
+            pm->ps->weaponstate = WEAPON_FIRING;
+            pm->ps->weaponTime = 0;
+            pm->ps->torsoTimer = 0;
+            PM_StartTorsoAnim(PM_GetAttackAnim(weapon, pm->ps->persistant[PERS_CURRCLASS]));
+            pm->ps->ammo[q3f_ammo_type] -= wp->numammo;
+            Q3F_SetClipValue(weapon, curammo - wp->numammo, pm->ps);
+            PM_AddEvent(EV_FIRE_WEAPON);
+            int addTime = wp->firetime;
+            if (pm->ps->stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_TRANQ)) {
+                addTime *= 2;
+            }
+            if (pm->ps->powerups[PW_HASTE]) {
+                addTime /= 1.3;
+            }
+            pm->ps->weaponTime = addTime;
+            Com_Printf("PM_Weapon: Reload interrupted by BUTTON_ATTACK, fired shot, curammo=%i, weaponTime=%i\n", 
+                       curammo - wp->numammo, pm->ps->weaponTime);
+            return;
+        } else if (isSuperShotgun && pm->cmd.buttons & BUTTON_ATTACK && curammo < minAmmoToFire) {
+            Com_Printf("PM_Weapon: Super shotgun blocked firing, curammo=%i, minAmmoToFire=%i\n", 
+                       curammo, minAmmoToFire);
+        }
 
-	if(pm->ps->weaponstate == WEAPON_RELOADING) {
-		PM_FinishWeaponReload();	
-		return;
-	}
-// <- JT
+        // Continue reloading if timer expired
+        if (pm->ps->weaponTime <= 0) {
+            PM_FinishWeaponReload();
+            if (GetAlternateReload() && curammo < wp->clipsize && pm->ps->ammo[wp->ammotype] > 0) {
+                Com_Printf("PM_Weapon: Continuing WEAPON_RELOADING, curammo=%i/%i, ammo=%i\n", 
+                           curammo, wp->clipsize, pm->ps->ammo[wp->ammotype]);
+                return; // Stay in WEAPON_RELOADING
+            }
+        } else {
+            Com_Printf("PM_Weapon: WEAPON_RELOADING, weaponTime=%i, curammo=%i\n", pm->ps->weaponTime, curammo);
+            return; // Wait for timer
+        }
+        return; // Prevent further processing
+    }
 
-	if((pm->ps->weapon == 0) && (pm->ps->weaponstate != 0))
-	{
-		Com_Printf("DrEvil, your bot has no weapon!!??\n");
-		pm->ps->weapon = WP_AXE;
-		//return;
-	}
+    if ((pm->ps->weapon == 0) && (pm->ps->weaponstate != 0)) {
+        Com_Printf("DrEvil, your bot has no weapon!!??\n");
+        pm->ps->weapon = WP_AXE;
+    }
 
-	if ( pm->ps->weaponstate == WEAPON_RAISING ||
-		pm->ps->weaponstate == WEAPON_RRAISING) {
-		pm->ps->weaponstate = WEAPON_READY;
-		PM_StartTorsoAnim( PM_GetIdleAnim( pm->ps->weapon, pm->ps->persistant[PERS_CURRCLASS] ) );
-		return;
-	}
-	
-	if( pm->ps->stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_LAYCHARGE) )
-		return;		// Golliwog: Laying a charge, can't fire
-	if( pm->ps->stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING) )
-		return;		// Golliwog: Building something
+    if (pm->ps->weaponstate == WEAPON_RAISING ||
+        pm->ps->weaponstate == WEAPON_RRAISING) {
+        pm->ps->weaponstate = WEAPON_READY;
+        PM_StartTorsoAnim(PM_GetIdleAnim(pm->ps->weapon, pm->ps->persistant[PERS_CURRCLASS]));
+        return;
+    }
+
+    if (pm->ps->stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_LAYCHARGE))
+        return;
+    if (pm->ps->stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING))
+        return;
 #ifdef SENTRY_MOVE
-	if( pm->ps->stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_MOVING) )
-	{
-		PM_AddEvent( EV_PLACE_BUILDING );
-		return;		// Ensiform: Moving something
-	}
+    if (pm->ps->stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_MOVING)) {
+        PM_AddEvent(EV_PLACE_BUILDING);
+        return;
+    }
 #endif
-	if( pm->ps->pm_flags & PMF_CEASEFIRE )
-		return;		// No weapons activity if in ceasefire mode.
-	if((pm->cmd.buttons & BUTTON_ATTACK) && wp->fire_on_release && pm->ps->ammo[q3f_ammo_type] >= wp->numammo)		// JT - Don't do it if we're out of ammo.
-	{
-		if(pm->ps->weaponstate != WEAPON_AIMING && pm->ps->groundEntityNum != ENTITYNUM_NONE )
-		{
-			VectorCopy( pm->ps->velocity, testvel );
-			testvel[2] = 0;
-            if( VectorLength( testvel ) < 100 )
-			{
-				pm->ps->weaponstate = WEAPON_AIMING;
-				pm->ps->eFlags |= EF_Q3F_AIMING;
-			}
-		}
-		return;
-	}
+    if (pm->ps->pm_flags & PMF_CEASEFIRE)
+        return;
 
-	// RR2DO2: Check for water
-	//VectorCopy( pm->ps->origin, point );
-	//point[2] += 3;	// lift some up due to swimming bob up/down
-	//inwater = ( pm->pointcontents( point, pm->ps->clientNum ) & MASK_WATER );
-	inwater = ( pm->waterlevel == 3 ) ? qtrue : qfalse;
+    if ((pm->cmd.buttons & BUTTON_ATTACK) && wp->fire_on_release && pm->ps->ammo[q3f_ammo_type] >= wp->numammo) {
+        if (pm->ps->weaponstate != WEAPON_AIMING && pm->ps->groundEntityNum != ENTITYNUM_NONE) {
+            VectorCopy(pm->ps->velocity, testvel);
+            testvel[2] = 0;
+            if (VectorLength(testvel) < 100) {
+                pm->ps->weaponstate = WEAPON_AIMING;
+                pm->ps->eFlags |= EF_Q3F_AIMING;
+            }
+        }
+        return;
+    }
 
-	// JT: WEAPON_STARTING/STARTED support for weapons
-	if((pm->cmd.buttons & BUTTON_ATTACK) && wp->inform_on_start && pm->ps->ammo[q3f_ammo_type] >= wp->numammo)	// JT - Don't do it if we're out of ammo
-	{
-		if(pm->ps->weaponstate != WEAPON_STARTING)
-		{
-			if(pm->ps->weaponstate != WEAPON_STARTED)
-			{
-				if( pm->ps->weapon == WP_MINIGUN ) {
-					if( pm->ps->ammo[AMMO_CELLS] > 3 )
-					{
-						pm->ps->weaponstate = WEAPON_STARTING;
-						pm->ps->weaponTime = Q3F_MINIGUN_WARMUP_TIME;
-//						PM_AddEvent( EV_Q3F_MINIGUN_START );
-						pm->ps->eFlags |= EF_Q3F_AIMING;
-						PM_StartTorsoAnim( PM_GetAttackAnim( pm->ps->weapon, pm->ps->persistant[PERS_CURRCLASS] ) );
-						pm->ps->ammo[AMMO_CELLS] -=4;
-						return;
-					}
-					else
-					{
-						pm->ps->weaponstate = WEAPON_READY;
-						pm->ps->weaponTime = 500;
-						return;
-					}
-				} else if ( pm->ps->weapon == WP_FLAMETHROWER ) {
-					if( !inwater ) {
-						pm->ps->weaponstate = WEAPON_STARTED;
-					}
-					return;
-				}
-			}
+    if ((pm->cmd.buttons & BUTTON_ATTACK) && wp->inform_on_start && pm->ps->ammo[q3f_ammo_type] >= wp->numammo) {
+        if (pm->ps->weaponstate != WEAPON_STARTING) {
+            if (pm->ps->weaponstate != WEAPON_STARTED) {
+                if (pm->ps->weapon == WP_MINIGUN) {
+                    if (pm->ps->ammo[AMMO_CELLS] > 3) {
+                        pm->ps->weaponstate = WEAPON_STARTING;
+                        pm->ps->weaponTime = Q3F_MINIGUN_WARMUP_TIME;
+                        pm->ps->eFlags |= EF_Q3F_AIMING;
+                        PM_StartTorsoAnim(PM_GetAttackAnim(pm->ps->weapon, pm->ps->persistant[PERS_CURRCLASS]));
+                        pm->ps->ammo[AMMO_CELLS] -= 4;
+                        return;
+                    } else {
+                        pm->ps->weaponstate = WEAPON_READY;
+                        pm->ps->weaponTime = 500;
+                        return;
+                    }
+                } else if (pm->ps->weapon == WP_FLAMETHROWER) {
+                    if (!inwater) {
+                        pm->ps->weaponstate = WEAPON_STARTED;
+                    }
+                    return;
+                }
+            }
+            if (pm->ps->weapon == WP_MINIGUN && pm->ps->groundEntityNum == ENTITYNUM_NONE) {
+                return;
+            }
+        } else {
+            if (pm->ps->weapon == WP_MINIGUN) {
+                if (pm->ps->groundEntityNum != ENTITYNUM_NONE && pm->ps->weaponTime <= 0)
+                    pm->ps->weaponstate = WEAPON_STARTED;
+                else
+                    return;
+            }
+        }
+    }
 
-			// RR2DO2: Can only fire when standing on ground
-			if( pm->ps->weapon == WP_MINIGUN && pm->ps->groundEntityNum == ENTITYNUM_NONE )
-			{
-				return;
-				/*pm->ps->weaponTime = Q3F_MINIGUN_WARMUP_TIME;
-				pm->ps->weaponstate = WEAPON_STARTING;	// Golliwog: Can't fire in water */
-			}
-		}
-		else
-		{
-			if( pm->ps->weapon == WP_MINIGUN ) {
-				if( pm->ps->groundEntityNum != ENTITYNUM_NONE && pm->ps->weaponTime <= 0 )	// Golliwog: Can't fire in water
-					pm->ps->weaponstate = WEAPON_STARTED;
-				else
-					return;
-			}
-		}
-	}
+    // Modified firing check
+    if (!(pm->cmd.buttons & BUTTON_ATTACK)) {
+        if (pm->ps->weaponstate != WEAPON_AIMING) {
+            pm->ps->eFlags &= ~EF_Q3F_AIMING;
+            pm->ps->weaponTime = 0;
+            pm->ps->weaponstate = WEAPON_READY;
+            return;
+        } else {
+            pm->ps->eFlags &= ~EF_Q3F_AIMING;
+            pm->ps->weaponstate = WEAPON_READY;
+        }
+    }
 
+    // Sniper rifle ground check
+    if (pm->ps->groundEntityNum == ENTITYNUM_NONE && pm->ps->weapon == WP_SNIPER_RIFLE) {
+        if (pm->ps->weaponstate != WEAPON_STARTED)
+            pm->ps->weaponstate = WEAPON_FIRING;
+        int addTime = wp->firetime;
+        if (pm->ps->stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_TRANQ))
+            addTime *= 2;
+        if (pm->ps->powerups[PW_HASTE]) {
+            addTime /= 1.3;
+        }
+        pm->ps->weaponTime = addTime;
+        PM_AddEvent(EV_FIRE_WEAPON);
+        return;
+    }
 
-	// check for fire
-	if ( !(pm->cmd.buttons & BUTTON_ATTACK)) {
-		if(pm->ps->weaponstate != WEAPON_AIMING)
-		{
-			pm->ps->eFlags &= ~ EF_Q3F_AIMING;
-			pm->ps->weaponTime = 0;
-			pm->ps->weaponstate = WEAPON_READY;
-			return;
-		}
-		else
-		{
-			/* Goint from WEAPON_AIMING to ready, remove aiming flag */
-			pm->ps->eFlags &= ~EF_Q3F_AIMING;
-			pm->ps->weaponstate = WEAPON_READY;
-		}
-	}
+    // Check for reload request
+    if (pm->ps->stats[STAT_Q3F_FLAGS] & (1 << Q3F_WEAPON_RELOAD)
+        && wp->clipsize != 0 && pm->ps->ammo[wp->ammotype] >= wp->numammo) {
+        PM_BeginWeaponReload();
+        return;
+    }
 
-// JT - At this point... we want to fire.
+    // Flamethrower water check
+    if (pm->ps->weapon == WP_FLAMETHROWER) {
+        if (inwater) {
+            pm->ps->weaponTime += 500;
+            if (pm->ps->weaponstate != WEAPON_READY) {
+                pm->ps->weaponstate = WEAPON_READY;
+            }
+            return;
+        }
+    }
 
-	// RR2DO2 sniperrifle
-	if( pm->ps->groundEntityNum == ENTITYNUM_NONE && pm->ps->weapon == WP_SNIPER_RIFLE) {
-		if(pm->ps->weaponstate != WEAPON_STARTED)	// JT - Don't override 'started' as a state.
-			pm->ps->weaponstate = WEAPON_FIRING;
-		addTime = wp->firetime;
-		if(pm->ps->stats[STAT_Q3F_FLAGS] & (1<<FL_Q3F_TRANQ))
-			addTime *=2;
-		if ( pm->ps->powerups[PW_HASTE] ) {
-			addTime /= 1.3;
-		}
-		pm->ps->weaponTime = addTime;
-		PM_AddEvent( EV_FIRE_WEAPON ); // RR2DO2: we try to... but...
-		return;		// RR2DO2: Can't fire rifle when not on ground
-	}
+    // Start the animation
+    PM_StartTorsoAnim(PM_GetAttackAnim(pm->ps->weapon, pm->ps->persistant[PERS_CURRCLASS]));
 
-// JT ->
-	//canabis, simplify this one, this only checks if someone started a reload request
-	if( pm->ps->stats[STAT_Q3F_FLAGS] & (1<< Q3F_WEAPON_RELOAD)
-		&& wp->clipsize != 0 && pm->ps->ammo[wp->ammotype] >= wp->numammo)
-	{
-		PM_BeginWeaponReload();
-		return;
-	}
-// <- JT
+    // Allow firing during WEAPON_RELOADING and enforce supershotgun ammo requirement
+    if (pm->ps->weaponstate != WEAPON_STARTED &&
+        !(GetAlternateReload() && pm->ps->weaponstate == WEAPON_RELOADING && Q3F_GetClipValue(pm->ps->weapon, pm->ps) > 0)) {
+        int weapon = pm->ps->weapon;
+        bg_q3f_weapon_t *wp = BG_Q3F_GetWeapon(weapon);
+        qboolean isSuperShotgun = (weapon == WP_SUPERSHOTGUN);
+        int minAmmoToFire = isSuperShotgun ? 2 : wp->numammo;
+        if (Q3F_GetClipValue(pm->ps->weapon, pm->ps) >= minAmmoToFire) {
+            pm->ps->weaponstate = WEAPON_FIRING;
+            Com_Printf("PM_Weapon: General firing check passed, curammo=%i, minAmmoToFire=%i\n", 
+                       Q3F_GetClipValue(pm->ps->weapon, pm->ps), minAmmoToFire);
+        } else if (isSuperShotgun && Q3F_GetClipValue(pm->ps->weapon, pm->ps) < minAmmoToFire) {
+            Com_Printf("PM_Weapon: Super shotgun blocked firing in general check, curammo=%i, minAmmoToFire=%i\n", 
+                       Q3F_GetClipValue(pm->ps->weapon, pm->ps), minAmmoToFire);
+            return;
+        }
+    }
 
-	// start the animation even if out of ammo
-	if(pm->ps->weapon == WP_FLAMETHROWER)
-	{
-		if( inwater )
-		{
-			pm->ps->weaponTime +=500;
-			if( pm->ps->weaponstate != WEAPON_READY ) {
-				pm->ps->weaponstate = WEAPON_READY;
-			}
-			//PM_AddEvent(EV_GUNCHOKED);
-			return;
-		}
-	}
+    // Check for out of ammo
+    if (pm->ps->ammo[q3f_ammo_type] < wp->numammo && wp->ammotype != AMMO_NONE) {
+        PM_AddEvent(EV_NOAMMO);
+        pm->ps->weaponTime += 500;
+        return;
+    }
 
-	// start the animation
-	PM_StartTorsoAnim( PM_GetAttackAnim( pm->ps->weapon, pm->ps->persistant[PERS_CURRCLASS] ) );
+    // Check for auto reloading
+    if (!Q3F_GetClipValue(pm->ps->weapon, pm->ps) && wp->clipsize) {
+        if (pm->ps->persistant[PERS_FLAGS] & PF_AUTORELOAD) {
+            PM_BeginWeaponReload();
+        } else {
+            pm->ps->weaponTime += 300;
+            PM_AddEvent(EV_COCK_WEAPON);
+        }
+        return;
+    }
 
-	if(pm->ps->weaponstate != WEAPON_STARTED)	// JT - Don't override 'started' as a state.
-		pm->ps->weaponstate = WEAPON_FIRING;
+    // Minigun movement check
+    if ((pm->cmd.forwardmove || pm->cmd.rightmove) && pm->ps->weapon == WP_MINIGUN) {
+        return;
+    }
 
-	// check for out of ammo
+    // Take ammo away
+    pm->ps->ammo[q3f_ammo_type] -= wp->numammo;
 
-	if ( pm->ps->ammo[ q3f_ammo_type] < wp->numammo && wp->ammotype != AMMO_NONE)
-	{
-		PM_AddEvent( EV_NOAMMO );
-		pm->ps->weaponTime += 500;
-		return;
-	}
+    // Take a clip away
+    if (wp->clipsize)
+        Q3F_SetClipValue(pm->ps->weapon, Q3F_GetClipValue(pm->ps->weapon, pm->ps) - wp->numammo, pm->ps);
 
-	/* Check for auto reloading with clipped weapons */
-	if( !Q3F_GetClipValue( pm->ps->weapon, pm->ps ) &&  wp->clipsize )		// JT - If we're out of clip... do the nasty thing.
-	{
-		//canabis, check if we have reload on firing enabled
-		if (pm->ps->persistant[PERS_FLAGS]&PF_AUTORELOAD) {
-			PM_BeginWeaponReload();
-		} else {
-			pm->ps->weaponTime+=300;			//Slight delay for the next check
-			PM_AddEvent(EV_COCK_WEAPON);
-		}
-		return;
-	}
-	
-	// JT: Don't allow the fire anim if you're trying to move.
-	if((pm->cmd.forwardmove || pm->cmd.rightmove) && pm->ps->weapon == WP_MINIGUN )//wp->inform_on_start)
-	{
-		return;
-	}
-	// take ammo away
+    // Fire weapon
+    PM_AddEvent(EV_FIRE_WEAPON);
 
-	pm->ps->ammo[ q3f_ammo_type ] -= wp->numammo;
-
-	// take a clip away, too
-	if(wp->clipsize)
-		Q3F_SetClipValue(pm->ps->weapon,Q3F_GetClipValue(pm->ps->weapon,pm->ps)-wp->numammo,
-					pm->ps);
-
-	// fire weapon
-	PM_AddEvent( EV_FIRE_WEAPON );
-
-
-	// JT These delays are be fetched from the weapon structure instead.
-
-	addTime = wp->firetime;
-
-	if(pm->ps->stats[STAT_Q3F_FLAGS] & (1<<FL_Q3F_TRANQ))
-		addTime *=2;
-
-	if ( pm->ps->powerups[PW_HASTE] ) {
-		addTime /= 1.3;
-	}
-
-	pm->ps->weaponTime = addTime;
+    // Set fire delay
+    int addTime = wp->firetime;
+    if (pm->ps->stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_TRANQ))
+        addTime *= 2;
+    if (pm->ps->powerups[PW_HASTE]) {
+        addTime /= 1.3;
+    }
+    pm->ps->weaponTime = addTime;
 }
 
 // RR2DO2: these functions get the duration of taunt/gesture/signal animations - hardcoded, so update when f2r's change

@@ -175,6 +175,7 @@ vmCvar_t	cg_gun_z;
 vmCvar_t	cg_tracerChance;
 vmCvar_t	cg_simpleItems;
 vmCvar_t	cg_fov;
+vmCvar_t 	g_alternateReload;
 vmCvar_t	cg_fovAspectAdjust;
 vmCvar_t	cg_fovViewmodel;
 vmCvar_t	cg_fovViewmodelAdjust;
@@ -533,7 +534,7 @@ static cvarTable_t		cvarTable[] = {
 	{ &cg_plOut,					"cg_plOut",					"0",		CVAR_USERINFO | CVAR_CHEAT },
 	{ &cg_predictItems,				"cg_predictItems",			"1",		CVAR_ARCHIVE },
 	{ &cg_predictWeapons,			"cg_predictWeapons",		"0",		CVAR_ARCHIVE },
-
+    { &g_alternateReload, 			"g_alternateReload", 		"0", 		CVAR_ARCHIVE | CVAR_SERVERINFO }, // Tulkas
 	{ &cg_drawDemoRecording,		"cg_drawDemoRecording",		"1",		CVAR_ARCHIVE },
 	{ &cg_demoLineX,				"cg_demoLineX",				"5",		CVAR_ARCHIVE },
 	{ &cg_demoLineY,				"cg_demoLineY",				"60",		CVAR_ARCHIVE },
@@ -613,6 +614,7 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	{ &cg_fov,				"cg_fov",				90,		5,		135,	0,	0,	qfalse },
 	{ &cg_thirdPerson,		"cg_thirdPerson",		0,		0,		0,		0,	0,	qfalse },
 	{ &r_lodCurveError,		"r_lodCurveError",		250,	1,		-1,		0,	0,	qfalse },
+	{ &g_alternateReload, 	"g_alternateReload", 	0, 		0, 		1, 		0, 	0, 	qtrue }, // limiting to 0 or 1 - Tulkas
 	{ &cg_drawFriendSize,	"cg_drawFriendSize",	6,		6,		24,		0,	0,	qfalse },
 
 	/* Ensiform - Adding this to make sure it can only be enabled during demos or developer */
@@ -641,8 +643,9 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	{ &cg_latentCmds,		"cg_latentCmds",		0,		0,	MAX_LATENT_CMDS - 1 ,	0,	0,	qtrue },
 	{ &cg_plOut,			"cg_plOut",				0,		0,		100 ,	0,	0,	qtrue },
 	// hunkmegs
-	{ &com_hunkmegs,		"com_hunkmegs",			128,		128,		-1,		0,	0,	qfalse },
+	{ &com_hunkmegs,		"com_hunkmegs",			128,	128,	-1,		0,	0,	qfalse },
 
+	
 	{ &cl_anonymous,		"cl_anonymous",			0,		0,		0,		0,	0,	qfalse },
 
 	{ &cg_cl_yawspeed,		"cl_yawspeed",			140,	0,		0,		0,	0,	qfalse },
