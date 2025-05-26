@@ -3894,6 +3894,7 @@ static void UI_ETFReadSystemSettings(void) {
 	trap_Cvar_SetValue("ui_cg_viewsize", trap_Cvar_VariableValue("cg_viewsize"));
 	trap_Cvar_SetValue("ui_r_ignorehwgamma", trap_Cvar_VariableValue("r_ignorehwgamma"));
 	trap_Cvar_SetValue("ui_com_maxfps", trap_Cvar_VariableValue("com_maxfps"));
+	trap_Cvar_SetValue("ui_com_hunkmegs", trap_Cvar_VariableValue("com_hunkmegs"));
 	trap_Cvar_SetValue("ui_r_customwidth", trap_Cvar_VariableValue("r_customwidth"));
 	trap_Cvar_SetValue("ui_r_customheight", trap_Cvar_VariableValue("r_customheight"));
 
@@ -3930,6 +3931,7 @@ static void UI_ETFApplySystemSettings(void) {
 	trap_Cvar_SetValue("cg_viewsize", trap_Cvar_VariableValue("ui_cg_viewsize"));
 	trap_Cvar_SetValue("r_ignorehwgamma", trap_Cvar_VariableValue("ui_r_ignorehwgamma"));
 	trap_Cvar_SetValue("com_maxfps", trap_Cvar_VariableValue("ui_com_maxfps"));
+	trap_Cvar_SetValue("com_hunkmegs", trap_Cvar_VariableValue("ui_com_hunkmegs"));
 	trap_Cvar_SetValue("r_customwidth", trap_Cvar_VariableValue("ui_r_customwidth"));
 	trap_Cvar_SetValue("r_customheight", trap_Cvar_VariableValue("ui_r_customheight"));
 
@@ -5045,7 +5047,25 @@ static void UI_RunMenuScript(const char **args) {
 		} else if (Q_stricmp(name, "setMem") == 0) {
 			int memval;
 			memval = (int)trap_Cvar_VariableValue( "ui_memsize" );
-			switch(memval) {
+			if (engine_is_ETE) {
+				switch (memval) {
+				case 1:		// 256 - 512MB
+					trap_Cvar_Set("com_hunkmegs", "192");
+					break;
+				case 2:		// 512MB +
+					trap_Cvar_Set("com_hunkmegs", "256");
+					break;
+				case 3: // Ultra
+					trap_Cvar_Set("com_hunkmegs", "512");
+					break;
+				default:	// < 256
+					//					trap_Cvar_Set("ui_memsize", "0");
+					trap_Cvar_Set("com_hunkmegs", "128");
+					break;
+				}
+			}
+			else {
+				switch (memval) {
 				case 1:		// 256 - 512MB
 					trap_Cvar_Set("com_hunkmegs", "192");
 					trap_Cvar_Set("com_zonemegs", "32");
@@ -5056,12 +5076,18 @@ static void UI_RunMenuScript(const char **args) {
 					trap_Cvar_Set("com_zonemegs", "64");
 					trap_Cvar_Set("com_soundmegs", "32");
 					break;
+				case 3:		// Ultra +
+					trap_Cvar_Set("com_hunkmegs", "512");
+					trap_Cvar_Set("com_zonemegs", "64");
+					trap_Cvar_Set("com_soundmegs", "96");
+					break;
 				default:	// < 256
-//					trap_Cvar_Set("ui_memsize", "0");
+					//					trap_Cvar_Set("ui_memsize", "0");
 					trap_Cvar_Set("com_hunkmegs", "128");
 					trap_Cvar_Set("com_zonemegs", "24");
 					trap_Cvar_Set("com_soundmegs", "24");
 					break;
+				}
 			}
 		} else if (Q_stricmp(name, "setNetwork") == 0) {
 			int netspeed;
@@ -5074,7 +5100,10 @@ static void UI_RunMenuScript(const char **args) {
 					break;
 				case 2:		// lan/cable/dsl
 					trap_Cvar_Set("rate", "25000");
-					trap_Cvar_Set("cl_maxpackets", "60");
+					if ( engine_is_ETE )
+						trap_Cvar_Set("cl_maxpackets", "125");
+					else
+						trap_Cvar_Set("cl_maxpackets", "60");
 					trap_Cvar_Set("snaps", "40");
 					break;
 				default:	// dialup modem

@@ -362,13 +362,33 @@ qboolean EmpExplode( gentity_t *emp )
 
 			// It's a player.
 			if (g_newPulseGren.integer) {
-				//damage =	(int) (0.75 * ent->client->ps.ammo[AMMO_SHELLS]) +
-				//			1.5 * (int) (0.75 * ent->client->ps.ammo[AMMO_ROCKETS]);
-				damage = (int)(0.85 * cls->maxammo_shells) +
-					1.75 * (int)(0.75 * cls->maxammo_rockets);
-
-				if (ent->client->ps.persistant[PERS_CURRCLASS] != Q3F_CLASS_ENGINEER)
-					damage += 0.75 * cls->maxammo_cells;
+				damage = (int)(0.75 * cls->maxammo_shells);
+				switch (ent->client->ps.persistant[PERS_CURRCLASS])
+				{
+				case Q3F_CLASS_RECON:
+					damage += (int)(0.75 * cls->maxammo_cells);
+					break;
+				case Q3F_CLASS_PARAMEDIC:
+					damage += (int)(0.75 * cls->maxammo_cells);
+					break;
+					break;
+				case Q3F_CLASS_SOLDIER:
+				case Q3F_CLASS_GRENADIER:
+					damage += (int)(0.75 * cls->maxammo_rockets) * 2;
+					break;
+				case Q3F_CLASS_MINIGUNNER:
+					damage += (int)(0.75 * cls->maxammo_cells);
+					break;
+				case Q3F_CLASS_FLAMETROOPER:
+					damage += (int)(0.75 * cls->maxammo_rockets) * 2;
+					damage += (int)(0.75 * cls->maxammo_cells);
+					break;
+				case Q3F_CLASS_SNIPER:
+				case Q3F_CLASS_AGENT:
+				case Q3F_CLASS_ENGINEER:
+				default:
+					break;
+				}
 			}
 			else {
 				//damage =	(int) (0.75 * ent->client->ps.ammo[AMMO_SHELLS]) +
@@ -386,16 +406,14 @@ qboolean EmpExplode( gentity_t *emp )
 				max_clip = 0;
 				max_clip = Q_max( Q3F_GetClipValue( WP_SHOTGUN, &ent->client->ps ), Q3F_GetClipValue( WP_SUPERSHOTGUN, &ent->client->ps ) );
 				avail_ammo = ent->client->ps.ammo[AMMO_SHELLS] - max_clip;
-				ent->client->ps.ammo[AMMO_SHELLS] = avail_ammo * 0.25 + max_clip;
+				ent->client->ps.ammo[AMMO_SHELLS] = avail_ammo * (g_newPulseGren.integer ? 0.75 : 0.25) + max_clip;
 				max_clip = 0;
 				max_clip = Q_max( Q3F_GetClipValue( WP_ROCKET_LAUNCHER, &ent->client->ps ), Q3F_GetClipValue( WP_GRENADE_LAUNCHER, &ent->client->ps ) );
 				max_clip = Q_max( max_clip, Q3F_GetClipValue( WP_PIPELAUNCHER, &ent->client->ps ) );
 				avail_ammo = ent->client->ps.ammo[AMMO_ROCKETS] - max_clip;
-				ent->client->ps.ammo[AMMO_ROCKETS] = avail_ammo * 0.25 + max_clip;
-				/*ent->client->ps.ammo[AMMO_SHELLS] *= 0.25;
-				ent->client->ps.ammo[AMMO_ROCKETS] *= 0.25;*/
+				ent->client->ps.ammo[AMMO_ROCKETS] = avail_ammo * (g_newPulseGren.integer ? 0.75 : 0.25) + max_clip;
 				if( ent->client->ps.persistant[PERS_CURRCLASS] != Q3F_CLASS_ENGINEER )
-					ent->client->ps.ammo[AMMO_CELLS] *= 0.25;
+					ent->client->ps.ammo[AMMO_CELLS] *= (g_newPulseGren.integer ? 0.75 : 0.25);
 
 				// Knockback direction
 				VectorCopy( emp->r.currentOrigin, emporg );
@@ -847,7 +865,7 @@ static void NailThink( gentity_t *grenade )
 			temp->s.powerups |= 1 << PW_QUAD;
 			temp->s.otherEntityNum = grenade->activator->s.number;
 		}
-		temp->s.angles[1] = bg_q3f_grenade_flash.damage;
+		temp->s.angles[1] = 120;
 		temp->r.svFlags = SVF_BROADCAST;	// send to everyone
 	}
 
@@ -1222,6 +1240,9 @@ qboolean G_Q3F_GrenadeCommand( gentity_t *ent )
 	}
 	if( level.intermissiontime )
 		return( qfalse );			// No grenades at intermission, I think :)
+
+	if ( ent->client->ps.stats[STAT_HEALTH] <= 0 )
+		return(qfalse);
 
 	cls = BG_Q3F_GetClass( &ent->client->ps );
 

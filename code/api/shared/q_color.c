@@ -53,7 +53,7 @@ vec4_t		colorMdGrey		=	{0.5, 0.5, 0.5, 1};
 vec4_t		colorDkGrey		=	{0.25, 0.25, 0.25, 1};
 vec4_t		colorMdRed		=	{0.5, 0, 0, 1};
 vec4_t		colorMdGreen	=	{0, 0.5, 0, 1};
-vec4_t		colorDkGreen	=	{0, 0.20, 0, 1};
+vec4_t		colorDkGreen	=	{0, 0.20f, 0, 1};
 vec4_t		colorMdCyan		=	{0, 0.5, 0.5, 1};
 vec4_t		colorMdYellow	=	{0.5, 0.5, 0, 1};
 vec4_t		colorMdOrange	=	{0.5, 0.25, 0, 1};
@@ -86,7 +86,7 @@ const vec4_t g_color_table[Q_COLOR_BITS+1] = {
 		{ 0.5,	0.0,	1.0,	1.0 },	// E				21
 		{ 0.2f,	0.6f,	0.8f,	1.0 },	// F				22
 		{ 0.8f,	1.0,	0.8f,	1.0 },	// G				23
-		{ 0.0,	0.4,	0.2f,	1.0 },	// H				24
+		{ 0.0,	0.4f,	0.2f,	1.0 },	// H				24
 		{ 1.0,	0.0,	0.2f,	1.0 },	// I				25
 		{ 0.7f,	0.1f,	0.1f,	1.0 },	// J				26
 		{ 0.6f,	0.2f,	0.0,	1.0 },	// K				27

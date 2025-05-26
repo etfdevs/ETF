@@ -391,7 +391,7 @@ static int G_Q3F_SentryMaxHealth( int sentlevel )
 	{
 		case 1:		return( 150 );
 		case 2:		return( 180 );
-		case 3:		return( 220 );
+		case 3:		return( 200 );
 		case 4:		return( 250 );
 		default:	return( 0 );
 	}

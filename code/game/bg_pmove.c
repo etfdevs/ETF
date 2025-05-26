@@ -2231,7 +2231,7 @@ static void PM_Weapon( void ) {
 	}
 // <- JT
 
-	if((pm->ps->weapon == 0) && (pm->ps->weaponstate != 0))
+	if((pm->ps->weapon == WP_NONE) && (pm->ps->weaponstate != WEAPON_READY))
 	{
 		Com_Printf("DrEvil, your bot has no weapon!!??\n");
 		pm->ps->weapon = WP_AXE;
@@ -2330,7 +2330,6 @@ static void PM_Weapon( void ) {
 		}
 	}
 
-
 	// check for fire
 	if ( !(pm->cmd.buttons & BUTTON_ATTACK)) {
 		if(pm->ps->weaponstate != WEAPON_AIMING)
@@ -2380,7 +2379,7 @@ static void PM_Weapon( void ) {
 	{
 		if( inwater )
 		{
-			pm->ps->weaponTime +=500;
+			pm->ps->weaponTime += 500;
 			if( pm->ps->weaponstate != WEAPON_READY ) {
 				pm->ps->weaponstate = WEAPON_READY;
 			}

@@ -1001,6 +1001,13 @@ void CG_Q3F_GrenThrow(void)
 	if( !cg.grenadeprimeTime )
 		return;
 
+	if (cg.snap && cg.snap->ps.stats[STAT_HEALTH] <= 0) {
+		cg.grenadeprimeTime = 0;
+		cg.grenadethrowTime = 0;
+		cg.grenadenextTime = cg.time + 100;		// This long before priming another grenade ( RR2DO2: WAS 300 )
+		return;
+	}
+
 	if( (cg.grenadeprimeTime + 750) > cg.time )	// RR2DO2: WAS 500
 	{
 		// Must prime for at least half a second

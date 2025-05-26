@@ -1260,12 +1260,14 @@ const char *modNames[MOD_LASTONE] = {
 #define MOD_STRINGS
 	#include "bg_mod.h"
 #undef MOD_STRINGS
+	""
 };
 
 const char *eventnames[EV_MAX] = {
 #define EVENT_STRINGS
 	#include "bg_events.h"
 #undef EVENT_STRINGS
+	""
 };
 
 /*

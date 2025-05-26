@@ -138,7 +138,7 @@ static QINLINE int CG_Q3F_SentryMaxHealth(int level)
 	case 2:
 		return (180);
 	case 3:
-		return (220);
+		return (200);
 	default:
 		return (0);
 	}
@@ -166,7 +166,6 @@ static QINLINE int CG_Q3F_SupplyStationMaxHealth( int supplevel )
 		case 1:		return( 150 );
 		case 2:		return( 180 );
 		case 3:		return( 220 );
-		case 4:		return( 250 );
 		default:	return( 0 );
 	}
 }
