@@ -35,8 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "bg_q3f_grenades.h"
 
-//void G_Q3F_ChargeRemove( gentity_t *ent );
+void G_Q3F_ToggleChargeCommand( gentity_t *ent );
 qboolean G_Q3F_ChargeCommand( gentity_t *ent );
-qboolean G_Q3F_LayCharge( gentity_t *ent );
 
 #endif

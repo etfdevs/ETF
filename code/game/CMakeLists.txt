@@ -51,6 +51,7 @@ add_library(qagame MODULE
 	"g_q3f_admin.c"
 	"g_q3f_admin.h"
 	"g_q3f_charge.c"
+	"g_q3f_charge.h"
 	"g_q3f_controllable.c"
 	"g_q3f_crc.c"
 	"g_q3f_engineer.c"

@@ -1590,6 +1590,9 @@ static const char *cg_gcmds[] = {
 	"special", // Assorted 'special' functions
 	"team",
 	"tell",
+	"togglecharge",
+	"togglesentry",
+	"togglesupply",
 	"unalias", // tjh's un-aliasing command
 	"unignore",
 	"unmute",

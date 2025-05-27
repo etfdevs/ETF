@@ -194,6 +194,37 @@ static void G_Q3F_ChargePain( gentity_t *self, gentity_t *attacker, int damage )
 	self->s.groundEntityNum = ENTITYNUM_NONE;
 }
 
+void G_Q3F_ToggleChargeCommand(gentity_t *ent) {
+	if (!ent->client || ent->health <= 0)
+		return;
+
+	if (level.ceaseFire || ent->client->ps.powerups[PW_Q3F_CEASEFIRE])
+		return;
+
+	if( ent->client->ps.persistant[PERS_CURRCLASS] != Q3F_CLASS_GRENADIER )
+	{
+		trap_SendServerCommand( ent->s.number, "print \"Only grenadiers can lay charges.\n\"" );
+		return;
+	}
+
+	if (ent->client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_LAYCHARGE)) {
+		if (ent->client->chargeTime)
+		{
+			if (ent->client->chargeEntity->inuse && ent->client->chargeEntity->s.eType == ET_Q3F_GRENADE && ent->client->chargeEntity->s.weapon == Q3F_GREN_CHARGE)
+				G_FreeEntity(ent->client->chargeEntity);
+			else G_Printf("Attempted to free '%s' as charge.\n", ent->client->chargeEntity->classname);
+			ent->client->chargeEntity = NULL;
+			ent->client->chargeTime = 0;
+			ent->client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_LAYCHARGE);
+
+			trap_SendServerCommand(ent->s.number, "print \"Charge canceled.\n\"");
+		}
+	}
+	else {
+		trap_SendServerCommand( ent->s.number, "menu charge" );
+	}
+}
+
 qboolean G_Q3F_ChargeCommand( gentity_t *ent )
 {
 	// We've recieved a grenade command, work out if it's valid and act on it.

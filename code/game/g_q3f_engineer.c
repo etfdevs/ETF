@@ -2557,6 +2557,69 @@ void G_Q3F_SupplyStationDismantle( gentity_t *player, int suppnum )
 */
 
 
+void G_Q3F_ToggleSentryCommand(gentity_t *ent) {
+	if (!ent->client || ent->health <= 0)
+		return;
+
+	if (ent->client->ps.persistant[PERS_CURRCLASS] != Q3F_CLASS_ENGINEER)
+	{
+		trap_SendServerCommand(ent->s.number, "print \"Only engineers can build autosentries.\n\"");
+		return;
+	}
+
+	if (ent->client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING)) {
+		if (ent->client->sentry && G_Q3F_SentryCancel(ent->client->sentry))
+			trap_SendServerCommand(ent->s.number, "print \"You stop building.\n\"");
+		else if (ent->client->supplystation && G_Q3F_SupplyStationCancel(ent->client->supplystation))
+			trap_SendServerCommand(ent->s.number, "print \"You stop building.\n\"");
+	}
+	else if (ent->client->sentry) {
+		if (!G_Q3F_SentryCancel(ent->client->sentry))
+		{
+#ifdef BUILD_BOTS
+			Bot_Event_SentryDetonated(ent);
+#endif
+			G_Q3F_SentryDie(ent->client->sentry, ent, ent, 0, 0);
+		}
+	}
+	else {
+		if ( !ent->client->buildTime && ent->client->buildDelayTime <= level.time )
+			G_Q3F_SentryBuild( ent );
+	}
+}
+
+void G_Q3F_ToggleSupplyCommand(gentity_t *ent) {
+	if (!ent->client || ent->health <= 0)
+		return;
+
+	if (ent->client->ps.persistant[PERS_CURRCLASS] != Q3F_CLASS_ENGINEER)
+	{
+		trap_SendServerCommand(ent->s.number, "print \"Only engineers can build supply stations.\n\"");
+		return;
+	}
+
+	if (ent->client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING)) {
+		if (ent->client->sentry && G_Q3F_SentryCancel(ent->client->sentry))
+			trap_SendServerCommand(ent->s.number, "print \"You stop building.\n\"");
+		else if (ent->client->supplystation && G_Q3F_SupplyStationCancel(ent->client->supplystation))
+			trap_SendServerCommand(ent->s.number, "print \"You stop building.\n\"");
+	}
+	else if (ent->client->supplystation) {
+		if (!G_Q3F_SupplyStationCancel(ent->client->supplystation))
+		{
+#ifdef BUILD_BOTS
+			Bot_Event_DispenserDetonated(ent);
+#endif
+			G_Q3F_SupplyStationDie(ent->client->supplystation, ent, ent, 0, 0);
+		}
+	}
+	else {
+		if( !ent->client->buildTime && ent->client->buildDelayTime <= level.time )
+			G_Q3F_SupplyStationBuild( ent );
+	}
+}
+
+
 void G_Q3F_EngineerBuild_Command( gentity_t *ent )
 {
 	// Build a sentry or supplystation, or cancel a build

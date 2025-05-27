@@ -1030,6 +1030,8 @@ void G_Q3F_InvisibleCommand( gentity_t *ent );
 void G_Q3F_SentryBuild( gentity_t *ent );
 qboolean G_Q3F_SentryCancel( gentity_t *sentry );
 qboolean G_Q3F_SupplyStationCancel( gentity_t *supplystation );
+void G_Q3F_ToggleSentryCommand( gentity_t *ent );
+void G_Q3F_ToggleSupplyCommand( gentity_t *ent );
 void G_Q3F_EngineerBuild_Command( gentity_t *ent );
 void G_Q3F_EngineerDestroy_Command( gentity_t *ent );
 void G_Q3F_RunSentry( gentity_t *sentry );

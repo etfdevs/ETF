@@ -3891,6 +3891,12 @@ void ClientCommand( int clientNum ) {
 		Cmd_SetViewpos_f( ent );
 	else if (Q_stricmp (cmd, "charge") == 0 && (ent->client->sess.sessionTeam != Q3F_TEAM_SPECTATOR) )
 		G_Q3F_ChargeCommand( ent );
+	else if (Q_stricmp (cmd, "togglecharge") == 0 && (ent->client->sess.sessionTeam != Q3F_TEAM_SPECTATOR) )
+		G_Q3F_ToggleChargeCommand(ent);
+	else if (Q_stricmp (cmd, "togglesentry") == 0 && (ent->client->sess.sessionTeam != Q3F_TEAM_SPECTATOR) )
+		G_Q3F_ToggleSentryCommand(ent);
+	else if (Q_stricmp (cmd, "togglesupply") == 0 && (ent->client->sess.sessionTeam != Q3F_TEAM_SPECTATOR) )
+		G_Q3F_ToggleSupplyCommand( ent );
 	else if (Q_stricmp (cmd, "changeclass") == 0)
 		G_Q3F_SendClassMenu( ent, 0 );
 	else if (Q_stricmp (cmd, "changeteam") == 0)
