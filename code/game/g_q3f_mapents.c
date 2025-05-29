@@ -848,7 +848,7 @@ qboolean G_Q3F_TouchEntity( gentity_t *ent, gentity_t *other, trace_t *trace )
 
 		if(	mapdata->flags & Q3F_FLAG_CARRYABLE )
 		{
-			if( other->parent == ent && (other->timestamp + 2000) >= level.time )
+			if( other->parent == ent && (other->timestamp + 500) >= level.time )
 				return( qfalse );		// 'Last holder' can't touch it again.
 			//isholdable = qtrue;
 			if( (mapdata->state == Q3F_STATE_INACTIVE ||
