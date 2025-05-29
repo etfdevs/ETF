@@ -1027,6 +1027,7 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 	s = Info_ValueForKey( userinfo, "ip" );
 	if ( !strcmp( s, "localhost" ) ) {
 		client->pers.localClient = qtrue;
+		client->sess.adminLevel = ADMIN_FULL;
 	}
 
 	// check the item prediction

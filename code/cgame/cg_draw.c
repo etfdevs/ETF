@@ -729,7 +729,7 @@ CG_DrawReward
 */
 static void CG_DrawReward( void ) { 
 	float	*color;
-	int		i, count;
+	int		i;
 	float	x, y;
 	char	buf[32];
 
