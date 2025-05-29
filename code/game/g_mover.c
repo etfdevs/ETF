@@ -883,9 +883,9 @@ void Blocked_Door( gentity_t *ent, gentity_t *other ) {
 	gentity_t *slave;
 	if ( other ) {
 		if ( other->client || other->s.eType == ET_Q3F_CORPSE ) {
-			if (ent->health <= 0 )
+			if ( other->health <= 0 )
 				G_Damage( other, ent, ent, NULL, NULL, 10000, 0, MOD_CRUSH );
-			if (ent->damage )
+			else if ( ent->damage )
 				G_Damage( other, ent, ent, NULL, NULL, ent->damage, 0, MOD_CRUSH );
 		} else if (other->s.eType == ET_Q3F_SUPPLYSTATION || other->s.eType == ET_Q3F_SENTRY ) {
 			G_Damage( other, ent, ent, NULL, NULL, 10000, 0, MOD_CRUSH );
