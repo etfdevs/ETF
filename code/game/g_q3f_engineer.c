@@ -1819,15 +1819,8 @@ void G_Q3F_SupplyStationTouch( gentity_t *supplystation, gentity_t *other, trace
 	}
 }
 
-static QINLINE int G_Q3F_SupplyRegenDivisor(int supplevel)
-{
-	return (supplevel != 99 && supplevel >= 2) ? 10 : 20;
-}
-
-static QINLINE int G_Q3F_SupplyRegenTime(int supplevel)
-{
-	return supplevel == 3 ? 6000 : Q3F_SUPPLYSTATION_REGEN_TIME;
-}
+#define G_Q3F_SupplyRegenDivisor(x) ((x != 99 && x >= 2) ? 10 : 20)
+#define G_Q3F_SupplyRegenTime(x) ((x == 3) ? 6000 : Q3F_SUPPLYSTATION_REGEN_TIME)
 
 static void G_Q3F_SupplyStationRegen( gentity_t *supplystation )
 {

@@ -170,30 +170,11 @@ static QINLINE int CG_Q3F_SupplyStationMaxHealth( int supplevel )
 	}
 }
 
-static QINLINE qboolean CG_Q3F_CanUpgradeSentry(void)
-{
-	return (cg.snap->ps.ammo[AMMO_CELLS] >= 130) ? qtrue : qfalse;
-}
-
-static QINLINE qboolean CG_Q3F_CanUpgradeSupply(void)
-{
-	return (cg.snap->ps.ammo[AMMO_CELLS] >= 130) ? qtrue : qfalse;
-}
-
-static QINLINE qboolean CG_Q3F_HasCells(void)
-{
-	return (cg.snap->ps.ammo[AMMO_CELLS] > 0) ? qtrue : qfalse;
-}
-
-static QINLINE qboolean CG_Q3F_HasShells(void)
-{
-	return (cg.snap->ps.ammo[AMMO_SHELLS] > 0) ? qtrue : qfalse;
-}
-
-static QINLINE qboolean CG_Q3F_HasRockets(void)
-{
-	return (cg.snap->ps.ammo[AMMO_ROCKETS] > 0) ? qtrue : qfalse;
-}
+#define CG_Q3F_CanUpgradeSentry() (cg.snap->ps.ammo[AMMO_CELLS] >= 130)
+#define CG_Q3F_CanUpgradeSupply() (cg.snap->ps.ammo[AMMO_CELLS] >= 130)
+#define CG_Q3F_HasCells() (cg.snap->ps.ammo[AMMO_CELLS] > 0)
+#define CG_Q3F_HasShells() (cg.snap->ps.ammo[AMMO_SHELLS] > 0)
+#define CG_Q3F_HasRockets() (cg.snap->ps.ammo[AMMO_ROCKETS] > 0)
 
 /*
 ===============
