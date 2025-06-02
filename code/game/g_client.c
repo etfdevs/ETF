@@ -1083,7 +1083,7 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 	Q_strncpyz ( oldname, client->pers.netname, sizeof( oldname ) );
 	s = Info_ValueForKey (userinfo, "name");
 	ClientCleanName( clientNum, s, client->pers.newnetname, sizeof(client->pers.newnetname) );
-	if( (client->pers.namechangeTime <= level.time) || (client->pers.connected < CON_CONNECTED && strcmp(reason, "connect") == 0 ) && client->pers.newnetname[0])
+	if( ((client->pers.namechangeTime <= level.time) || (client->pers.connected < CON_CONNECTED && strcmp(reason, "connect") == 0 )) && client->pers.newnetname[0])
 	{
 		G_LogPrintf("%d changed name. new = %s, ct = %d, t = %d\n", clientNum, client->pers.newnetname, client->pers.namechangeTime, level.time);
 		Q_strncpyz( client->pers.netname, client->pers.newnetname, sizeof(client->pers.netname) );
@@ -1190,7 +1190,6 @@ static void G_Q3F_CheckClones( int clientNum, const char *ipStr ) {
 G_StripPort
 ============
 */
-// fixme ipv6
 static void G_StripPort( const char *in, char *out, int destsize ) {
 	if ( !*in ) {
 		out[0] = '\0';
