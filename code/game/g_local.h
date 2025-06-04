@@ -907,7 +907,7 @@ void G_ResetHistory( gentity_t *ent );
 void G_StoreHistory( gentity_t *ent );
 void G_TimeShiftAllClients( int time, gentity_t *skip );
 void G_UnTimeShiftAllClients( gentity_t *skip );
-void G_DoTimeShiftFor( gentity_t *ent );
+int G_DoTimeShiftFor( gentity_t *ent );
 void G_UndoTimeShiftFor( gentity_t *ent );
 void G_UnTimeShiftClient( gentity_t *client );
 void G_UnlaggedTrace( gentity_t *ent, trace_t *results, const vec3_t start,
@@ -1269,6 +1269,7 @@ extern	vmCvar_t	sv_floodProtect;
 extern	vmCvar_t	g_debugBullets;
 //Unlagged
 extern	vmCvar_t	g_unlagged;
+extern	vmCvar_t	g_experiment;
 //extern	vmCvar_t	g_unlaggedVersion;
 extern	vmCvar_t	g_truePing;
 extern	vmCvar_t	sv_fps;

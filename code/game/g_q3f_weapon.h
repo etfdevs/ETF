@@ -133,7 +133,7 @@ void G_Q3F_RunSniperDot( gentity_t *ent );
 //void G_Q3F_SniperDotThink(struct gentity_s *ent);
 //void G_Q3F_Burn_Person(struct gentity_s *target, struct gentity_s *attacker/*, int damage*/);
 void G_Q3F_Tranq_Person(struct gentity_s *target, struct gentity_s *attacker);
-void G_Q3F_DetPipe(struct gentity_s *self, int timeindex);
+void G_Q3F_DetPipe(struct gentity_s *self, qboolean antilag);
 void G_Q3F_Pipe_Check_Quota( gentity_t *player );
 void G_ExplodePipe( gentity_t *ent );
 void G_Q3F_CheckPipesForPlayer(struct gentity_s *self);

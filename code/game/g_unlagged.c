@@ -287,25 +287,28 @@ G_DoTimeShiftFor
 Decide what time to shift everyone back to, and do it
 ================
 */
-void G_DoTimeShiftFor( gentity_t *ent ) {	
+int G_DoTimeShiftFor( gentity_t *ent ) {
 	int time;
 
-	// don't time shift for mistakes or bots
-	if ( !ent->inuse || !ent->client || (ent->r.svFlags & SVF_BOT) ) {
-		return;
-	}
+	// don't time shift if not enabled
+	if (!g_unlagged.integer)
+		return level.time;
 
-	// if it's enabled server-side and the client wants it or wants it for this weapon
-	if ( g_unlagged.integer && ent->client->pers.unlagged ) {
+	// don't time shift for mistakes or bots
+	if ( !ent->inuse || !ent->client || (ent->r.svFlags & SVF_BOT) )
+		return level.time;
+
+	// if the client wants it for this weapon
+	if ( ent->client->pers.unlagged ) {
 		// do the full lag compensation, except what the client nudges
 		time = ent->client->attackTime + ent->client->pers.cmdTimeNudge;
-	}
-	else {
+	} else {
 		// do just 50ms
 		time = level.previousTime + ent->client->frameOffset;
 	}
 
 	G_TimeShiftAllClients( time, ent );
+	return time;
 }
 
 

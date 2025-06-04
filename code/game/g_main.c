@@ -188,6 +188,7 @@ vmCvar_t	sv_floodProtect;
 vmCvar_t	g_debugBullets;
 //Unlagged 
 vmCvar_t	g_unlagged;
+vmCvar_t	g_experiment;
 //vmCvar_t	g_unlaggedVersion;
 vmCvar_t	g_truePing;
 vmCvar_t	sv_fps;
@@ -384,6 +385,7 @@ static cvarTable_t		gameCvarTable[] = {
 	//Unlagged related 
 	{ &g_smoothClients, "g_smoothClients", "1", CVAR_ARCHIVE , 0, qfalse},
 	{ &g_unlagged, "g_unlagged", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qtrue },
+	{ &g_experiment, "g_experiment", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qtrue },
 	//{ &g_unlaggedVersion, "g_unlaggedVersion", "2.0", CVAR_ROM | CVAR_SERVERINFO, 0, qfalse },
 	{ &g_truePing, "g_truePing", "1", CVAR_ARCHIVE, 0, qtrue },
 	// it's CVAR_SYSTEMINFO so the client's sv_fps will be automagically set to its value

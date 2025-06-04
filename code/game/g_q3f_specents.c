@@ -3155,7 +3155,7 @@ void G_Q3F_ForceFieldTouch( gentity_t *ent, gentity_t *other, trace_t *trace )
 	if( !other->client || Q3F_IsSpectator( other->client ) || other->client->ps.persistant[PERS_CURRCLASS] != Q3F_CLASS_GRENADIER )
 		return;			// Not a client?
 
-	G_Q3F_DetPipe(other, level.time);
+	G_Q3F_DetPipe(other, qfalse);
 }
 
 static int G_Q3F_ForceFieldStateThink( gentity_t *ent, gentity_t *activator, int targetstate, int oldstate, int force, trace_t *trace ) {
