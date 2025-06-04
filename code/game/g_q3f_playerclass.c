@@ -517,7 +517,7 @@ qboolean G_Q3F_Grenadier_Command( struct gentity_s *ent, const char *cmd )
 		if(Q3F_IsSpectator(ent->client))
 			return(qtrue);
 
-		G_Q3F_DetPipe(ent, level.time);
+		G_Q3F_DetPipe(ent, qtrue);
 		return(qtrue);
 	}
 	return(qfalse);
@@ -558,7 +558,7 @@ void G_Q3F_Grenadier_Term_Cleanup( gentity_t *ent )
 void G_Q3F_Grenadier_Death_Cleanup( struct gentity_s *ent)
 {
 	// Detonate the blokes pipes on death, remove charges
-	G_Q3F_DetPipe(ent, level.time);
+	G_Q3F_DetPipe(ent, qfalse);
 	if( ent->client->chargeTime )
 	{
 		if( ent->client->chargeEntity )

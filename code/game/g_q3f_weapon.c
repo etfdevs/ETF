@@ -1091,13 +1091,15 @@ void G_ExplodePipe( gentity_t *ent ) {
 	trap_LinkEntity( ent );
 }
 
-void G_Q3F_DetPipe(struct gentity_s *self, int timeindex)
+void G_Q3F_DetPipe(struct gentity_s *self, qboolean antilag)
 {
-	struct gentity_s *ent;
+	struct gentity_s *ent = NULL;
+	int timeindex = level.time;
 
-	ent= NULL;
+	antilag = antilag && g_unlagged.integer && g_experiment.integer;
 
-//	G_TimeShiftAllClients( timeindex, self );
+	if (antilag)
+		timeindex = G_DoTimeShiftFor(self);
 
 	while ((ent = G_Find (ent, FOFS(classname), "pipe")) != NULL)
 	{
@@ -1105,7 +1107,9 @@ void G_Q3F_DetPipe(struct gentity_s *self, int timeindex)
 			((self->health <= 0) || (ent->timestamp + G_Q3F_PIPE_DET_DELAY < timeindex)) )
 			G_ExplodePipe(ent);
 	}
-//	G_UnTimeShiftAllClients( self );
+
+	if (antilag)
+		G_UndoTimeShiftFor(self);
 }
 
 void G_Q3F_CheckPipesForPlayer(struct gentity_s *self)

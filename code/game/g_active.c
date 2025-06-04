@@ -1427,7 +1427,7 @@ void ClientThink_real( gentity_t *ent ) {
 		case Q3F_CLASS_GRENADIER:
 			{
 				if ( !level.ceaseFire && !ent->client->ps.powerups[PW_Q3F_CEASEFIRE] )
-					G_Q3F_DetPipe(ent, ent->client->attackTime );
+					G_Q3F_DetPipe(ent, qtrue);
 			}
 			break;
 		case Q3F_CLASS_AGENT:
