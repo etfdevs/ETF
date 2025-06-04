@@ -265,7 +265,7 @@ G_RunMissile
 
 ================
 */
-void G_RunMissile( gentity_t *ent ) {
+void G_RunMissileTime( gentity_t *ent, int time ) {
 //	vec3_t		origin;
 //	trace_t		tr;
 //	trace_t		tr2;
@@ -284,7 +284,7 @@ void G_RunMissile( gentity_t *ent ) {
 	{
 		VectorCopy(ent->r.currentOrigin, oldorigin);
 			// get current position
-		BG_EvaluateTrajectory( &ent->s.pos, level.time, origin );
+		BG_EvaluateTrajectory( &ent->s.pos, time, origin );
 
 		passent = ent->r.ownerNum;
 
@@ -362,12 +362,12 @@ void G_RunMissile( gentity_t *ent ) {
 	else {
 		// get current position
 		if( ent->s.groundEntityNum == ENTITYNUM_NONE )
-			BG_EvaluateTrajectory( &ent->s.pos, level.time, origin );
+			BG_EvaluateTrajectory( &ent->s.pos, time, origin );
 		else {
 			if(	(g_entities[ent->s.groundEntityNum].inuse || ent->s.groundEntityNum == ENTITYNUM_WORLD) &&
 				!(g_entities[ent->s.groundEntityNum].s.eType == ET_PLAYER && g_entities[ent->s.groundEntityNum].health <= 0) )
 			{
-				BG_EvaluateTrajectory( &g_entities[ent->s.groundEntityNum].s.pos, level.time, origin );
+				BG_EvaluateTrajectory( &g_entities[ent->s.groundEntityNum].s.pos, time, origin );
 				VectorAdd( origin, ent->pos1, origin );
 				G_SetOrigin( ent, origin );
 				origin[2]--;
@@ -379,7 +379,7 @@ void G_RunMissile( gentity_t *ent ) {
 				origin[2]--;
 				ent->s.groundEntityNum = ENTITYNUM_NONE;
 				ent->s.pos.trType = TR_GRAVITY;
-				ent->s.pos.trTime = level.time;
+				ent->s.pos.trTime = time;
 				VectorSet( ent->s.pos.trDelta, 0, 0, 0 );
 			}
 		}
@@ -442,13 +442,13 @@ void G_RunMissile( gentity_t *ent ) {
 
 				//other = &g_entities[tr.entityNum];
 					// reflect the velocity on the trace plane
-				if( ent->s.time == level.time &&
+				if( ent->s.time == time &&
 					ent->s.pos.trType == TR_STATIONARY &&
 					!(g_entities[tr.entityNum].s.eType == ET_PLAYER &&
 					g_entities[tr.entityNum].health <= 0) )
 				{
 					ent->s.groundEntityNum = tr.entityNum;
-					BG_EvaluateTrajectory( &g_entities[tr.entityNum].s.pos, level.time, ent->pos1 );
+					BG_EvaluateTrajectory( &g_entities[tr.entityNum].s.pos, time, ent->pos1 );
 					VectorSubtract( ent->r.currentOrigin, ent->pos1, ent->pos1 );
 					ent->s.groundEntityNum = tr.entityNum;
 				}
@@ -459,7 +459,7 @@ void G_RunMissile( gentity_t *ent ) {
 
 				ent->s.pos.trType = TR_GRAVITY;
 				VectorCopy( origin, ent->s.pos.trBase );
-				ent->s.pos.trTime = level.time;
+				ent->s.pos.trTime = time;
 				ent->s.groundEntityNum = ENTITYNUM_NONE;
 			}
 		}
@@ -472,6 +472,32 @@ void G_RunMissile( gentity_t *ent ) {
 
 	// check think function after bouncing
 	G_RunThink( ent );
+}
+
+void G_RunMissile( gentity_t *ent ) {
+	if (ent->antilag_time) {
+		const int kStep = 10;
+		int time = Q_max(level.time - 150, ent->antilag_time + 45);
+		int end = level.time - kStep;
+		qboolean ran = qfalse;
+
+		if (end > time) {
+			ent->s.pos.trTime -= (end - time);
+
+			while (end > time && ent->s.eType == ET_MISSILE) {
+				time += Q_min(end - time, kStep);
+				ran = qtrue;
+
+				G_TimeShiftAllClients(time, ent->parent);
+				G_RunMissileTime(ent, time);
+			}
+			if (ran)
+				G_UnTimeShiftAllClients(ent->parent);
+		}
+		ent->antilag_time = 0;
+	}
+
+	G_RunMissileTime(ent, level.time);
 }
 
 //=============================================================================
@@ -739,6 +765,15 @@ gentity_t *fire_rocket (gentity_t *self, vec3_t start, vec3_t dir) {
 	VectorScale( dir, 1200, bolt->s.pos.trDelta );
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 	VectorCopy (start, bolt->r.currentOrigin);
+
+	if (self->client->pers.unlagged == 2)
+#if 0
+		// Not sure I trust this yet.. extremely unstable
+		bolt->antilag_time = self->client->attackTime + self->client->frameOffset;
+#endif
+		bolt->antilag_time = level.time - self->client->ps.ping;
+	else
+		bolt->antilag_time = 0;
 
 	return bolt;
 }

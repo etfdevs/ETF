@@ -151,6 +151,7 @@ struct gentity_s {
 	intptr_t	timestamp;		// body queue sinking, etc
 								// slothy: timestamp used for visual aid in mover
 	int			timestamp2;
+	int antilag_time;
 
 	float		angle;			// set in editor, -1 = up, -2 = down
 	char		*target;
