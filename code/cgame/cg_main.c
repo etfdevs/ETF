@@ -351,8 +351,8 @@ vmCvar_t	cg_cl_freelook;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
-	char		*cvarName;
-	char		*defaultString;
+	const char	*cvarName;
+	const char	*defaultString;
 	int			cvarFlags;
 	int			modificationCount;  //keeg for ET api
 } cvarTable_t;
@@ -591,7 +591,7 @@ static const int cvarTableSize = (int)ARRAY_LEN( cvarTable );
 
 typedef struct {
 	vmCvar_t	*vmCvar;
-	char		*cvarName;
+	const char	*cvarName;
 	int			defaultValue;
 	int			min;
 	int			max;
@@ -1780,7 +1780,7 @@ static void CG_FeederSelection(float feederID, int index) {
 }
 
 typedef enum { 
-	SCORE_SORT_TEAM,
+	SCORE_SORT_TEAM = 0,
 	SCORE_SORT_NAME,
 	SCORE_SORT_FRAGS,
 	SCORE_SORT_PING,

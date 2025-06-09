@@ -70,11 +70,11 @@ g_q3f_playerclass_t g_q3f_playerclass_null = {
 
 	&bg_q3f_playerclass_null,
 
-	0,		// Class init function
-	0,		// Class term function
-	0,		// Class death function
+	NULL,		// Class init function
+	NULL,		// Class term function
+	NULL,		// Class death function
 
-	0,		// Client commands
+	NULL,		// Client commands
 };
 
 g_q3f_playerclass_t g_q3f_playerclass_recon = {
@@ -82,8 +82,8 @@ g_q3f_playerclass_t g_q3f_playerclass_recon = {
 
 	&bg_q3f_playerclass_recon,
 
-	0,		// Class init function
-	0,		// Class term function
+	NULL,		// Class init function
+	&G_Q3F_Recon_Term_Cleanup,		// Class term function
 	&G_Q3F_Recon_Death_Cleanup,		// Class death function
 
 	&G_Q3F_Recon_Command,	// Client commands
@@ -94,11 +94,11 @@ g_q3f_playerclass_t g_q3f_playerclass_sniper = {
 
 	&bg_q3f_playerclass_sniper,
 
-	0,								// Class init function
-	0,								// Class term function
+	NULL,								// Class init function
+	NULL,								// Class term function
 	&G_Q3F_Sniper_Death_Cleanup,	// Class death function
 
-	0,		// Client commands
+	NULL,		// Client commands
 };
 
 g_q3f_playerclass_t g_q3f_playerclass_soldier = {
@@ -106,11 +106,11 @@ g_q3f_playerclass_t g_q3f_playerclass_soldier = {
 
 	&bg_q3f_playerclass_soldier,
 
-	0,		// Class init function
-	0,		// Class term function
-	0,		// Class death function
+	NULL,		// Class init function
+	NULL,		// Class term function
+	NULL,		// Class death function
 
-	0,		// Client commands
+	NULL,		// Client commands
 };
 
 g_q3f_playerclass_t g_q3f_playerclass_grenadier = {
@@ -118,7 +118,7 @@ g_q3f_playerclass_t g_q3f_playerclass_grenadier = {
 
 	&bg_q3f_playerclass_grenadier,
 
-	0,		// Class init function
+	NULL,		// Class init function
 	&G_Q3F_Grenadier_Term_Cleanup,		// Class term function
 	&G_Q3F_Grenadier_Death_Cleanup,		// Class death function
 
@@ -130,11 +130,11 @@ g_q3f_playerclass_t g_q3f_playerclass_paramedic = {
 
 	&bg_q3f_playerclass_paramedic,
 
-	0,		// Class init function
-	0,		// Class term function
-	0,		// Class death function
+	NULL,		// Class init function
+	NULL,		// Class term function
+	NULL,		// Class death function
 
-	0,		// Client commands
+	NULL,		// Client commands
 };
 
 g_q3f_playerclass_t g_q3f_playerclass_minigunner = {
@@ -142,11 +142,11 @@ g_q3f_playerclass_t g_q3f_playerclass_minigunner = {
 
 	&bg_q3f_playerclass_minigunner,
 
-	0,		// Class init function
-	0,		// Class term function
+	NULL,		// Class init function
+	NULL,		// Class term function
 	&G_Q3F_Minigunner_Death_Cleanup,		// Class death function
 
-	0,		// Client commands
+	NULL,		// Client commands
 };
 
 g_q3f_playerclass_t g_q3f_playerclass_flametrooper = {
@@ -154,11 +154,11 @@ g_q3f_playerclass_t g_q3f_playerclass_flametrooper = {
 
 	&bg_q3f_playerclass_flametrooper,
 
-	0,		// Class init function
-	0,		// Class term function
-	0,		// Class death function
+	NULL,		// Class init function
+	NULL,		// Class term function
+	NULL,		// Class death function
 
-	0,		// Client commands
+	NULL,		// Client commands
 };
 
 g_q3f_playerclass_t g_q3f_playerclass_agent = {
@@ -166,11 +166,11 @@ g_q3f_playerclass_t g_q3f_playerclass_agent = {
 
 	&bg_q3f_playerclass_agent,
 
-	0,		// Class init function
+	NULL,		// Class init function
 	G_Q3F_Agent_Term_Cleanup,		// Class term function
 	G_Q3F_Agent_Death_Cleanup,	// Class death function
 
-	0,		// Client commands
+	NULL,		// Client commands
 };
 
 g_q3f_playerclass_t g_q3f_playerclass_engineer = {
@@ -178,11 +178,11 @@ g_q3f_playerclass_t g_q3f_playerclass_engineer = {
 
 	&bg_q3f_playerclass_engineer,
 
-	0,		// Class init function
+	NULL,		// Class init function
 	G_Q3F_Engineer_Term_Cleanup,		// Class term function
 	G_Q3F_Engineer_Death_Cleanup,		// Class death function
 
-	0,		// Client commands
+	NULL,		// Client commands
 };
 
 g_q3f_playerclass_t g_q3f_playerclass_civilian = {
@@ -190,11 +190,11 @@ g_q3f_playerclass_t g_q3f_playerclass_civilian = {
 
 	&bg_q3f_playerclass_civilian,
 
-	0,		// Class init function
-	0,		// Class term function
-	0,		// Class death function
+	NULL,		// Class init function
+	NULL,		// Class term function
+	NULL,		// Class death function
 
-	0,		// Client commands
+	NULL,		// Client commands
 };
 
 // Array of pointers to class structures
@@ -473,6 +473,37 @@ void G_Q3F_Engineer_Death_Cleanup( gentity_t *ent )
 **	Class termination cleanup
 */
 
+void G_Q3F_Recon_Term_Cleanup( gentity_t *ent )
+{
+	if (ent->client->scanner_ent)
+	{
+		if (ent->client->scanner_ent->inuse && ent->client->scanner_ent->s.eType == ET_Q3F_SCANNERDATA)
+			G_FreeEntity(ent->client->scanner_ent);
+#ifdef _DEBUG
+		else G_Printf("Attempted to free '%s' as scanner data.\n", (ent->client->scanner_ent->classname ? ent->client->scanner_ent->classname : "NULL") );
+#endif
+
+		ent->client->scanner_ent = NULL;
+	}
+
+	ent->client->scanner_ent = NULL;
+}
+
+void G_Q3F_Grenadier_Term_Cleanup( gentity_t *ent )
+{
+	// Fizzle any detpacks
+
+	if(	ent->client && ent->client->chargeEntity &&
+		ent->client->chargeEntity->inuse &&
+		!Q_stricmp( ent->client->chargeEntity->classname, "charge" ) )
+	{
+		trap_SendServerCommand( -1, va( "print \"%s^7's HE charge failed to go off.\n\"", ent->client->pers.netname ) );
+		G_FreeEntity( ent->client->chargeEntity );
+		ent->client->chargeEntity = NULL;
+		ent->client->chargeTime = 0;
+	}
+}
+
 void G_Q3F_Agent_Term_Cleanup( gentity_t *ent )
 {
 	if( ent->client->agentdata )
@@ -492,9 +523,9 @@ void G_Q3F_Agent_Term_Cleanup( gentity_t *ent )
 void G_Q3F_Engineer_Term_Cleanup( gentity_t *ent )
 {
 	if( ent->client->sentry )
-		G_Q3F_SentryDie( ent->client->sentry, NULL, ent, 0, 0  );
+		G_Q3F_SentryDie( ent->client->sentry, NULL, ent, 0, 0 );
 	if( ent->client->supplystation )
-		G_Q3F_SupplyStationDie( ent->client->supplystation, NULL, ent, 0, 0  );
+		G_Q3F_SupplyStationDie( ent->client->supplystation, NULL, ent, 0, 0 );
 }
 
 /*
@@ -539,22 +570,6 @@ qboolean G_Q3F_Recon_Command( struct gentity_s *ent, const char *cmd )
 
 }
 
-
-void G_Q3F_Grenadier_Term_Cleanup( gentity_t *ent )
-{
-	// Fizzle any detpacks
-
-	if(	ent->client && ent->client->chargeEntity &&
-		ent->client->chargeEntity->inuse &&
-		!Q_stricmp( ent->client->chargeEntity->classname, "charge" ) )
-	{
-		trap_SendServerCommand( -1, va( "print \"%s^7's HE charge failed to go off.\n\"", ent->client->pers.netname ) );
-		G_FreeEntity( ent->client->chargeEntity );
-		ent->client->chargeEntity = NULL;
-		ent->client->chargeTime = 0;
-	}
-}
-
 void G_Q3F_Grenadier_Death_Cleanup( struct gentity_s *ent)
 {
 	// Detonate the blokes pipes on death, remove charges
@@ -573,7 +588,6 @@ void G_Q3F_Grenadier_Death_Cleanup( struct gentity_s *ent)
 		}
 	}
 }
-
 
 void G_Q3F_ToggleScanner(gentity_t *ent)
 {
@@ -742,6 +756,7 @@ void Q3F_SetupClass(struct gentity_s *ent)
 	int i;
 	int weaponnum;
 	playerState_t *ps;
+	int gren2;
 
 	if(!ent->client)			// JT - Safety
 		return;
@@ -770,6 +785,11 @@ void Q3F_SetupClass(struct gentity_s *ent)
 	// Sort out initial weapons and initial clips.
 
 	ent->client->ps.stats[STAT_WEAPONS] = (1 << WP_AXE);
+
+	if ( ent->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_SOLDIER && g_maxNailBombs.integer == 0 )
+		gren2 = 0;
+	else
+		gren2 = cls->gren2init;
 	
 	if(g_spawnFullStats.integer)
 	{
@@ -781,7 +801,7 @@ void Q3F_SetupClass(struct gentity_s *ent)
 		ent->client->ps.ammo[AMMO_CHARGE]	= cls->maxammo_charge;
 		ent->client->ps.ammo[AMMO_NONE]		= -1;				// JT - Don't ask.
 
-		ent->client->ps.ammo[AMMO_GRENADES]	= cls->gren1max + (cls->gren2init << 8);
+		ent->client->ps.ammo[AMMO_GRENADES]	= cls->gren1max + (gren2 << 8);
 	}
 	else
 	{
@@ -793,7 +813,7 @@ void Q3F_SetupClass(struct gentity_s *ent)
 		ent->client->ps.ammo[AMMO_CHARGE]	= cls->initammo_charge;
 		ent->client->ps.ammo[AMMO_NONE]		= -1;				// JT - Don't ask.
 
-		ent->client->ps.ammo[AMMO_GRENADES]	= cls->gren1init + (cls->gren2init << 8);
+		ent->client->ps.ammo[AMMO_GRENADES]	= cls->gren1init + (gren2 << 8);
 	}
 
 	for(i =0; i < Q3F_NUM_WEAPONSLOTS; i ++)
@@ -1362,7 +1382,7 @@ void G_Q3F_SendClassInfo( gentity_t *player ) {
 
 	teamnum = player->client->sess.sessionTeam;
 
-	buff[0] = 0;
+	buff[0] = '\0';
 
 	for( index = 1; index < Q3F_CLASS_MAX; index++ ) {
 		if( !g_q3f_teamlist[teamnum].classmaximums[index] ) {

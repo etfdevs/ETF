@@ -328,7 +328,7 @@ void TeamplayInfoMessage( int team ) {
 	qsort( clients, cnt, sizeof( clients[0] ), SortClients );
 
 	// send the latest information on all clients
-	string[0] = 0;
+	string[0] = '\0';
 	stringlength = 0;
 
 	for (i = 0, cnt = 0; i < g_maxclients.integer && cnt < TEAM_MAXOVERLAY; i++) {

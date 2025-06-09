@@ -88,6 +88,7 @@ void G_Q3F_Global_Death_Cleanup( struct gentity_s *self);
 void G_Q3F_Grenadier_Term_Cleanup( gentity_t *ent );
 void G_Q3F_Grenadier_Death_Cleanup( struct gentity_s *ent);
 void G_Q3F_Recon_Death_Cleanup( struct gentity_s *ent);
+void G_Q3F_Recon_Term_Cleanup( struct gentity_s *ent);
 void G_Q3F_Agent_Term_Cleanup( struct gentity_s *ent );
 void G_Q3F_Agent_Death_Cleanup( struct gentity_s *ent );
 void G_Q3F_Engineer_Term_Cleanup( struct gentity_s *ent );

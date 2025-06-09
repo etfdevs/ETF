@@ -40,6 +40,7 @@ add_library(qagame MODULE
 	"g_client.c"
 	"g_cmds.c"
 	"g_combat.c"
+	"g_cvar.h"
 	"g_items.c"
 	"g_main.c"
 	"g_local.h"

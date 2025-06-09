@@ -1618,6 +1618,8 @@ static qboolean G_Q3F_EvalStat( const int value, const evaltype_t eval, const in
 
 #define EVALCLIENTSTAT(v,e,c,o) if( G_Q3F_EvalStat( v, e, c ) ) { if( o ) return( qtrue ); else continue; } else { if( o ) continue; else return( qfalse ); }
 
+#define gren2max(x) ( ((x)->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_SOLDIER ? g_maxNailBombs.integer : cls->gren2max) )
+
 qboolean G_Q3F_CheckClientStats( gentity_t *activator, q3f_keypairarray_t *array, qboolean or )
 {
 	// Check each entry and make sure all of them evaluate to true
@@ -1676,7 +1678,7 @@ qboolean G_Q3F_CheckClientStats( gentity_t *activator, q3f_keypairarray_t *array
 		} else if( data->key == clientstatsstringptrs[8] ) {	// gren1
 			EVALCLIENTSTAT( activator->client->ps.ammo[AMMO_GRENADES] & 0xFF, eval, (data->value.flags & Q3F_VFLAG_CLSTAT_CM ? cls->gren1max : data->value.d.intdata), or );
 		} else if( data->key == clientstatsstringptrs[9] ) {	// gren2
-			EVALCLIENTSTAT( activator->client->ps.ammo[AMMO_GRENADES] & 0xFF00, eval, (data->value.flags & Q3F_VFLAG_CLSTAT_CM ? cls->gren2max : data->value.d.intdata), or );
+			EVALCLIENTSTAT( activator->client->ps.ammo[AMMO_GRENADES] & 0xFF00, eval, (data->value.flags & Q3F_VFLAG_CLSTAT_CM ? gren2max(activator) : data->value.d.intdata), or );
 		} else if( data->key == clientstatsstringptrs[10] ) {	// quad
 			EVALCLIENTSTAT( activator->client->ps.powerups[PW_QUAD], eval, data->value.d.intdata, or );
 		} else if( data->key == clientstatsstringptrs[11] ) {	// regen
@@ -2014,7 +2016,7 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 			else if( data->key == givestringptrs[8] )	// Alter grenade type 2
 				current->client->ps.ammo[AMMO_GRENADES] = (current->client->ps.ammo[AMMO_GRENADES] & 0xFF)
 					+ (_CalcGiveValue(	(current->client->ps.ammo[AMMO_GRENADES] >> 8), add,
-										(force ? 100 : cls->gren2max), 0,
+										(force ? 100 : gren2max(current)), 0,
 										effectfactor, data->value.d.intdata ) << 8);
 			else if( data->key == givestringptrs[22] )	// Alter player medikit
 				current->client->ps.ammo[AMMO_MEDIKIT] =
