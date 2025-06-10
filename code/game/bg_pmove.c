@@ -432,7 +432,8 @@ static qboolean PM_Q3F_ApplyConc( usercmd_t *cmd )
 	if( (i = pm->ps->powerups[PW_Q3F_CONCUSS]) > cmd->serverTime && pm->ps->stats[STAT_HEALTH] > 0 ) {
 		if( pml.walking || (pm->ps->pm_flags & PMF_Q3F_CONSPEED) ) {
 //			applied = qtrue;
-			if( cmd->forwardmove || cmd->rightmove || (!pml.walking && pml.previous_walking) ) {
+			//Commented out for testing removal of movement impairing effects for conc - Tulkas
+			/*if( cmd->forwardmove || cmd->rightmove || (!pml.walking && pml.previous_walking) ) {
 				// Modify movement based on concussion.
 				// Yes, this is horrible. Blame Ghetto :)
 
@@ -453,7 +454,7 @@ static qboolean PM_Q3F_ApplyConc( usercmd_t *cmd )
 				// class speed.
 				cmd->forwardmove	= (int) (127.0f * cos(distortion));
 				cmd->rightmove		= (int) (127.0f * sin(distortion));
-			}
+			}*/
 		} 
 		
 		if( pm->ps->pm_flags & PMF_Q3F_CONCLAND) { 
