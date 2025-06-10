@@ -388,7 +388,7 @@ void G_Q3F_MapSelectQuery(void)
 	// players will have all the same maps, what with pure issues, and all.
 
 	int i, j, k;
-	char buff[1024], map[128], *ptr;
+	char map[128], *ptr;
 //	q3f_data_t *data;
 //	q3f_keypair_t *kp;
 //	char *votedMap;
@@ -443,12 +443,7 @@ void G_Q3F_MapSelectQuery(void)
 			}
 
 				// Pick the same map as a fallback.
-			// Ensiform sv_mapname is bogus cvar
-			//trap_Cvar_VariableStringBuffer( "sv_mapname", buff, 32 );
-			trap_Cvar_VariableStringBuffer( "mapname", buff, 32 );
-			ptr = COM_SkipPath( buff );
-			COM_StripExtension( ptr, buff + 32, sizeof(buff) - 32 );
-			trap_Cvar_Set( "nextmap", va( "map %s", buff + 32 ) );
+			trap_Cvar_Set( "nextmap", va( "map %s", level.rawmapname ) );
 			level.mapSelectState = Q3F_MAPSELECT_CHANGEMAP;
 			ExitLevel();	// In case something went badly wrong, switch level anyway
 		}

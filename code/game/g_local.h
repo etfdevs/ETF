@@ -569,6 +569,8 @@ typedef struct {
 	fileHandle_t	logFile;
 	fileHandle_t	memLogFile;
 
+	char		rawmapname[MAX_QPATH];
+
 	// store latched cvars here that we want to get at often
 	int			maxclients;
 
@@ -717,7 +719,7 @@ typedef struct {
 // fields are needed for spawning from the entity string
 //
 typedef enum {
-	F_INT, 
+	F_INT = 0, 
 	F_FLOAT,
 	F_STRING,			// string on disk, pointer in memory, TAG_LEVEL
 	F_VECTOR,

@@ -764,8 +764,7 @@ static void G_Q3F_AdminMap( gentity_t *admin )
 {
 	// Restart or change the map
 
-	char mapname[128], buff[128];
-	const char *ptr;
+	char mapname[128], filename[128];
 	fileHandle_t fh;
 
 	trap_Argv( 2, mapname, sizeof(mapname) );
@@ -774,14 +773,8 @@ static void G_Q3F_AdminMap( gentity_t *admin )
 	{
 		// Just display the map name, then exit
 
-		// Ensiform sv_mapname is bogus cvar
-		//trap_Cvar_VariableStringBuffer( "sv_mapname", buff, sizeof(buff) );
-		trap_Cvar_VariableStringBuffer( "mapname", buff, sizeof(buff) );
-		ptr = COM_SkipPath( buff );
-		COM_StripExtension( ptr, mapname, sizeof(mapname) );
-
-		G_Q3F_AdminPrint( admin, "Current map is '%s'.\n", mapname );
-		G_Q3F_AdminPrint( admin, "Current GameIndex is %d\n", g_gameindex.integer);
+		G_Q3F_AdminPrint( admin, "Current map is '%s'.\n", level.rawmapname );
+		G_Q3F_AdminPrint( admin, "Current GameIndex is %d\n", g_gameindex.integer );
 	}
 	else if( !Q_stricmp( mapname, "restart" ) )
 	{
@@ -802,15 +795,13 @@ static void G_Q3F_AdminMap( gentity_t *admin )
 	else {
 		// Set to this map
 
-		ptr = COM_SkipPath( mapname );
-		COM_StripExtension( ptr, buff, sizeof(buff) );
-		ptr = va( "maps/%s.bsp", buff );
-		if( trap_FS_FOpenFile( ptr, &fh, FS_READ ) >= 0 )
+		Com_sprintf( filename, sizeof(filename), "maps/%s.bsp", mapname );
+		if( trap_FS_FOpenFile( filename, &fh, FS_READ ) >= 0 )
 		{
 			trap_FS_FCloseFile( fh );
-			trap_SendConsoleCommand( EXEC_APPEND, va( "map %s\n", buff ) );
+			trap_SendConsoleCommand( EXEC_APPEND, va( "map %s\n", mapname ) );
 		}
-		else G_Q3F_AdminPrint( admin, "Map '%s' is unavailable.\n", buff );
+		else G_Q3F_AdminPrint( admin, "Map '%s' is unavailable.\n", mapname );
 	}
 }
 

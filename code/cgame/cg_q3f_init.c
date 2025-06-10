@@ -132,22 +132,17 @@ void CG_Q3F_InitLog( const char *prefix, const char *entry, const char *suffix )
 		cgs.teamChatPos = (cgs.teamChatPos + 1) % TEAMCHAT_HEIGHT;
 }
 
-qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, mapInfo_t* miList, int* index );
+qboolean BG_LoadMapInfoFromFile( const char *rawmapnaame, const char *filename, displayContextDef_t *DC, mapInfo_t *miList, int *index );
 
-void CG_Q3F_LoadingMapInfo(void)
+static void CG_Q3F_LoadingMapInfo(void)
 {
-	char buffer[128];
 	int dummy = 0;
 
 	if( cgs.mapInfoLoaded) {
 		return;
 	}
 
-	Q_strncpyz(buffer, cgs.mapname, sizeof(buffer));
-	Q_strncpyz(buffer, COM_SkipPath(buffer), sizeof(buffer));
-	COM_StripExtension( buffer, buffer, sizeof(buffer) );
-
-	cgs.mapInfoLoaded = BG_LoadMapInfoFromFile( va("%s/%s%s", MAPINFODIR, buffer, MAPINFOEXT), &cgDC, &cgs.mapinfo, &dummy);
+	cgs.mapInfoLoaded = BG_LoadMapInfoFromFile( cgs.rawmapname, va("%s/%s%s", MAPINFODIR, cgs.rawmapname, MAPINFOEXT), &cgDC, &cgs.mapinfo, &dummy );
 }
 
 void CG_Q3F_RenderLoadingScreen(void) {

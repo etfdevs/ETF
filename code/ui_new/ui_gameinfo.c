@@ -37,7 +37,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "ui_local.h"
 
-qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, mapInfo_t* miList, int* index );
+qboolean BG_LoadMapInfoFromFile( const char *rawmapname, const char *filename, displayContextDef_t* DC, mapInfo_t* miList, int* index );
 
 /*
 =================
@@ -59,7 +59,7 @@ UI_ParseMapinfo
 */
 void UI_ParseMapInfo( void ) {
 	int			numdirs;
-	char		filename[MAX_QPATH];
+	char		filename[MAX_QPATH], rawmapname[MAX_QPATH];
 	char		dirlist[MAX_MAPLIST];
 	char*		dirptr;
 	int			i;
@@ -70,10 +70,11 @@ void UI_ParseMapInfo( void ) {
 	// get all mapinfos from .mapinfo files
 	numdirs = trap_FS_GetFileList(MAPINFODIR, MAPINFOEXT, dirlist, sizeof(dirlist) );
 	dirptr  = dirlist;
-	for (i = 0; i < numdirs && uiInfo.mapCount < MAX_MAPS; i++/*, dirptr += dirlen+1*/) {
+	for (i = 0; i < numdirs && uiInfo.mapCount < MAX_MAPS; i++) {
 		dirlen = strlen(dirptr);
 		Com_sprintf( filename, sizeof(filename), "%s/%s", MAPINFODIR, dirptr );
-		BG_LoadMapInfoFromFile(filename, &uiInfo.uiDC, uiInfo.mapList, &uiInfo.mapCount);
+		COM_StripExtension( dirptr, rawmapname, sizeof(rawmapname) );
+		BG_LoadMapInfoFromFile(rawmapname, filename, &uiInfo.uiDC, uiInfo.mapList, &uiInfo.mapCount);
 		dirptr += dirlen + 1;
 	}
 	trap_Print( va( "%i mapinfos parsed\n", uiInfo.mapCount ) );

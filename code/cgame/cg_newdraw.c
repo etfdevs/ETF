@@ -2869,7 +2869,7 @@ const char* Q3F_Alert_Shaders[Q3F_ALERT_MAX] = {
 	"icons/iconw_axe"
 };
 
-void CG_Q3F_DrawAlertIcon( rectDef_t* rect, int anchorx, int anchory, int border ) {
+static void CG_Q3F_DrawAlertIcon( rectDef_t* rect, int anchorx, int anchory, int border ) {
 	rectDef_t r;
 	int i;
 

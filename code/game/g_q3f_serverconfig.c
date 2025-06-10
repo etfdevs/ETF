@@ -562,7 +562,7 @@ static void G_Q3F_SC_CompileMapList( q3f_array_t *setting, int playerCount, qboo
 			COM_StripExtension( COM_SkipPath( ptr ), mapname, sizeof(mapname) );
 
 				// Add each mode of the map into the source list.
-			if( (mapinfo = G_Q3F_LoadMapInfo( ptr )) )
+			if( (mapinfo = G_Q3F_LoadMapInfo( mapname )) )
 			{
 				gameIndices = G_Q3F_SC_ParseMapIndexField( G_Q3F_GetMapInfoEntry( mapinfo, "gameindices", 0, "1" ) );
 				for( gameIndex = 0; (1 << gameIndex) <= gameIndices; gameIndex++ )
@@ -918,7 +918,7 @@ void G_Q3F_ExecuteSetting( const char *mapexec, int gameindex )
 	intptr_t index;
 	const char *directory;
 	const char *configname, *str;
-	char mapname[1024];
+	char rawmapname[1024];
 	fileHandle_t fhandle;
 
 	if( sc.errorFound )
@@ -947,23 +947,21 @@ void G_Q3F_ExecuteSetting( const char *mapexec, int gameindex )
 	if( mapexec )
 	{
 		// Find a per-map configuration file and execute that.
-		Q_strncpyz(mapname, mapexec, sizeof(mapname));
-		Q_strncpyz(mapname, COM_SkipPath(mapname), sizeof(mapname));
-		COM_StripExtension(mapname, mapname, sizeof(mapname));
+		Q_strncpyz(rawmapname, mapexec, sizeof(rawmapname));
 
 		if( Q_stricmp( sc.currSetting, "default" ) &&
 			(kp = G_Q3F_SC_FindKPEntry( sc.settings, sc.currSetting )) &&
 			(directory = G_Q3F_SC_GetSetting( kp->value.d.arraydata, "map_config" )) )
 		{
 			if( gameindex &&
-				(configname = va( "%s/%s%c%d.cfg", directory, mapname, INDEXSEPERATOR, gameindex )) &&
+				(configname = va( "%s/%s%c%d.cfg", directory, rawmapname, INDEXSEPERATOR, gameindex )) &&
 				trap_FS_FOpenFile( configname, &fhandle, FS_READ ) > 0 )
 			{
 				trap_FS_FCloseFile( fhandle );
 				trap_SendConsoleCommand( EXEC_APPEND, va("exec %s\n", configname ));
 				mapexec = NULL;
 			}
-			else if(	(configname = va( "%s/%s.cfg", directory, mapname )) &&
+			else if(	(configname = va( "%s/%s.cfg", directory, rawmapname)) &&
 						trap_FS_FOpenFile( configname, &fhandle, FS_READ ) > 0 )
 			{
 				trap_FS_FCloseFile( fhandle );
@@ -977,14 +975,14 @@ void G_Q3F_ExecuteSetting( const char *mapexec, int gameindex )
 			(directory = G_Q3F_SC_GetSetting( kp->value.d.arraydata, "map_config" )) )
 		{
 			if( gameindex &&
-				(configname = va( "%s/%s%c%d.cfg", directory, mapname, INDEXSEPERATOR, gameindex )) &&
+				(configname = va( "%s/%s%c%d.cfg", directory, rawmapname, INDEXSEPERATOR, gameindex )) &&
 				trap_FS_FOpenFile( configname, &fhandle, FS_READ ) > 0 )
 			{
 				trap_FS_FCloseFile( fhandle );
 				trap_SendConsoleCommand( EXEC_APPEND, va( "exec %s\n", configname ));
 				mapexec = NULL;
 			}
-			else if(	(configname = va( "%s/%s.cfg", directory, mapname )) &&
+			else if(	(configname = va( "%s/%s.cfg", directory, rawmapname)) &&
 						trap_FS_FOpenFile( configname, &fhandle, FS_READ ) > 0 )
 			{
 				trap_FS_FCloseFile( fhandle );

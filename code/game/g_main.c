@@ -291,6 +291,15 @@ static void G_RegisterCvars( void ) {
 	/* Ensiform - Forcing this to 0 here as it can sometimes be imported from ET configs and set to 1, thus CVAR_ROM would be bad */
 	trap_Cvar_Set( "sv_floodProtect", "0" );
 
+	if ( g_maxNailBombs.integer < 0 ) {
+		trap_Cvar_Set("g_maxNailBombs", "0");
+		g_maxNailBombs.integer = 0;
+	}
+	else if (g_maxNailBombs.integer > 99 ) {
+		trap_Cvar_Set("g_maxNailBombs", "99");
+		g_maxNailBombs.integer = 99;
+	}
+
 	level.warmupModificationCount = g_warmup.modificationCount;
 
 		// Golliwog: Set ceasefire automatically if we're in match mode.
@@ -387,6 +396,19 @@ static void G_UpdateCvars( void ) {
 					trap_SendServerCommand( -1, va("print \"Server: %s changed to %s\n\"", 
 						cv->cvarName, cv->vmCvar->string ) );
 				}
+
+				if (cv->vmCvar == &g_maxNailBombs) {
+					if (g_maxNailBombs.integer < 0) {
+						trap_Cvar_Set("g_maxNailBombs", "0");
+						g_maxNailBombs.integer = 0;
+						trap_Cvar_Update( cv->vmCvar );
+					}
+					else if (g_maxNailBombs.integer > 99) {
+						trap_Cvar_Set("g_maxNailBombs", "99");
+						g_maxNailBombs.integer = 99;
+						trap_Cvar_Update( cv->vmCvar );
+					}
+				}
 				
 #ifdef BUILD_LUA
 				if( cv->vmCvar == &lua_modules || cv->vmCvar == &lua_allowedModules ) {
@@ -461,14 +483,8 @@ G_Q3F_LoadMapConfig
 void G_Q3F_LoadMapConfig(void) {
 	// RR2DO2: load any map-specific config
 
-	char mapcfg[MAX_QPATH], buff[MAX_QPATH];
-	char *ptr;
+	char mapcfg[MAX_QPATH];
 	fileHandle_t fh;
-	char mapname[128];
-
-	trap_Cvar_VariableStringBuffer( "mapname", buff, sizeof(buff)  );
-	ptr = COM_SkipPath( buff );
-	COM_StripExtension( ptr, mapname, sizeof(mapname) );
 
  	if( g_execMapConfigs.integer )
 	{
@@ -478,9 +494,7 @@ void G_Q3F_LoadMapConfig(void) {
 			trap_SendConsoleCommand( EXEC_APPEND, va( "exec map_default.cfg" ) );
 		}
 
-		Q_strncpyz( mapcfg, COM_SkipPath( mapname ), sizeof(mapcfg) );
-		COM_StripExtension( mapcfg, buff, sizeof(buff) );
-		Com_sprintf( mapcfg, sizeof(mapcfg), "%s.cfg", buff );
+		Com_sprintf( mapcfg, sizeof(mapcfg), "%s.cfg", level.rawmapname );
 
 		if( trap_FS_FOpenFile( mapcfg, &fh, FS_READ ) >= 0 )
 		{
@@ -602,11 +616,12 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	int					i;
 	intptr_t 			index;
 //	gitem_t *item;
-	char buff[MAX_QPATH], mapname[MAX_QPATH];
+	char mappath[MAX_QPATH], buff[MAX_QPATH+4];
 	q3f_array_t* mapList;
 	q3f_data_t* data;
 	char mapbuffer[4096];
-	char value[ MAX_CVAR_VALUE_STRING ];
+	char value[MAX_CVAR_VALUE_STRING];
+	char cs[MAX_INFO_STRING];
 
 #ifdef PERFLOG
 	BG_Q3F_PerformanceMonitorInit("performance_game.log");
@@ -650,16 +665,18 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 		memset( bigTextBuffer, 0, sizeof(bigTextBuffer) );
 	}
 
+	trap_GetServerinfo( cs, sizeof( cs ) );
+	Q_strncpyz( level.rawmapname, Info_ValueForKey( cs, "mapname" ), sizeof( level.rawmapname ) );
+
 	// Golliwog: Load the current map's configuration, and map information for the current map.
-	trap_Cvar_VariableStringBuffer( "mapname", mapname, sizeof(mapname) );
 	G_Q3F_LoadServerConfiguration( qfalse );									// Load main config
-	G_Q3F_ExecuteSetting( mapname, g_gameindex.integer );						// Execute settings for the current config.
-	level.mapInfo = G_Q3F_LoadMapInfo( mapname );								// Load associated map information file.
+	G_Q3F_ExecuteSetting( level.rawmapname, g_gameindex.integer );						// Execute settings for the current config.
+	level.mapInfo = G_Q3F_LoadMapInfo( level.rawmapname );								// Load associated map information file.
 	G_Q3F_CheckGameIndex();														// Check current gameindex is valid.
-	Com_sprintf( buff, sizeof(buff), "%s+%d", mapname, g_gameindex.integer );
+	Com_sprintf( buff, sizeof(buff), "%s+%d", level.rawmapname, g_gameindex.integer );
 	G_Q3F_UpdateMapHistory( buff );												// Bump the map history.
 
-	G_Printf ("mapname: %s, gameindex: %d\n", mapname, g_gameindex.integer );
+	G_Printf ("mapname: %s, gameindex: %d\n", level.rawmapname, g_gameindex.integer );
 
 	trap_Cvar_Set("g_maxlives", va("%i", trap_Cvar_VariableIntegerValue("sv_pure")));
 
@@ -682,8 +699,8 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 
 		trap_Cvar_Set( "g_serverConfigMap", buff );
 		// RR2DO2: cheats default to 1 in the engine. BLEH
-		//trap_SendConsoleCommand( EXEC_APPEND, va( "%s %s\n", ( g_cheats.integer ? "devmap" : "map" ), mapname ) );
-		trap_SendConsoleCommand( EXEC_APPEND, va( "map %s\n", mapname ) );
+		//trap_SendConsoleCommand( EXEC_APPEND, va( "%s %s\n", ( g_cheats.integer ? "devmap" : "map" ), level.rawmapname ) );
+		trap_SendConsoleCommand( EXEC_APPEND, va( "map %s\n", level.rawmapname ) );
 	}
 	else {
 		// Unlock the config time so the next schedule can be selected properly.
@@ -702,7 +719,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 
 	if ( g_logFile.string[0] ) {
 		char buffer[MAX_CVAR_VALUE_STRING];
-		G_ETF_LogParseString(g_logFile.string, mapname, g_gameindex.integer, buffer, MAX_CVAR_VALUE_STRING);
+		G_ETF_LogParseString(g_logFile.string, level.rawmapname, g_gameindex.integer, buffer, MAX_CVAR_VALUE_STRING);
 		if ( g_logSync.integer ) {
 			trap_FS_FOpenFile( buffer, &level.logFile, FS_APPEND_SYNC );
 		} else {
@@ -711,12 +728,9 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 		if ( !level.logFile ) {
 			G_Printf( "WARNING: Couldn't open logfile: %s\n", buffer );
 		} else {
-			char	serverinfo[MAX_INFO_STRING];
-
-			trap_GetServerinfo( serverinfo, sizeof( serverinfo ) );
 			G_LogPrintf("------------------------------------------------------------\n" );
-			G_LogPrintf("InitGame: %s\n", serverinfo );
-			G_LogPrintf("Mapname: %s, gameindex: %d\n", mapname, g_gameindex.integer );
+			G_LogPrintf("InitGame: %s\n", cs );
+			G_LogPrintf("Mapname: %s, gameindex: %d\n", level.rawmapname, g_gameindex.integer );
 		}
 	} else {
 		G_Printf( "Not logging to disk.\n" );
@@ -725,10 +739,8 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_ReadSessionData();
 
 	// Load Camera Data
-	trap_Cvar_VariableStringBuffer( "mapname", buff, sizeof(buff)  );
-	strcpy( mapname, "maps\\" );
-	Q_strcat( mapname, sizeof(mapname), buff );
-	level.camNumPaths = BG_Q3F_LoadCamPaths( mapname, (void *)level.campaths );	
+	Com_sprintf( mappath, sizeof(mappath), "maps/%s", level.rawmapname );
+	level.camNumPaths = BG_Q3F_LoadCamPaths( mappath, (void *)level.campaths );	
 	level.flybyPathIndex = BG_Q3F_LocateFlybyPath( level.camNumPaths, (void *)level.campaths );
 
 	// initialize all entities for this game
@@ -777,10 +789,10 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_SpawnEntitiesFromString();
 
 	/* Ensiform - Fixes the misc_beam on blue base not returning back on after blueflag returns to base */
-	//if(!Q_stricmp(mapname, "maps\\etf_muon"))
+	//if(!Q_stricmp(level.rawmapname, "etf_muon"))
 	//	G_Q3F_MuonFix();
 
-	if(!Q_stricmp(mapname, "maps\\etf_odium"))
+	if(!Q_stricmp(level.rawmapname, "etf_odium"))
 		G_Q3F_OdiumFix();
 
 	G_Q3F_CTFCompatAdjust();
@@ -792,7 +804,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_Q3F_WaypointBuildArray();
 
 	// Spawn additional speakers from soundscript
-	G_Q3F_SSCR_ParseSoundScript( mapname );
+	G_Q3F_SSCR_ParseSoundScript( mappath );
 
 	// Find out what teams are allowed to play by checking spawnpoints,
 	// And then make the data available to the client for cacheing purposes.
@@ -1510,11 +1522,10 @@ static void G_ETF_ReloadMap(void)
 {
 	// Golliwog: 'failsafe' map restart
 
-	char buff[1024], mapname[32];
+	char buff[1024];
 	fileHandle_t fh;
 
-	trap_Cvar_VariableStringBuffer( "mapname", mapname, sizeof(mapname) );
-	Com_sprintf( buff, sizeof(buff), "maps/%s.bsp", mapname );
+	Com_sprintf( buff, sizeof(buff), "maps/%s.bsp", level.rawmapname );
 	if( trap_FS_FOpenFile( buff, &fh, FS_READ ) < 0 )
 	{
 		// Map doesn't exist?
@@ -1522,12 +1533,16 @@ static void G_ETF_ReloadMap(void)
 		Q_strncpyz( buff, "maps/etf_forts.bsp", sizeof(buff) );	// Fallback to forts in an emergency
 		if( trap_FS_FOpenFile( buff, &fh, FS_READ ) < 0 )
 			G_Error( "G_ETF_ReloadMap: No map to reload." );
-		Q_strncpyz( mapname, "etf_forts", sizeof(mapname) );
 
+		trap_FS_FCloseFile( fh );
+
+		trap_SendConsoleCommand( EXEC_APPEND, "map etf_forts\n" );
+		level.nextMapTime = level.time + 1000;
+		return;
 	}
 	trap_FS_FCloseFile( fh );
 
-	trap_SendConsoleCommand( EXEC_APPEND, va( "map %s\n", mapname ) );
+	trap_SendConsoleCommand( EXEC_APPEND, va( "map %s\n", level.rawmapname ) );
 	level.nextMapTime = level.time + 1000;
 }
 
@@ -1605,7 +1620,7 @@ void CheckExitRules( void ) {
 		return;
 	}
 
-	if ( g_timelimit.integer && g_matchState.integer <= MATCH_STATE_PLAYING ){
+	if ( g_timelimit.integer && g_matchState.integer <= MATCH_STATE_PLAYING ) {
 		if( g_timelimit.integer >= 999 ) {
 			trap_Cvar_Set( "timelimit", "999" );
 		}
@@ -1622,7 +1637,7 @@ void CheckExitRules( void ) {
 	}
 #endif
 
-	if ( g_capturelimit.integer ) {
+	if ( g_capturelimit.integer && g_matchState.integer <= MATCH_STATE_PLAYING ) {
 
 		if ( level.teamScores[Q3F_TEAM_RED] >= g_capturelimit.integer ) {
 			trap_SendServerCommand( -1, "print \"Red hit the capturelimit.\n\"" );

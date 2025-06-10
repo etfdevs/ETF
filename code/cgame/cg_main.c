@@ -218,15 +218,10 @@ vmCvar_t	cg_atmosphericEffects;
 
 vmCvar_t	cg_etfVersion;
 
-//vmCvar_t	cg_menuSlideTime;
-//vmCvar_t	cg_menuNoFade;
 vmCvar_t	cg_teamChatSounds;
 vmCvar_t	cg_sniperAutoZoom;
 vmCvar_t	cg_sniperHistoricalSight;
 vmCvar_t	cg_grenadePrimeSound;
-//vmCvar_t	cg_teamChatBigFont;
-//vmCvar_t	cg_newFlamer;
-//vmCvar_t	cg_drawMem;
 vmCvar_t	cg_autoReload;
 vmCvar_t	g_spectatorMode; // RR2DO2
 vmCvar_t	r_lodCurveError;
@@ -2539,11 +2534,11 @@ CG_Q3F_LoadMapConfig
 void CG_Q3F_LoadMapConfig( void ) {
 	// Golliwog: load any map-specific config
 
-	char mapcfg[MAX_QPATH], buff[MAX_QPATH];
-	fileHandle_t fh;
-
  	if( cg_execMapConfigs.integer )
 	{
+		char mapcfg[MAX_QPATH];
+		fileHandle_t fh;
+
 		if( trap_FS_FOpenFile( "maps/map_default.cfg", &fh, FS_READ ) >= 0 )
 		{
 			trap_FS_FCloseFile( fh );
@@ -2551,9 +2546,7 @@ void CG_Q3F_LoadMapConfig( void ) {
 			trap_SendConsoleCommand( va( "exec map_default.cfg\n" ) );
 		}
 
-		Q_strncpyz( mapcfg, COM_SkipPath( cgs.mapname ), sizeof(mapcfg) );
-		COM_StripExtension( mapcfg, buff, sizeof(buff) );
-		Com_sprintf( mapcfg, sizeof(mapcfg), "%s+%d.cfg", buff, cgs.gameindex );
+		Com_sprintf( mapcfg, sizeof(mapcfg), "%s+%d.cfg", cgs.rawmapname, cgs.gameindex );
 
 		if( trap_FS_FOpenFile( mapcfg, &fh, FS_READ ) >= 0 )
 		{
@@ -2563,9 +2556,7 @@ void CG_Q3F_LoadMapConfig( void ) {
 			return;
 		}
 
-		Q_strncpyz( mapcfg, COM_SkipPath( cgs.mapname ), sizeof(mapcfg) );
-		COM_StripExtension( mapcfg, buff, sizeof(buff) );
-		Com_sprintf( mapcfg, sizeof(mapcfg), "%s.cfg", buff );
+		Com_sprintf( mapcfg, sizeof(mapcfg), "%s.cfg", cgs.rawmapname );
 
 		if( trap_FS_FOpenFile( mapcfg, &fh, FS_READ ) >= 0 )
 		{

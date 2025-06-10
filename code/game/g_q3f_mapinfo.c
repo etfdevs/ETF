@@ -135,20 +135,18 @@ char *G_Q3F_GetMapInfoEntry( const q3f_keypairarray_t *mpi, const char *key, int
 #pragma GCC diagnostic pop
 #endif
 
+// assumes mapname has no path or extension
 q3f_keypairarray_t *G_Q3F_LoadMapInfo( const char *mapname )
 {
 	// Parse the mapinfo file and generate a set of data.
 
-	char rawmapname[1024], keyname[1024];
+	char keyname[1024];
 	const char *infoname;
 	char *rawmpi, *ptr, *ptr2, *ptr3, *ptr4;
 	int index, c1, c2;//, gameIndices;
 	q3f_keypairarray_t *kpa;
 
-	Q_strncpyz(rawmapname, mapname, sizeof(rawmapname));
-	Q_strncpyz(rawmapname, COM_SkipPath(rawmapname), sizeof(rawmapname));
-	COM_StripExtension(rawmapname, rawmapname, sizeof(rawmapname));
-	infoname = va( "%s/%s%s", MAPINFODIR, rawmapname, MAPINFOEXT );
+	infoname = va( "%s/%s%s", MAPINFODIR, mapname, MAPINFOEXT );
 
 	memset( &mi, 0, sizeof(mi) );
 	kpa = NULL;
@@ -213,7 +211,7 @@ q3f_keypairarray_t *G_Q3F_LoadMapInfo( const char *mapname )
 	}
 
 		// Attempt to load in the old mapinfo file, and parse out player limits.
-	infoname = va( "%s/%s%s", MAPINFODIR, rawmapname, OLDMAPINFOEXT );
+	infoname = va( "%s/%s%s", MAPINFODIR, mapname, OLDMAPINFOEXT );
 	if( (index = trap_FS_FOpenFile( infoname, &mi.infoHandle, FS_READ )) <= 0 )
 	{
 		if( index == 0 )

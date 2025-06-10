@@ -1509,6 +1509,7 @@ typedef struct {
 	qboolean		initing;
 	char			rawmapname[MAX_QPATH];
 #endif
+	char			pathmapname[MAX_QPATH]; // like rawmapname but has maps/ prepended and NO extension
 	int				unlagged;
 
 	int aviDemoRate;                                    // Demo playback recording

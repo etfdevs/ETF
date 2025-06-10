@@ -224,18 +224,19 @@ static qboolean G_Q3F_SSCR_ParseSpeaker( int scriptHandle ) {
 // capabilities.
 
 qboolean G_Q3F_SSCR_ParseSoundScript( const char *mapname ) {
-    const char	*scriptName;
-	char	rawmapname[1024];
+	char	rawmapname[128];
     int		scriptHandle;
 	int		numSpeakers = 0;
 
-	Q_strncpyz( rawmapname, mapname, sizeof(rawmapname) );
-	Q_strncpyz( rawmapname, COM_SkipPath( rawmapname ), sizeof(rawmapname) );
-	COM_StripExtension( rawmapname, rawmapname, sizeof(rawmapname) );
-	scriptName = va( "%s.sscr", rawmapname );
+	// skip these two maps as the maps have sounds embeded in them instead
+	if (!Q_stricmp(mapname, "maps/etf_well") || !Q_stricmp(mapname, "maps/etf_sunburn")) {
+		return(qfalse);
+	}
+
+	Com_sprintf( rawmapname, sizeof(rawmapname), "%s.sscr", mapname );
     
     // See if we have a soundscript for this map, if so, parse it
-    if( ( scriptHandle = trap_PC_LoadSource( scriptName ) ) ) {
+    if( ( scriptHandle = trap_PC_LoadSource( rawmapname ) ) ) {
 		pc_token_t	token;
 		
 		while( G_Q3F_SSCR_GetToken( scriptHandle, &token, NULL ) ) {
@@ -249,7 +250,7 @@ qboolean G_Q3F_SSCR_ParseSoundScript( const char *mapname ) {
 			}
 		}
 
-		G_Printf( "Spawned %i speakers from %s\n", numSpeakers, scriptName );
+		G_Printf( "Spawned %i speakers from %s\n", numSpeakers, rawmapname );
     }
     
     return( qtrue );

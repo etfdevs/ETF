@@ -244,12 +244,11 @@ static qboolean BG_ParseInfos( const char *buf, mapInfo_t* miList, int* index) {
 BG_LoadMapInfoFromFile
 ===============
 */
-qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, mapInfo_t* miList, int* index ) {
+// Expects 
+qboolean BG_LoadMapInfoFromFile( const char *rawmapname, const char *filename, displayContextDef_t *DC, mapInfo_t *miList, int *index ) {
 	int				len;
 	fileHandle_t	f;
 	char			buf[MAX_MAPINFOS_TEXT];
-	char			rawmapname[MAX_QPATH];
-	//char* p;
 
 	len = DC->openFile( filename, &f, FS_READ );
 	if ( !f || len <= 0 ) {
@@ -271,9 +270,6 @@ qboolean BG_LoadMapInfoFromFile( const char *filename, displayContextDef_t* DC, 
 	/* Ensiform - Add this so we can check what files cause the Unexpected end of info file error */
 	COM_BeginParseSession(filename);
 	if(BG_ParseInfos(buf, miList, index)) {
-		Q_strncpyz( rawmapname, filename, sizeof(rawmapname) );
-		Q_strncpyz(rawmapname, COM_SkipPath(rawmapname), sizeof(rawmapname));
-		COM_StripExtension( rawmapname, rawmapname, sizeof(rawmapname) );
 		miList[(*index)-1].mapLoadName = String_Alloc( rawmapname );
 	}
 
