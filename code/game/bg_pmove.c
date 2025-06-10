@@ -46,7 +46,7 @@ pml_t		pml;
 //Declare Floats
 float pm_accelerate = 15.0f;      //default 10 live: 15.0
 float pm_airaccelerate = 14.0f;    //default 6 Live: 14.0
-float pm_friction =6.0f;			//default 6
+float pm_friction = 6.0f;			//default 6
 
 // movement parameters
 float	pm_stopspeed = 70.0f;			//default 100.0f Live: 70
@@ -426,12 +426,13 @@ Apply a 'concussion effect' to the player
 static qboolean PM_Q3F_ApplyConc( usercmd_t *cmd )
 {
 	int i;
-	float scale, distortion, angle;
+	//float scale, distortion, angle;
 	qboolean applied;
 
 	if( (i = pm->ps->powerups[PW_Q3F_CONCUSS]) > cmd->serverTime && pm->ps->stats[STAT_HEALTH] > 0 ) {
 		if( pml.walking || (pm->ps->pm_flags & PMF_Q3F_CONSPEED) ) {
 //			applied = qtrue;
+#if 0
 			if( cmd->forwardmove || cmd->rightmove || (!pml.walking && pml.previous_walking) ) {
 				// Modify movement based on concussion.
 				// Yes, this is horrible. Blame Ghetto :)
@@ -454,6 +455,7 @@ static qboolean PM_Q3F_ApplyConc( usercmd_t *cmd )
 				cmd->forwardmove	= (int) (127.0f * cos(distortion));
 				cmd->rightmove		= (int) (127.0f * sin(distortion));
 			}
+#endif
 		} 
 		
 		if( pm->ps->pm_flags & PMF_Q3F_CONCLAND) { 

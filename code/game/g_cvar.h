@@ -88,7 +88,7 @@ G_CVAR( g_dedicated, "dedicated", "0", 0, 0, qfalse )
 
 G_CVAR( g_speed, "g_speed", "320", 0, 0, qtrue )
 G_CVAR( g_gravity, "g_gravity", "800", CVAR_SYSTEMINFO, 0, qtrue )
-G_CVAR( g_knockback, "g_knockback", "1000", CVAR_SERVERINFO, 0, qtrue )
+G_CVAR( g_knockback, "g_knockback", "900", CVAR_SERVERINFO, 0, qtrue )
 G_CVAR( g_quadfactor, "g_quadfactor", "4", 0, 0, qtrue )		// Golliwog: Default to 4
 G_CVAR( g_forcerespawn, "g_forcerespawn", "20", 0, 0, qtrue )
 G_CVAR( g_inactivity, "g_inactivity", "0", 0, 0, qtrue )
