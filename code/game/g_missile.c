@@ -766,7 +766,9 @@ gentity_t *fire_rocket (gentity_t *self, vec3_t start, vec3_t dir) {
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 	VectorCopy (start, bolt->r.currentOrigin);
 
-	if (self->client->pers.unlagged == 2)
+	// need to check for client being valid, as this can be a shooter_rocket
+	// there is also shooter_grenade if fire_grenade gets this too eventually
+	if (self->client && self->client->pers.unlagged == 2)
 #if 0
 		// Not sure I trust this yet.. extremely unstable
 		bolt->antilag_time = self->client->attackTime + self->client->frameOffset;
