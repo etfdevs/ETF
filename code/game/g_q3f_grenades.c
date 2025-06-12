@@ -373,6 +373,8 @@ qboolean EmpExplode( gentity_t *emp )
 					break;
 					break;
 				case Q3F_CLASS_SOLDIER:
+					damage += (int)(0.75 * cls->maxammo_rockets) * 1.5;
+					break;
 				case Q3F_CLASS_GRENADIER:
 					damage += (int)(0.75 * cls->maxammo_rockets) * 2;
 					break;
