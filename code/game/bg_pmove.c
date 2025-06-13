@@ -2044,7 +2044,12 @@ PM_BeginWeaponReload
 static void PM_BeginWeaponReload( void ) {
 	PM_AddEvent( EV_COCK_WEAPON );
 	pm->ps->weaponstate = WEAPON_RDROPPING;
-	pm->ps->weaponTime += 200;
+
+	bg_q3f_weapon_t* wp;
+	wp = BG_Q3F_GetWeapon(pm->ps->weapon);
+	float reloadtime = wp->clipsize > 0 ? wp->reloadtime / wp->clipsize : wp->reloadtime; //(wp->reloadtime)*((float)(ammo-curammo)/(float)ammo);
+	pm->ps->weaponTime += reloadtime;
+
 	pm->ps->stats[STAT_Q3F_FLAGS] &= ~(1<<Q3F_WEAPON_RELOAD);	// Reset Flag
 	PM_ForceTorsoAnim( PM_GetReloadAnim( pm->ps->weapon, pm->ps->persistant[PERS_CURRCLASS] ) );
 	pm->ps->torsoTimer = 200;
@@ -2062,38 +2067,52 @@ void CG_Q3F_EndReload(void);
 #endif
 
 static void PM_FinishWeaponReload( void ) {
-	pm->ps->weaponstate = WEAPON_RAISING;
-	pm->ps->weaponTime += 250;
-	PM_StartTorsoAnim( PM_GetIdleAnim( pm->ps->weapon, pm->ps->persistant[PERS_CURRCLASS] ) );
-	pm->ps->torsoTimer = 0;
+	int ammo;
+	int curammo;
+	float reloadtime;
+	bg_q3f_weapon_t* wp;
+	wp = BG_Q3F_GetWeapon(pm->ps->weapon);
+
+	ammo = wp->numammo; // pm->ps->weapon == WP_SUPERSHOTGUN ? 2 : 1; // wp->clipsize;
+
+	if (ammo > pm->ps->ammo[wp->ammotype]) {
+		ammo = pm->ps->ammo[wp->ammotype];
+	}
+
+	curammo = Q3F_GetClipValue(pm->ps->weapon, pm->ps);
+
+	// Not actually done reloading singly - go back to RDROPPING
+	if (curammo < wp->clipsize && pm->ps->ammo[wp->ammotype] >= wp->numammo)
+	{
+		reloadtime = wp->clipsize > 0 ? wp->reloadtime / wp->clipsize : wp->reloadtime; //(wp->reloadtime)*((float)(ammo-curammo)/(float)ammo);
+		pm->ps->weaponTime = reloadtime;
+		Q3F_SetClipValue(pm->ps->weapon, curammo + ammo, pm->ps);
+
+		if (curammo + ammo >= wp->clipsize)
+		{
+			// Finished reloading so transition to the next state immediately
+			pm->ps->weaponTime = 0;
+		}
+
+		pm->ps->weaponstate = WEAPON_RDROPPING;
+	}
+	else
+	{
+		pm->ps->weaponstate = WEAPON_RAISING;
+		pm->ps->weaponTime = 0;
+		PM_StartTorsoAnim(PM_GetIdleAnim(pm->ps->weapon, pm->ps->persistant[PERS_CURRCLASS]));
+		pm->ps->torsoTimer = 0;
 
 #ifdef CGAME
-// RR2DO2 - ugly
-	CG_Q3F_EndReload();
+		// RR2DO2 - ugly
+		CG_Q3F_EndReload();
 #endif
+	}
 }
 
 static void PM_DoWeaponReload(void)
 {
-	int ammo;
-	int curammo;
-	float reloadtime;
-	bg_q3f_weapon_t *wp;
-	wp = BG_Q3F_GetWeapon(pm->ps->weapon);
-
-	ammo = wp->clipsize;
-	
-	if(ammo > pm->ps->ammo[wp->ammotype]) {
-		ammo = pm->ps->ammo[wp->ammotype];
-	}
-	
-	// JT - Work out how many clips we're putting back in, and hence how long the delay must be.
-	curammo = Q3F_GetClipValue(pm->ps->weapon, pm->ps);
-	reloadtime = (wp->reloadtime)*((float)(ammo-curammo)/(float)ammo);
-	pm->ps->weaponTime += reloadtime;
 	pm->ps->weaponstate = WEAPON_RELOADING;
-	Q3F_SetClipValue(pm->ps->weapon, ammo, pm->ps);
-	pm->ps->torsoTimer += reloadtime;
 }
 
 
@@ -2187,7 +2206,7 @@ static void PM_Weapon( void ) {
 	// can't change if weapon is firing, but can change
 	// again if lowering or raising
 	if (  (pm->ps->weaponTime <= 0 && pm->ps->weaponstate != WEAPON_AIMING) || pm->ps->weaponstate == WEAPON_RAISING ||
-		pm->ps->weaponstate == WEAPON_DROPPING || pm->ps->weaponstate == WEAPON_READY) {
+		pm->ps->weaponstate == WEAPON_DROPPING || pm->ps->weaponstate == WEAPON_READY || pm->ps->weaponstate == WEAPON_RELOADING || pm->ps->weaponstate == WEAPON_RDROPPING) {
 		//wp2 = BG_Q3F_GetWeapon( cls->weaponslot[pm->cmd.weapon] );
 		wp2= BG_Q3F_GetWeapon( pm->cmd.weapon );
 		if( pm->ps->weapon != pm->cmd.weapon &&
@@ -2210,6 +2229,14 @@ static void PM_Weapon( void ) {
 	}
 // <- JT
 
+	int curammo = Q3F_GetClipValue(pm->ps->weapon, pm->ps);
+	// Allow interrupting a reload by firing if we have the clip
+	if ((pm->ps->weaponstate == WEAPON_RELOADING || pm->ps->weaponstate == WEAPON_RDROPPING) && pm->cmd.buttons & BUTTON_ATTACK && curammo > 0)
+	{
+		pm->ps->weaponTime = 0;
+		pm->ps->weaponstate = WEAPON_READY;
+	}
+
 	if ( pm->ps->weaponTime > 0 ) {
 		return;
 	}
@@ -2222,12 +2249,12 @@ static void PM_Weapon( void ) {
 
 // JT ->
 	// If we're reloading, start the reload timer.
-	if(pm->ps->weaponstate == WEAPON_RDROPPING) {
-		PM_DoWeaponReload();
-		return;
-	}
+	//if(pm->ps->weaponstate == WEAPON_RDROPPING) {
+	//	PM_DoWeaponReload();
+	//	return;
+	//}
 
-	if(pm->ps->weaponstate == WEAPON_RELOADING) {
+	if(pm->ps->weaponstate == WEAPON_RDROPPING) {
 		PM_FinishWeaponReload();	
 		return;
 	}
@@ -2334,6 +2361,12 @@ static void PM_Weapon( void ) {
 
 	// check for fire
 	if ( !(pm->cmd.buttons & BUTTON_ATTACK)) {
+		if (wp->clipsize && curammo < wp->clipsize && pm->ps->weaponstate == WEAPON_READY && pm->ps->ammo[wp->ammotype] >= wp->numammo)
+		{
+			PM_BeginWeaponReload(); // Automatically start reloading if we need to
+			return;
+		}
+
 		if(pm->ps->weaponstate != WEAPON_AIMING)
 		{
 			pm->ps->eFlags &= ~ EF_Q3F_AIMING;
@@ -2423,10 +2456,10 @@ static void PM_Weapon( void ) {
 	{
 		return;
 	}
+
 	// take ammo away
-
-	pm->ps->ammo[ q3f_ammo_type ] -= wp->numammo;
-
+	pm->ps->ammo[q3f_ammo_type] -= wp->numammo;
+		
 	// take a clip away, too
 	if(wp->clipsize)
 		Q3F_SetClipValue(pm->ps->weapon,Q3F_GetClipValue(pm->ps->weapon,pm->ps)-wp->numammo,
