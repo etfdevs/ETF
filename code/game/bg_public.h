@@ -309,8 +309,8 @@ typedef enum {
 } statIndex_t;
 
 typedef enum {
-	Q3F_WEAPON_RELOAD = 0,				// Set when a reload is requested
-	Q3F_WEAPON_NORELOAD,			// Set for clients that don't want auto reload
+	Q3F_WEAPON_RELOAD = 0,			// Set when a reload is requested
+	FL_Q3F_UNUSED,					// Unused keeping for compat
 	FL_Q3F_SCANNER,					// Scanner enabled?
 	FL_Q3F_LAYCHARGE,				// Laying a charge (no shooting/moving)
 	FL_Q3F_BUILDING,				// Building (no shooting/moving)
@@ -855,14 +855,14 @@ void BG_setCrosshair(const char *colString, float *col, float alpha, const char 
 // Keeger support for atmospherics, tracemap
 //
 #ifdef API_ET
-#define MAX_MAP_SIZE 65536
+#define MAX_MAP_SIZE 65536 // 2^16
 
 // Tracemap
 #ifdef CGAMEDLL
 void CG_GenerateTracemap( void );
 #endif // CGAMEDLL
 
-qboolean BG_LoadTraceMap( char *rawmapname, vec2_t world_mins, vec2_t world_maxs );
+qboolean BG_LoadTraceMap( const char *rawmapname, vec2_t world_mins, vec2_t world_maxs );
 float BG_GetSkyHeightAtPoint( vec3_t pos );
 float BG_GetSkyGroundHeightAtPoint( vec3_t pos );
 float BG_GetGroundHeightAtPoint( vec3_t pos );

@@ -394,5 +394,5 @@ void BG_Q3F_Request_Reload(playerState_t *ps)
 	if(Q3F_GetClipValue( ps->weapon,ps ) >= ps->ammo[ Q3F_GetAmmoTypeForWeapon(ps->weapon)] )
 		return;
 
-	ps->stats[STAT_Q3F_FLAGS] |= 1<< Q3F_WEAPON_RELOAD;
+	ps->stats[STAT_Q3F_FLAGS] |= (1<< Q3F_WEAPON_RELOAD);
 }
