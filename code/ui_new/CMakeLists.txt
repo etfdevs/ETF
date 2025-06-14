@@ -23,6 +23,7 @@ add_library(ui MODULE
 	"../game/bg_q3f_playerclass.h"
 	"../api/et/cg_public.h"
 	"ui_atoms.c"
+	"ui_cvar.h"
 	"ui_gameinfo.c"
 	"ui_main.c"
 	"ui_local.h"

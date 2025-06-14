@@ -396,5 +396,5 @@ void BG_Q3F_Request_Reload(playerState_t *ps)
 	if (ps->ammo[wp->ammotype] < wp->clipsize)
 		return;
 
-	ps->stats[STAT_Q3F_FLAGS] |= 1<< Q3F_WEAPON_RELOAD;
+	ps->stats[STAT_Q3F_FLAGS] |= (1<< Q3F_WEAPON_RELOAD);
 }

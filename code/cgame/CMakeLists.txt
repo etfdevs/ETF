@@ -38,6 +38,7 @@ add_library(cgame MODULE
 	"../game/bg_tracemap.c"
 	"cg_atmospheric.c"
 	"cg_consolecmds.c"
+	"cg_cvar.h"
 	"cg_draw.c"
 	"cg_drawtools.c"
 	"cg_effects.c"

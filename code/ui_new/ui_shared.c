@@ -3800,6 +3800,16 @@ void Item_Text_Wrapped_Paint(itemDef_t *item) {
 	DC->drawText(x, y, item->textscale, color, start, 0, 0, item->textStyle, ( ( item->window.flags & WINDOW_USEASSETFONT ) ? NULL : &parent->font ), item->textalignment);
 }
 
+static void strip_decimal( char *numstr ) {
+	char *end = numstr + strlen( numstr );
+	while( end > numstr && *end != '.' ) {
+		--end;
+	}
+	if ( end > numstr && *end == '.' ) {
+		*end = '\0';
+	}
+}
+
 void Item_Text_Paint(itemDef_t *item) {
 	char text[1024];
 	const char *textPtr;
@@ -3824,7 +3834,7 @@ void Item_Text_Paint(itemDef_t *item) {
 		else {
 			DC->getCVarString(item->cvar, text, sizeof(text));
 			if( item->window.flags & WINDOW_TEXTASINT ) {
-				COM_StripExtension(text, text, sizeof(text));
+				strip_decimal( text );
 				item->textRect.w = 0;	// force recalculation
 			} else if( item->window.flags & WINDOW_TEXTASFLOAT ) {
 				const char *s = va( "%.2f", atof(text) );

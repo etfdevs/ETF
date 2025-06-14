@@ -68,7 +68,7 @@ static qhandle_t hudpreviews[ETF_HUDCOUNT][ETF_HUDVARCOUNT];
 
 configData_t configDataTable_General[] = {	
 	{"Sort Scoreboard",			"cg_scoreboardsortmode",		-1, -1, -1, CONFIG_TYPE_FLOATLIST,	0, "By Team;0;By Name;1;By Score;2;By Ping;3"},
-	{"Scoreboard Snapshot",		"cg_ScoreSnapshot",				-1, -1, -1, CONFIG_TYPE_FLOATLIST,	0, "Off;0;TGA;1;JPEG;2"},
+	{"Scoreboard Snapshot",		"cg_scoreSnapshot",				-1, -1, -1, CONFIG_TYPE_FLOATLIST,	0, "Off;0;TGA;1;JPEG;2"},
 	{"Sniper Dot Scale",		"cg_sniperDotScale",			 1,	 3, -1, CONFIG_TYPE_SLIDER,		10},
 	{"Adjust Agent Speed",		"cg_adjustAgentSpeed",			-1, -1, -1, CONFIG_TYPE_YESNO},
 	{"Atmospheric Effects",		"cg_atmosphericEffects",		-1, -1, -1, CONFIG_TYPE_YESNO},
@@ -1078,17 +1078,17 @@ void UI_Refresh( int realtime )
 	
 	trap_GetConfigString(CS_INTERMISSION, buffer, 64);
 	intermissiontime = atoi( buffer );
-	if( intermissiontime && !uiInfo.ScoreSnapshotTaken && uiInfo.ScoreFetched && cg_ScoreSnapshot.integer ) {//uiInfo.uiDC.realTime - intermissiontime > 1000 && uiInfo.Q3F_scoreNum) {
+	if( intermissiontime && !uiInfo.ScoreSnapshotTaken && uiInfo.ScoreFetched && cg_scoreSnapshot.integer ) {//uiInfo.uiDC.realTime - intermissiontime > 1000 && uiInfo.Q3F_scoreNum) {
 		if(nextframe)
 			nextframe = qfalse;
 		else
 		{
 			uiInfo.ScoreFetched = qfalse;
 			nextframe = qtrue;
-			if ( cg_ScoreSnapshot.integer == 1  ) {
+			if ( cg_scoreSnapshot.integer == 1  ) {
 				uiInfo.uiDC.executeText(EXEC_APPEND, "screenshot_etf\n");
 				uiInfo.ScoreSnapshotTaken = qtrue;
-			} else if ( cg_ScoreSnapshot.integer == 2  ) {
+			} else if ( cg_scoreSnapshot.integer == 2  ) {
 				uiInfo.uiDC.executeText(EXEC_APPEND, "screenshotJPEG_etf\n" );
 				uiInfo.ScoreSnapshotTaken = qtrue;
 			}
@@ -2447,7 +2447,7 @@ static void UI_Q3F_DrawBackModels( rectDef_t *rect ) {
 			}
 		} else if ( uiInfo.Q3F_BackModelStatus == Q3F_BM_NEWCURRENT ) {
 			uiInfo.Q3F_BackModelStatus = Q3F_BM_OPENED;
-			trap_R_RemapShader( "ui/gfx/content", "ui/gfx/content", va("%f", (float)uiInfo.uiDC.realTime * 0.0001f) );
+			//trap_R_RemapShader( "ui/gfx/content", "ui/gfx/content", va("%f", (float)uiInfo.uiDC.realTime * 0.0001f) );
 			if( uiInfo.Q3F_BackModelMenuToOpen ) {
 				uiInfo.Q3F_BackModelMenuCurrent = uiInfo.Q3F_BackModelMenuToOpen;
 				uiInfo.Q3F_BackModelMenuToOpen = NULL;
@@ -4158,9 +4158,10 @@ static void UI_RunMenuScript(const char **args) {
 
 			trap_Cvar_Set("sv_maxClients", va("%d",clients));
 		} else if (Q_stricmp(name, "resetDefaults") == 0) {
-			trap_Cmd_ExecuteText( EXEC_APPEND, "exec default.cfg\n");
 			trap_Cmd_ExecuteText( EXEC_APPEND, "cvar_restart\n");
+			trap_Cmd_ExecuteText( EXEC_APPEND, "exec default.cfg\n");
 //			Controls_SetDefaults();
+			// TODO ETF recommended settings
 			trap_Cvar_Set("com_introPlayed", "1" );
 			trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart\n" );
 		} else if (Q_stricmp(name, "getCDKey") == 0) {
@@ -4314,10 +4315,17 @@ static void UI_RunMenuScript(const char **args) {
 			Menus_CloseAll();
 			Menus_ActivateByName("setup_menu2");
 		} else if (Q_stricmp(name, "Leave") == 0) {
-			trap_Cmd_ExecuteText( EXEC_APPEND, "disconnect\n" );
-			trap_Key_SetCatcher( KEYCATCH_UI );
-			Menus_CloseAll();
-			Menus_ActivateByName("main");
+			// if we are running a local server, make sure we
+			// kill it cleanly for other clients
+			if (trap_Cvar_VariableValue("sv_running") != 0) {
+				trap_Cvar_Set("sv_killserver", "1");
+			}
+			else {
+				trap_Cmd_ExecuteText(EXEC_APPEND, "disconnect\n");
+				trap_Key_SetCatcher(KEYCATCH_UI);
+				Menus_CloseAll();
+				Menus_ActivateByName("main");
+			}
 		} else if (Q_stricmp(name, "ServerSort") == 0) {
 			int sortColumn;
 			if (Int_Parse(args, &sortColumn)) {
@@ -4353,10 +4361,6 @@ static void UI_RunMenuScript(const char **args) {
 		} else if (Q_stricmp(name, "voteUnMute") == 0) {
 			if (uiInfo.Q3F_playerindex >= 0 && uiInfo.Q3F_playerindex < uiInfo.Q3F_playercount) {
 				trap_Cmd_ExecuteText( EXEC_APPEND, va("callvote unmute %d\n", uiInfo.Q3F_clientNumber[uiInfo.Q3F_playerindex]));
-			}
-		} else if (Q_stricmp(name, "voteLeader") == 0) {
-			if (uiInfo.teamIndex >= 0 && uiInfo.teamIndex < uiInfo.myTeamCount) {
-				trap_Cmd_ExecuteText( EXEC_APPEND, va("callteamvote leader %s\n",uiInfo.teamNames[uiInfo.teamIndex]) );
 			}
 		} else if (Q_stricmp(name, "addFavorite") == 0) {
 			if (ui_netSource.integer != AS_FAVORITES) {
@@ -4510,7 +4514,7 @@ static void UI_RunMenuScript(const char **args) {
 					uiInfo.Q3F_BackModelMenuCurrent = NULL;
 				}
 			}
-			trap_R_RemapShader( "ui/gfx/content", "ui/gfx/content", va("%f", (float)uiInfo.uiDC.realTime * 0.0001f) );
+			//trap_R_RemapShader( "ui/gfx/content", "ui/gfx/content", va("%f", (float)uiInfo.uiDC.realTime * 0.0001f) );
 			uiInfo.Q3F_BackModelStatus = Q3F_BM_OPENED;
 			if( uiInfo.Q3F_BackModelMenuToOpen ) {
 				uiInfo.Q3F_BackModelMenuCurrent = uiInfo.Q3F_BackModelMenuToOpen;
@@ -7413,248 +7417,21 @@ typedef struct {
 	int			modificationCount;	// for tracking changes
 } cvarTable_t;
 
-vmCvar_t	ui_browserMaster;
-vmCvar_t	ui_browserGameType;
-vmCvar_t	ui_browserSortKey;
-vmCvar_t	ui_browserShowFull;
-vmCvar_t	ui_browserShowEmpty;
-vmCvar_t	ui_browserShowPasswordProtected;
-vmCvar_t	ui_browserShowVersion;
-
-vmCvar_t	ui_brassTime;
-vmCvar_t	ui_drawCrosshair;
-vmCvar_t	ui_drawCrosshairNames;
-vmCvar_t	ui_marks;
-
-vmCvar_t	ui_server1;
-vmCvar_t	ui_server2;
-vmCvar_t	ui_server3;
-vmCvar_t	ui_server4;
-vmCvar_t	ui_server5;
-vmCvar_t	ui_server6;
-vmCvar_t	ui_server7;
-vmCvar_t	ui_server8;
-vmCvar_t	ui_server9;
-vmCvar_t	ui_server10;
-vmCvar_t	ui_server11;
-vmCvar_t	ui_server12;
-vmCvar_t	ui_server13;
-vmCvar_t	ui_server14;
-vmCvar_t	ui_server15;
-vmCvar_t	ui_server16;
-
-vmCvar_t	ui_cdkeychecked;
-
-vmCvar_t	ui_dedicated;
-//vmCvar_t	ui_gameType;
-//vmCvar_t	ui_netGameType;
-//vmCvar_t	ui_joinGameType;
-vmCvar_t	ui_netSource;
-vmCvar_t	ui_serverFilterType;
-vmCvar_t	ui_menuFiles;
-vmCvar_t	ui_ingameMenuFiles;
-vmCvar_t	ui_currentMap;
-vmCvar_t	ui_currentNetMap;
-vmCvar_t	ui_mapIndex;
-vmCvar_t	ui_selectedPlayer;
-vmCvar_t	ui_selectedPlayerName;
-vmCvar_t	ui_lastServerRefresh_0;
-vmCvar_t	ui_lastServerRefresh_1;
-vmCvar_t	ui_lastServerRefresh_2;
-vmCvar_t	ui_lastServerRefresh_3;
-//vmCvar_t	ui_captureLimit;
-//vmCvar_t	ui_fragLimit;
-vmCvar_t	ui_smallFont;
-vmCvar_t	ui_bigFont;
-vmCvar_t	ui_findPlayer;
-vmCvar_t	ui_hudFiles;
-vmCvar_t	ui_recordSPDemo;
-vmCvar_t	ui_realCaptureLimit;
-vmCvar_t	ui_realWarmUp;
-vmCvar_t	ui_serverStatusTimeOut;
-// RR2DO2
-//vmCvar_t	ui_menuRotateSpeed;
-// RR2DO2
-// djbob
-vmCvar_t	hud_chosenClass;
-vmCvar_t	hud_allowClasses;
-vmCvar_t	hud_maxClasses;
-vmCvar_t	hud_currentClasses;
-
-vmCvar_t	ui_specifyServer;
-vmCvar_t	ui_specifyPort;
-
-vmCvar_t	cg_ScoreSnapshot;
-
-vmCvar_t	ui_language;
-// djbob
-
-vmCvar_t	com_hunkmegs;
-
-//cgame mappings
-vmCvar_t	cg_crosshairColor;
-vmCvar_t	cg_crosshairColorAlt;
-vmCvar_t	cg_crosshairAlpha;
-vmCvar_t	cg_crosshairAlphaAlt;
-
-// slothy
-vmCvar_t	cg_crosshairSize;
-vmCvar_t	ui_addSpecifyFavorites;
-vmCvar_t	ui_checkversion;
+#define DECLARE_UI_CVAR
+	#include "ui_cvar.h"
+#undef DECLARE_UI_CVAR
 
 static cvarTable_t		cvarTable[] = {
-	{ NULL,						"cg_grenadePrimeSound",		"sound/grentimer/grentimer.wav",	CVAR_ARCHIVE },
-	{ NULL,						"cg_scoreboardsortmode",	"0",								CVAR_ARCHIVE },
-	{ NULL,						"cg_sniperDotScale",		"0.3",								CVAR_ARCHIVE },
-	{ NULL,						"cg_adjustAgentSpeed",		"1",								CVAR_ARCHIVE },
-	{ NULL,						"cg_atmosphericEffects",	"0",								CVAR_ARCHIVE },
-	{ NULL,						"cg_drawPanel",				"1",								CVAR_ARCHIVE },
-	{ NULL,						"cg_execClassConfigs",		"0",								CVAR_ARCHIVE },	
-	{ NULL,						"cg_execMapConfigs",		"1",								CVAR_ARCHIVE },
-	{ NULL,						"cg_filterObituaries",		"0",								CVAR_ARCHIVE },
-	{ NULL,						"cg_friendlyCrosshair",		"1",								CVAR_ARCHIVE },
-	{ NULL,						"cg_impactVibration",		"1",								CVAR_ARCHIVE },
-	{ NULL,						"cg_lowEffects",			"1",								CVAR_ARCHIVE },
-	{ NULL,						"cg_no3DExplosions",		"0",								CVAR_ARCHIVE },
-	{ NULL,						"cg_oldSkoolMenu",			"0",								CVAR_ARCHIVE },
-	{ NULL,						"cg_playClassSound",		"1",								CVAR_ARCHIVE },
-	{ NULL,						"cg_showGrenadeTimer1",		"0",								CVAR_ARCHIVE },
-	{ NULL,						"cg_showGrenadeTimer2",		"1",								CVAR_ARCHIVE },
-	{ NULL,						"cg_visualAids",			"0",								CVAR_ARCHIVE },
-	{ NULL,						"cg_showSentryCam",			"1",								CVAR_ARCHIVE },
-	{ NULL,						"cg_sniperDotColors",		"1",								CVAR_ARCHIVE },
-	{ NULL,						"cg_sniperHistoricalSight", "0",								CVAR_ARCHIVE },
-	{ NULL,						"cg_flares",				"0",								CVAR_ARCHIVE },
-	{ NULL,						"r_fastSky",				"0",								CVAR_ARCHIVE },
-	{ NULL,						"cg_drawSkyPortal",			"0",								CVAR_ARCHIVE },
-	{ &ui_drawCrosshairNames,	"cg_drawCrosshairNames",	"1",								CVAR_ARCHIVE },
-	{ NULL,						"r_dynamiclight",			"0",								CVAR_ARCHIVE },
-	{ &ui_brassTime,			"cg_brassTime",				"1",								CVAR_ARCHIVE },
-	{ NULL,						"cg_simpleItems",			"0",								CVAR_ARCHIVE },
-	{ NULL,						"cl_allowDownload",			"0",								CVAR_ARCHIVE },
-	{ NULL,						"cg_drawFriend",			"1",								CVAR_ARCHIVE },
-	{ NULL,						"cg_bloodFlash",			"1.0",								CVAR_ARCHIVE },
-   //keeg unsure what this is for
-//  	{ NULL, "cg_crosshairColor", "White", CVAR_ARCHIVE },
-//	{ NULL, "cg_crosshairAlpha", "1.0", CVAR_ARCHIVE },
-//	{ NULL, "cg_crosshairColorAlt", "White", CVAR_ARCHIVE },
- 
-	// cgame mappings
-	{ &cg_crosshairAlpha,		"cg_crosshairAlpha",		"1.0",								CVAR_ARCHIVE },
-	{ &cg_crosshairAlphaAlt,	"cg_crosshairAlphaAlt",		"1.0",								CVAR_ARCHIVE },
-	{ &cg_crosshairColor,		"cg_crosshairColor",		"White",							CVAR_ARCHIVE },
-	{ &cg_crosshairColorAlt,	"cg_crosshairColorAlt",		"White",							CVAR_ARCHIVE },
-	{ NULL,						"cg_crosshairHealth",		"0",								CVAR_ARCHIVE },
-
-// slothy
-	{ &cg_crosshairSize,		"cg_crosshairSize",			"48",								CVAR_ARCHIVE },
-	{ NULL,						"cg_drawSpeedometer",		"0",								CVAR_ARCHIVE },
-// end slothy
-
-// cana
-	{ NULL,						"cg_markTime",				"20000",							CVAR_ARCHIVE },
-// end cana
-
-   { &ui_browserMaster,			"ui_browserMaster",			"0",								CVAR_ARCHIVE },
-	{ &ui_browserGameType,		"ui_browserGameType",		"0",								CVAR_ARCHIVE },
-	{ &ui_browserSortKey,		"ui_browserSortKey",		"4",								CVAR_ARCHIVE },
-	{ &ui_browserShowFull,		"ui_browserShowFull",		"1",								CVAR_ARCHIVE },
-	{ &ui_browserShowEmpty,		"ui_browserShowEmpty",		"1",								CVAR_ARCHIVE },
-	{ &ui_browserShowPasswordProtected,		"ui_browserShowPasswordProtected",	"1",								CVAR_ARCHIVE },
-	{ &ui_browserShowVersion,	"ui_browserShowVersion",	"1",								CVAR_ARCHIVE },
-
-	{ &ui_drawCrosshair,		"cg_drawCrosshair",			"4",								CVAR_ARCHIVE },
-
-	{ &ui_server1,				"server1",					"",									CVAR_ARCHIVE },
-	{ &ui_server2,				"server2",					"",									CVAR_ARCHIVE },
-	{ &ui_server3,				"server3",					"",									CVAR_ARCHIVE },
-	{ &ui_server4,				"server4",					"",									CVAR_ARCHIVE },
-	{ &ui_server5,				"server5",					"",									CVAR_ARCHIVE },
-	{ &ui_server6,				"server6",					"",									CVAR_ARCHIVE },
-	{ &ui_server7,				"server7",					"",									CVAR_ARCHIVE },
-	{ &ui_server8,				"server8",					"",									CVAR_ARCHIVE },
-	{ &ui_server9,				"server9",					"",									CVAR_ARCHIVE },
-	{ &ui_server10,				"server10",					"",									CVAR_ARCHIVE },
-	{ &ui_server11,				"server11",					"",									CVAR_ARCHIVE },
-	{ &ui_server12,				"server12",					"",									CVAR_ARCHIVE },
-	{ &ui_server13,				"server13",					"",									CVAR_ARCHIVE },
-	{ &ui_server14,				"server14",					"",									CVAR_ARCHIVE },
-	{ &ui_server15,				"server15",					"",									CVAR_ARCHIVE },
-	{ &ui_server16,				"server16",					"",									CVAR_ARCHIVE },
-	{ &ui_cdkeychecked,			"ui_cdkeychecked",			"0",								CVAR_ROM },
-	{ &ui_currentMap,			"ui_currentMap",			"0",								CVAR_TEMP },
-	{ &ui_currentNetMap,		"ui_currentNetMap",			"0",								CVAR_TEMP },
-	{ &ui_mapIndex,				"ui_mapIndex",				"0",								CVAR_TEMP },
-	{ &hud_chosenClass,			"hud_chosenClass",			"0",								CVAR_TEMP },
-	{ &ui_dedicated,			"ui_dedicated",				"0",								CVAR_ARCHIVE },
-	{ &ui_netSource,			"ui_netSource",				"1",								CVAR_ARCHIVE },
-	{ &ui_menuFiles,			"ui_menuFiles",				"ui/menus.txt",						CVAR_ARCHIVE },
-	{ &ui_ingameMenuFiles,		"ui_ingameMenuFiles",		"ui/ingame.txt",					CVAR_ARCHIVE },
-	{ &ui_selectedPlayer,		"cg_selectedPlayer",		"0",								CVAR_ARCHIVE},
-	{ &ui_selectedPlayerName,	"cg_selectedPlayerName",	"",									CVAR_ARCHIVE},
-	{ &ui_lastServerRefresh_0,	"ui_lastServerRefresh_0",	"",									CVAR_ARCHIVE},
-	{ &ui_lastServerRefresh_1,	"ui_lastServerRefresh_1",	"",									CVAR_ARCHIVE},
-	{ &ui_lastServerRefresh_2,	"ui_lastServerRefresh_2",	"",									CVAR_ARCHIVE},
-	{ &ui_lastServerRefresh_3,	"ui_lastServerRefresh_3",	"",									CVAR_ARCHIVE},
-	{ &ui_smallFont,			"ui_smallFont",				"0.19",								CVAR_ARCHIVE},
-	{ &ui_bigFont,				"ui_bigFont",				"0.3",								CVAR_ARCHIVE},
-	{ &ui_findPlayer,			"ui_findPlayer",			"ETF_PLAYER",						CVAR_ARCHIVE},
-	{ &ui_hudFiles,				"cg_hudFiles",				"ui/hud/default/medium.menu",		CVAR_ARCHIVE},
-	{ &ui_recordSPDemo,			"ui_recordSPDemo",			"0",								CVAR_ARCHIVE},
-	{ &ui_realWarmUp,			"g_warmup",					"20",								CVAR_ARCHIVE},
-	{ &ui_realCaptureLimit,		"capturelimit",				"0",								CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART},
-	{ &ui_serverStatusTimeOut,	"ui_serverStatusTimeOut",	"7000",								CVAR_ARCHIVE},
-// RR2DO2
-//	{ &ui_menuRotateSpeed,		"ui_menuRotateSpeed",		"1",								CVAR_ARCHIVE },	// range 0 - 10
-// RR2DO2
-// djbob
-
-	{ &hud_allowClasses,		"hud_allowClasses",			"0000000000",						CVAR_ROM | CVAR_TEMP },
-	{ &hud_currentClasses,		"hud_currentClasses",		"00000000000000000000",				CVAR_ROM | CVAR_TEMP },
-	{ &hud_maxClasses,			"hud_maxClasses",			"00000000000000000000",				CVAR_ROM | CVAR_TEMP },
-
-	{ NULL,						"hud_admin_auth",			"0",								CVAR_ROM | CVAR_TEMP },
-	{ NULL,						"hud_rcon_auth",			"0",								CVAR_ROM | CVAR_TEMP },
-	
-	{ &ui_specifyServer,		"ui_specifyServer",			"",									CVAR_ARCHIVE },
-	{ &ui_specifyPort,			"ui_specifyPort",			"27960",							CVAR_ARCHIVE },
-
-	{ NULL,						"discard_shells",			"-1",								CVAR_ARCHIVE },
-	{ NULL,						"discard_cells",			"-1",								CVAR_ARCHIVE },
-	{ NULL,						"discard_rockets",			"-1",								CVAR_ARCHIVE },
-	{ NULL,						"r_loresskins",				"0",								CVAR_ARCHIVE | CVAR_LATCH }, 
-
-	{ &cg_ScoreSnapshot,		"cg_ScoreSnapshot",			"0",								CVAR_ARCHIVE },
-
-	{ &ui_language,				"ui_language",				"english",							CVAR_ARCHIVE },
-// djbob
-
-// slothy
-	{ NULL,						"ui_showtooltips",			"1",								CVAR_ARCHIVE },
-	{ &ui_addSpecifyFavorites,	"ui_addSpecifyFavorites",	"0",								CVAR_TEMP },
-	{ NULL,						"ui_favServerName",			"",									CVAR_ARCHIVE },
-	{ NULL,						"scr_conspeed",				"3",								CVAR_ARCHIVE },
-	{ NULL,						"ui_memsize",				"0",								CVAR_ARCHIVE },
-	{ NULL,						"ui_netspeed",				"2",								CVAR_ARCHIVE },
-	
-// slothy	
-
-	{ &com_hunkmegs,			"com_hunkmegs",				"128",								CVAR_ARCHIVE | CVAR_LATCH },
-	{ NULL,						"com_zonemegs",				"24",								CVAR_ARCHIVE },
-	{ NULL,						"com_soundmegs",			"24",								CVAR_ARCHIVE },
-
-// slothy - adding these because they weren't being saved
-	{ NULL,						"r_displayrefresh",			"0",								CVAR_ARCHIVE },
-	{ NULL,						"r_intensity",				"1",								CVAR_ARCHIVE },
-	{ NULL,						"allowRedirect",			"0",								CVAR_ARCHIVE },
-	{ &ui_checkversion,			"ui_checkversion",			"0",								CVAR_ARCHIVE },
+#define UI_CVAR_LIST
+	#include "ui_cvar.h"
+#undef UI_CVAR_LIST
 };
 
 static const int cvarTableSize = (int)ARRAY_LEN( cvarTable );
 
 typedef struct {
 	vmCvar_t	*vmCvar;
-	char		*cvarName;
+	const char		*cvarName;
 	int			defaultValue;
 	int			min;
 	int			max;

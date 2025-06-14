@@ -44,87 +44,9 @@ If you have questions concerning this license or the applicable additional terms
 
 // global display context
 
-extern vmCvar_t	ui_browserMaster;
-extern vmCvar_t	ui_browserGameType;
-extern vmCvar_t	ui_browserSortKey;
-extern vmCvar_t	ui_browserShowFull;
-extern vmCvar_t	ui_browserShowEmpty;
-extern vmCvar_t	ui_browserShowPasswordProtected;
-extern vmCvar_t	ui_browserShowVersion;
-
-extern vmCvar_t	ui_brassTime;
-extern vmCvar_t	ui_drawCrosshair;
-extern vmCvar_t	ui_drawCrosshairNames;
-extern vmCvar_t	ui_marks;
-
-extern vmCvar_t	ui_server1;
-extern vmCvar_t	ui_server2;
-extern vmCvar_t	ui_server3;
-extern vmCvar_t	ui_server4;
-extern vmCvar_t	ui_server5;
-extern vmCvar_t	ui_server6;
-extern vmCvar_t	ui_server7;
-extern vmCvar_t	ui_server8;
-extern vmCvar_t	ui_server9;
-extern vmCvar_t	ui_server10;
-extern vmCvar_t	ui_server11;
-extern vmCvar_t	ui_server12;
-extern vmCvar_t	ui_server13;
-extern vmCvar_t	ui_server14;
-extern vmCvar_t	ui_server15;
-extern vmCvar_t	ui_server16;
-
-extern vmCvar_t	ui_cdkey;
-extern vmCvar_t	ui_cdkeychecked;
-
-//extern vmCvar_t	ui_captureLimit;
-//extern vmCvar_t	ui_fragLimit;
-//extern vmCvar_t	ui_gameType;
-//extern vmCvar_t	ui_netGameType;
-//extern vmCvar_t	ui_joinGameType;
-extern vmCvar_t	ui_netSource;
-extern vmCvar_t	ui_serverFilterType;
-extern vmCvar_t	ui_dedicated;
-extern vmCvar_t	ui_menuFiles;
-extern vmCvar_t ui_ingameMenuFiles;
-extern vmCvar_t	ui_currentMap;
-extern vmCvar_t	ui_currentNetMap;
-extern vmCvar_t	ui_mapIndex;
-extern vmCvar_t	ui_selectedPlayer;
-extern vmCvar_t	ui_selectedPlayerName;
-extern vmCvar_t	ui_lastServerRefresh_0;
-extern vmCvar_t	ui_lastServerRefresh_1;
-extern vmCvar_t	ui_lastServerRefresh_2;
-extern vmCvar_t	ui_lastServerRefresh_3;
-extern vmCvar_t	ui_smallFont;
-extern vmCvar_t	ui_bigFont;
-extern vmCvar_t ui_serverStatusTimeOut;
-
-// RR2DO2
-//extern vmCvar_t ui_menuRotateSpeed;
-// RR2DO2
-
-// djbob
-extern vmCvar_t hud_allowClasses;
-extern vmCvar_t	hud_maxClasses;
-extern vmCvar_t	hud_currentClasses;
-
-extern vmCvar_t	ui_specifyServer;
-extern vmCvar_t	ui_specifyPort;
-
-extern vmCvar_t	cg_ScoreSnapshot;
-// djbob
-
-// slothy
-extern vmCvar_t cg_crosshairAlpha;
-extern vmCvar_t cg_crosshairAlphaAlt;
-extern vmCvar_t cg_crosshairColor;
-extern vmCvar_t cg_crosshairColorAlt;
-extern vmCvar_t	cg_crosshairSize;
-
-extern vmCvar_t ui_addSpecifyFavorites;
-extern vmCvar_t ui_checkversion;
-// slothy
+#define EXTERN_UI_CVAR
+	#include "ui_cvar.h"
+#undef EXTERN_UI_CVAR
 
 qboolean UI_Q3F_RegisterClassModels( int classNum );
 
