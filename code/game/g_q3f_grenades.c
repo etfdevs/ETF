@@ -1053,25 +1053,25 @@ qboolean NormalExplode( gentity_t *grenade )
 
 g_q3f_grenade_t g_q3f_grenade_none = {
 	&bg_q3f_grenade_none,
-	0,
-	0,
+	NULL,
+	NULL,
 };
 
 g_q3f_grenade_t g_q3f_grenade_normal = {
 	&bg_q3f_grenade_normal,
-	0,
+	NULL,
 	&NormalExplode//0,
 };
 
 g_q3f_grenade_t g_q3f_grenade_concuss = {
 	&bg_q3f_grenade_concuss,
-	0,
+	NULL,
 	&ConcussExplode,
 };
 
 g_q3f_grenade_t g_q3f_grenade_flash = {
 	&bg_q3f_grenade_flash,
-	0,
+	NULL,
 	&FlashExplode,
 };
 
@@ -1083,44 +1083,44 @@ g_q3f_grenade_t g_q3f_grenade_flare = {
 
 g_q3f_grenade_t g_q3f_grenade_nail = {
 	&bg_q3f_grenade_nail,
-	0,
+	NULL,
 	&NailExplode,
 };
 
 g_q3f_grenade_t g_q3f_grenade_cluster = {
 	&bg_q3f_grenade_clustersection,
-	0,
+	NULL,
 	&ClusterExplode,
 };
 
 g_q3f_grenade_t g_q3f_grenade_clustersection = {
 	&bg_q3f_grenade_clustersection,
-	0,
+	NULL,
 	&NormalExplode, //djbob: missing explosion????
 };
 
 g_q3f_grenade_t g_q3f_grenade_napalm = {
 	&bg_q3f_grenade_napalm,
-	0,
+	NULL,
 	&NapalmExplode,
 };
 
 g_q3f_grenade_t g_q3f_grenade_gas = {
 	&bg_q3f_grenade_gas,
-	0,
+	NULL,
 	&HallucinogenicExplode,
 };
 
 g_q3f_grenade_t g_q3f_grenade_emp = {
 	&bg_q3f_grenade_emp,
-	0,
+	NULL,
 	&EmpExplode,
 };
 
 g_q3f_grenade_t g_q3f_grenade_charge = {
 	&bg_q3f_grenade_charge,
-	0,
-	0,		// NOT a grenade, not to be thrown like one :)
+	NULL,
+	NULL,		// NOT a grenade, not to be thrown like one :)
 };
 
 g_q3f_grenade_t *g_q3f_grenades[Q3F_NUM_GRENADES] = {
@@ -1193,7 +1193,7 @@ static void G_Q3F_GrenadeThink( gentity_t *ent )
 		if (client && given < client->pers.stats.data[statnum].given) 
 			client->pers.stats.data[statnum].hits++;
 
-		if( ent->count && ent->activator && ent->activator->health > 0 && client )
+		if( ent->count && ent->s.weapon != Q3F_GREN_CONCUSS && ent->activator && ent->activator->health > 0 && client )
 		{
 			int r = (rand() % 3);
 			// They forgot to throw the grenade :)
