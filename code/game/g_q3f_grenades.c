@@ -82,7 +82,7 @@ qboolean ConcussExplode( gentity_t *ent )
 
 	gentity_t *player;
 	gentity_t *temp;
-	int distance, effect;
+	float distance, effect;
 	vec3_t distancevec, bouncevec;
 	trace_t trace;
 	bg_q3f_playerclass_t *cls;
@@ -143,19 +143,52 @@ qboolean ConcussExplode( gentity_t *ent )
 				VectorScale( distancevec, (1.0 - distance / 400.0) * 230 /*g_grenadeConcBlast.integer*/ / 4, bouncevec );
 			else VectorScale( distancevec, (1.0 - distance / 400.0) * 230 /*g_grenadeConcBlast.integer*/, bouncevec );
 	#else
-			// TF-style conc-blast (Oh, the horror!)
-			effect = distance * ((230 /*g_grenadeConcBlast.integer*/ - 0.5 * distance) / 20);
-			if( cls->maxammo_nails != 200 )
-				effect *= 200 / cls->mass;
-			VectorNormalize2( distancevec, bouncevec );
-			VectorScale( bouncevec, effect, bouncevec );
-			// RR2DO2: Little hack(?) to limit horizontal conc blast
-			/*bouncevec[0] *= g_grenadeConcHBlast.value * 0.01f;
-			bouncevec[1] *= g_grenadeConcHBlast.value * 0.01f;
-			bouncevec[2] *= g_grenadeConcVBlast.value * 0.01f;*/
-			bouncevec[0] *= 0.8f;
-			bouncevec[1] *= 0.8f;
-			bouncevec[2] *= 0.95f;
+			if (ent->count && player == ent->activator && g_newStunGren.integer)
+			{
+				// Handheld
+				vec3_t vel, vel_check, player_vel;
+				float stored_z = 0.f;
+				VectorCopy(player->client->ps.velocity, vel);
+
+				VectorScale(vel, 2.5f, bouncevec);
+				if (bouncevec[2] >= 0.f) {
+					bouncevec[2] *= 1.5f;
+				}
+
+				VectorCopy(bouncevec, vel_check);
+				vel_check[2] = 0.f;
+				float vel_length = VectorLength(vel_check);
+				if (vel_length > 1200) {
+					vec3_t vel_scaled;
+					VectorCopy(bouncevec, vel_scaled);
+					stored_z = vel_scaled[2];
+					vel_scaled[2] = 0.f;
+					VectorNormalize(vel_scaled);
+					VectorScale(vel_scaled, 1200.f, bouncevec);
+				}
+
+				VectorCopy(player->client->ps.velocity, player_vel);
+				player_vel[2] = 0.f;
+
+				VectorSubtract(bouncevec, player_vel, bouncevec);
+				bouncevec[2] += stored_z;
+			}
+			else
+			{
+				// TF-style conc-blast (Oh, the horror!)
+				effect = distance * ((230 /*g_grenadeConcBlast.integer*/ - 0.5 * distance) / 20);
+				if (cls->maxammo_nails != 200)
+					effect *= 200 / cls->mass;
+				VectorNormalize2(distancevec, bouncevec);
+				VectorScale(bouncevec, effect, bouncevec);
+				// RR2DO2: Little hack(?) to limit horizontal conc blast
+				/*bouncevec[0] *= g_grenadeConcHBlast.value * 0.01f;
+				bouncevec[1] *= g_grenadeConcHBlast.value * 0.01f;
+				bouncevec[2] *= g_grenadeConcVBlast.value * 0.01f;*/
+				bouncevec[0] *= 0.8f;
+				bouncevec[1] *= 0.8f;
+				bouncevec[2] *= 0.95f;
+			}
 	#endif
 			VectorAdd( player->client->ps.velocity, bouncevec, player->client->ps.velocity );
 		}
