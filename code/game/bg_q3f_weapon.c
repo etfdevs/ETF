@@ -393,6 +393,8 @@ void BG_Q3F_Request_Reload(playerState_t *ps)
 	// RR2DO2 : if we don't have enough ammo to reload, return
 	if(Q3F_GetClipValue( ps->weapon,ps ) >= ps->ammo[ Q3F_GetAmmoTypeForWeapon(ps->weapon)] )
 		return;
+	if (ps->ammo[wp->ammotype] < wp->clipsize)
+		return;
 
 	ps->stats[STAT_Q3F_FLAGS] |= 1<< Q3F_WEAPON_RELOAD;
 }

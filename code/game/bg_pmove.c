@@ -2212,17 +2212,18 @@ static void PM_Weapon( void ) {
 		if( pm->ps->weapon != pm->cmd.weapon &&
 			(pm->ps->ammo[wp2->ammotype] >= wp2->numammo || !wp2->numammo ))
 		{
+			pm->ps->weaponTime = 0; // Allow weapon swapping to happen instantly so it properly interrupts reloads
 			PM_BeginWeaponChange( pm->cmd.weapon );
 		} 
 	}
 	
-	if ( pm->cmd.wbuttons & WBUTTON_RELOAD)
+	if ( pm->cmd.wbuttons & WBUTTON_RELOAD )
 		BG_Q3F_Request_Reload( pm->ps );
 
 // JT ->
 	if( pm->ps->weaponstate == WEAPON_READY && 
 		(pm->ps->stats[STAT_Q3F_FLAGS] & (1 << Q3F_WEAPON_RELOAD))
-		&& wp->clipsize && pm->ps->ammo[wp->ammotype] >= wp->numammo )
+		&& wp->clipsize && pm->ps->ammo[wp->ammotype] >= wp->numammo && pm->ps->ammo[wp->ammotype] >= wp->clipsize)
 	{
 		PM_BeginWeaponReload();
 		return;
@@ -2361,7 +2362,12 @@ static void PM_Weapon( void ) {
 
 	// check for fire
 	if ( !(pm->cmd.buttons & BUTTON_ATTACK)) {
-		if (wp->clipsize && curammo < wp->clipsize && pm->ps->weaponstate == WEAPON_READY && pm->ps->ammo[wp->ammotype] >= wp->numammo)
+		if (wp->clipsize && curammo < wp->clipsize
+			&& pm->ps->weaponstate == WEAPON_READY
+			&& pm->ps->ammo[wp->ammotype] >= wp->numammo
+			&& pm->ps->ammo[wp->ammotype] > curammo
+			&& pm->ps->ammo[wp->ammotype] >= wp->clipsize
+			&& pm->ps->persistant[PERS_FLAGS] & PF_AUTORELOAD)
 		{
 			PM_BeginWeaponReload(); // Automatically start reloading if we need to
 			return;
