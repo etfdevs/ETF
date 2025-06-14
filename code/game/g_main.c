@@ -53,8 +53,8 @@ typedef struct {
 	const char	*cvarName;
 	const char	*defaultString;
 	int			cvarFlags;
-	int			modificationCount;  // for tracking changes
 	qboolean	trackChange;	    // track this variable, and announce if changed
+	int			modificationCount;  // for tracking changes
 } cvarTable_t;
 
 gentity_t		g_entities[MAX_GENTITIES];
@@ -65,21 +65,6 @@ gclient_t		g_clients[MAX_CLIENTS];
 #undef DECLARE_G_CVAR
 
 static cvarTable_t		gameCvarTable[] = {
-	// don't override the cheat state set by the system
-	{ &g_cheats, "sv_cheats", "", 0, 0, qfalse },
-
-	// noset vars
-	{ NULL, "gamename", GAME_VERSION , CVAR_SERVERINFO | CVAR_ROM, 0, qfalse  },
-	{ NULL, "gamedate", __DATE__ , CVAR_ROM, 0, qfalse  },
-	{ NULL, "sv_pure", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qtrue },
-
-	// server browser vars abusing vanilla ET info response for our cvars
-	{ NULL, "sv_numbots", "0", CVAR_SERVERINFO, 0, qtrue },
-	{ NULL, "g_maxlives", "1", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },	// Slothy: pure info for server browser info
-	{ NULL, "g_heavyWeaponRestriction", FORTS_SHORTVERSION, CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },		// Ensiform: ETF shortversion for server browser info
-	{ NULL, "g_balancedteams", "0", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qtrue },			// Ensiform: bot count for server browser info
-	{ NULL, "g_antilag", "1", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, 0, qfalse }, // gameindex for server browser
-
 #define G_CVAR_LIST
 	#include "g_cvar.h"
 #undef G_CVAR_LIST
@@ -1024,7 +1009,7 @@ void CalculateRanks( void ) {
 			level.sortedClients[level.numConnectedClients] = i;
 			level.numConnectedClients++;
 
-			if ( level.clients[i].sess.sessionTeam != Q3F_TEAM_SPECTATOR ) {
+			if ( level.clients[i].sess.sessionTeam != Q3F_TEAM_SPECTATOR && level.clients[i].ps.persistant[PERS_CURRCLASS] != Q3F_CLASS_NULL ) {
 				level.numNonSpectatorClients++;
 				if ( level.clients[i].pers.connected == CON_CONNECTED ) {
 					level.numPlayingClients++;

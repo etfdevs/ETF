@@ -76,6 +76,7 @@ void CG_GenerateTracemap( void ) {
 	static int lastDraw = 0;
 	static int tracecount = 0;
 	int ms;
+	char lwrmapname[MAX_QPATH];
 
 	if( !developer.integer ) {
 		CG_Printf(BOX_PRINT_MODE_CHAT, "Can only generate a tracemap in developer mode.\n" );
@@ -358,8 +359,11 @@ void CG_GenerateTracemap( void ) {
 		}
 	}
 
+	Q_strncpyz(lwrmapname, cgs.rawmapname, sizeof(lwrmapname));
+	Q_strlwr(lwrmapname);
+
 	// write tga
-	trap_FS_FOpenFile( va( "maps/%s_tracemap.tga", Q_strlwr(cgs.rawmapname) ), &f, FS_WRITE );
+	trap_FS_FOpenFile( va( "maps/%s_tracemap.tga", lwrmapname ), &f, FS_WRITE );
 
 	// header
 	data = 0; trap_FS_Write( &data, sizeof(data), f );	// 0
@@ -425,7 +429,7 @@ void CG_GenerateTracemap( void ) {
 }
 #endif // CGAMEDLL
 
-qboolean BG_LoadTraceMap( char *rawmapname, vec2_t world_mins, vec2_t world_maxs ) {
+qboolean BG_LoadTraceMap( const char *rawmapname, vec2_t world_mins, vec2_t world_maxs ) {
 	int i, j;
 	fileHandle_t f;
 	byte data, datablock[TRACEMAP_SIZE][4];
@@ -434,12 +438,16 @@ qboolean BG_LoadTraceMap( char *rawmapname, vec2_t world_mins, vec2_t world_maxs
 	int skyground_min, skyground_max;
 	float scalefactor;
 	//int startTime = trap_Milliseconds();
+	char lwrmapname[MAX_QPATH];
+
+	Q_strncpyz(lwrmapname, rawmapname, sizeof(lwrmapname));
+	Q_strlwr(lwrmapname);
 
 	ground_min = ground_max = MIN_WORLD_HEIGHT;
 	skyground_min = skyground_max = MAX_WORLD_HEIGHT;
 	sky_min = sky_max = MAX_WORLD_HEIGHT;
 
-	if( trap_FS_FOpenFile( va( "maps/%s_tracemap.tga", Q_strlwr(rawmapname) ), &f, FS_READ ) >= 0 ) {
+	if( trap_FS_FOpenFile( va( "maps/%s_tracemap.tga", lwrmapname), &f, FS_READ ) >= 0 ) {
 		// skip over header
 		for( i = 0; i < 18; i++ ) {
 			trap_FS_Read( &data, 1, f );
