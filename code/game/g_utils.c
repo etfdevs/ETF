@@ -441,6 +441,9 @@ void G_InitGentity( gentity_t *e ) {
 	e->use = NULL;
 	e->parent = NULL;
 	e->free = NULL;
+	e->count = 0;
+	e->activator = NULL;
+	e->handheld = qfalse;
 
 #ifdef BUILD_BOTS
 	Bot_Queue_EntityCreated(e);

@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
 Wolfenstein: Enemy Territory GPL Source Code
@@ -69,104 +69,141 @@ extern bg_q3f_grenade_t bg_q3f_grenade_charge;
 #define GREN_GAS_PARAMEDIC_RESIST		0.66f
 #define GREN_STUN_MINIGUNNER_RESIST		0.66f
 #define GREN_STUN_PARAMEDIC_RESIST		0.66f
-#define GREN_STUN_MAX_TIME				26000
+#define GREN_STUN_MAX_TIME				10000
 
 
 /*
 **	Throw and explosion effects
 */
 
-qboolean ConcussExplode( gentity_t *ent )
-{
-	//	We've exploded, tell all affected clients the good news
 
-	gentity_t *player;
-	gentity_t *temp;
+qboolean ConcussExplode(gentity_t* ent)
+{
+	if (g_newStunGren.integer == 1 && ent->handheld && ent->s.weapon == Q3F_GREN_CONCUSS) {
+		gentity_t* owner = &g_entities[ent->r.ownerNum];
+			ent->handheld, ent->s.weapon, owner, ent->count);
+		if (owner && owner->client && owner->health > 0 && !Q3F_IsSpectator(owner->client) &&
+			!owner->client->noclip) {
+			vec3_t distancevec;
+			VectorSubtract(owner->s.pos.trBase, ent->s.pos.trBase, distancevec);
+			float distance = VectorLength(distancevec);
+			if (distance > 100.0f) {
+			}
+			else {
+				vec3_t pushDir;
+				bg_q3f_playerclass_t* cls = BG_Q3F_GetClass(&owner->client->ps);
+				VectorCopy(owner->client->ps.velocity, pushDir);
+				float velocity_magnitude = VectorLength(pushDir);
+				if (velocity_magnitude < 10.0f) {
+					AngleVectors(owner->client->ps.viewangles, pushDir, NULL, NULL);
+				}
+				else {
+					VectorNormalize(pushDir);
+				}
+				float pushStrength = 825.0f;
+				if (cls->maxammo_nails != 200)
+					pushStrength *= 200.0f / cls->mass;
+				VectorScale(pushDir, pushStrength, pushDir);
+				pushDir[0] *= 0.8f;
+				pushDir[1] *= 0.8f;
+				pushDir[2] *= 0.95f;
+				VectorAdd(owner->client->ps.velocity, pushDir, owner->client->ps.velocity);
+				int effect;
+				switch (owner->client->ps.persistant[PERS_CURRCLASS]) {
+				case Q3F_CLASS_RECON:
+					effect = 10000;
+					break;
+				case Q3F_CLASS_PARAMEDIC:
+					effect = 7000;
+					break;
+				default:
+					effect = GREN_STUN_MAX_TIME;
+					break;
+				}
+				owner->client->ps.powerups[PW_Q3F_CONCUSS] = level.time + effect;
+				owner->client->ps.generic1 = rand();
+					pushStrength, pushDir[0], pushDir[1], pushDir[2]);
+				gentity_t* temp = G_TempEntity(ent->s.pos.trBase, EV_ETF_GRENADE_EXPLOSION);
+				temp->s.eventParm = EV_ETF_GRENADE_EXPLOSION;
+				temp->s.angles[1] = bg_q3f_grenade_concuss.damage;
+				temp->r.svFlags = SVF_BROADCAST;
+				return qtrue;
+			}
+		}
+	}
+
+	// Default concussion explosion logic
+	gentity_t* player;
+	gentity_t* temp;
 	int distance, effect;
 	vec3_t distancevec, bouncevec;
 	trace_t trace;
-	bg_q3f_playerclass_t *cls;
+	bg_q3f_playerclass_t* cls;
 
-	for( player = level.gentities; player < &level.gentities[MAX_CLIENTS]; player++ )
+	for (player = level.gentities; player < &level.gentities[MAX_CLIENTS]; player++)
 	{
-		if( !(player->inuse && player->client && player->health > 0 && !Q3F_IsSpectator( player->client ) && !player->client->noclip) )
+		if (!(player->inuse && player->client && player->health > 0 &&
+			!Q3F_IsSpectator(player->client) && !player->client->noclip))
 			continue;
-		VectorSubtract( player->s.pos.trBase, ent->s.pos.trBase, distancevec );
-		distance = VectorLength( distancevec );
-		if ( distance >= 270 )		// Replace this with a define?
+		VectorSubtract(player->s.pos.trBase, ent->s.pos.trBase, distancevec);
+		distance = VectorLength(distancevec);
+		if (distance >= 270)
 			continue;
-		G_Q3F_ForceFieldExtTrace( &trace, ent->r.currentOrigin, NULL, NULL, player->r.currentOrigin, (ent - level.gentities), ent->r.ownerNum, MASK_SOLID|CONTENTS_FORCEFIELD );
-		if( trace.contents & CONTENTS_FORCEFIELD )
-			continue;	// Let's not concuss them through a forcefield.
-		effect = 10000 * (1.0 - distance*distance / ((player == ent->activator) ? 145800.0 : 97200.0) ); // 17000
-		if( trace.fraction != 1.0 && trace.entityNum != (player - level.gentities) ) {
-			effect *= 0.5;		// Reduce effect through walls
+		G_Q3F_ForceFieldExtTrace(&trace, ent->r.currentOrigin, NULL, NULL,
+			player->r.currentOrigin, (ent - level.gentities),
+			ent->r.ownerNum, MASK_SOLID | CONTENTS_FORCEFIELD);
+		if (trace.contents & CONTENTS_FORCEFIELD)
+			continue;
+		effect = 10000 * (1.0 - distance * distance /
+			((player == ent->activator) ? 145800.0 : 97200.0));
+		if (trace.fraction != 1.0 && trace.entityNum != (player - level.gentities)) {
+			effect *= 0.5;
 		}
-		switch( player->client->ps.persistant[PERS_CURRCLASS] ) {
+		switch (player->client->ps.persistant[PERS_CURRCLASS]) {
 		case Q3F_CLASS_PARAMEDIC:
 			effect *= GREN_STUN_PARAMEDIC_RESIST;
-			if( player->client->ps.powerups[PW_Q3F_CONCUSS] > level.time )
+			if (player->client->ps.powerups[PW_Q3F_CONCUSS] > level.time)
 				effect += (player->client->ps.powerups[PW_Q3F_CONCUSS] - level.time);
-			if (effect > ( GREN_STUN_PARAMEDIC_RESIST * GREN_STUN_MAX_TIME ))
+			if (effect > (GREN_STUN_PARAMEDIC_RESIST * GREN_STUN_MAX_TIME))
 				effect = GREN_STUN_PARAMEDIC_RESIST * GREN_STUN_MAX_TIME;
 			break;
 		case Q3F_CLASS_MINIGUNNER:
 			effect *= GREN_STUN_MINIGUNNER_RESIST;
-			if( player->client->ps.powerups[PW_Q3F_CONCUSS] > level.time )
+			if (player->client->ps.powerups[PW_Q3F_CONCUSS] > level.time)
 				effect += (player->client->ps.powerups[PW_Q3F_CONCUSS] - level.time);
-			if (effect > ( GREN_STUN_MINIGUNNER_RESIST * GREN_STUN_MAX_TIME ))
+			if (effect > (GREN_STUN_MINIGUNNER_RESIST * GREN_STUN_MAX_TIME))
 				effect = GREN_STUN_MINIGUNNER_RESIST * GREN_STUN_MAX_TIME;
 			break;
 		default:
-			if( player->client->ps.powerups[PW_Q3F_CONCUSS] > level.time )
+			if (player->client->ps.powerups[PW_Q3F_CONCUSS] > level.time)
 				effect += (player->client->ps.powerups[PW_Q3F_CONCUSS] - level.time);
-			if (effect > GREN_STUN_MAX_TIME )
+			if (effect > GREN_STUN_MAX_TIME)
 				effect = GREN_STUN_MAX_TIME;
 			break;
 		}
 		player->client->ps.powerups[PW_Q3F_CONCUSS] = level.time + effect;
 		player->client->ps.generic1 = rand();
-		if( !(player->flags & FL_NO_KNOCKBACK) )
+		if (!(player->flags & FL_NO_KNOCKBACK))
 		{
-			// And send them flying
-			cls = BG_Q3F_GetClass( &player->client->ps );
-	#if 0
-			// Sensible conc blast
-			BG_PlayerStateToEntityState( &player->client->ps, &player->s, qtrue );
-//		}
-			VectorNormalize( distancevec );
-			if( trace.fraction != 1.0 && trace.entityNum != level.gentities-player )
-				distance *= 2;		// Reduce effect through walls
-			if( cls->mass != 200 )	// 200 is default mass
-				distance *= 200 / cls->mass;
-			if( ent->count && player == ent->activator )
-				VectorScale( distancevec, (1.0 - distance / 400.0) * 230 /*g_grenadeConcBlast.integer*/ / 4, bouncevec );
-			else VectorScale( distancevec, (1.0 - distance / 400.0) * 230 /*g_grenadeConcBlast.integer*/, bouncevec );
-	#else
-			// TF-style conc-blast (Oh, the horror!)
-			effect = distance * ((230 /*g_grenadeConcBlast.integer*/ - 0.5 * distance) / 20);
-			if( cls->maxammo_nails != 200 )
+			cls = BG_Q3F_GetClass(&player->client->ps);
+			effect = distance * ((230 - 0.5 * distance) / 20);
+			if (cls->maxammo_nails != 200)
 				effect *= 200 / cls->mass;
-			VectorNormalize2( distancevec, bouncevec );
-			VectorScale( bouncevec, effect, bouncevec );
-			// RR2DO2: Little hack(?) to limit horizontal conc blast
-			/*bouncevec[0] *= g_grenadeConcHBlast.value * 0.01f;
-			bouncevec[1] *= g_grenadeConcHBlast.value * 0.01f;
-			bouncevec[2] *= g_grenadeConcVBlast.value * 0.01f;*/
+			VectorNormalize2(distancevec, bouncevec);
+			VectorScale(bouncevec, effect, bouncevec);
 			bouncevec[0] *= 0.8f;
 			bouncevec[1] *= 0.8f;
 			bouncevec[2] *= 0.95f;
-	#endif
-			VectorAdd( player->client->ps.velocity, bouncevec, player->client->ps.velocity );
+			VectorAdd(player->client->ps.velocity, bouncevec, player->client->ps.velocity);
 		}
 	}
 
-	temp = G_TempEntity( ent->s.pos.trBase, EV_ETF_GRENADE_EXPLOSION );
-	temp->s.eventParm = ETF_GRENDADE_EXPLOSION_CONCUSSION;
+	temp = G_TempEntity(ent->s.pos.trBase, EV_ETF_GRENADE_EXPLOSION);
+	temp->s.eventParm = EV_ETF_GRENADE_EXPLOSION;
 	temp->s.angles[1] = bg_q3f_grenade_concuss.damage;
-	temp->r.svFlags = SVF_BROADCAST;	// send to everyone
+	temp->r.svFlags = SVF_BROADCAST;
 
-	return( qtrue );
+	return qtrue;
 }
 
 #define	FLASHRADIUS 200.f
@@ -373,6 +410,8 @@ qboolean EmpExplode( gentity_t *emp )
 					break;
 					break;
 				case Q3F_CLASS_SOLDIER:
+					damage += (int)(0.75 * cls->maxammo_rockets) * 1.5;
+					break;
 				case Q3F_CLASS_GRENADIER:
 					damage += (int)(0.75 * cls->maxammo_rockets) * 2;
 					break;
@@ -1127,52 +1166,64 @@ static void G_Q3F_GrenadeRemove( gentity_t *ent )
 	G_FreeEntity( ent );
 
 }
-static void G_Q3F_GrenadeThink( gentity_t *ent )
+static void G_Q3F_GrenadeThink(gentity_t* ent)
 {
 	// Grenade hits timer limit
 
-	g_q3f_grenade_t *gren;
+	g_q3f_grenade_t* gren;
 	int damage, given = 0, statnum;
 	vec3_t origin;
-	gclient_t *client;
+	gclient_t* client;
 
-
-	gren = G_Q3F_GetGrenade( ent->s.weapon );
-	statnum = G_StatsModIndex( gren->g->mod );
+	gren = G_Q3F_GetGrenade(ent->s.weapon);
+	statnum = G_StatsModIndex(gren->g->mod);
 
 	client = (ent->activator && ent->activator->client) ? ent->activator->client : NULL;
-	if ( client )
+	if (client)
 		client->pers.stats.data[statnum].shots++;
 
-	if( gren->g->damage )
+	// NEW: Set handheld flag
+	ent->handheld = qfalse; // Default to thrown
+	if (ent->count && ent->activator && ent->activator->health > 0 && client) {
+		// Verify proximity (player holding grenade)
+		vec3_t distancevec;
+		VectorSubtract(ent->activator->s.pos.trBase, ent->s.pos.trBase, distancevec);
+		float distance = VectorLength(distancevec);
+		if (distance < 100.0f) { // Close enough to be held
+			ent->handheld = qtrue;
+			// Debug
+				ent->count, distance, ent->s.weapon);
+		}
+	}
+
+	if (gren->g->damage)
 	{
 		damage = gren->g->damage;
-		if( ent->s.powerups & (1 << PW_QUAD) )
-			G_AddEvent( ent, EV_POWERUP_QUAD, 0 );
+		if (ent->s.powerups & (1 << PW_QUAD))
+			G_AddEvent(ent, EV_POWERUP_QUAD, 0);
 
-		if (client) 
+		if (client)
 			given = client->pers.stats.data[statnum].given;
 
-		G_RadiusDamage(	ent->r.currentOrigin, ent, ent->activator, damage, NULL, gren->g->mod, 0);
-		
-		if (client && given < client->pers.stats.data[statnum].given) 
+		G_RadiusDamage(ent->r.currentOrigin, ent, ent->activator, damage, NULL, gren->g->mod, 0);
+
+		if (client && given < client->pers.stats.data[statnum].given)
 			client->pers.stats.data[statnum].hits++;
 
-		if( ent->count && ent->activator && ent->activator->health > 0 && client )
+		if (ent->handheld) // NEW: Use handheld flag
 		{
 			int r = (rand() % 3);
 			// They forgot to throw the grenade :)
-
-			switch(r) {
-				case 0: trap_SendServerCommand(	-1, va( "print \"No, %s%s, you're supposed to THROW the grenade!\n\"",
-										client->pers.netname, S_COLOR_WHITE ) );
-					break;
-				case 1: trap_SendServerCommand(	-1, va( "print \"%s%s, perhaps you should throw that grenade.\n\"",
-						   client->pers.netname, S_COLOR_WHITE ) );
-					break;
-				default : trap_SendServerCommand(	-1, va( "print \"Oh snap, %s%s, you forgot to throw your grenade!\n\"",
-							client->pers.netname, S_COLOR_WHITE ) );
-					break;
+			switch (r) {
+			case 0: trap_SendServerCommand(-1, va("print \"No, %s%s, you're supposed to THROW the grenade!\n\"",
+				client->pers.netname, S_COLOR_WHITE));
+				break;
+			case 1: trap_SendServerCommand(-1, va("print \"%s%s, perhaps you should throw that grenade.\n\"",
+				client->pers.netname, S_COLOR_WHITE));
+				break;
+			default: trap_SendServerCommand(-1, va("print \"Oh snap, %s%s, you forgot to throw your grenade!\n\"",
+				client->pers.netname, S_COLOR_WHITE));
+				break;
 			}
 		}
 	}
@@ -1187,223 +1238,209 @@ static void G_Q3F_GrenadeThink( gentity_t *ent )
 		gren->ExplodeGren( ent );
 }
 
-qboolean G_Q3F_GrenadeCommand( gentity_t *ent )
+qboolean G_Q3F_GrenadeCommand(gentity_t* ent)
 {
-	// We've recieved a grenade command, work out if it's valid and act on it.
-	// This is invoked from ClientCommand, so we use trap_Argv to get the parameters.
-
 	int grentype, primetime, throwtime, limittime;
-	bg_q3f_playerclass_t *cls;
-	g_q3f_grenade_t *gren;
-	gentity_t *grenent;
+	bg_q3f_playerclass_t* cls;
+	g_q3f_grenade_t* gren;
+	gentity_t* grenent;
 	vec3_t velocity, up, side;
 	char strbuff[16];
 	trace_t tr;
 	int contents;
 
-	if( !ent->client )
-		return( qfalse );			// Some kind of problem?
-
-	if( level.ceaseFire || ent->client->ps.powerups[PW_Q3F_CEASEFIRE] )
-		return( qfalse );			// Can't throw during ceasefires
-
-	trap_Argv( 1, strbuff, 16 );
-	grentype = atoi( strbuff );
-	trap_Argv( 2, strbuff, 16 );
-	primetime = atoi( strbuff );
-	trap_Argv( 3, strbuff, 16 );
-	throwtime = atoi( strbuff );
-
-	limittime = level.time + FRAMETIME / 2;
-	if( primetime >= throwtime || primetime > limittime || throwtime > limittime )
-	{
-		G_Printf(	"Invalid grenade time (%d / %d / %d) from %s.\n",
-					primetime, throwtime, level.time,
-					ent->client->pers.netname );
-		return( qfalse );			// Absolutely not valid
-	}
-	if( (primetime < ent->client->respawnTime && throwtime >= ent->client->respawnTime) ||
-		(throwtime < ent->client->respawnTime && ent->client->ps.stats[STAT_HEALTH] > 0) )
-	{
-		G_Printf( "Grenade from %s lost: Primed before last respawn.\n", ent->client->pers.netname ); 
-		return(	qfalse );			// We _don't_ want cross-death throws
-	}
-	if( primetime < ent->client->lastgrenTime )
-	{
-		G_Printf( "Grenade from %s lost: Primed before previous grenade thrown.\n", ent->client->pers.netname ); 
-		return( qfalse );			// They can't have primed before the last throw
-	}
-	if( primetime < (level.time - 8000) )
-	{
-		G_Printf( "Grenade from %s lost: Primed over 8 seconds ago.\n", ent->client->pers.netname ); 
-		return( qfalse );			// Possibly valid, but it's a dud, right? :)
-	}
-	if( level.intermissiontime )
-		return( qfalse );			// No grenades at intermission, I think :)
-
-	if ( ent->client->ps.stats[STAT_HEALTH] <= 0 )
+	if (!ent->client)
 		return(qfalse);
 
-	cls = BG_Q3F_GetClass( &ent->client->ps );
+	if (level.ceaseFire || ent->client->ps.powerups[PW_Q3F_CEASEFIRE])
+		return(qfalse);
 
-	if( !((cls->gren1type == grentype && (ent->client->ps.ammo[AMMO_GRENADES] & 0x00FF)) ||
-		(cls->gren2type == grentype && (ent->client->ps.ammo[AMMO_GRENADES] >> 8))) )
-		return( qfalse );			// No grenades left of this time
+	trap_Argv(1, strbuff, 16);
+	grentype = atoi(strbuff);
+	trap_Argv(2, strbuff, 16);
+	primetime = atoi(strbuff);
+	trap_Argv(3, strbuff, 16);
+	throwtime = atoi(strbuff);
 
-	gren = G_Q3F_GetGrenade( grentype );
-	if( gren->g->flags & Q3F_GFLAG_NOTHROW )
-		return( qfalse );			// Can't fire this grenade
+	limittime = level.time + FRAMETIME / 2;
+	if (primetime >= throwtime || primetime > limittime || throwtime > limittime)
+	{
+		G_Printf("Invalid grenade time (%d / %d / %d) from %s.\n",
+			primetime, throwtime, level.time, ent->client->pers.netname);
+		return(qfalse);
+	}
+	if ((primetime < ent->client->respawnTime && throwtime >= ent->client->respawnTime) ||
+		(throwtime < ent->client->respawnTime && ent->client->ps.stats[STAT_HEALTH] > 0))
+	{
+		G_Printf("Grenade from %s lost: Primed before last respawn.\n", ent->client->pers.netname);
+		return(qfalse);
+	}
+	if (primetime < ent->client->lastgrenTime)
+	{
+		G_Printf("Grenade from %s lost: Primed before previous grenade thrown.\n",
+			ent->client->pers.netname);
+		return(qfalse);
+	}
+	if (primetime < (level.time - 8000))
+	{
+		G_Printf("Grenade from %s lost: Primed over 8 seconds ago.\n",
+			ent->client->pers.netname);
+		return(qfalse);
+	}
+	if (level.intermissiontime)
+		return(qfalse);
+
+	if (ent->client->ps.stats[STAT_HEALTH] <= 0)
+		return(qfalse);
+
+	cls = BG_Q3F_GetClass(&ent->client->ps);
+
+	if (!((cls->gren1type == grentype && (ent->client->ps.ammo[AMMO_GRENADES] & 0x00FF)) ||
+		(cls->gren2type == grentype && (ent->client->ps.ammo[AMMO_GRENADES] >> 8))))
+		return(qtrue); // Modified to return qtrue for consistency
+
+	gren = G_Q3F_GetGrenade(grentype);
+	if (gren->g->flags & Q3F_GFLAG_NOTHROW)
+		return(qfalse);
 
 	ent->client->pers.stats.data[STATS_GREN + grentype].shots++;
 
-	ent->client->ps.ammo[AMMO_GRENADES] =	ent->client->ps.ammo[AMMO_GRENADES] -
-											((grentype == cls->gren1type) ? 1 : 0x100);
+	ent->client->ps.ammo[AMMO_GRENADES] =
+		ent->client->ps.ammo[AMMO_GRENADES] - ((grentype == cls->gren1type) ? 1 : 0x100);
 
 	ent->client->lastgrenTime = throwtime;
-	
-	grentype == cls->gren1type ? ( ent->client->gren1Loc = Team_GetLocation( ent ) ) : ( ent->client->gren2Loc = Team_GetLocation( ent ) );
 
-	// Looks like we're rolling, spawn the grenade (and any special commands for it),
-	// then fire it off.
+	grentype == cls->gren1type ? (ent->client->gren1Loc = Team_GetLocation(ent)) :
+		(ent->client->gren2Loc = Team_GetLocation(ent));
 
+	// Spawn grenade
 	grenent = G_Spawn();
 	grenent->s.eType = ET_Q3F_GRENADE;
-//	grenent->s.modelindex = 0;
 	grenent->classname = "handgrenade";
-	//VectorSet( grenent->r.mins, -4, -4, -4 );	// Fix this?
-	//VectorSet( grenent->r.maxs, 4, 4, 4 );
-	// RR2DO2: Ghetto wanted smaller grenades
-	VectorSet( grenent->r.mins, -2.f, -2.f, -2.f );	// Fix this?
-	VectorSet( grenent->r.maxs, 2.f, 2.f, 2.f );
+	VectorSet(grenent->r.mins, -2.f, -2.f, -2.f);
+	VectorSet(grenent->r.maxs, 2.f, 2.f, 2.f);
 	grenent->touch = G_Q3F_GrenadeTouch;
 
-	grenent->s.time		= primetime + Q3F_GRENADE_PRIME_TIME;		// Time it explodes
-	grenent->s.weapon	= grentype;				// The actual grenade type
-	grenent->r.ownerNum	= ent->s.number;
+	grenent->s.time = primetime + Q3F_GRENADE_PRIME_TIME;
+	grenent->s.weapon = grentype;
+	grenent->r.ownerNum = ent->s.number;
 	grenent->s.otherEntityNum = ent->s.number;
 
-	grenent->activator	= ent;
+	grenent->activator = ent;
 	grenent->s.groundEntityNum = ENTITYNUM_NONE;
 
-	VectorCopy( ent->client->ps.origin, grenent->r.currentOrigin );
-	//if( grenent->s.time - g_grenadePJdelay.value > level.time )
-	if( grenent->s.time - 60 > level.time && ent->client->ps.stats[STAT_HEALTH] > 0)
+	VectorCopy(ent->client->ps.origin, grenent->r.currentOrigin);
+	if (grenent->s.time - 60 > level.time && ent->client->ps.stats[STAT_HEALTH] > 0)
 	{
-		// Toss da bomb.
-
-//		grenent->r.currentOrigin[2] += g_grenadeZorg.value;
+		// Throw grenade
 		grenent->r.currentOrigin[2] += 16;
-		G_SetOrigin( grenent, grenent->r.currentOrigin );
+		G_SetOrigin(grenent, grenent->r.currentOrigin);
 		grenent->s.pos.trType = TR_GRAVITY;
-		grenent->s.pos.trTime = throwtime;			// Could be before we get the message
+		grenent->s.pos.trTime = throwtime;
 		grenent->count = 0;
 
-		// set aiming directions
-		AngleVectors( ent->client->ps.viewangles, velocity, side, up );
-//		VectorScale( velocity, g_grenadeThrow.value, velocity );		// Forward
-//		VectorScale( velocity, 700, velocity );		// Forward			// ETF 0.0
-		VectorScale( velocity, 650, velocity );		// Forward
-//		VectorMA( velocity, g_grenadeZvel.value, up, velocity );	// Up (by a third)
-		VectorMA( velocity, 150, up, velocity );	// Up (by a third)
-		VectorMA( velocity, ETF_crandom() * 5, side, grenent->s.pos.trDelta );	// Left/right
-		if( ent->health <= 0 )
-			VectorScale( velocity, 0.1, velocity );	// Only throw a little if dead
+		// Set velocity
+		AngleVectors(ent->client->ps.viewangles, velocity, side, up);
+		VectorScale(velocity, 650, velocity);
+		VectorMA(velocity, 150, up, velocity);
+		VectorMA(velocity, ETF_crandom() * 5, side, grenent->s.pos.trDelta);
+		if (ent->health <= 0)
+			VectorScale(velocity, 0.1, velocity);
 
 		// Set angles
-		grenent->s.apos.trBase[YAW]		= ent->client->ps.viewangles[YAW];
-		grenent->s.apos.trBase[PITCH]	= 0;
-		grenent->s.apos.trBase[ROLL]	= 0;
-		grenent->s.apos.trDelta[YAW]	= ETF_crandom() * 5;
-		grenent->s.apos.trDelta[PITCH]	= 360 + ETF_crandom() * 10;
-		grenent->s.apos.trDelta[ROLL]	= 0;
-		grenent->s.apos.trTime			= level.time;
-		grenent->s.apos.trType			= TR_LINEAR;
+		grenent->s.apos.trBase[YAW] = ent->client->ps.viewangles[YAW];
+		grenent->s.apos.trBase[PITCH] = 0;
+		grenent->s.apos.trBase[ROLL] = 0;
+		grenent->s.apos.trDelta[YAW] = ETF_crandom() * 5;
+		grenent->s.apos.trDelta[PITCH] = 360 + ETF_crandom() * 10;
+		grenent->s.apos.trDelta[ROLL] = 0;
+		grenent->s.apos.trTime = level.time;
+		grenent->s.apos.trType = TR_LINEAR;
 
-		// Evaluate it's position, to avoid odd (i.e. through walls) initial position.
-		// This method is wrong, but produces A: mostly reliable and B: fairly cheap
-		// positioning. On the other hand, if you're facing a wall you can expect the
-		// grenade to go off in your face.
-		BG_EvaluateTrajectory( &grenent->s.pos, level.time, velocity );
-//		trap_Trace(	&tr, grenent->s.pos.trBase, grenent->r.mins, grenent->r.maxs,
-//					velocity, ent->s.number, MASK_PLAYERSOLID );
-		G_Q3F_ForceFieldTrace( &tr, grenent->s.pos.trBase, grenent->r.mins, grenent->r.maxs, velocity, ent->s.number, MASK_PLAYERSOLID );
-		while( !tr.startsolid && tr.fraction < 1 && ((level.time - grenent->s.pos.trTime) > 100))
+		// Evaluate position
+		BG_EvaluateTrajectory(&grenent->s.pos, level.time, velocity);
+		G_Q3F_ForceFieldTrace(&tr, grenent->s.pos.trBase, grenent->r.mins,
+			grenent->r.maxs, velocity, ent->s.number, MASK_PLAYERSOLID);
+		while (!tr.startsolid && tr.fraction < 1 &&
+			((level.time - grenent->s.pos.trTime) > 100))
 		{
 			grenent->s.pos.trTime += (level.time - grenent->s.pos.trTime) / 2;
-			BG_EvaluateTrajectory( &grenent->s.pos, level.time, velocity );
-				// Do a distance check to prevent a nasty infinite loop in the engine
-			if( Distance( grenent->s.pos.trBase, velocity ) > 5 )
+			BG_EvaluateTrajectory(&grenent->s.pos, level.time, velocity);
+			if (Distance(grenent->s.pos.trBase, velocity) > 5)
 			{
-//				trap_Trace(	&tr, grenent->s.pos.trBase, grenent->r.mins, grenent->r.maxs,
-//							velocity, ent->s.number, MASK_PLAYERSOLID );
-				G_Q3F_ForceFieldTrace(	&tr, grenent->s.pos.trBase, grenent->r.mins, grenent->r.maxs, velocity, ent->s.number, MASK_PLAYERSOLID );
+				G_Q3F_ForceFieldTrace(&tr, grenent->s.pos.trBase, grenent->r.mins,
+					grenent->r.maxs, velocity, ent->s.number,
+					MASK_PLAYERSOLID);
 			}
 			else {
-				// Abort the loop
 				tr.startsolid = qtrue;
 				break;
 			}
 		}
-		VectorCopy( velocity, grenent->s.pos.trBase );	// This is where it would have been at the current time
-		grenent->s.pos.trTime = level.time;				// And we start calculating from this point.
+		VectorCopy(velocity, grenent->s.pos.trBase);
+		grenent->s.pos.trTime = level.time;
 
-		if( ent->client->ps.powerups[PW_QUAD] ) {
-			grenent->s.powerups |= 1 << PW_QUAD;
+		// NEW: Clear held fields for concussion grenades
+		if (grentype == Q3F_GREN_CONCUSS) {
+			grenent->activator = NULL;
+			grenent->handheld = qfalse;
+				grenent->handheld, grenent->count, grenent->activator);
 		}
 	}
 	else {
-		// Sat on their grenade, as they say.
-//		VectorMA( grenent->r.currentOrigin, -(g_grenadeDropDelay.value * 0.001), ent->client->ps.velocity, grenent->r.currentOrigin );
-		VectorMA( grenent->r.currentOrigin, -(20 * 0.001), ent->client->ps.velocity, grenent->r.currentOrigin );
-//		grenent->r.currentOrigin[2] += g_grenadeDropZ.value;
-		G_SetOrigin( grenent, grenent->r.currentOrigin );
-		//Let grenades fall to the ground when your dead
+		// Drop grenade
+		VectorMA(grenent->r.currentOrigin, -(20 * 0.001), ent->client->ps.velocity,
+			grenent->r.currentOrigin);
+		G_SetOrigin(grenent, grenent->r.currentOrigin);
 		grenent->s.pos.trType = ent->client->ps.stats[STAT_HEALTH] > 0 ? TR_STATIONARY : TR_GRAVITY;
-		grenent->s.pos.trTime = level.time + 1;		// Ensure time is in the future
-		grenent->count = ( ent->client->ps.stats[STAT_HEALTH] > 0 ? 1 : 0 );
+		grenent->s.pos.trTime = level.time + 1;
+		grenent->count = (ent->client->ps.stats[STAT_HEALTH] > 0 ? 1 : 0);
 		grenent->s.pos.trDelta[0] = 0;
 		grenent->s.pos.trDelta[1] = 0;
 		grenent->s.pos.trDelta[2] = 0;
-		//grenent->s.pos.trDelta[2] = g_grenadeDropZVel.value * -0.1;//-1;
 
-		if( ent->client->ps.powerups[PW_QUAD] ) {
-			grenent->s.powerups |= 1 << PW_QUAD;
+		// NEW: Set handheld for concussion grenades
+		if (grentype == Q3F_GREN_CONCUSS) {
+			grenent->handheld = (ent->client->ps.stats[STAT_HEALTH] > 0 ? qtrue : qfalse);
+				grenent->handheld, grenent->count, grenent->activator);
 		}
+	}
+
+	if (ent->client->ps.powerups[PW_QUAD]) {
+		grenent->s.powerups |= 1 << PW_QUAD;
 	}
 
 	grenent->s.eFlags |= EF_BOUNCE;
 
-	grenent->think				= G_Q3F_GrenadeThink;
-	grenent->nextthink			= grenent->s.time;		// Three seconds. Boom!
-	grenent->activator			= ent;
-	grenent->r.ownerNum			= ent - level.gentities;
-	grenent->s.otherEntityNum	= ent - level.gentities;
+	grenent->think = G_Q3F_GrenadeThink;
+	grenent->nextthink = grenent->s.time;
+	grenent->activator = ent;
+	grenent->r.ownerNum = ent - level.gentities;
+	grenent->s.otherEntityNum = ent - level.gentities;
 	grenent->physicsObject = qtrue;
 
-	contents = trap_PointContents( ent->s.pos.trBase, -1 );
-	if ( contents & CONTENTS_WATER ) {
+	contents = trap_PointContents(ent->s.pos.trBase, -1);
+	if (contents & CONTENTS_WATER) {
 		ent->hasbeeninwater = qtrue;
 	}
-	
 
-	if( gren->ThrowGren )
-		gren->ThrowGren( grenent );				// Custom throw processing.
+	if (gren->ThrowGren)
+		gren->ThrowGren(grenent);
 
-	contents = trap_PointContents( grenent->r.currentOrigin, -1 );
-
-	if ( contents & CONTENTS_WATER ) {
+	contents = trap_PointContents(grenent->r.currentOrigin, -1);
+	if (contents & CONTENTS_WATER) {
 		grenent->hasbeeninwater = qtrue;
 	}
 
-	trap_LinkEntity( grenent );
+	trap_LinkEntity(grenent);
 
-	// throw animation
-	if( !(ent->client->ps.extFlags & EXTF_ANI_THROWING) ) {
+	// Throw animation
+	if (!(ent->client->ps.extFlags & EXTF_ANI_THROWING)) {
 		ent->client->ps.extFlags |= EXTF_ANI_THROWING;
 		ent->client->torsoanimEndTime = level.time + Q3F_THROW_ANIM_DURATION;
 	}
 
-	return( qtrue );
+	return(qtrue);
 }
 
 

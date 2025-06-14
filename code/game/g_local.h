@@ -183,6 +183,8 @@ struct gentity_s {
 
 	qboolean	takedamage;
 
+	qboolean    handheld; // True if grenade is held
+
 	int			damage;
 	int			splashDamage;	// quad will increase this without increasing radius
 	int			methodOfDeath;
