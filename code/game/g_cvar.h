@@ -247,6 +247,7 @@ G_CVAR( lua_allowedModules, "lua_allowedModules", "", 0, qfalse )
 G_CVAR( g_spawnFullStats, "g_spawnFullStats", "1", CVAR_ARCHIVE, qfalse )
 G_CVAR( g_balancedDeathAmmo, "g_balancedDeathAmmo", "1", CVAR_ARCHIVE, qfalse )
 G_CVAR( g_newPulseGren, "g_newPulseGren", "0", CVAR_ARCHIVE, qfalse )
+G_CVAR( g_newStunGren, "g_newStunGren", "1", CVAR_ARCHIVE, qfalse )
 
 	// Sets init/max nailbombs per player
 G_CVAR( g_maxNailBombs, "g_maxNailBombs", "1", CVAR_SERVERINFO | CVAR_ARCHIVE, qfalse )
