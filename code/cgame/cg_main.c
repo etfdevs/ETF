@@ -332,6 +332,15 @@ void CG_RegisterCvars( void ) {
       if(cv->vmCvar != NULL) cv->modificationCount = cv->vmCvar->modificationCount;
 	}
 
+	if ( cg_autoReload.integer < 0 ) {
+		trap_Cvar_Set("cg_autoReload", "0");
+		cg_autoReload.integer = 0;
+	}
+	else if (cg_autoReload.integer > 3 ) {
+		trap_Cvar_Set("cg_autoReload", "3");
+		cg_autoReload.integer = 3;
+	}
+
 	// see if we are also running the server on this machine
 	trap_Cvar_VariableStringBuffer( "sv_running", var, sizeof( var ) );
 	cgs.localServer = atoi( var );
@@ -400,6 +409,19 @@ void CG_UpdateCvars( void ) {
 				}
 				else if(cv->vmCvar == &cg_crosshairColorAlt || cv->vmCvar == &cg_crosshairAlphaAlt) {
 					BG_setCrosshair(cg_crosshairColorAlt.string, cg.xhairColorAlt, cg_crosshairAlphaAlt.value, "cg_crosshairColorAlt");
+				}
+
+				if (cv->vmCvar == &cg_autoReload) {
+					if (cg_autoReload.integer < 0) {
+						trap_Cvar_Set("cg_autoReload", "0");
+						cg_autoReload.integer = 0;
+						trap_Cvar_Update( cv->vmCvar );
+					}
+					else if (cg_autoReload.integer > 3) {
+						trap_Cvar_Set("cg_autoReload", "3");
+						cg_autoReload.integer = 3;
+						trap_Cvar_Update( cv->vmCvar );
+					}
 				}
 			}
 		}
