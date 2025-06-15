@@ -285,6 +285,8 @@ typedef struct {
 
 	// canabis: return flags for some stuff
 	int			retflags;
+
+	int			autoreload; // Autoreload: 1 = reload automatically all the time TF2 style, 2 = reload when clicking when clip empty, 3 = reload automatically when clip empty
 } pmove_t;
 
 // if a full pmove isn't done on the client, you can just update the angles

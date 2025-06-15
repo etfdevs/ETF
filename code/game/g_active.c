@@ -1274,6 +1274,8 @@ void ClientThink_real( gentity_t *ent ) {
 	pm.airleft = ent->client->airOutTime - level.time;
 	pm.agentclass = client->agentclass;
 	pm.retflags = (client->tauntTime > 5000 || client->tauntHeld) ? PMRF_SKIP_TAUNT : 0;
+	pm.autoreload = ent->client->pers.autoReload;
+
 	// perform a pmove
 	Pmove (&pm);
 
@@ -1374,7 +1376,7 @@ void ClientThink_real( gentity_t *ent ) {
 		client->lastflame = 0;
 
 	// canabis: Check for automatic reload
-	if( client->pers.autoReload == 2 && client->ps.weaponstate == WEAPON_READY )
+	if( client->pers.autoReload == 3 && client->ps.weaponstate == WEAPON_READY )
 	{
 		if( Q3F_GetClipValue( client->ps.weapon, &client->ps ) < BG_Q3F_GetWeapon( client->ps.weapon )->numammo )
 			BG_Q3F_Request_Reload( &client->ps );

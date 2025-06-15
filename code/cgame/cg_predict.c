@@ -697,6 +697,8 @@ void CG_PredictPlayerState( void ) {
 	}
 	cg_pmove.noFootsteps = ( cgs.dmflags & DF_NO_FOOTSTEPS ) > 0;
 
+	cg_pmove.autoreload = cg_autoReload.integer;
+
 	// save the state before the pmove so we can detect transitions
 	oldPlayerState = cg.predictedPlayerState;
 
