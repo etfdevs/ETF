@@ -1,3 +1,16 @@
+#
+# etf
+#
+*.dll
+*.so
+*_mac
+*.obj
+*.o
+*.suo
+*.opendb
+*.VC.db
+assets/ui/git_version.h
+
 #################
 ## Eclipse
 #################
@@ -65,8 +78,6 @@ local.properties
 .builds
 *.dotCover
 
-winquake.res
-
 ## TODO: If you have NuGet Package Restore enabled, uncomment this
 #packages/
 
@@ -118,8 +129,15 @@ _UpgradeReport_Files/
 Backup*/
 UpgradeLog*.XML
 
-[Bb]uild
-[Bb]uild-mingw
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.history/
+
 
 ############
 ## Windows
@@ -142,8 +160,7 @@ Desktop.ini
 *.egg
 *.egg-info
 dist
-build
-build64
+build*
 eggs
 parts
 bin
@@ -177,3 +194,10 @@ pip-log.txt
 
 .vscode
 **/build*
+.vs
+.idea
+.cache
+out
+cmake-build*/
+checks.json
+compile_commands.json

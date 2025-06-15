@@ -1,2 +1,5 @@
 add_library(cJSON OBJECT cJSON.c cJSON.h)
+if(MINGW OR MSVC)
+	target_compile_definitions(cJSON PRIVATE CJSON_HIDE_SYMBOLS)
+endif()
 target_include_directories(cJSON SYSTEM INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")
