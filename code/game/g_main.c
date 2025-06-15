@@ -1009,7 +1009,7 @@ void CalculateRanks( void ) {
 			level.sortedClients[level.numConnectedClients] = i;
 			level.numConnectedClients++;
 
-			if ( level.clients[i].sess.sessionTeam != Q3F_TEAM_SPECTATOR && level.clients[i].ps.persistant[PERS_CURRCLASS] != Q3F_CLASS_NULL ) {
+			if ( level.clients[i].sess.sessionTeam != Q3F_TEAM_SPECTATOR ) {
 				level.numNonSpectatorClients++;
 				if ( level.clients[i].pers.connected == CON_CONNECTED ) {
 					level.numPlayingClients++;
