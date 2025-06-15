@@ -1119,14 +1119,11 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 	{
 		s = Info_ValueForKey( userinfo, "cg_autoReload" );
 		// Canabis, updated weapon reload settings
-		client->pers.autoReload = (s ? atoi( s ) : 2);
+		client->pers.autoReload = (s ? atoi( s ) : 1);
 		if ( client->pers.autoReload < 0 ) 
 			client->pers.autoReload = 0;
-		else if ( client->pers.autoReload > 2) 
-			client->pers.autoReload = 2;
-		//Store this in the persistant playerstate so it can be accessed in pmove
-		if (client->pers.autoReload == 0) client->ps.persistant[PERS_FLAGS]&=~PF_AUTORELOAD;
-		else client->ps.persistant[PERS_FLAGS]|=PF_AUTORELOAD;
+		else if ( client->pers.autoReload > 3) 
+			client->pers.autoReload = 3;
 	}
 
 	// Golliwog: Check for 'init' flag if they're reinitializing

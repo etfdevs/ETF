@@ -2367,7 +2367,7 @@ static void PM_Weapon( void ) {
 			&& pm->ps->ammo[wp->ammotype] >= wp->numammo
 			&& pm->ps->ammo[wp->ammotype] > curammo
 			&& pm->ps->ammo[wp->ammotype] >= wp->clipsize
-			&& pm->ps->persistant[PERS_FLAGS] & PF_AUTORELOAD)
+			&& pm->autoreload == 1)
 		{
 			PM_BeginWeaponReload(); // Automatically start reloading if we need to
 			return;
@@ -2448,7 +2448,7 @@ static void PM_Weapon( void ) {
 	if( !Q3F_GetClipValue( pm->ps->weapon, pm->ps ) &&  wp->clipsize )		// JT - If we're out of clip... do the nasty thing.
 	{
 		//canabis, check if we have reload on firing enabled
-		if (pm->ps->persistant[PERS_FLAGS]&PF_AUTORELOAD) {
+		if (pm->autoreload >= 2) {
 			PM_BeginWeaponReload();
 		} else {
 			pm->ps->weaponTime+=300;			//Slight delay for the next check
