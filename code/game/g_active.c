@@ -1274,13 +1274,7 @@ void ClientThink_real( gentity_t *ent ) {
 	pm.airleft = ent->client->airOutTime - level.time;
 	pm.agentclass = client->agentclass;
 	pm.retflags = (client->tauntTime > 5000 || client->tauntHeld) ? PMRF_SKIP_TAUNT : 0;
-
-	// Get autoreload value
-	char userinfo[MAX_INFO_STRING];
-	trap_GetUserinfo(ent->s.number, userinfo, sizeof(userinfo));
-	const char* dataptr = Info_ValueForKey(userinfo, "cg_autoReload");
-	if (dataptr && ent->client)
-		pm.autoreload = ent->client->pers.autoReload = atoi(dataptr);
+	pm.autoreload = ent->client->pers.autoReload;
 
 	// perform a pmove
 	Pmove (&pm);
