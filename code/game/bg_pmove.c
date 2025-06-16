@@ -2098,7 +2098,7 @@ static void PM_FinishWeaponReload( void ) {
 	}
 	else
 	{
-		pm->ps->weaponstate = WEAPON_RAISING;
+		pm->ps->weaponstate = WEAPON_RRAISING;
 		pm->ps->weaponTime = 0;
 		PM_StartTorsoAnim(PM_GetIdleAnim(pm->ps->weapon, pm->ps->persistant[PERS_CURRCLASS]));
 		pm->ps->torsoTimer = 0;
@@ -2205,14 +2205,13 @@ static void PM_Weapon( void ) {
 	// check for weapon change
 	// can't change if weapon is firing, but can change
 	// again if lowering or raising
-	if (  (pm->ps->weaponTime <= 0 && pm->ps->weaponstate != WEAPON_AIMING) || pm->ps->weaponstate == WEAPON_RAISING ||
-		pm->ps->weaponstate == WEAPON_DROPPING || pm->ps->weaponstate == WEAPON_READY || pm->ps->weaponstate == WEAPON_RELOADING || pm->ps->weaponstate == WEAPON_RDROPPING) {
-		//wp2 = BG_Q3F_GetWeapon( cls->weaponslot[pm->cmd.weapon] );
+	if (  (pm->ps->weaponTime <= 0 && pm->ps->weaponstate != WEAPON_AIMING) || pm->ps->weaponstate < WEAPON_FIRING ) {
 		wp2= BG_Q3F_GetWeapon( pm->cmd.weapon );
 		if( pm->ps->weapon != pm->cmd.weapon &&
 			(pm->ps->ammo[wp2->ammotype] >= wp2->numammo || !wp2->numammo ))
 		{
-			pm->ps->weaponTime = 0; // Allow weapon swapping to happen instantly so it properly interrupts reloads
+			if ( pm->ps->weaponstate >= WEAPON_RRAISING && pm->ps->weaponstate <= WEAPON_RELOADING )
+				pm->ps->weaponTime = 0; // Allow weapon swapping to happen instantly so it properly interrupts reloads
 			PM_BeginWeaponChange( pm->cmd.weapon );
 		} 
 	}
@@ -2786,6 +2785,7 @@ void PmoveSingle (pmove_t *pmove) {
 		// keep the talk button set tho for when the cmd.serverTime > 66 msec
 		// and the same cmd is used multiple times in Pmove
 		pmove->cmd.buttons = BUTTON_TALK;
+		pmove->cmd.wbuttons = 0;
 		pmove->cmd.forwardmove = 0;
 		pmove->cmd.rightmove = 0;
 		pmove->cmd.upmove = 0;
