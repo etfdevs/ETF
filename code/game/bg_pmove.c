@@ -2447,7 +2447,7 @@ static void PM_Weapon( void ) {
 	if( !Q3F_GetClipValue( pm->ps->weapon, pm->ps ) &&  wp->clipsize )		// JT - If we're out of clip... do the nasty thing.
 	{
 		//canabis, check if we have reload on firing enabled
-		if (pm->autoreload >= 2) {
+		if (pm->autoreload > 0) {
 			PM_BeginWeaponReload();
 		} else {
 			pm->ps->weaponTime+=300;			//Slight delay for the next check
