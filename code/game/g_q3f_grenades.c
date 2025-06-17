@@ -147,7 +147,7 @@ qboolean ConcussExplode( gentity_t *ent )
 			{
 				// Handheld
 				vec3_t vel, vel_check, player_vel;
-				float stored_z = 0.f;
+				float stored_z = 0.f, vel_length;
 				VectorCopy(player->client->ps.velocity, vel);
 
 				VectorScale(vel, 2.5f, bouncevec);
@@ -157,7 +157,7 @@ qboolean ConcussExplode( gentity_t *ent )
 
 				VectorCopy(bouncevec, vel_check);
 				vel_check[2] = 0.f;
-				float vel_length = VectorLength(vel_check);
+				vel_length = VectorLength(vel_check);
 				if (vel_length > 1200) {
 					vec3_t vel_scaled;
 					VectorCopy(bouncevec, vel_scaled);
@@ -1170,7 +1170,6 @@ static void G_Q3F_GrenadeThink( gentity_t *ent )
 	int damage, given = 0, statnum;
 	vec3_t origin;
 	gclient_t *client;
-
 
 	gren = G_Q3F_GetGrenade( ent->s.weapon );
 	statnum = G_StatsModIndex( gren->g->mod );

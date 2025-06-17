@@ -1867,7 +1867,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		ByteToDir( es->eventParm, dir );
 		if(es->powerups & (1 << PW_QUAD))
 			es->weapon |= 16;
-		CG_MissileHitPlayer( es->weapon, position, dir, es->otherEntityNum2, es->otherEntityNum );
+		CG_MissileHitPlayer( es->weapon, position, dir, es->otherEntityNum2, es->otherEntityNum, es->powerups );
 		switch( es->weapon & 15 )
 		{
 			case WP_NAILGUN:

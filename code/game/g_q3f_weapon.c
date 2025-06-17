@@ -1284,6 +1284,7 @@ void G_Q3F_Weapon_Knife_Fire(struct gentity_s *ent)
 		tent->s.otherEntityNum2 = ent->s.number;
 		tent->s.eventParm = DirToByte( tr.plane.normal );
 		tent->s.weapon = ent->s.weapon;
+		tent->s.powerups = 0;
 	}
 
 	if ( !traceEnt->takedamage ) {
@@ -1399,6 +1400,15 @@ void G_Q3F_Weapon_Wrench_Fire(struct gentity_s *ent)
 	}
 	else if( traceEnt->s.eType == ET_Q3F_SENTRY && (ent == traceEnt->parent || G_Q3F_IsAllied( ent, traceEnt->parent )) )
 	{
+		// send metal impact
+		if (traceEnt->s.legsAnim > 0) {
+			tent = G_TempEntity(tr.endpos, EV_MISSILE_HIT);
+			tent->s.otherEntityNum = traceEnt->s.number;
+			tent->s.otherEntityNum2 = ent->s.number;
+			tent->s.eventParm = DirToByte(tr.plane.normal);
+			tent->s.weapon = ent->s.weapon;
+			tent->s.powerups = traceEnt->s.eType;
+		}
 		G_Q3F_SentryUpgrade( ent, traceEnt->s.number );
 		G_Q3F_SentryRepair( ent, traceEnt->s.number );
 		G_Q3F_SentryRefill( ent, traceEnt->s.number );
@@ -1408,6 +1418,15 @@ void G_Q3F_Weapon_Wrench_Fire(struct gentity_s *ent)
 		// Only upgrade if an upgrade occurs, so as to avoid giving ammo when you mean to upgrade
 		// An upgrade instantly repairs to new max health
 		int oldlevel = traceEnt->s.legsAnim;
+		// send metal impact
+		if (traceEnt->s.legsAnim > 0) {
+			tent = G_TempEntity(tr.endpos, EV_MISSILE_HIT);
+			tent->s.otherEntityNum = traceEnt->s.number;
+			tent->s.otherEntityNum2 = ent->s.number;
+			tent->s.eventParm = DirToByte(tr.plane.normal);
+			tent->s.weapon = ent->s.weapon;
+			tent->s.powerups = traceEnt->s.eType;
+		}
 		G_Q3F_SupplyStationUpgrade( ent, traceEnt->s.number );
 		if( traceEnt->s.legsAnim != oldlevel )
 			return;
@@ -1423,6 +1442,7 @@ void G_Q3F_Weapon_Wrench_Fire(struct gentity_s *ent)
 			tent->s.otherEntityNum2 = ent->s.number;
 			tent->s.eventParm = DirToByte( tr.plane.normal );
 			tent->s.weapon = ent->s.weapon;
+			tent->s.powerups = 0;
 		}
 
 		if ( !traceEnt->takedamage) {
@@ -1490,6 +1510,7 @@ void G_Q3F_Weapon_BioAxe_Fire(struct gentity_s *ent)
 			tent->s.otherEntityNum2 = ent->s.number;
 			tent->s.eventParm = DirToByte( tr.plane.normal );
 			tent->s.weapon = ent->s.weapon;
+			tent->s.powerups = 0;
 		}
 
 		if ( !traceEnt->takedamage ) {
@@ -1547,6 +1568,7 @@ void G_Q3F_Weapon_Axe_Fire(struct gentity_s *ent)
 		tent->s.otherEntityNum2 = ent->s.number;
 		tent->s.eventParm = DirToByte( tr.plane.normal );
 		tent->s.weapon = ent->s.weapon;
+		tent->s.powerups = 0;
 	}
 
 	if ( !traceEnt->takedamage) {

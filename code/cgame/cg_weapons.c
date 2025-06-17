@@ -2387,25 +2387,43 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, im
 	}
 }
 
-static void CG_Q3F_AxeHitFlesh( vec3_t origin, vec3_t dir, int playerNum, int entityNum )
+static void CG_Q3F_AxeHitFlesh( vec3_t origin, vec3_t dir, int playerNum, int entityNum, int enttype )
 {
 	// Hit someone with the axe, play the appropriate sound.
 
 	weaponInfo_t	*weap;
 	int				c;
 
-	weap = CG_Q3F_GetWeaponStruct( cgs.clientinfo[playerNum].cls, WP_AXE );
-	// play a sound
-	for ( c = 0 ; c < 3 ; c++ ) {
-		if ( !weap->fleshSound[c] ) {
-			break;
+	weap = CG_Q3F_GetWeaponStruct(cgs.clientinfo[playerNum].cls, WP_AXE);
+
+	if (enttype == ET_Q3F_SENTRY || enttype == ET_Q3F_SUPPLYSTATION) {
+		// play a sound
+		for ( c = 0 ; c < 3 ; c++ ) {
+			if ( !weap->wallSound[IMPACTSOUND_METAL][c] ) {
+				break;
+			}
+		}
+		if ( c > 0 ) {
+			c = rand() % c;
+			if ( weap->wallSound[IMPACTSOUND_METAL][c] )
+			{
+				trap_S_StartSound( origin, entityNum, CHAN_WEAPON, weap->wallSound[IMPACTSOUND_METAL][c] );
+			}
 		}
 	}
-	if ( c > 0 ) {
-		c = rand() % c;
-		if ( weap->fleshSound[c] )
-		{
-			trap_S_StartSound( origin, entityNum, CHAN_WEAPON, weap->fleshSound[c] );
+	else {
+		// play a sound
+		for (c = 0; c < 3; c++) {
+			if ( !weap->fleshSound[c] ) {
+				break;
+			}
+		}
+		if (c > 0) {
+			c = rand() % c;
+			if ( weap->fleshSound[c] )
+			{
+				trap_S_StartSound( origin, entityNum, CHAN_WEAPON, weap->fleshSound[c] );
+			}
 		}
 	}
 }
@@ -2415,8 +2433,9 @@ static void CG_Q3F_AxeHitFlesh( vec3_t origin, vec3_t dir, int playerNum, int en
 CG_MissileHitPlayer
 =================
 */
-void CG_MissileHitPlayer( int weapon, vec3_t origin, vec3_t dir, int clientNum, int entityNum ) {
-	CG_Bleed( origin, entityNum );
+void CG_MissileHitPlayer( int weapon, vec3_t origin, vec3_t dir, int clientNum, int entityNum, int enttype ) {
+	if ( enttype != ET_Q3F_SENTRY && enttype != ET_Q3F_SUPPLYSTATION )
+		CG_Bleed( origin, entityNum );
 
 	// some weapons will make an explosion with the blood, while
 	// others will just make the blood
@@ -2428,7 +2447,7 @@ void CG_MissileHitPlayer( int weapon, vec3_t origin, vec3_t dir, int clientNum, 
 		CG_MissileHitWall( weapon, clientNum, origin, dir, IMPACTSOUND_FLESH );
 		break;
 	case WP_AXE:
-		CG_Q3F_AxeHitFlesh( origin, dir, clientNum, entityNum );
+		CG_Q3F_AxeHitFlesh( origin, dir, clientNum, entityNum, enttype );
 	default:
 		break;
 	}
@@ -2466,8 +2485,8 @@ static void CG_MinigunPellet( vec3_t start, vec3_t end, int skipNum ) {
 		return;
 	}
 
-	if ( cg_entities[tr.entityNum].currentState.eType == ET_PLAYER || cg_entities[tr.entityNum].currentState.eType == ET_Q3F_CORPSE  ) {
-		CG_MissileHitPlayer( WP_SHOTGUN, tr.endpos, tr.plane.normal, skipNum, tr.entityNum );
+	if ( cg_entities[tr.entityNum].currentState.eType == ET_PLAYER || cg_entities[tr.entityNum].currentState.eType == ET_Q3F_CORPSE ) {
+		CG_MissileHitPlayer( WP_SHOTGUN, tr.endpos, tr.plane.normal, skipNum, tr.entityNum, cg_entities[tr.entityNum].currentState.eType );
 	} else {
 		if ( tr.surfaceFlags & SURF_NOIMPACT ) {
 			// SURF_NOIMPACT will not make a flame puff or a mark
@@ -2501,7 +2520,7 @@ static void CG_ShotgunPellet( vec3_t start, vec3_t end, int skipNum ) {
 	}
 
 	if ( cg_entities[tr.entityNum].currentState.eType == ET_PLAYER || cg_entities[tr.entityNum].currentState.eType == ET_Q3F_CORPSE ) {
-		CG_MissileHitPlayer( WP_SHOTGUN, tr.endpos, tr.plane.normal, skipNum, tr.entityNum );
+		CG_MissileHitPlayer( WP_SHOTGUN, tr.endpos, tr.plane.normal, skipNum, tr.entityNum, cg_entities[tr.entityNum].currentState.eType );
 	} else {
 		if ( tr.surfaceFlags & SURF_NOIMPACT ) {
 			// SURF_NOIMPACT will not make a flame puff or a mark
