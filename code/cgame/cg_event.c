@@ -452,14 +452,17 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		}
 		break;
 	case MOD_FLAME:
-		/* Ensiform - Added for misc_flamethrower */
-		r = rand() % 5;
-		switch(r) {
-	case 0:	message = "was caramelized"; break;
-	case 1:	message = "was cooked to 'well done'"; break;
-	case 2:	message = "was burnt to a crisp"; break;
-	case 3:	message = "was deep fried without batter"; break;
-	case 4:	message = "was set ablaze"; break;
+		if (attacker == ENTITYNUM_WORLD) // Check attacker so that we don't set this obituary message on player kills, preventing the actual player kill message from being set below
+		{
+			/* Ensiform - Added for misc_flamethrower */
+			r = rand() % 5;
+			switch(r) {
+		case 0:	message = "was caramelized"; break;
+		case 1:	message = "was cooked to 'well done'"; break;
+		case 2:	message = "was burnt to a crisp"; break;
+		case 3:	message = "was deep fried without batter"; break;
+		case 4:	message = "was set ablaze"; break;
+			}
 		}
 		break;
 	case MOD_TARGET_LASER:
