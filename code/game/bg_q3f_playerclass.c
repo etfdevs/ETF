@@ -325,8 +325,8 @@ bg_q3f_playerclass_t bg_q3f_playerclass_paramedic = {
 	WP_SUPERNAILGUN,					// Default Weapon
 
 	Q3F_GREN_NORMAL,	Q3F_GREN_CONCUSS,		// Grenade types
-	3,					2,						// Initial grenades
-	3,					2,						// Max grenades
+	3,					3,						// Initial grenades
+	3,					3,						// Max grenades
 
 	 70, 200,  25,  50,	100, 0,	// Maximum values for ammo: shells/nails/rockets/cells/medikit/charge
 	 70, 200,  25,  50,	100, 0,	// Initial values for ammo: shells/nails/rockets/cells/medikit/charge
