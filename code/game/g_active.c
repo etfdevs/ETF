@@ -1187,10 +1187,10 @@ void ClientThink_real( gentity_t *ent ) {
 		}
 	}
 	if( client->repairEnt && client->repairEnt->inuse ) {
-		if( client->repairEnt->s.eType == ET_Q3F_SENTRY && !G_Q3F_CheckSentryUpgradeable( ent, client->repairEnt->s.number, qtrue ) ) {
+		if( client->repairEnt->s.eType == ET_Q3F_SENTRY && !G_Q3F_CheckSentryUpgradeable( ent, client->repairEnt->s.number, qtrue, qtrue ) ) {
 			trap_SendServerCommand( ent->s.number, "menu cancel upgradeautosentry" );
 			client->repairEnt = NULL;
-		} else if ( client->repairEnt->s.eType == ET_Q3F_SUPPLYSTATION && !G_Q3F_CheckSupplyStation( ent, client->repairEnt->s.number ) ) {
+		} else if ( client->repairEnt->s.eType == ET_Q3F_SUPPLYSTATION && !G_Q3F_CheckSupplyStation( ent, client->repairEnt->s.number, qtrue ) ) {
 			trap_SendServerCommand( ent->s.number, "menu cancel upgradesupplystation" );
 			client->repairEnt = NULL;
 		}
