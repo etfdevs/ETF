@@ -411,7 +411,7 @@ void CG_UpdateCvars( void ) {
 					BG_setCrosshair(cg_crosshairColorAlt.string, cg.xhairColorAlt, cg_crosshairAlphaAlt.value, "cg_crosshairColorAlt");
 				}
 
-				if (cv->vmCvar == &cg_autoReload) {
+				else if (cv->vmCvar == &cg_autoReload) {
 					if (cg_autoReload.integer < 0) {
 						trap_Cvar_Set("cg_autoReload", "0");
 						cg_autoReload.integer = 0;

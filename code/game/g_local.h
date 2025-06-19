@@ -1043,8 +1043,8 @@ void G_Q3F_SentryDie( gentity_t *sentry, gentity_t *inflictor, gentity_t *attack
 void G_Q3F_SupplyStationDie( gentity_t *sentry, gentity_t *inflictor, gentity_t *attacker, int damage, int meansOfDeath );
 void G_Q3F_Supply_Command( gentity_t *player );
 void G_Q3F_UpdateEngineerStats( gentity_t *player );
-gentity_t *G_Q3F_CheckSentryUpgradeable( gentity_t *player, int sentrynum, qboolean checkforRepairent );
-gentity_t *G_Q3F_CheckSupplyStation( gentity_t *player, int suppnum );
+gentity_t *G_Q3F_CheckSentryUpgradeable( gentity_t *player, int sentrynum, qboolean checkforRepairent, qboolean rangecheck );
+gentity_t *G_Q3F_CheckSupplyStation( gentity_t *player, int suppnum, qboolean rangecheck );
 
 void G_Q3F_SentryUpgrade( gentity_t *player, int sentrynum );
 void G_Q3F_SentryRepair( gentity_t *player, int sentrynum );

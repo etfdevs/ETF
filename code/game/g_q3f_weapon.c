@@ -1290,7 +1290,7 @@ void G_Q3F_Weapon_Knife_Fire(struct gentity_s *ent)
 	if ( !traceEnt->takedamage ) {
 		if( tr.entityNum != ENTITYNUM_NONE && tr.fraction < 1 )
 		{
-			tent = G_TempEntity( tr.endpos, EV_MISSILE_MISS );
+			tent = G_TempEntity( tr.endpos, tr.surfaceFlags & SURF_METALSTEPS ? EV_MISSILE_MISS_METAL : EV_MISSILE_MISS );
 			tent->s.otherEntityNum = traceEnt->s.number;
 			tent->s.otherEntityNum2 = ent->s.number;
 			tent->s.eventParm = DirToByte( tr.plane.normal );
@@ -1448,7 +1448,7 @@ void G_Q3F_Weapon_Wrench_Fire(struct gentity_s *ent)
 		if ( !traceEnt->takedamage) {
 			if( tr.entityNum != ENTITYNUM_NONE && tr.fraction < 1 )
 			{
-				tent = G_TempEntity( tr.endpos, EV_MISSILE_MISS );
+				tent = G_TempEntity( tr.endpos, tr.surfaceFlags & SURF_METALSTEPS ? EV_MISSILE_MISS_METAL : EV_MISSILE_MISS );
 				tent->s.otherEntityNum = traceEnt->s.number;
 				tent->s.otherEntityNum2 = ent->s.number;
 				tent->s.eventParm = DirToByte( tr.plane.normal );
@@ -1516,7 +1516,7 @@ void G_Q3F_Weapon_BioAxe_Fire(struct gentity_s *ent)
 		if ( !traceEnt->takedamage ) {
 			if( tr.entityNum != ENTITYNUM_NONE && tr.fraction < 1 )
 			{
-				tent = G_TempEntity( tr.endpos, EV_MISSILE_MISS );
+				tent = G_TempEntity( tr.endpos, tr.surfaceFlags & SURF_METALSTEPS ? EV_MISSILE_MISS_METAL : EV_MISSILE_MISS );
 				tent->s.otherEntityNum = traceEnt->s.number;
 				tent->s.otherEntityNum2 = ent->s.number;
 				tent->s.eventParm = DirToByte( tr.plane.normal );
@@ -1574,7 +1574,7 @@ void G_Q3F_Weapon_Axe_Fire(struct gentity_s *ent)
 	if ( !traceEnt->takedamage) {
 		if( tr.entityNum != ENTITYNUM_NONE && tr.fraction < 1 )
 		{
-			tent = G_TempEntity( tr.endpos, EV_MISSILE_MISS );
+			tent = G_TempEntity( tr.endpos, tr.surfaceFlags & SURF_METALSTEPS ? EV_MISSILE_MISS_METAL : EV_MISSILE_MISS );
 			tent->s.otherEntityNum = traceEnt->s.number;
 			tent->s.otherEntityNum2 = ent->s.number;
 			tent->s.eventParm = DirToByte( tr.plane.normal );

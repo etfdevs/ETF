@@ -1593,9 +1593,6 @@ CG_CalcEntityLerpPositions
 ===============
 */
 static void CG_CalcEntityLerpPositions( centity_t *cent ) {
-
-	int timeshift = 0;
-
 	if ( cent->interpolate && cent->currentState.pos.trType == TR_INTERPOLATE ) {
 		CG_InterpolateEntityPosition( cent );
 		return;
@@ -1619,11 +1616,11 @@ static void CG_CalcEntityLerpPositions( centity_t *cent ) {
 	}
 
 	// just use the current frame and evaluate as best we can
-	BG_EvaluateTrajectory( &cent->currentState.pos, cg.time + timeshift, cent->lerpOrigin );
+	BG_EvaluateTrajectory( &cent->currentState.pos, cg.time, cent->lerpOrigin );
 	if (cent->interpolate && cent->currentState.apos.trType == TR_INTERPOLATE )
 		CG_InterpolateEntityAngle( cent );
 	else
-		BG_EvaluateTrajectory( &cent->currentState.apos, cg.time + timeshift, cent->lerpAngles );
+		BG_EvaluateTrajectory( &cent->currentState.apos, cg.time, cent->lerpAngles );
 
 	// adjust for riding a mover if it wasn't rolled into the predicted
 	// player state

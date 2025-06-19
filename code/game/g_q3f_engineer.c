@@ -673,7 +673,7 @@ qboolean G_Q3F_SentryCancel( gentity_t *sentry )
 	return( qfalse );
 }
 
-gentity_t *G_Q3F_CheckSentryUpgradeable( gentity_t *player, int sentrynum, qboolean checkforRepairent )
+gentity_t *G_Q3F_CheckSentryUpgradeable( gentity_t *player, int sentrynum, qboolean checkforRepairent, qboolean rangecheck )
 {
 	// Check the sentry is valid, or pick a valid sentry in range
 
@@ -689,13 +689,16 @@ gentity_t *G_Q3F_CheckSentryUpgradeable( gentity_t *player, int sentrynum, qbool
 		return( NULL );		// Not yet built
 	if( checkforRepairent && (sentry != player->client->repairEnt || level.time > player->client->repairTime + Q3F_BUILDING_REPAIR_TIME) )
 		return( NULL );
-	VectorCopy( player->client->ps.origin, vec );
-	vec[2] += player->client->ps.viewheight;
-	VectorSubtract( vec, sentry->r.currentOrigin, vec );
-	if( SQRTFAST( vec[0]*vec[0] + vec[1]*vec[1] ) > Q3F_BUILDING_REPAIR_DISTANCE ||
-		player->r.absmin[2] - sentry->r.absmax[2] > 0.5 * Q3F_BUILDING_REPAIR_DISTANCE || 
-		sentry->r.absmin[2] - player->r.absmax[2] > 0.5 * Q3F_BUILDING_REPAIR_DISTANCE )
-		return( NULL );
+
+	if ( rangecheck ) {
+		VectorCopy( player->client->ps.origin, vec );
+		vec[2] += player->client->ps.viewheight;
+		VectorSubtract( vec, sentry->r.currentOrigin, vec );
+		if( SQRTFAST( vec[0]*vec[0] + vec[1]*vec[1] ) > Q3F_BUILDING_REPAIR_DISTANCE ||
+			player->r.absmin[2] - sentry->r.absmax[2] > 0.5 * Q3F_BUILDING_REPAIR_DISTANCE || 
+			sentry->r.absmin[2] - player->r.absmax[2] > 0.5 * Q3F_BUILDING_REPAIR_DISTANCE )
+			return( NULL );
+	}
 
 	return( sentry );
 }
@@ -706,7 +709,7 @@ void G_Q3F_SentryUpgrade( gentity_t *player, int sentrynum )
 
 	gentity_t *sentry;
 
-	sentry = G_Q3F_CheckSentryUpgradeable( player, sentrynum, qfalse );
+	sentry = G_Q3F_CheckSentryUpgradeable( player, sentrynum, qfalse, qfalse );
 	if( !sentry || !sentry->s.legsAnim || sentry->s.legsAnim >= 3 )
 		return;
 
@@ -743,7 +746,7 @@ void G_Q3F_SentryRepair( gentity_t *player, int sentrynum )
 	gentity_t *sentry;
 	int cells;
 
-	sentry = G_Q3F_CheckSentryUpgradeable( player, sentrynum, qfalse );
+	sentry = G_Q3F_CheckSentryUpgradeable( player, sentrynum, qfalse, qfalse );
 	if( !sentry || !sentry->s.legsAnim )
 		return;
 
@@ -767,7 +770,7 @@ void G_Q3F_SentryRefill( gentity_t *player, int sentrynum )
 	gentity_t *sentry;
 	int ammo, available, max;
 
-	sentry = G_Q3F_CheckSentryUpgradeable( player, sentrynum, qfalse );
+	sentry = G_Q3F_CheckSentryUpgradeable( player, sentrynum, qfalse, qfalse );
 	if( !sentry || !sentry->s.legsAnim )
 		return;
 
@@ -798,7 +801,7 @@ static void G_Q3F_SentryRotate( gentity_t *player, int sentrynum, int angle )
 
 	gentity_t *sentry;
 
-	sentry = G_Q3F_CheckSentryUpgradeable( player, sentrynum, qtrue );
+	sentry = G_Q3F_CheckSentryUpgradeable( player, sentrynum, qtrue, qtrue );
 	if( !sentry || !sentry->s.legsAnim )
 		return;
 
@@ -822,7 +825,7 @@ static void G_Q3F_SentryPlrMove( gentity_t *player, int sentrynum )
 	gentity_t *sentry;
 	vec3_t sentrymin, origin;
 
-	sentry = G_Q3F_CheckSentryUpgradeable( player, sentrynum, qtrue );
+	sentry = G_Q3F_CheckSentryUpgradeable( player, sentrynum, qtrue, qtrue );
 	if( !sentry || !sentry->s.legsAnim /*|| sentry->sound2to1 || player != sentry->parent*/ )
 		return;
 
@@ -1031,7 +1034,7 @@ static void G_Q3F_SentryDismantle( gentity_t *player, int sentrynum )
 	int cells;
 	bg_q3f_playerclass_t *cls;
 
-	sentry = G_Q3F_CheckSentryUpgradeable( player, sentrynum, qtrue );
+	sentry = G_Q3F_CheckSentryUpgradeable( player, sentrynum, qtrue, qtrue );
 	if( !sentry || !sentry->s.legsAnim )
 		return;
 	if( !G_Q3F_AttemptDismantle( player, sentry ) )
@@ -1937,7 +1940,7 @@ static void G_Q3F_SupplyStationThink( gentity_t *supplystation )
 	supplystation->nextthink = level.time + FRAMETIME;
 }
 
-gentity_t *G_Q3F_CheckSupplyStation( gentity_t *player, int suppnum )
+gentity_t *G_Q3F_CheckSupplyStation( gentity_t *player, int suppnum, qboolean rangecheck )
 {
 	gentity_t *supplystation;
 	vec3_t vec;
@@ -2000,7 +2003,7 @@ void G_Q3F_Supply_Command( gentity_t *player )
 	trap_Argv( 2, buff, sizeof(buff) );
 	suppnum = atoi( buff );
 
-	supplystation = G_Q3F_CheckSupplyStation( player, suppnum );
+	supplystation = G_Q3F_CheckSupplyStation( player, suppnum, qtrue );
 	if( !supplystation )
 		return;
 
@@ -2144,7 +2147,7 @@ void G_Q3F_SupplyStationUpgrade( gentity_t *player, int suppnum )
 
 	gentity_t *supplystation;
 
-	supplystation = G_Q3F_CheckSupplyStation( player, suppnum );
+	supplystation = G_Q3F_CheckSupplyStation( player, suppnum, qfalse );
 	if( !supplystation || !supplystation->s.legsAnim || supplystation->s.legsAnim >= 3 )
 		return;
 
@@ -2185,7 +2188,7 @@ void G_Q3F_SupplyStationRepair( gentity_t *player, int suppnum )
 	gentity_t *supplystation;
 	int cells;
 
-	supplystation = G_Q3F_CheckSupplyStation( player, suppnum );
+	supplystation = G_Q3F_CheckSupplyStation( player, suppnum, qfalse );
 	if( !supplystation || !supplystation->s.legsAnim )
 		return;
 
@@ -2222,7 +2225,7 @@ void G_Q3F_SupplyStationRefill( gentity_t *player, int suppnum )
 	gentity_t *supplystation;
 	int ammo, available;
 
-	supplystation = G_Q3F_CheckSupplyStation( player, suppnum );
+	supplystation = G_Q3F_CheckSupplyStation( player, suppnum, qfalse );
 	if( !supplystation || !supplystation->s.legsAnim )
 		return;
 
@@ -2507,7 +2510,7 @@ void G_Q3F_SupplyStationDismantle( gentity_t *player, int suppnum )
 	int cells;
 	bg_q3f_playerclass_t *cls;
 
-	supplystation = G_Q3F_CheckSupplyStation( player, suppnum );
+	supplystation = G_Q3F_CheckSupplyStation( player, suppnum, qtrue );
 	if( !supplystation || !supplystation->s.legsAnim )
 		return;
 	if( !G_Q3F_AttemptDismantle( player, supplystation ) )
@@ -2543,6 +2546,8 @@ void G_Q3F_SupplyStationDismantle( gentity_t *player, int suppnum )
 					player->client->pers.netname,
 					supplystation->parent->client->pers.netname );
 	G_FreeEntity( supplystation );
+	player->client->repairEnt = NULL;
+
 }
 
 /*
