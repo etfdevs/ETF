@@ -581,9 +581,9 @@ void G_Q3F_DropFlag( gentity_t *ent )
 	VectorCopy( ent->activator->s.apos.trBase, angles );
 	angles[YAW] += ETF_crandom() * 30;
 	angles[PITCH] = 0;	// always forward
-	if ( ent->activator && ent->activator->client && ent->activator->client->ps.stats[STAT_HEALTH]> 0 ) {
+	if ( ent->activator && ent->activator->client && ent->activator->client->ps.stats[STAT_HEALTH] > 0 ) {
 		AngleVectors( ent->activator->client->ps.viewangles, velocity, NULL, NULL );
-		VectorScale( velocity, 280, velocity );
+		VectorScale( velocity, 400, velocity ); // 280
 		VectorMA( velocity, 0.25, ent->activator->client->ps.velocity, velocity );
 		velocity[2] += 150 + ETF_crandom() * 50;
 	} else {
