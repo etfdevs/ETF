@@ -1367,8 +1367,8 @@ const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 
 		G_InitClientSessionData( client );
 	}
-
-	G_ReadClientSessionData( client );
+	else
+		G_ReadClientSessionData( client );
 
 	if ( isBot )
 		Q_strncpyz( client->pers.guidStr, "BOT", sizeof(client->pers.guidStr));

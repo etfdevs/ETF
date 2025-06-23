@@ -173,6 +173,7 @@ void G_ReadClientSessionData( gclient_t *client ) {
 	if ( !g_matchState.integer ) 
 		sess->sessionTeam = Q3F_TEAM_SPECTATOR;
 
+#if 0
 	if ( Q3F_IsSpectator( client ) )
 	{
 		/* Ensiform - Nuke the class if we're spectator */
@@ -181,6 +182,7 @@ void G_ReadClientSessionData( gclient_t *client ) {
 		sess->spectatorState = SPECTATOR_FREE;
 		sess->spectatorClient = -1;
 	}
+#endif
 
 	cJSON_Delete( root );
 	root = NULL;
@@ -205,7 +207,7 @@ void G_InitClientSessionData( gclient_t *client/*, char* userinfo*/ ) {
 		sess->sessionTeam = Q3F_TEAM_SPECTATOR;
 	}
 
-	if ( Q3F_IsSpectator( client ) || sess->sessionTeam == Q3F_TEAM_SPECTATOR )
+	if ( Q3F_IsSpectator( client ) /*|| sess->sessionTeam == Q3F_TEAM_SPECTATOR*/ )
 	{
 		/* Ensiform - Nuke the class if we're spectator */
 		client->ps.persistant[PERS_CURRCLASS] = Q3F_CLASS_NULL;
@@ -235,25 +237,27 @@ G_InitWorldSession
 void G_ReadSessionData( void ) {
 	char *buffer = NULL;
 	fileHandle_t f = NULL_FILE;
-	unsigned int len = 0u;
-	cJSON *root;
+	int len = 0;
+	cJSON *root = NULL;
 
 	Com_Printf( "G_ReadSessionData: reading %s...", metaFileName );
 	len = trap_FS_FOpenFile( metaFileName, &f, FS_READ );
 
 	// no file
-	if ( !f || !len || len == 0xFFFFFFFFU ) {
+	if ( !f || len <= 0 ) {
 		Com_Printf( "failed to open file, clearing session data...\n" );
 		level.newSession = qtrue;
-		if(f)
+		if( f )
 			trap_FS_FCloseFile( f );
 		return;
 	}
 
-	buffer = (char *)malloc( len + 1 );
+	buffer = (char *)cJSON_malloc( (size_t)len + 1 );
 	if ( !buffer ) {
 		Com_Printf( "failed to allocate buffer, clearing session data...\n" );
 		level.newSession = qtrue;
+		if( f )
+			trap_FS_FCloseFile( f );
 		return;
 	}
 
@@ -270,7 +274,7 @@ void G_ReadSessionData( void ) {
 		Com_Printf( "gametype changed, clearing session data..." );
 	}
 
-	free( buffer );
+	cJSON_free( buffer );
 	cJSON_Delete( root );
 	root = NULL;
 	Com_Printf( "done\n" );
