@@ -7339,14 +7339,15 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 	info[0] = '\0';
 	if( trap_GetConfigString( CS_SERVERINFO, info, sizeof(info) ) ) {
 		Text_PaintCenter(centerPoint, yStart, scale, colorWhite, va( "Loading %s", Info_ValueForKey( info, "mapname" )), 0, NULL);
+		//Com_Printf("Loading %s\n", Info_ValueForKey(info, "mapname"));
 	}
 
-	if(ui_checkversion.integer) { 
+	/*if (ui_checkversion.integer && info[0]) {
 		s = Info_ValueForKey( info, "g_etfversion" ); 
 		if (s && s[0] && strcmp(s, FORTS_VERSION "-" GIT_COMMIT_HASH_SHORT)) {
 			trap_Error(va("Server version mismatch. Server has version %s, you have %s.  You can force the connection by setting cvar ui_checkversion to 0. In this case it is also recommended to set cl_autodownload to 1 to resolve any file differences between you and the server.", s, FORTS_VERSION "-" GIT_COMMIT_HASH_SHORT));
-		} 
-	} 
+		}
+	}*/
 	if (!Q_stricmp(cstate.servername,"localhost")) {
 		Text_PaintCenter(centerPoint, yStart + 48, scale, colorWhite, va("Starting up..."), ITEM_TEXTSTYLE_SHADOWEDMORE, NULL);
 	} else {

@@ -1249,7 +1249,7 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 		if ( demoPlayback )
 			CG_Error( "Client/Demo ETF version mismatch: %s/%s", FORTS_VERSION, s );
 		else
-			Com_Printf("Your version: %s doesn't match with Server version: %s\nThis could give problems.\n",
+			Com_Printf( S_COLOR_YELLOW "WARNING: Your version: %s doesn't match with Server version: %s\nThis could give problems.\n",
 						FORTS_VERSION, s );
 	}
 
