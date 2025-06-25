@@ -77,9 +77,6 @@ extern vec3_t tracebox_1_maxs;
 extern vec3_t tracebox_2_mins;
 extern vec3_t tracebox_2_maxs;
 
-// JT -- From g_missile.c (originally)
-#define	MISSILE_PRESTEP_TIME	50
-
 typedef struct g_q3f_weapon_s {
 
 	bg_q3f_weapon_t *s;	

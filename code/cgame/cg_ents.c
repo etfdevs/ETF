@@ -956,7 +956,7 @@ static void CG_Item( centity_t *cent ) {
 	}
 }
 
-static void CG_Missile( centity_t *cent ) {
+void CG_Missile( centity_t *cent ) {
 	refEntity_t			ent;
 	entityState_t		*s1;
 	const weaponInfo_t	*weapon;
@@ -1925,6 +1925,7 @@ CG_AddCEntity
 
 ===============
 */
+void CG_MatchPredictedEnt(centity_t* cent);
 static void CG_AddCEntity( centity_t *cent ) {
 	// event-only entities will have been dealt with already
 	if( cent->currentState.eType >= ET_EVENTS ) {
@@ -1984,8 +1985,10 @@ static void CG_AddCEntity( centity_t *cent ) {
 			VectorCopy( cent->currentState.pos.trBase, cent->oldOrigin );
 		}*/
 		// RR2DO2
-		if( !cg.renderingSkyPortal )
+		if( !cg.renderingSkyPortal ) {
 			CG_Missile( cent );
+			CG_MatchPredictedEnt(cent);
+		}
 		break;
 	// Golliwog: Custom rendering on these entities
 	case ET_Q3F_GRENADE:
@@ -2069,6 +2072,8 @@ CG_AddPacketEntities
 
 ===============
 */
+void CG_UpdateLocalPredictedEnts();
+
 void CG_AddPacketEntities( void ) {
 	int					num;
 	centity_t			*cent;
@@ -2108,6 +2113,8 @@ void CG_AddPacketEntities( void ) {
 
 	// lerp the non-predicted value for lightning gun origins
 	CG_CalcEntityLerpPositions( &cg_entities[ cg.snap->ps.clientNum ] );
+
+	CG_UpdateLocalPredictedEnts();
 
 	// add each entity sent over by the server
 	for ( num = 0 ; num < cg.snap->numEntities ; num++ ) {

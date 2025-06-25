@@ -42,6 +42,8 @@ lightning gun is done in CG_LightningBolt, since it was just a matter
 of setting the right origin and angles.
 =======================
 */
+void CG_AddPredictedMissile(entityState_t* ent, vec3_t origin, vec3_t forward);
+
 void CG_PredictWeaponEffects( centity_t *cent ) {
 	vec3_t	muzzlePoint, forward, endPoint;
 	vec3_t	viewAngles;
@@ -73,6 +75,8 @@ void CG_PredictWeaponEffects( centity_t *cent ) {
 		AngleVectors( cg.predictedPlayerState.viewangles, forward, NULL, NULL );
 	}
 	VectorMA( muzzlePoint, 14, forward, muzzlePoint );
+
+	CG_AddPredictedMissile(ent, muzzlePoint, forward);
 
 	if ( ent->weapon == WP_SHOTGUN ) {
 		VectorScale( forward, 4096, endPoint );
@@ -125,8 +129,9 @@ void CG_PredictWeaponEffects( centity_t *cent ) {
 			flesh = qfalse;
 		}
 		CG_Bullet( tr.endpos, cg.predictedPlayerState.clientNum, tr.plane.normal, flesh, fleshNum );
-	} else 
+	} else {
 		return;
+	}
 
 	if ((cg_predictWeapons.integer & 2) && cgs.sv_cheats == qtrue ) {
 		int x,zd,zu;
