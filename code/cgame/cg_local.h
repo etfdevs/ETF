@@ -348,6 +348,7 @@ typedef enum {
 	LE_NAPALM_FLAME,
 	LE_DEBUG_BOX,
 	LE_SCALE_FADE,
+	LE_PREDICTED_ENT,
 } leType_t;
 
 typedef enum {
@@ -362,6 +363,8 @@ typedef enum {
 	LEF_SOUND_BRASS			= 0x1000,
 	LEF_SOUND_BLOOD			= 0x2000,
 	LEF_SOUNDS				= 0x7000,
+
+	LEF_PREDICTED			= 0x10000,
 } leFlag_t;
 
 typedef enum {
@@ -385,6 +388,7 @@ typedef struct localEntity_s {
 	struct localEntity_s	*prev, *next;
 	leType_t		leType;
 	int				leFlags;
+	int			pred_weapon;  // For predicted ents
 
 	int				startTime;
 	int				endTime;

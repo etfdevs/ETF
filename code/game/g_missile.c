@@ -477,7 +477,7 @@ void G_RunMissileTime( gentity_t *ent, int time ) {
 void G_RunMissile( gentity_t *ent ) {
 	if (ent->antilag_time) {
 		const int kStep = 10;
-		int time = Q_max(level.time - 150, ent->antilag_time + 45);
+		int time = Q_max(level.time - 150, ent->antilag_time);
 		int end = level.time - kStep;
 		qboolean ran = qfalse;
 
@@ -762,20 +762,14 @@ gentity_t *fire_rocket (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->s.pos.trType = TR_LINEAR;
 	bolt->s.pos.trTime = level.time - MISSILE_PRESTEP_TIME;		// move a bit on the very first frame
 	VectorCopy( start, bolt->s.pos.trBase );
-	VectorScale( dir, 1200, bolt->s.pos.trDelta );
+	VectorScale( dir, PROJ_SPEED_ROCKET, bolt->s.pos.trDelta );
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 	VectorCopy (start, bolt->r.currentOrigin);
 
 	// need to check for client being valid, as this can be a shooter_rocket
 	// there is also shooter_grenade if fire_grenade gets this too eventually
-	if (self->client && self->client->pers.unlagged == 2)
-#if 0
-		// Not sure I trust this yet.. extremely unstable
-		bolt->antilag_time = self->client->attackTime + self->client->frameOffset;
-#endif
-		bolt->antilag_time = level.time - self->client->ps.ping;
-	else
-		bolt->antilag_time = 0;
+	if (self->client && self->client->pers.unlagged & 2)
+		bolt->antilag_time = self->client->attackTime;
 
 	return bolt;
 }
@@ -824,9 +818,12 @@ gentity_t *fire_nail (gentity_t *self, vec3_t start, vec3_t dir, int damage, int
 	VectorMA( start, -15, dir, bolt->s.pos.trBase );		// Draw a frame previous.
 	bolt->s.pos.trBase[2] -= 6;
 //	VectorScale( dir, 1100, bolt->s.pos.trDelta );
-	VectorScale( dir, mod == MOD_SUPERNAILGUN ? 1500 : 1250, bolt->s.pos.trDelta ); // djbob: 2.2 value 1.6 1250 for both nailguns
+	VectorScale( dir, mod == MOD_SUPERNAILGUN ? PROJ_SPEED_SNG : PROJ_SPEED_NG, bolt->s.pos.trDelta ); // djbob: 2.2 value 1.6 1250 for both nailguns
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 	VectorCopy (start, bolt->r.currentOrigin);
+
+	if (self->client && self->client->pers.unlagged & 2)
+		bolt->antilag_time = self->client->attackTime;
 
 	return bolt;
 }

@@ -65,10 +65,15 @@ void	CG_InitLocalEntities( void ) {
 CG_FreeLocalEntity
 ==================
 */
+static void CG_UntrackPredictedEnt(localEntity_t *le);
+
 void CG_FreeLocalEntity( localEntity_t *le ) {
 	if ( !le->prev ) {
 		CG_Error( "CG_FreeLocalEntity: not active" );
 	}
+
+	if (le->leFlags & LEF_PREDICTED)
+		CG_UntrackPredictedEnt(le);
 
 	// remove from the doubly linked active list
 	le->prev->next = le->next;
@@ -927,6 +932,164 @@ static void CG_AddDebugBox(  localEntity_t *le )
 	CG_DrawBoundingBox( le->pos.trBase, le->angles.trBase, le->angles.trDelta, color );
 }
 
+/*
+====================================================================================
+
+CLIENT PREDICTED ENTITIES
+
+Locally predicted entities that are generated prior to the true entity being
+returned by the server (e.g. a fired rocket)
+
+====================================================================================
+*/
+#define NUM_PRED 10
+static localEntity_t* predicted_ents[NUM_PRED];
+static int num_predicted_ents;
+
+static inline int CG_PredictedMissilesEnabled() {
+	// Not yet default enabled.  Needs antilag on and prediction on.
+	return (cg_predictWeapons.integer & 2) && (cg_unlagged.integer & 2);
+}
+
+static void CG_UntrackPredictedEnt(localEntity_t *le) {
+	int i;
+
+	for (i = 0; i < num_predicted_ents; i++)
+		if (predicted_ents[i] == le)
+			break;
+
+	if (i == num_predicted_ents - 1)
+		num_predicted_ents--;
+	else if (i < num_predicted_ents)
+		predicted_ents[i] = predicted_ents[--num_predicted_ents];
+}
+
+void CG_MatchPredictedEnt(centity_t* cent) {
+	localEntity_t* match = NULL;
+	float best = SQR(64), sgn;
+
+	// Can only match entities we own.
+	if (!CG_PredictedMissilesEnabled() ||
+			cent->currentState.clientNum != cg.snap->ps.clientNum)
+		return;
+
+	for (int i = 0; i < num_predicted_ents; i++) {
+		vec3_t diff;
+		localEntity_t* le = predicted_ents[i];
+		float len;
+
+		VectorSubtract(cent->lerpOrigin, le->pos.trBase, diff);
+		len = VectorLengthSquared(diff);
+		if (len < best) {
+			match = le;
+			best = len;
+			sgn = DotProduct(diff, le->pos.trDelta) > 0 ? 1 : -1;
+		}
+	}
+
+	if (match) {
+		float dist = sgn * sqrt(best);
+		if (match->angles.trTime < 0)
+			match->angles.trTime += cg.time;
+
+		if (cg_predictWeapons.integer & 4)
+			printf("BEST MATCH: %0.2f [%0.1fms] [age=%dms] [%d]\n",
+					dist, 1000 * dist / VectorLength(match->pos.trDelta),
+					match->angles.trTime, num_predicted_ents);
+
+		match->endTime = 0;  // Latch expiry.
+	}
+}
+
+void CG_UpdateLocalPredictedEnts() {
+	float now = cg.time;
+
+	for (int i = 0; i < num_predicted_ents; i++) {
+		localEntity_t* le = predicted_ents[i];
+		vec3_t next;
+		trace_t trace;
+
+		if (le->pos.trTime >= now)
+			continue;
+
+		BG_EvaluateTrajectory(&le->pos, now, next);
+		CG_Trace(&trace, le->pos.trBase, NULL, NULL, next, -1, CONTENTS_SOLID);
+
+		if (trace.fraction < 1)
+			le->endTime = 0;  // Latch for free
+
+		VectorCopy(trace.endpos, le->pos.trBase);
+		le->pos.trTime = now;
+	}
+}
+
+void CG_AddPredictedMissile(entityState_t* ent, vec3_t origin, vec3_t forward) {
+	localEntity_t *le;
+	int vel, tmod = 0;
+
+	if (!CG_PredictedMissilesEnabled())
+		return;
+
+	switch (ent->weapon) {
+		case WP_ROCKET_LAUNCHER:
+			vel = PROJ_SPEED_ROCKET;
+			tmod = MISSILE_PRESTEP_TIME;
+			break;
+		case WP_SUPERNAILGUN:
+			vel = PROJ_SPEED_SNG;
+			break;
+		case WP_NAILGUN:
+			vel = PROJ_SPEED_NG;
+			break;
+		case WP_NAPALMCANNON:
+			vel = PROJ_SPEED_NAPALM;
+			tmod = MISSILE_PRESTEP_TIME;
+			break;
+		default:
+			return;
+	}
+
+	if (num_predicted_ents >= NUM_PRED)
+		return;
+
+	le = CG_AllocLocalEntity(200);
+	le->leType = LE_PREDICTED_ENT;
+	le->leFlags = LEF_PREDICTED;
+	le->pred_weapon = ent->weapon;
+
+	le->pos.trType = TR_LINEAR;
+	le->pos.trTime = cg.time - 23 - tmod;
+	le->angles.trTime = -cg.time;
+
+	VectorCopy(origin, le->pos.trBase );
+	if (ent->weapon == WP_SUPERNAILGUN || ent->weapon == WP_NAILGUN) {
+		VectorMA(le->pos.trBase, -15, forward, le->pos.trBase);
+		le->pos.trBase[2] -= 6;
+	}
+
+	VectorScale(forward, vel, le->pos.trDelta );
+	SnapVector(le->pos.trDelta);
+
+	predicted_ents[num_predicted_ents++] = le;
+}
+
+void CG_Missile(centity_t* cent);
+static void CG_AddPredictedEnt(  localEntity_t *le ) {
+	centity_t cent;
+	memset(&cent, 0, sizeof(cent));
+
+	cent.currentState.weapon = le->pred_weapon;
+	VectorCopy(le->pos.trBase, cent.lerpOrigin);
+	VectorCopy(le->pos.trDelta, cent.currentState.pos.trDelta); // Needed for axis
+	CG_Missile(&cent);
+
+	if (cg_predictWeapons.integer & 4) {
+		vec3_t mins, maxs;
+		VectorSet(mins, -5, -5, -5);
+		VectorScale(mins, -1, maxs);
+		CG_DrawBoundingBox( le->pos.trBase, mins, maxs, colorYellow );
+	}
+}
 
 /*
 ===================
@@ -1021,6 +1184,10 @@ void CG_AddLocalEntities( void ) {
 
 		case LE_SCALE_FADE:     // rocket trails
 			CG_AddScaleFade( le );
+			break;
+
+		case LE_PREDICTED_ENT:
+			CG_AddPredictedEnt( le );
 			break;
 		}
 	}

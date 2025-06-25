@@ -532,7 +532,7 @@ void Weapon_Napalm_Fire(struct gentity_s *ent) {
 	bolt->s.pos.trType = TR_LINEAR;
 	bolt->s.pos.trTime = level.time - MISSILE_PRESTEP_TIME;		// move a bit on the very first frame
 	VectorCopy( muzzle, bolt->s.pos.trBase );
-	VectorScale( forward, 1100, bolt->s.pos.trDelta ); // 1.6 Default: 750
+	VectorScale( forward, PROJ_SPEED_NAPALM, bolt->s.pos.trDelta ); // 1.6 Default: 750
 //	VectorScale( forward, g_napalmRocketVel.integer, bolt->s.pos.trDelta );
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 	VectorCopy ( muzzle , bolt->r.currentOrigin);
@@ -541,6 +541,9 @@ void Weapon_Napalm_Fire(struct gentity_s *ent) {
 	{
 		bolt->s.powerups = (1 << PW_QUAD);
 	}
+
+	if (ent->client && ent->client->pers.unlagged & 2)
+		bolt->antilag_time = ent->client->attackTime;
 
 	ent->client->pers.stats.data[STATS_WP + WP_NAPALMCANNON].shots++;
 }
