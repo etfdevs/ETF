@@ -10,9 +10,8 @@ set(VERSION_MINOR "${CMAKE_MATCH_1}")
 string(REGEX MATCH "VERSION_PATCH ([0-9]+)" _patch_match "${version_content}")
 set(VERSION_PATCH "${CMAKE_MATCH_1}")
 
-project(etf VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" HOMEPAGE_URL "etfgame.com" LANGUAGES C) #CXX
+project(etf VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" HOMEPAGE_URL "etfgame.com" LANGUAGES C)
 set(CMAKE_C_STANDARD 11)
-#set(CMAKE_CXX_STANDARD 14)
 
 # provide individual options too in case a compiler only supports some sanitizers
 option(USE_SANITIZERS "Enable address, leak and undefined behavior sanitizers on supported compilers" OFF)

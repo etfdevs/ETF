@@ -1357,14 +1357,12 @@ const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 		return ban_reason;
 	}
 
+	if ( client->pers.ipStr[0] == '\0' || Q_stricmp( client->pers.ipStr, cleanip ) != 0 ) {
+		Q_strncpyz( client->pers.ipStr, cleanip, sizeof(client->pers.ipStr) );
+	}
+
 	// read or initialize the session data
 	if ( firstTime || level.newSession ) {
-		if ( firstTime ) {
-			if ( client->pers.ipStr[0] == '\0' || Q_stricmp( client->pers.ipStr, cleanip ) != 0 ) {
-				Q_strncpyz( client->pers.ipStr, cleanip, sizeof(client->pers.ipStr) );
-			}
-		}
-
 		G_InitClientSessionData( client );
 	}
 	else

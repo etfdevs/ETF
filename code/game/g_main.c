@@ -955,13 +955,12 @@ int QDECL SortRanks( const void *a, const void *b ) {
 		return -1;
 	}
 
-
 	// then spectators
 	if ( ca->sess.sessionTeam == Q3F_TEAM_SPECTATOR && cb->sess.sessionTeam == Q3F_TEAM_SPECTATOR ) {
-		if ( ca->sess.spectatorTime < cb->sess.spectatorTime ) {
+		if ( ca->pers.enterTime < cb->pers.enterTime ) {
 			return -1;
 		}
-		if ( ca->sess.spectatorTime > cb->sess.spectatorTime ) {
+		if ( ca->pers.enterTime > cb->pers.enterTime ) {
 			return 1;
 		}
 		return 0;

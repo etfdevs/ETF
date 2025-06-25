@@ -67,7 +67,7 @@ Called on game shutdown
 */
 static void G_WriteClientSessionData( const gclient_t *client ) {
 	const clientSession_t *sess = &client->sess;
-	cJSON *root;
+	cJSON *root, *array;
 	fileHandle_t f;
 	char fileName[MAX_QPATH] = {0};
 
@@ -80,16 +80,15 @@ static void G_WriteClientSessionData( const gclient_t *client ) {
 		G_Error("Could not allocate memory for session data");
 	}
 
-	cJSON_AddNumberToObject( root, "spectatorTime", sess->spectatorTime );
 	cJSON_AddNumberToObject( root, "spectatorState", sess->spectatorState );
 	cJSON_AddNumberToObject( root, "spectatorClient", sess->spectatorClient );
 	cJSON_AddNumberToObject( root, "sessionClass", sess->sessionClass );
 	cJSON_AddNumberToObject( root, "sessionTeam", (int)sess->sessionTeam );
 	cJSON_AddNumberToObject( root, "adminLevel", sess->adminLevel );
-	cJSON_AddNumberToObject( root, "muted", !!sess->muted );
-	cJSON_AddNumberToObject( root, "shoutcaster", !!sess->shoutcaster );
-	cJSON_AddNumberToObject( root, "ignoreClients0", client->sess.ignoreClients[0] );
-	cJSON_AddNumberToObject( root, "ignoreClients1", client->sess.ignoreClients[1] );
+	cJSON_AddBoolToObject( root, "muted", !!sess->muted );
+	cJSON_AddBoolToObject( root, "shoutcaster", !!sess->shoutcaster );
+	array = cJSON_CreateIntArray( sess->ignoreClients, 2 );
+	cJSON_AddItemToObject( root, "ignoreClients", array );
 
 	trap_FS_FOpenFile( fileName, &f, FS_WRITE );
 
@@ -105,7 +104,7 @@ Called on a reconnect
 */
 void G_ReadClientSessionData( gclient_t *client ) {
 	clientSession_t *sess = &client->sess;
-	cJSON *root = NULL, *object = NULL;
+	cJSON *root = NULL, *object = NULL, *elem = NULL;
 	char fileName[MAX_QPATH] = {0};
 	char *buffer = NULL;
 	fileHandle_t f = NULL_FILE;
@@ -139,38 +138,70 @@ void G_ReadClientSessionData( gclient_t *client ) {
 		return;
 	}
 
-	if ( (object = cJSON_GetObjectItem( root, "spectatorTime" )) ) {
-		sess->spectatorTime = object->valueint;
-	}
-	if ( (object = cJSON_GetObjectItem( root, "spectatorState" )) ) {
+	object = cJSON_GetObjectItem( root, "spectatorState" );
+	if ( cJSON_IsNumber(object) ) {
 		sess->spectatorState = (spectatorState_t)object->valueint;
 	}
-	if ( (object = cJSON_GetObjectItem( root, "spectatorClient" )) ) {
+	else
+		goto failed;
+	object = cJSON_GetObjectItem( root, "spectatorClient" );
+	if ( cJSON_IsNumber(object) ) {
 		sess->spectatorClient = object->valueint;
 	}
-	if ( (object = cJSON_GetObjectItem( root, "sessionClass" )) ) {
+	else
+		goto failed;
+	object = cJSON_GetObjectItem( root, "sessionClass" );
+	if ( cJSON_IsNumber(object) ) {
 		sess->sessionClass = object->valueint;
 	}
-	if ( (object = cJSON_GetObjectItem( root, "sessionTeam" )) ) {
+	else
+		goto failed;
+	object = cJSON_GetObjectItem( root, "sessionTeam" );
+	if ( cJSON_IsNumber(object) ) {
 		sess->sessionTeam = object->valueint;
 	}
-	if ( (object = cJSON_GetObjectItem( root, "adminLevel" )) ) {
+	else
+		goto failed;
+	object = cJSON_GetObjectItem( root, "adminLevel" );
+	if ( cJSON_IsNumber(object) ) {
 		sess->adminLevel = object->valueint;
 	}
-	if ( (object = cJSON_GetObjectItem( root, "muted" )) ) {
-		sess->muted = object->valueint != 0 ? qtrue : qfalse;
+	else
+		goto failed;
+	object = cJSON_GetObjectItem( root, "muted" );
+	if ( cJSON_IsBool(object) ) {
+		sess->muted = cJSON_IsTrue(object) ? qtrue : qfalse;
 	}
-	if ( (object = cJSON_GetObjectItem( root, "shoutcaster" )) ) {
-		sess->shoutcaster = object->valueint != 0 ? qtrue : qfalse;
+	else
+		goto failed;
+	object = cJSON_GetObjectItem( root, "shoutcaster" );
+	if ( cJSON_IsBool(object) ) {
+		sess->shoutcaster = cJSON_IsTrue(object) ? qtrue : qfalse;
 	}
-	if ( (object = cJSON_GetObjectItem( root, "ignoreClients0" )) ) {
-		sess->ignoreClients[0] = object->valueint;
-	}
-	if ( (object = cJSON_GetObjectItem( root, "ignoreClients1" )) ) {
-		sess->ignoreClients[1] = object->valueint;
-	}
+	else
+		goto failed;
+	object = cJSON_GetObjectItem( root, "ignoreClients" );
+	if (cJSON_IsArray(object)) {
+		int count = cJSON_GetArraySize(object);
+		int i = 0;
 
-	if ( !g_matchState.integer ) 
+		if ( count == 2 ) {
+			cJSON_ArrayForEach( elem, object ) {
+				if ( cJSON_IsNumber(elem) ) {
+					sess->ignoreClients[i] = elem->valueint;
+				}
+				else
+					goto failed;
+				i++;
+			}
+		}
+		else
+			goto failed;
+	}
+	else
+		goto failed;
+
+	if ( g_matchState.integer == MATCH_STATE_NORMAL )
 		sess->sessionTeam = Q3F_TEAM_SPECTATOR;
 
 #if 0
@@ -186,6 +217,14 @@ void G_ReadClientSessionData( gclient_t *client ) {
 
 	cJSON_Delete( root );
 	root = NULL;
+
+	return;
+
+failed:
+	cJSON_Delete( root );
+	root = NULL;
+
+	G_InitClientSessionData( client );
 }
 
 /*
@@ -195,7 +234,7 @@ G_InitSessionData
 Called on a first-time connect
 ================
 */
-void G_InitClientSessionData( gclient_t *client/*, char* userinfo*/ ) {
+void G_InitClientSessionData( gclient_t *client ) {
 	clientSession_t	*sess = &client->sess;
 
 	// initial team determination
@@ -207,7 +246,7 @@ void G_InitClientSessionData( gclient_t *client/*, char* userinfo*/ ) {
 		sess->sessionTeam = Q3F_TEAM_SPECTATOR;
 	}
 
-	if ( Q3F_IsSpectator( client ) /*|| sess->sessionTeam == Q3F_TEAM_SPECTATOR*/ )
+	if ( Q3F_IsSpectator( client ) )
 	{
 		/* Ensiform - Nuke the class if we're spectator */
 		client->ps.persistant[PERS_CURRCLASS] = Q3F_CLASS_NULL;
@@ -218,12 +257,16 @@ void G_InitClientSessionData( gclient_t *client/*, char* userinfo*/ ) {
 		sess->spectatorState = SPECTATOR_NOT;
 
 	sess->spectatorClient = -1;
-	sess->spectatorTime = level.time;
 
 	memset( sess->ignoreClients, 0, sizeof( sess->ignoreClients ) );
 	sess->muted = qfalse;
 
 	G_WriteClientSessionData( client );
+}
+
+// must check deleteFile before calling this
+void G_ClearClientSessionData( gclient_t *client ) {
+	trap_FS_Delete(va("session/client%02i.json", (int)(client - level.clients)));
 }
 
 static const char *metaFileName = "session/meta.json";

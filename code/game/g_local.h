@@ -292,7 +292,6 @@ typedef struct {
 	//team_t		sessionTeam;
 	int			sessionTeam;		// RR2DO2
 	int			sessionClass;		// Golliwog
-	int			spectatorTime;		// for determining next-in-line to play
 	spectatorState_t	spectatorState;
 	int			spectatorClient;	// for chasecam and follow mode
 

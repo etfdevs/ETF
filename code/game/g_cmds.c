@@ -791,11 +791,7 @@ qboolean SetTeam( gentity_t *ent, const char *s ) {
 	// lob lots of grenades at a 'friendly' sentry then change team.
 	G_Q3F_GenericEndCleanup( ent );
 
-	// they go to the end of the line for tournements
-	//if ( team == Q3F_TEAM_SPECTATOR ) {}
-	if ( Q3F_IsSpectator(ent->client)) {	// RR2DO2
-		client->sess.spectatorTime = level.time;
-	} else {
+	if ( !Q3F_IsSpectator(ent->client)) {	// RR2DO2
 		G_Q3F_SendClassMenu(ent, 0);
 	}
 
