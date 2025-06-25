@@ -264,11 +264,6 @@ void G_InitClientSessionData( gclient_t *client ) {
 	G_WriteClientSessionData( client );
 }
 
-// must check deleteFile before calling this
-void G_ClearClientSessionData( gclient_t *client ) {
-	trap_FS_Delete(va("session/client%02i.json", (int)(client - level.clients)));
-}
-
 static const char *metaFileName = "session/meta.json";
 
 /*
