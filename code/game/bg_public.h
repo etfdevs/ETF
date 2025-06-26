@@ -875,4 +875,13 @@ int BG_GetTracemapGroundCeil( void );
 extern const char *modNames[MOD_LASTONE];
 char *_MS_FixColour( char *ptr, int colour );
 
+// Shared missile values for prediction
+
+#define	MISSILE_PRESTEP_TIME	50
+
+#define PROJ_SPEED_NAPALM		1100
+#define PROJ_SPEED_ROCKET		1200
+#define PROJ_SPEED_NG				1250
+#define PROJ_SPEED_SNG			1500
+
 #endif
