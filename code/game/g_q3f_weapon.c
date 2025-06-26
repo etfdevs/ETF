@@ -542,7 +542,7 @@ void Weapon_Napalm_Fire(struct gentity_s *ent) {
 		bolt->s.powerups = (1 << PW_QUAD);
 	}
 
-	if (ent->client && ent->client->pers.unlagged & 2)
+	if (ent->client && ent->client->pers.unlagged)
 		bolt->antilag_time = ent->client->attackTime;
 
 	ent->client->pers.stats.data[STATS_WP + WP_NAPALMCANNON].shots++;
@@ -1099,8 +1099,9 @@ void G_Q3F_DetPipe(struct gentity_s *self, qboolean antilag)
 	struct gentity_s *ent = NULL;
 	int timeindex = level.time;
 
-	antilag = antilag && g_unlagged.integer && g_experiment.integer;
+	antilag = antilag && g_unlagged.integer;
 
+	// Note: does not yet respect g_antilag_ms
 	if (antilag)
 		timeindex = G_DoTimeShiftFor(self);
 

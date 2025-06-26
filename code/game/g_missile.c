@@ -477,7 +477,7 @@ void G_RunMissileTime( gentity_t *ent, int time ) {
 void G_RunMissile( gentity_t *ent ) {
 	if (ent->antilag_time) {
 		const int kStep = 10;
-		int time = Q_max(level.time - 150, ent->antilag_time);
+		int time = Q_max(level.time - g_antilag_ms.integer, ent->antilag_time);
 		int end = level.time - kStep;
 		qboolean ran = qfalse;
 
@@ -494,6 +494,7 @@ void G_RunMissile( gentity_t *ent ) {
 			if (ran)
 				G_UnTimeShiftAllClients(ent->parent);
 		}
+
 		ent->antilag_time = 0;
 	}
 
@@ -768,7 +769,7 @@ gentity_t *fire_rocket (gentity_t *self, vec3_t start, vec3_t dir) {
 
 	// need to check for client being valid, as this can be a shooter_rocket
 	// there is also shooter_grenade if fire_grenade gets this too eventually
-	if (self->client && self->client->pers.unlagged & 2)
+	if (self->client && self->client->pers.unlagged)
 		bolt->antilag_time = self->client->attackTime;
 
 	return bolt;
@@ -822,7 +823,7 @@ gentity_t *fire_nail (gentity_t *self, vec3_t start, vec3_t dir, int damage, int
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 	VectorCopy (start, bolt->r.currentOrigin);
 
-	if (self->client && self->client->pers.unlagged & 2)
+	if (self->client && self->client->pers.unlagged)
 		bolt->antilag_time = self->client->attackTime;
 
 	return bolt;

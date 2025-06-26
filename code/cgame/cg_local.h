@@ -1404,6 +1404,7 @@ typedef struct {
 	char			voteString[MAX_STRING_TOKENS];
 
 	int				levelStartTime;
+	int			antilag_ms;
 
 	qboolean		newHud;
 
