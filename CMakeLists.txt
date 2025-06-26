@@ -22,6 +22,8 @@ option(USE_UBSAN "Enable undefined behavior sanitizer on supported compilers" OF
 option(USE_BOTS "Enable Omni-Bot Support" OFF)
 
 if(USE_BOTS)
+	enable_language(CXX)
+	set(CMAKE_CXX_STANDARD 14)
 	set(BOT_INCLUDE_PATH "" CACHE STRING "Path to Omni-Bot development folder")
 endif()
 

@@ -97,7 +97,7 @@ add_library(qagame MODULE
 )
 
 if(USE_BOTS)
-	target_sources(qagame PRIVATE g_bot_interface.cpp g_bot_interface.h ${BOT_INCLUDE_PATH}/Common/BotLoadLibrary.cpp)
+	target_sources(qagame PRIVATE g_bot_interface.cpp g_bot_interface.h ../Omnibot/Common/BotLoadLibrary.cpp)
 	target_compile_definitions(qagame PRIVATE BUILD_BOTS)
 endif()
 

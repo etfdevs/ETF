@@ -13,9 +13,9 @@ void Bot_Event_EntityCreated(gentity_t *pEnt);
 void Cmd_Kill_f(gentity_t * ent);
 };
 
-#include "BotExports.h"
-#include "ETF_Config.h"
-#include "ETF_Messages.h"
+#include "../Omnibot/Common/BotExports.h"
+#include "../Omnibot/ETF/ETF_Config.h"
+#include "../Omnibot/ETF/ETF_Messages.h"
 
 bool IsBot(gentity_t *e)
 {
@@ -782,7 +782,7 @@ static int _GetEntityClass(gentity_t * _ent)
 		{
 			if(_ent->goalType == GOALTYPE_GOALINFO && _ent->model && _ent->model[0] && _ent->mapdata && _ent->mapdata->give)
 				return TF_CLASSEX_BACKPACK;
-			if(_ent->goalType == GOALTYPE_GOALINFO && !_ent->model && !_ent->model[0] && _ent->mapdata && _ent->mapdata->give && _ent->mapdata->other)	/* trigger_multiple */
+			if(_ent->goalType == GOALTYPE_GOALINFO && (!_ent->model || !_ent->model[0]) && _ent->mapdata && _ent->mapdata->give && _ent->mapdata->other)	/* trigger_multiple */
 			{
 				q3f_keypair_t  *data = G_Q3F_KeyPairArrayFind(_ent->mapdata->other, teamscoreptr);
 
@@ -1184,7 +1184,7 @@ class           ETFInterface:public IEngineInterface
 		if(_input.m_ButtonFlags.CheckFlag(TF_BOT_BUTTON_DETPIPES))
 		{
 			if ( !level.ceaseFire && !bot->client->ps.powerups[PW_Q3F_CEASEFIRE] )
-				G_Q3F_DetPipe(bot, level.time);
+				G_Q3F_DetPipe(bot, qtrue);
 		}
 		if(_input.m_ButtonFlags.CheckFlag(TF_BOT_BUTTON_DETSENTRY))
 			trap_EA_Command(_client, "destroy autosentry");
@@ -2575,7 +2575,7 @@ class           ETFInterface:public IEngineInterface
 							//Bot_Util_AddGoal(e, GOAL_CTF_FLAG, teams, pGoalName);
 						}
 					}
-					if(e->goalType == GOALTYPE_GOALINFO && !e->model && !e->model[0])
+					if(e->goalType == GOALTYPE_GOALINFO && (!e->model || !e->model[0]))
 					{
 						// This is going to be a flag-cap.
 						if(e->mapdata->give && e->mapdata->other)

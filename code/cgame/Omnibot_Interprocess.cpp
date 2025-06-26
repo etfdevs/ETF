@@ -1,5 +1,5 @@
 #include "../api/et/q_shared.h"
-#include "IEngineInterface.h"
+#include "../Omnibot/Common/IEngineInterface.h"
 
 // Debug rendering functions are in cg_omnibot.c
 extern "C" void DrawDebugLine(float *_start, float *_end, int _duration, int _color);

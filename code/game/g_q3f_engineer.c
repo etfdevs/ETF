@@ -385,7 +385,11 @@ static void G_Q3F_SentryPain( gentity_t *ent, gentity_t *attacker, int damage )
 	G_Q3F_UpdateEngineerStats( ent->parent );
 }
 
+#ifdef BUILD_BOTS
+int G_Q3F_SentryMaxHealth(int sentlevel)
+#else
 static int G_Q3F_SentryMaxHealth( int sentlevel )
+#endif
 {
 	switch( sentlevel )
 	{
@@ -397,7 +401,11 @@ static int G_Q3F_SentryMaxHealth( int sentlevel )
 	}
 }
 
+#ifdef BUILD_BOTS
+int G_Q3F_SentryMaxShells(int sentlevel)
+#else
 static int G_Q3F_SentryMaxShells( int sentlevel )
+#endif
 {
 	switch( sentlevel )
 	{

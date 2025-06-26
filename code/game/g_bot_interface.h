@@ -1,10 +1,10 @@
 /*
- * OF <-> Omni-Bot interface header file.
+ * ETF <-> Omni-Bot interface header file.
  * 
  */
 
-#ifndef __G_OFBOT_INTERFACE_H__
-#define __G_OFBOT_INTERFACE_H__
+#ifndef __G_ETFBOT_INTERFACE_H__
+#define __G_ETFBOT_INTERFACE_H__
 
 #ifdef BUILD_BOTS
 
@@ -23,7 +23,7 @@
 #define OMNIBOT_NAME "etf"
 
 #define OMNIBOT_MODNAME "etf"
-#define OMNIBOT_MODVERSION "2.0"
+#define OMNIBOT_MODVERSION "2.0.0"
 
 //////////////////////////////////////////////////////////////////////////
 // g_OmniBotFlags bits

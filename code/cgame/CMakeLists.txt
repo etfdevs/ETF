@@ -104,6 +104,7 @@ add_library(cgame MODULE
 
 if(USE_BOTS)
 	target_sources(cgame PRIVATE cg_omnibot.c Omnibot_Interprocess.cpp Omnibot_Interprocess.h)
+	target_compile_definitions(cgame PRIVATE BUILD_BOTS)
 endif()
 
 target_compile_definitions(cgame PRIVATE CGAME CGAMEDLL API_ET WOLF_FLAME)
