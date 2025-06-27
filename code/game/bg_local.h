@@ -35,13 +35,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef _BG_LOCAL_H
 #define _BG_LOCAL_H
 
-#ifdef DEBUG_CGAME
-#include "../cgame/cg_local.h"
-#endif
-#ifdef DEBUG_GAME
-#include "g_local.h"
-#endif
-
 #define	MIN_WALK_NORMAL	0.7f		// can't walk on very steep slopes
 
 #define	STEPSIZE		18
@@ -53,16 +46,7 @@ If you have questions concerning this license or the applicable additional terms
 //#define	TIMER_GESTURE	(34*66+50)
 //#define TIMER_GESTURE	(11*66+50)
 
-
 #define	OVERCLIP		1.001f
-
-// FALCON: START : Q3F Armour modifiers
-#define Q3F_ARMOUR_NONE		0
-//#define Q3F_ARMOUR_GREEN	30	ETF 1.0
-#define Q3F_ARMOUR_GREEN	40
-#define Q3F_ARMOUR_YELLOW	60
-#define Q3F_ARMOUR_RED		80
-// FALCON: END
 
 // all of the locals will be zeroed before each
 // pmove, just to make damn sure we don't have

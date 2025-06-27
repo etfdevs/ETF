@@ -38,23 +38,11 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef _BG_PUBLIC_H			// JT: Can't believe this wasn't in!
 #define _BG_PUBLIC_H
 
-#ifdef DEBUG_CGAME
-#include "../api/et/cg_public.h"
-#endif
-#ifdef DEBUG_GAME
-#include "../api/et/g_public.h"
-#endif
-
 #include "bg_q3f_controllable.h"
 
 #ifndef _ANIMATIONS_H
 #define _ANIMATIONS_H
 #include "../include/animations.h"
-#endif
-
-//disable deprecated warnings
-#if defined(_MSC_VER)
-#pragma warning( disable : 4996 )	 
 #endif
 
 //Edit this when there are big changes, so people get a warning 

@@ -42,11 +42,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "../api/et/g_public.h"
 #include "g_q3f_mapdata.h"
 
-//disable deprecated warnings
-#if defined(_MSC_VER)
-#pragma warning( disable : 4996 )
-#endif
-
 //==================================================================
 
 // the "gameversion" client command will print this plus compile date

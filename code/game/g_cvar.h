@@ -55,10 +55,10 @@ G_NULLCVAR( "sv_pure", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, qtrue )
 
 // server browser vars abusing vanilla ET info response for our cvars
 G_NULLCVAR( "sv_numbots", "0", CVAR_SERVERINFO, qtrue )
-G_NULLCVAR( "g_maxlives", "1", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, qtrue )	// Slothy: pure info for server browser info
-G_NULLCVAR( "g_heavyWeaponRestriction", FORTS_SHORTVERSION, CVAR_LATCH|CVAR_ROM|CVAR_TEMP, qtrue )		// Ensiform: ETF shortversion for server browser info
-G_NULLCVAR( "g_balancedteams", "0", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, qtrue )			// Ensiform: bot count for server browser info
-G_NULLCVAR( "g_antilag", "1", CVAR_LATCH|CVAR_ROM|CVAR_TEMP, qfalse ) // gameindex for server browser
+G_NULLCVAR( "g_maxlives", "1", CVAR_ROM|CVAR_NOTABCOMPLETE, qtrue )	// Slothy: pure info for server browser info
+G_NULLCVAR( "g_heavyWeaponRestriction", FORTS_SHORTVERSION, CVAR_ROM|CVAR_NOTABCOMPLETE, qtrue )		// Ensiform: ETF shortversion for server browser info
+G_NULLCVAR( "g_balancedteams", "0", CVAR_ROM|CVAR_NOTABCOMPLETE, qtrue )			// Ensiform: bot count for server browser info
+G_NULLCVAR( "g_antilag", "1", CVAR_ROM|CVAR_NOTABCOMPLETE, qfalse ) // gameindex for server browser
 
 	// noset vars
 G_CVAR( g_restarted, "g_restarted", "0", CVAR_ROM, qfalse )

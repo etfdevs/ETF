@@ -326,9 +326,9 @@ typedef struct {
 	//sfxHandle_t	Q3F_BackModelCloseSound;
 	//sfxHandle_t	Q3F_BackModelStartupSound;
 
-	sfxHandle_t Q3F_TransitionStaticSound1;
-	sfxHandle_t Q3F_TransitionStaticSound2;
-	sfxHandle_t Q3F_TransitionStaticSound3;
+	//sfxHandle_t Q3F_TransitionStaticSound1;
+	//sfxHandle_t Q3F_TransitionStaticSound2;
+	//sfxHandle_t Q3F_TransitionStaticSound3;
 // RR2DO2
 
 // djbob

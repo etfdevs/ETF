@@ -439,9 +439,9 @@ static void AssetCache(void) {
 		//uiInfo.Q3F_BackModelReOpenSound = trap_S_RegisterSound("ui/sound/menureopen.wav", qfalse);		// "ui/sound/backmodelreopen.wav", qfalse);
 		//uiInfo.Q3F_BackModelCloseSound = trap_S_RegisterSound("ui/sound/menuclose.wav", qfalse);		// "ui/sound/backmodelclose.wav", qfalse);
 	//	uiInfo.Q3F_BackModelStartupSound = trap_S_RegisterSound("ui/sound/backmodelstart.wav", qfalse);
-		uiInfo.Q3F_TransitionStaticSound1 = trap_S_RegisterSound("ui/sound/transition1.wav", qfalse);
-		uiInfo.Q3F_TransitionStaticSound2 = trap_S_RegisterSound("ui/sound/transition2.wav", qfalse);
-		uiInfo.Q3F_TransitionStaticSound3 = trap_S_RegisterSound("ui/sound/transition3.wav", qfalse);
+		//uiInfo.Q3F_TransitionStaticSound1 = trap_S_RegisterSound("ui/sound/transition1.wav", qfalse);
+		//uiInfo.Q3F_TransitionStaticSound2 = trap_S_RegisterSound("ui/sound/transition2.wav", qfalse);
+		//uiInfo.Q3F_TransitionStaticSound3 = trap_S_RegisterSound("ui/sound/transition3.wav", qfalse);
 // RR2DO2
 	}
 

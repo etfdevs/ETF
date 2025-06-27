@@ -32,9 +32,6 @@ If you have questions concerning this license or the applicable additional terms
 
 // bg_events.h -- definitions shared by both the server game and client game modules
 
-#ifndef _BG_EVENTS_H
-#define _BG_EVENTS_H
-
 #ifdef EVENT_ENUMS
 #define DECLARE_EVENT( ev ) ev
 #endif
@@ -224,5 +221,3 @@ DECLARE_EVENT( EV_ARMOR_PERSON )
 #endif
 
 #undef DECLARE_EVENT
-
-#endif

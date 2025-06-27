@@ -32,9 +32,6 @@ If you have questions concerning this license or the applicable additional terms
 
 // bg_mod.h -- definitions shared by both the server game and client game modules
 
-#ifndef _BG_MOD_H
-#define _BG_MOD_H
-
 #ifdef MOD_ENUMS
 #define DECLARE_MOD( ev ) ev
 #endif
@@ -111,5 +108,3 @@ DECLARE_MOD( MOD_DISCONNECT )
 #endif
 
 #undef DECLARE_MOD
-
-#endif

@@ -45,6 +45,10 @@ If you have questions concerning this license or the applicable additional terms
 #define UI_CVAR( vmCvar, cvarName, defaultString, cvarFlags ) { & vmCvar, cvarName, defaultString, cvarFlags, 0 },
 #endif
 
+UI_NULLCVAR( "g_maxlives",					"1",								CVAR_ROM|CVAR_NOTABCOMPLETE )	// Slothy: pure info for server browser info
+UI_NULLCVAR( "g_heavyWeaponRestriction",	FORTS_SHORTVERSION,					CVAR_ROM|CVAR_NOTABCOMPLETE )	// Ensiform: ETF shortversion for server browser info
+UI_NULLCVAR( "g_balancedteams",				"0",								CVAR_ROM|CVAR_NOTABCOMPLETE )	// Ensiform: bot count for server browser info
+UI_NULLCVAR( "g_antilag",					"1",								CVAR_ROM|CVAR_NOTABCOMPLETE )	// gameindex for server browser
 UI_NULLCVAR( "allowRedirect",				"0",								CVAR_ARCHIVE )
 UI_NULLCVAR( "cg_adjustAgentSpeed",			"1",								CVAR_ARCHIVE )
 UI_NULLCVAR( "cg_atmosphericEffects",		"0",								CVAR_ARCHIVE )

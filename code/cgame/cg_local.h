@@ -46,11 +46,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "cg_q3f_scriptlib.h"
 #include "../ui_new/ui_shared.h"
 
-//disable deprecated warnings
-#if defined(_MSC_VER)
-#pragma warning( disable : 4996 )
-#endif
-
 // The entire cgame module is unloaded and reloaded on each level change,
 // so there is NO persistant data between levels on the client side.
 // If you absolutely need something stored, it can either be kept

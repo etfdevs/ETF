@@ -42,7 +42,13 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../api/et/q_shared.h"
 
-
+// FALCON: START : Q3F Armour modifiers
+#define Q3F_ARMOUR_NONE		0
+//#define Q3F_ARMOUR_GREEN	30	ETF 1.0
+#define Q3F_ARMOUR_GREEN	40
+#define Q3F_ARMOUR_YELLOW	60
+#define Q3F_ARMOUR_RED		80
+// FALCON: END
 
 #define Q3F_NUM_WEAPONSLOTS 10
 #define Q3F_NUM_WEAPONMAPSLOTS	4
