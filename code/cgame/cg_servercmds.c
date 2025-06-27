@@ -201,8 +201,8 @@ void CG_ParseServerinfo( void ) {
 	cg.teamScores[2] = atoi( Info_ValueForKey( info, "score_yellow" ) );
 	cg.teamScores[3] = atoi( Info_ValueForKey( info, "score_green" ) );
 
-	// we'll need this for deciding whether or not to predict weapon effects
 	cgs.unlagged = atoi( Info_ValueForKey( info, "g_unlagged" ) );
+	cgs.antilag_ms = atoi( Info_ValueForKey( info, "g_antilag_ms" ) );
 }
 
 void CG_ParseSysteminfo( void ) {

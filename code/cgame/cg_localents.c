@@ -948,7 +948,8 @@ static int num_predicted_ents;
 
 static inline int CG_PredictedMissilesEnabled() {
 	// Not yet default enabled.  Needs antilag on and prediction on.
-	return (cg_predictWeapons.integer & 2) && (cg_unlagged.integer & 2);
+	// TODO: Cap prediction to antilag_ms
+	return cg_predictWeapons.integer && cg_unlagged.integer && cgs.antilag_ms;
 }
 
 static void CG_UntrackPredictedEnt(localEntity_t *le) {
@@ -993,7 +994,7 @@ void CG_MatchPredictedEnt(centity_t* cent) {
 			match->angles.trTime += cg.time;
 
 		if (cg_predictWeapons.integer & 4)
-			printf("BEST MATCH: %0.2f [%0.1fms] [age=%dms] [%d]\n",
+			Com_Printf("BEST MATCH: %0.2f [%0.1fms] [age=%dms] [%d]\n",
 					dist, 1000 * dist / VectorLength(match->pos.trDelta),
 					match->angles.trTime, num_predicted_ents);
 

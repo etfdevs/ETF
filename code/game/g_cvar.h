@@ -222,6 +222,7 @@ G_CVAR( g_debugBullets, "g_debugBullets", "0", CVAR_CHEAT, qfalse )
 	//Unlagged related 
 G_CVAR( g_smoothClients, "g_smoothClients", "1", CVAR_ARCHIVE, qfalse )
 G_CVAR( g_unlagged, "g_unlagged", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, qtrue )
+G_CVAR( g_antilag_ms, "g_antilag_ms", "150", CVAR_ARCHIVE | CVAR_SERVERINFO, qtrue )
 G_CVAR( g_experiment, "g_experiment", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, qtrue )
 //G_CVAR( g_unlaggedVersion, "g_unlaggedVersion", "2.0", CVAR_ROM | CVAR_SERVERINFO, qfalse )
 
