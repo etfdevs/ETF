@@ -858,7 +858,7 @@ void G_Q3F_RegisterTeamKill( gentity_t *attacker, gentity_t *obituary );
 //
 // g_missile.c
 //
-void G_RunMissile( gentity_t *ent );
+void G_RunMissile( gentity_t *ent, int now );
 
 gentity_t *fire_flame (gentity_t *self, vec3_t start, vec3_t aimdir);
 gentity_t *fire_mapflame (gentity_t *self, vec3_t start, vec3_t aimdir);

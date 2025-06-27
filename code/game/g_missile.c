@@ -474,11 +474,12 @@ void G_RunMissileTime( gentity_t *ent, int time ) {
 	G_RunThink( ent );
 }
 
-void G_RunMissile( gentity_t *ent ) {
-	if (ent->antilag_time) {
+void G_RunMissile( gentity_t *ent, int now ) {
+	// We'll rectify this with updates in next patch.
+	if (0 && ent->antilag_time) {
 		const int kStep = 10;
-		int time = Q_max(level.time - g_antilag_ms.integer, ent->antilag_time);
-		int end = level.time - kStep;
+		int time = Q_max(now - g_antilag_ms.integer, ent->antilag_time);
+		int end = now - kStep;
 		qboolean ran = qfalse;
 
 		if (end > time) {
@@ -498,7 +499,7 @@ void G_RunMissile( gentity_t *ent ) {
 		ent->antilag_time = 0;
 	}
 
-	G_RunMissileTime(ent, level.time);
+	G_RunMissileTime(ent, now);
 }
 
 //=============================================================================

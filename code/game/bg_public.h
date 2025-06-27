@@ -372,6 +372,8 @@ typedef enum {
 #define EF_TEAMVOTED		0x00200000		// already cast a team vote
 #define EF_AWARD_CAP		0x00800000		// draw the capture sprite
 
+#define EF_NEXT_SNAP	0x01000000		// Preloaded from next snapshot
+
 #define	EF_Q3F_FAILDIRECTION EF_Q3F_DISGUISE	// Forcefield direction applies to players failing the criteria.
 
 #define EF_Q3F_REVERSECRITERIA EF_Q3F_SAVEME	// Forcefield has criteriareversed
@@ -644,6 +646,7 @@ qboolean	BG_CanItemBeGrabbed( int gametype, const entityState_t *ent, const play
 //
 typedef enum {
 	ET_GENERAL = 0,
+	ET_GENERAL_EARLY,  // TODO: Move things up where we can
 	ET_ITEM,
 	ET_PLAYER,
 	ET_MISSILE,
