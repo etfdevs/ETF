@@ -933,6 +933,8 @@ void ClientThink_real( gentity_t *ent ) {
 	// and *after* lag simulation messes with it :)
 	// attackTime will be used for backward reconciliation later (time shift)
 	client->attackTime = ucmd->serverTime;
+	// For projectile attacks we want raw client positions
+	client->attackTimeProj = ucmd->serverTime + client->pers.timeNudge  + 1000/142 + 1;
 //unlagged - backward reconciliation #4
 
 //unlagged - smooth clients #1

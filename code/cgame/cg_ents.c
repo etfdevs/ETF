@@ -2156,8 +2156,7 @@ void CG_AddPacketEntities( void ) {
 		// we have data for them and they don't need to interpolate
 		for ( num = 0 ; num < cg.nextSnap->numEntities ; num++ ) {
 			cent = &cg_entities[ cg.nextSnap->entities[ num ].number ];
-			if (cent->nextState.eType == ET_MISSILE ||
-			    cent->nextState.eType == ET_GENERAL_EARLY) {
+			if (cent->nextState.eType == ET_MISSILE) {
 				// transition it immediately and add it
 				CG_TransitionEntity( cent );
 				cent->interpolate = qtrue;

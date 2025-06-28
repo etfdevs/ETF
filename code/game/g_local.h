@@ -367,6 +367,7 @@ typedef struct {
 //unlagged - these correspond with variables in the userinfo string
 	int			unlagged;
 	int			debugDelag;
+	int			timeNudge;
 	int			cmdTimeNudge;
 //unlagged - client options
 	int			latentSnaps;
@@ -530,6 +531,7 @@ struct gclient_s {
 	// the serverTime the button was pressed
 	// (stored before pmove_fixed changes serverTime)
 	int			attackTime;
+	int			attackTimeProj;
 	// the head of the history queue
 	int			historyHead;
 	// the history queue

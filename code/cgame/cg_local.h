@@ -392,6 +392,7 @@ typedef struct localEntity_s {
 
 	trajectory_t	pos;
 	trajectory_t	angles;
+	trajectory_t	lerp;
 
 	float			bounceFactor;		// 0.0 = no bounce, 1.0 = perfect
 

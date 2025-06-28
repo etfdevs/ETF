@@ -646,7 +646,6 @@ qboolean	BG_CanItemBeGrabbed( int gametype, const entityState_t *ent, const play
 //
 typedef enum {
 	ET_GENERAL = 0,
-	ET_GENERAL_EARLY,  // TODO: Move things up where we can
 	ET_ITEM,
 	ET_PLAYER,
 	ET_MISSILE,
