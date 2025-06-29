@@ -57,7 +57,7 @@ function(create_compiler_opts target)
 		-pipe
 		-fPIC
 		-fvisibility=hidden
-		-fdiagnostics-color=always
+		-fcolor-diagnostics
 		$<IF:$<STREQUAL:${WARN_LEVEL},0>,-w,-Wall -Wextra -Wpedantic -Wcast-qual -Wdeclaration-after-statement>
 		-Winline
 		-Wno-unused-parameter
