@@ -85,7 +85,7 @@ void CG_CheckAmmo( void ) {
 		cg.lowAmmoWarning = 0;
 
 	// Golliwog: Special 'extra' warning for the minigun only
-	if( cg.weaponSelect == WP_MINIGUN )
+	if( cg.snap->ps.weapon == WP_MINIGUN )
 	{
 		if( cg.snap->ps.ammo[AMMO_CELLS] < 4 )
 			cg.lowAmmoWarning |= 8;
