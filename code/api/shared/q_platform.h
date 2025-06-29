@@ -39,336 +39,220 @@ If you have questions concerning this license or the applicable additional terms
 
 // for windows fastcall option
 #define QDECL
-#define QCALL
 
-// Win64
-#if defined(WIN64) || defined(_WIN64) || defined(__WIN64__)
+#define idppc 0
+#define idppc64 0
+#define id386 0
+#define idx64 0
+#define arm32 0
+#define arm64 0
 
-	#define idx64
+// ============================== Win32 ====================================
 
-	#undef QDECL
-	#define QDECL __cdecl
+#ifdef _WIN32
 
-	#undef QCALL
-	#define QCALL __stdcall
+#undef QDECL
+#define QDECL __cdecl
+#define Q_NEWLINE "\r\n"
 
-	#if defined(_MSC_VER)
-		#define OS_STRING "win_msvc"
-	#elif defined(__MINGW64__)
-		#define OS_STRING "win_mingw"
-	#endif
-
-	#define QINLINE __inline
-	#define PATH_SEP '\\'
-
-	#if defined(_M_ALPHA)
-		#define ARCH_STRING "AXP"
-	#else
-		#define ARCH_STRING "x64"
-	#endif
-
-	#define Q3_LITTLE_ENDIAN
-
-	#define DLL_EXT ".dll"
-
-// Win32
-#elif defined(_WIN32) || defined(__WIN32__)
-
-	#undef QDECL
-	#define	QDECL __cdecl
-
-	#undef QCALL
-	#define QCALL __stdcall
-
-	#if defined(_MSC_VER)
-		#define OS_STRING "win_msvc"
-	#elif defined(__MINGW32__)
-		#define OS_STRING "win_mingw"
-	#endif
-
-	#define QINLINE __inline
-	#define PATH_SEP '\\'
-
-	#if defined(_M_IX86) || defined(__i386__)
-		#define ARCH_STRING "x86"
-	#elif defined _M_ALPHA
-		#define ARCH_STRING "AXP"
-	#endif
-
-	#define Q3_LITTLE_ENDIAN
-
-	#define DLL_EXT ".dll"
-
-// MAC OS X
-#elif defined(MACOS_X) || defined(__APPLE_CC__)
-
-	// make sure this is defined, just for sanity's sake...
-	#ifndef MACOS_X
-		#define MACOS_X
-	#endif
-
-	#define OS_STRING "macOS"
-	#define QINLINE /*inline*/
-	#define	PATH_SEP '/'
-
-	#if defined(__ppc__)
-		#define ARCH_STRING "ppc"
-		#define Q3_BIG_ENDIAN
-	#elif defined(__i386__)
-		#define ARCH_STRING "x86"
-		#define Q3_LITTLE_ENDIAN
-	#elif defined(__x86_64__)
-		#define idx64
-		#define ARCH_STRING "x86_64"
-		#define Q3_LITTLE_ENDIAN
-	#elif defined(__aarch64__)
-		#define arm64
-		#define ARCH_STRING "arm64"
-		#define Q3_LITTLE_ENDIAN
-	#endif
-
-    #define DLL_EXT "_mac"
-
-// Linux
-#elif defined(__linux__) || defined(__FreeBSD_kernel__)
-
-	#include <endian.h>
-
-	#if defined(__linux__)
-		#define OS_STRING "linux"
-	#else
-		#define OS_STRING "kFreeBSD"
-	#endif
-
-	#define QINLINE inline
-
-	#define PATH_SEP '/'
-
-	#if defined(__ppc__)
-		#define ARCH_STRING "ppc"
-		#define Q3_BIG_ENDIAN
-	#elif defined(__i386__)
-		#define ARCH_STRING "x86"
-		#define Q3_LITTLE_ENDIAN
-	#elif defined(__x86_64__)
-		#define idx64
-		#define ARCH_STRING "x86_64"
-		#define Q3_LITTLE_ENDIAN
-	#elif defined(__aarch64__)
-		#define arm64
-		#define ARCH_STRING "arm64"
-		#define Q3_LITTLE_ENDIAN
-	#endif
-
-	#if defined(__x86_64__)
-		#define idx64
-	#endif
-
-	#if __FLOAT_WORD_ORDER == __BIG_ENDIAN
-		#define Q3_BIG_ENDIAN
-	#else
-		#define Q3_LITTLE_ENDIAN
-	#endif
-
-	#define DLL_EXT ".so"
-
-// BSD
-#elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
-
-	#include <sys/types.h>
-	#include <machine/endian.h>
-
-	#ifndef __BSD__
-		#define __BSD__
-	#endif
-
-	#if defined(__FreeBSD__)
-		#define OS_STRING "freebsd"
-	#elif defined(__OpenBSD__)
-		#define OS_STRING "openbsd"
-	#elif defined(__NetBSD__)
-		#define OS_STRING "netbsd"
-	#endif
-
-	#define QINLINE inline
-	#define PATH_SEP '/'
-
-	#if defined(__ppc__)
-		#define ARCH_STRING "ppc"
-		#define Q3_BIG_ENDIAN
-	#elif defined(__i386__)
-		#define ARCH_STRING "x86"
-		#define Q3_LITTLE_ENDIAN
-	#elif defined(__x86_64__)
-		#define idx64
-		#define ARCH_STRING "x86_64"
-		#define Q3_LITTLE_ENDIAN
-	#elif defined(__aarch64__)
-		#define arm64
-		#define ARCH_STRING "arm64"
-		#define Q3_LITTLE_ENDIAN
-	#endif
-
-	#if defined(__amd64__)
-		#define idx64
-	#endif
-
-	#if BYTE_ORDER == BIG_ENDIAN
-		#define Q3_BIG_ENDIAN
-	#else
-		#define Q3_LITTLE_ENDIAN
-	#endif
-
-	#define DLL_EXT ".so"
+#if defined (_WIN32_WINNT)
+#if _WIN32_WINNT < 0x0501
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501
 #endif
-
-#if (defined( _MSC_VER ) && (_MSC_VER < 1900)) || (defined(__GNUC__))
-// VS2013, which for some reason we still support, does not support noexcept
-// GCC GNU has the same problem: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52869
-#define NOEXCEPT
-#define NOEXCEPT_IF(x)
-#define IS_NOEXCEPT(x) false
 #else
-#define NOEXCEPT noexcept
-#define NOEXCEPT_IF(x) noexcept(x)
-#define IS_NOEXCEPT(x) noexcept(x)
+#define _WIN32_WINNT 0x0501
 #endif
 
-/*
-#if defined(__cplusplus)
-	#include <cstddef>
-
-	// gcc versions < 4.9 did not add max_align_t to the std:: namespace, but instead
-	// put it in the global namespace. Need this to provide uniform access to max_align_t
-	#if defined(__GNUC__) && ((__GNUC__ < 4) || (__GNUC__ == 4 && __GNUC_MINOR__ < 9))
-		typedef max_align_t qmax_align_t;
-	#else
-		typedef std::max_align_t qmax_align_t;
-	#endif
-#endif*/
-
-#if defined (_MSC_VER)
-	#if _MSC_VER >= 1600
-		#include <stdint.h>
-	#else
-		typedef signed __int64 int64_t;
-		typedef signed __int32 int32_t;
-		typedef signed __int16 int16_t;
-		typedef signed __int8  int8_t;
-		typedef unsigned __int64 uint64_t;
-		typedef unsigned __int32 uint32_t;
-		typedef unsigned __int16 uint16_t;
-		typedef unsigned __int8  uint8_t;
-	#endif
-#else // not using MSVC
-	#if !defined(__STDC_LIMIT_MACROS)
-		#define __STDC_LIMIT_MACROS
-	#endif
-	#include <stdint.h>
+#if !__clang__ && defined( _MSC_VER ) && _MSC_VER >= 1400 // MSVC++ 8.0 at least
+#define OS_STRING "win_msvc"
+#elif __clang__
+#define OS_STRING "win_clang"
+#elif defined __MINGW32__
+#define OS_STRING "win_mingw"
+#elif defined __MINGW64__
+#define OS_STRING "win_mingw64"
+#else
+#error "Compiler not supported"
 #endif
+
+#define ID_INLINE __inline
+#define PATH_SEP '\\'
+#define PATH_SEP_FOREIGN '/'
+#define DLL_EXT ".dll"
+
+#if defined( _M_IX86 )
+#define ARCH_STRING "x86"
+#define Q3_LITTLE_ENDIAN
+#undef id386
+#define id386 1
+#ifndef __WORDSIZE
+#define __WORDSIZE 32
+#endif
+#endif
+
+#if defined( _M_AMD64 )
+#define ARCH_STRING "x64"
+#define Q3_LITTLE_ENDIAN
+#undef idx64
+#define idx64 1
+//#define UNICODE
+#ifndef __WORDSIZE
+#define __WORDSIZE 64
+#endif
+#endif
+
+#if defined( _M_ARM64 )
+#define ARCH_STRING "arm64"
+#define Q3_LITTLE_ENDIAN
+#undef arm64
+#define arm64 1
+#ifndef __WORDSIZE
+#define __WORDSIZE 64
+#endif
+#endif
+
+#else // !defined _WIN32
+
+// common unix platforms parameters
+
+#define Q_NEWLINE "\n"
+#define PATH_SEP '/'
+#define PATH_SEP_FOREIGN '\\'
+#define DLL_EXT ".so"
+
+#if defined (__ppc__)
+#define ARCH_STRING "ppc"
+#define Q3_BIG_ENDIAN
+#undef idppc
+#define idppc 1
+#endif // __ppc__
+
+#if defined(__PPC64__)
+#if defined (__LITTLE_ENDIAN__)
+#define ARCH_STRING "ppc64le"
+#define Q3_LITTLE_ENDIAN
+#undef idppc64
+#define idppc64 1
+#else
+#define ARCH_STRING "ppc64"
+#define Q3_BIG_ENDIAN
+#undef idppc64
+#define idppc64 1
+#endif
+#endif // __PPC64__
+
+#if defined (__i386__)
+#define ARCH_STRING "i386"
+#define Q3_LITTLE_ENDIAN
+#undef id386
+#define id386 1
+#endif // __i386__
+
+
+#if defined (__x86_64__) || defined (__amd64__)
+#define ARCH_STRING "x86_64"
+#define Q3_LITTLE_ENDIAN
+#undef idx64
+#define idx64 1
+#endif // __x86_64__ || __amd64__
+
+#if defined (__arm__)
+#define ARCH_STRING "arm"
+#define Q3_LITTLE_ENDIAN
+#undef arm32
+#define arm32 1
+#endif // __arm__
+
+#if defined (__aarch64__)
+#define ARCH_STRING "arm64"
+#define Q3_LITTLE_ENDIAN
+#undef arm64
+#define arm64 1
+#endif // __arm64__
+
+#endif // !_WIN32
+
+// ============================== macOS ====================================
+
+#if defined(__APPLE__) || defined(__APPLE_CC__)
+
+#include <sys/types.h>
+#include <machine/endian.h>
+
+#define OS_STRING "macOS"
+#undef DLL_EXT
+#define DLL_EXT "_mac"
+#define ID_INLINE inline
+
+#endif // __APPLE__  || __APPLE_CC__
+
+// ============================== Linux ====================================
+
+#ifdef __linux__
+
+#include <endian.h>
+
+#define OS_STRING "linux"
+#define ID_INLINE inline
+
+#endif // __linux___
+
+// =============================== BSD =====================================
+
+#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__)
+
+#include <sys/types.h>
+#include <machine/endian.h>
+
+#if defined (__FreeBSD__)
+#define OS_STRING "freebsd"
+#elif defined (__NetBSD__)
+#define OS_STRING "netbsd"
+#elif defined (__OpenBSD__)
+#define OS_STRING "openbsd"
+#endif
+
+#undef Q3_BIG_ENDIAN
+#undef Q3_LITTLE_ENDIAN
+
+#define ID_INLINE inline
+#if BYTE_ORDER == BIG_ENDIAN
+#define Q3_BIG_ENDIAN
+#else
+#define Q3_LITTLE_ENDIAN
+#endif
+
+#endif // __FreeBSD__ || __NetBSD__ || __OpenBSD__
+
+// =========================================================================
 
 // catch missing defines in above blocks
 #if !defined(OS_STRING)
-	#error "Operating system not supported"
+#error "Operating system not supported"
 #endif
+
 #if !defined(ARCH_STRING)
-	#error "Architecture not supported"
+#error "Architecture not supported"
 #endif
-#if !defined(DLL_EXT)
-	#error "DLL_EXT not defined"
+
+#if !defined(ID_INLINE)
+#error "ID_INLINE not defined"
 #endif
-#if !defined(QINLINE)
-	#error "QINLINE not defined"
-#endif
+
 #if !defined(PATH_SEP)
-	#error "PATH_SEP not defined"
+#error "PATH_SEP not defined"
 #endif
 
-#if defined (__GNUC)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
+#if !defined(PATH_SEP_FOREIGN)
+#error "PATH_SEP_FOREIGN not defined"
 #endif
 
-// endianness
-// Use compiler builtins where possible for maximum performance
-#include <stdint.h>
-#if !defined(__clang__) && (defined(__GNUC__) || defined(__GNUG__)) \
-            && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 403)
-// gcc >= 4.3
-
-static inline uint16_t ShortSwap(uint16_t v)
-{
-#if __GNUC_MINOR__ >= 8
-    return __builtin_bswap16(v);
-#else
-    return (v << 8) | (v >> 8);
-#endif // gcc >= 4.8
-}
-
-static inline uint32_t LongSwap(uint32_t v)
-{
-    return __builtin_bswap32(v);
-}
-#elif defined(_MSC_VER)
-// MSVC
-
-// required for _byteswap_ushort/ulong
-#include <stdlib.h>
-
-static uint16_t ShortSwap(uint16_t v)
-{
-    return _byteswap_ushort(v);
-}
-
-static uint32_t LongSwap(uint32_t v)
-{
-    return _byteswap_ulong(v);
-}
-
-#else
-// clang, gcc < 4.3 and others
-
-static inline uint16_t ShortSwap(uint16_t v)
-{
-    return (v << 8) | (v >> 8);
-}
-
-static inline uint32_t LongSwap(uint32_t v)
-{
-    return ((v & 0x000000FF) << 24) |
-           ((v & 0x0000FF00) << 8)  |
-           ((v & 0x00FF0000) >> 8)  |
-           ((v & 0xFF000000) >> 24);
-}
+#if !defined(DLL_EXT)
+#error "DLL_EXT not defined"
 #endif
 
-static QINLINE void CopyShortSwap( void *dest, void *src )
-{
-    *(uint16_t*)dest = ShortSwap(*(uint16_t*)src);
-}
-
-static QINLINE void CopyLongSwap( void *dest, void *src )
-{
-    *(uint32_t*)dest = LongSwap(*(uint32_t*)src);
-}
-
-static QINLINE float FloatSwap(float f)
-{
-    float out;
-    CopyLongSwap(&out, &f);
-    return out;
-}
-
-#if defined (__GNUC)
-#pragma GCC diagnostic pop
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+#include "q_endian.h"
 
 #if defined(Q3_BIG_ENDIAN) && defined(Q3_LITTLE_ENDIAN)
 	#error "Endianness defined as both big and little"
@@ -393,22 +277,6 @@ static QINLINE float FloatSwap(float f)
 #else
 	#error "Endianness not defined"
 #endif
-
-typedef unsigned char byte;
-typedef unsigned short word;
-typedef unsigned long ulong;
-
-typedef enum { qfalse, qtrue } qboolean;
-
-// 32 bit field aliasing
-typedef union byteAlias_u {
-	float f;
-	int32_t i;
-	uint32_t ui;
-	qboolean qb;
-	byte b[4];
-	char c[4];
-} byteAlias_t;
 
 // platform string
 #if defined(NDEBUG)

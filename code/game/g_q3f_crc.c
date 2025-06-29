@@ -32,7 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "g_local.h"
 
-#if id386 > 0
+#if id386
 
 #ifdef WIN32
 //#define WIN32_LEAN_AND_MEAN
@@ -119,9 +119,13 @@ static void HandlePatchBlock(patchBlock_t * patch, int count) {
 }*/
 
 void G_PatchEngine(void) {
-#ifndef idx64
+#if id386
 	uintptr_t syscallLocation = G_GetSyscall();
 //	G_Printf("Syscall at %X\n",syscallLocation);
+
+	// custom engine won't need this
+	if (dll_com_trapGetValue != 0)
+		return;
 
 #ifdef WIN32
 	if (syscallLocation == 0x445DA0) {

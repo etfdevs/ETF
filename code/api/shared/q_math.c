@@ -953,7 +953,7 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, cplane_t* p)
 //      BOX & CYLINDER TRACE
 //
 ///////////////////////////////////////////////////////////////////////////
-static QINLINE qboolean BoxTraceTestResult( int axis, float dist, const vec3_t start, const vec3_t forward, const vec3_t mins, const vec3_t maxs, vec3_t result ) {
+static ID_INLINE qboolean BoxTraceTestResult( int axis, float dist, const vec3_t start, const vec3_t forward, const vec3_t mins, const vec3_t maxs, vec3_t result ) {
 	result[0] = start[0] + forward[0] * dist;
 	result[1] = start[1] + forward[1] * dist;
 	result[2] = start[2] + forward[2] * dist;
@@ -967,7 +967,7 @@ static QINLINE qboolean BoxTraceTestResult( int axis, float dist, const vec3_t s
 	return qtrue;
 }
 
-static QINLINE qboolean BoxTraceTestSides( int axis, const vec3_t start, const vec3_t forward, const vec3_t mins, const vec3_t maxs, vec3_t result ) {
+static ID_INLINE qboolean BoxTraceTestSides( int axis, const vec3_t start, const vec3_t forward, const vec3_t mins, const vec3_t maxs, vec3_t result ) {
 	if (forward[axis] > 0 && start[axis] <= mins[axis]) {
 		float dist = ( mins[axis] - start[axis] ) / forward[axis];
 		if (BoxTraceTestResult(axis, dist, start, forward, mins, maxs, result))
@@ -1319,7 +1319,7 @@ qboolean VectorCompare2( const vec3_t v1, const vec3_t v2 )
 
 void SnapVector( float *v )
 {
-#if defined(_MSC_VER) && !defined(idx64)
+#if defined(_MSC_VER) && id386
 	// pitiful attempt to reduce _ftol2 calls -rww
 	static int i;
 	static float f;

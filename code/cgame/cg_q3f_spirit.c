@@ -226,13 +226,13 @@ static int SpiritRunTime = 0;
 ////////////////////////////////////////////////////////
 // Misc Functions
 
-static QINLINE float Spirit_Random( const rnd_val_t *rnd ) {
+static ID_INLINE float Spirit_Random( const rnd_val_t *rnd ) {
 	if (!rnd->range) return rnd->base;
 	else if (rnd->range>0) return rnd->base + rnd->range*ETF_random();
 	else return ((int)((rand()&2)-1)) * (rnd->base - rnd->range*ETF_random());
 }
 
-static QINLINE float Spirit_GetWave(const SpiritWave_t * wave, const float fraction, const float index ) {
+static ID_INLINE float Spirit_GetWave(const SpiritWave_t * wave, const float fraction, const float index ) {
 	float x;
 	switch (wave->type) {
 	case SPIRIT_WAVE_LINEAR:

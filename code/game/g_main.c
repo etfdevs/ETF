@@ -107,8 +107,8 @@ Q_EXPORT intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t ar
 		if(!Bot_Interface_Init())
 			G_Printf(S_COLOR_RED "Unable to Initialize Omni-Bot.\n");
 #endif
-#if id386 > 0
-		//G_PatchEngine();
+#if id386
+		G_PatchEngine();
 #endif
 		return 0;
 	case GAME_SHUTDOWN:

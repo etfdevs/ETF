@@ -40,7 +40,7 @@ If you have questions concerning this license or the applicable additional terms
 
 
 // note, probably should double the size on 64-bit
-#if defined(idx64) || defined(arm64)
+#if idx64 || arm64
 #define POOLSIZE    ( 16 * 1024 * 1024 )
 #else
 #define POOLSIZE    ( 4 * 1024 * 1024 )

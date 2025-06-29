@@ -834,10 +834,7 @@ CG_StartOrbit_f
 */
 
 static void CG_StartOrbit_f( void ) {
-	char var[MAX_TOKEN_CHARS];
-
-	trap_Cvar_VariableStringBuffer( "developer", var, sizeof( var ) );
-	if ( !atoi(var) ) {
+	if ( !developer.integer ) {
 		return;
 	}
 

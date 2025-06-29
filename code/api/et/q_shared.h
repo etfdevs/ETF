@@ -159,19 +159,8 @@ If you have questions concerning this license or the applicable additional terms
 #else
 #define FORMAT_PRINTF(x, y) /* nothing */
 #endif
-// this is the define for determining if we have an asm version of a C function
-#if (defined _M_IX86 || defined __i386__) && !defined __sun__  && !defined __LCC__
-	#define id386	1
-#else
-	#define id386	0
-#endif
 
-#if (defined(powerc) || defined(powerpc) || defined(ppc) || defined(__ppc) || defined(__ppc__)) && !defined(C_ONLY)
-	#define idppc	1
-#else
-	#define idppc	0
-#endif
-
+#include "../shared/q_primitives.h"
 #include "../shared/q_platform.h"
 
 typedef union fileBuffer_u {

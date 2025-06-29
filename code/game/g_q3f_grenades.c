@@ -178,7 +178,7 @@ qboolean ConcussExplode( gentity_t *ent )
 				// TF-style conc-blast (Oh, the horror!)
 				effect = distance * ((230 /*g_grenadeConcBlast.integer*/ - 0.5 * distance) / 20);
 				if (cls->maxammo_nails != 200)
-					effect *= 200 / cls->mass;
+					effect *= 200.f / cls->mass;
 				VectorNormalize2(distancevec, bouncevec);
 				VectorScale(bouncevec, effect, bouncevec);
 				// RR2DO2: Little hack(?) to limit horizontal conc blast

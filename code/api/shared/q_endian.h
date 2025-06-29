@@ -43,57 +43,66 @@ If you have questions concerning this license or the applicable additional terms
 extern "C" {
 #endif
 
-extern const byte locase[ 256 ];
-extern const byte upcase[ 256 ];
+//endianness
+void CopyShortSwap(void *dest, void *src);
+void CopyLongSwap(void *dest, void *src);
 
-int Q_isprint( int c );
-int Q_isprintext( int c );
-int Q_isgraph( int c );
-int Q_islower( int c );
-int Q_isupper( int c );
-int Q_isalpha( int c );
-int Q_isnumeric( int c );
-int Q_isalphanumeric( int c );
-int Q_isforfilename( int c );
-qboolean Q_isanumber( const char *s );
-qboolean Q_isintegral( float f );
+#ifdef _MSC_VER
 
-// portable case insensitive compare
-int Q_stricmp(const char *s1, const char *s2);
-int	Q_strncmp(const char *s1, const char *s2, int n);
-int	Q_stricmpn(const char *s1, const char *s2, int n);
-char *Q_strlwr( char *s1 );
-char *Q_strupr( char *s1 );
+#include <stdlib.h>
+#define ShortSwap(x) _byteswap_ushort(x)
+#define LongSwap(x) _byteswap_ulong(x)
+#define LongLongSwap(x) _byteswap_uint64(x)
 
-// buffer size safe library replacements
-void Q_strncpyz( char *dest, const char *src, int destsize );
-void Q_strcat( char *dest, int size, const char *src );
+#elif defined(__APPLE__) || defined(__APPLE_CC__)
 
-const char *Q_stristr( const char *s, const char *find);
+// Mac OS X / Darwin features
+#include <libkern/OSByteOrder.h>
+#define ShortSwap(x) OSSwapInt16(x)
+#define LongSwap(x) OSSwapInt32(x)
+#define LongLongSwap(x) OSSwapInt64(x)
 
-qboolean Q_IsColorString( const char *p );
+#elif defined(__sun) || defined(sun)
 
-// strlen that discounts Quake color sequences
-int Q_PrintStrlen( const char *string );
+#include <sys/byteorder.h>
+#define ShortSwap(x) BSWAP_16(x)
+#define LongSwap(x) BSWAP_32(x)
+#define LongLongSwap(x) BSWAP_64(x)
 
-// removes color sequences from string
-char *Q_CleanStr( char *string );
-void Q_StripColor(char *text);
-const char *Q_strchrs( const char *string, const char *search );
+#elif defined(__FreeBSD__)
 
-// strips whitespaces and bad characters
-qboolean Q_isBadDirChar( char c );
-char *Q_CleanDirName( char *dirname );
+#include <sys/endian.h>
+#define ShortSwap(x) bswap16(x)
+#define LongSwap(x) bswap32(x)
+#define LongLongSwap(x) bswap64(x)
 
-//void Q_strstrip( char *string, const char *strip, const char *repl );
+#elif defined(__OpenBSD__)
 
-#if defined (_MSC_VER)
-	// vsnprintf is ISO/IEC 9899:1999
-	// abstracting this to make it portable
-	int Q_vsnprintf( char *str, size_t size, const char *format, va_list args );
-#else // not using MSVC
-	#define Q_vsnprintf vsnprintf
+#include <sys/types.h>
+#define ShortSwap(x) swap16(x)
+#define LongSwap(x) swap32(x)
+#define LongLongSwap(x) swap64(x)
+
+#elif defined(__NetBSD__)
+
+#include <sys/types.h>
+#include <machine/bswap.h>
+#if defined(__BSWAP_RENAME) && !defined(__bswap_32)
+#define ShortSwap(x) bswap16(x)
+#define LongSwap(x) bswap32(x)
+#define LongLongSwap(x) bswap64(x)
 #endif
+
+#else
+
+#include <byteswap.h>
+#define ShortSwap(x) bswap_16(x)
+#define LongSwap(x) bswap_32(x)
+#define LongLongSwap(x) bswap_64(x)
+
+#endif
+
+float FloatSwap(float f);
 
 #if defined(__cplusplus)
 } // extern "C"

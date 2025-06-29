@@ -1134,7 +1134,7 @@ void Cmd_UnReady_f( gentity_t *ent );
 //
 //void G_ServerDemoCommand(void);
 
-#ifdef id386
+#if id386
 void G_PatchEngine(void);
 uintptr_t G_GetSyscall(void);
 #endif

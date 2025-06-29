@@ -186,7 +186,7 @@ static void CG_BloodTrail( localEntity_t *le ) {
 CG_ReflectVelocity
 ================
 */
-void CG_ReflectVelocity( localEntity_t *le, trace_t *trace ) {
+static void CG_ReflectVelocity( localEntity_t *le, trace_t *trace ) {
 	vec3_t	velocity;
 	float	dot;
 	int		hitTime;
@@ -946,7 +946,7 @@ returned by the server (e.g. a fired rocket)
 static localEntity_t* predicted_ents[NUM_PRED];
 static int num_predicted_ents;
 
-static inline int CG_PredictedMissilesEnabled() {
+static ID_INLINE int CG_PredictedMissilesEnabled() {
 	// Not yet default enabled.  Needs antilag on and prediction on.
 	// TODO: Cap prediction to antilag_ms
 	return cg_predictWeapons.integer && cg_unlagged.integer && cgs.antilag_ms;

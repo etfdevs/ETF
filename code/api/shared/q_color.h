@@ -39,6 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include <string.h>
 #include <ctype.h>
+#include "q_primitives.h"
 #include "q_string.h"
 #include "q_math.h"
 

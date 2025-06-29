@@ -129,7 +129,7 @@ static void CG_Q3F_BuildableFloatSprite(centity_t * cent, qhandle_t shader, int 
 	trap_R_AddRefEntityToScene(&ent, cent);
 }
 
-static QINLINE int CG_Q3F_SentryMaxHealth(int level)
+static ID_INLINE int CG_Q3F_SentryMaxHealth(int level)
 {
 	switch (level)
 	{
@@ -144,7 +144,7 @@ static QINLINE int CG_Q3F_SentryMaxHealth(int level)
 	}
 }
 
-static QINLINE int CG_Q3F_SentryNeedsShells(int level)
+static ID_INLINE int CG_Q3F_SentryNeedsShells(int level)
 {
 	switch (level)
 	{
@@ -159,7 +159,7 @@ static QINLINE int CG_Q3F_SentryNeedsShells(int level)
 	}
 }
 
-static QINLINE int CG_Q3F_SupplyStationMaxHealth( int supplevel )
+static ID_INLINE int CG_Q3F_SupplyStationMaxHealth( int supplevel )
 {
 	switch( supplevel )
 	{

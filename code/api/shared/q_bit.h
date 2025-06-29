@@ -32,7 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma once
 
-#include "q_math.h"
+#include "q_primitives.h"
 
 #if defined(__cplusplus)
 extern "C" {

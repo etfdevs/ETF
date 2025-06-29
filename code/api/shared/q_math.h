@@ -37,7 +37,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma once
 
-#include "q_platform.h"
+#include "q_primitives.h"
+#include "q_platform.h" // for ID_INLINE
 
 #if defined(__cplusplus)
 extern "C" {
@@ -87,17 +88,10 @@ void ByteToDir( int b, vec3_t dir );
 #define Q_min(x,y) ((x)<(y)?(x):(y))
 #define Q_max(x,y) ((x)>(y)?(x):(y))
 
-#if defined(_MSC_VER)
-static __inline long Q_ftol( float f )
+static ID_INLINE long Q_ftol( float f )
 {
 	return (long)f;
 }
-#else
-static inline long Q_ftol( float f )
-{
-	return (long)f;
-}
-#endif
 
 signed char ClampChar( int i );
 signed short ClampShort( int i );

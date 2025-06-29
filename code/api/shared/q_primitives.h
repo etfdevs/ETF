@@ -37,63 +37,43 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma once
 
-#include "q_primitives.h"
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-extern const byte locase[ 256 ];
-extern const byte upcase[ 256 ];
-
-int Q_isprint( int c );
-int Q_isprintext( int c );
-int Q_isgraph( int c );
-int Q_islower( int c );
-int Q_isupper( int c );
-int Q_isalpha( int c );
-int Q_isnumeric( int c );
-int Q_isalphanumeric( int c );
-int Q_isforfilename( int c );
-qboolean Q_isanumber( const char *s );
-qboolean Q_isintegral( float f );
-
-// portable case insensitive compare
-int Q_stricmp(const char *s1, const char *s2);
-int	Q_strncmp(const char *s1, const char *s2, int n);
-int	Q_stricmpn(const char *s1, const char *s2, int n);
-char *Q_strlwr( char *s1 );
-char *Q_strupr( char *s1 );
-
-// buffer size safe library replacements
-void Q_strncpyz( char *dest, const char *src, int destsize );
-void Q_strcat( char *dest, int size, const char *src );
-
-const char *Q_stristr( const char *s, const char *find);
-
-qboolean Q_IsColorString( const char *p );
-
-// strlen that discounts Quake color sequences
-int Q_PrintStrlen( const char *string );
-
-// removes color sequences from string
-char *Q_CleanStr( char *string );
-void Q_StripColor(char *text);
-const char *Q_strchrs( const char *string, const char *search );
-
-// strips whitespaces and bad characters
-qboolean Q_isBadDirChar( char c );
-char *Q_CleanDirName( char *dirname );
-
-//void Q_strstrip( char *string, const char *strip, const char *repl );
-
 #if defined (_MSC_VER)
-	// vsnprintf is ISO/IEC 9899:1999
-	// abstracting this to make it portable
-	int Q_vsnprintf( char *str, size_t size, const char *format, va_list args );
+	#if _MSC_VER >= 1600
+		#include <stdint.h>
+	#else
+		typedef signed __int64 int64_t;
+		typedef signed __int32 int32_t;
+		typedef signed __int16 int16_t;
+		typedef signed __int8  int8_t;
+		typedef unsigned __int64 uint64_t;
+		typedef unsigned __int32 uint32_t;
+		typedef unsigned __int16 uint16_t;
+		typedef unsigned __int8  uint8_t;
+	#endif
 #else // not using MSVC
-	#define Q_vsnprintf vsnprintf
+	#if !defined(__STDC_LIMIT_MACROS)
+		#define __STDC_LIMIT_MACROS
+	#endif
+	#include <stdint.h>
 #endif
+
+typedef unsigned char byte;
+
+typedef enum { qfalse = 0, qtrue } qboolean;
+
+// 32 bit field aliasing
+typedef union byteAlias_u {
+	float f;
+	int32_t i;
+	uint32_t ui;
+	qboolean qb;
+	byte b[4];
+	char c[4];
+} byteAlias_t;
 
 #if defined(__cplusplus)
 } // extern "C"
