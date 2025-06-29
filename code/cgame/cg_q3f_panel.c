@@ -838,6 +838,13 @@ static int CG_Q3F_PanelFuncTimer(void)
 							panelTimerRTC * 0.0001 <= 11 ? "AM" : "PM" );
 				size = 11;
 				break;
+		case 8: // Countdown timer that starts when an entity targets this, using that entities wait timer
+				if ((msec = cent->currentState.angles2[0] * 1000 - (cg.time - cent->currentState.angles2[2])) < 0)
+					msec = 0;
+				// This one is too important to blink, also strip the leading "00" if it's below a minute
+				str = va("%s%s%02d", (float)(msec / 60000) >= 1.f ? va("%02d", msec / 60000) : "", ":", (msec / 1000) % 60);
+				size = 5;
+				break;
 		default:	// No timer type.
 				str = "";
 				size = 1;

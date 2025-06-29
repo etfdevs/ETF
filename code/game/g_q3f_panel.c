@@ -420,6 +420,13 @@ void G_Q3F_PanelMessageThink( gentity_t *ent )
 	ent->nextthink = level.time + FRAMETIME;
 }
 
+void G_PanelTimer_Use(gentity_t* self, gentity_t* other, gentity_t* activator)
+{
+	// angles2[0] is the actual timer, [1] is the time to set to, and [2] is the level time the timer was set
+	self->s.angles2[0] = self->s.angles2[1];
+	self->s.angles2[2] = level.time;
+}
+
 
 
 
@@ -472,9 +479,11 @@ void SP_Q3F_Panel_Timer( gentity_t *self )
 	if( !G_Q3F_PanelBaseSpawn( self ) )
 		return;
 
-	self->s.time2 = G_Q3F_ConvertSpawnColour( "color", "1.0 0.0 0.0" );
+	self->s.time2 = G_Q3F_ConvertSpawnColour( "color", "1.0 1.0 1.0" ); // TODO: convert to kvp param?
 	G_SpawnInt( "type", "1", &self->s.otherEntityNum );
+	G_SpawnFloat("wait", "30", &self->s.angles2[1]); // angles2[0] is the actual timer, [1] is the time to set to, and [2] is the level time the timer was set
 
+	self->use = G_PanelTimer_Use;
 	self->s.groundEntityNum	= Q3F_PANELTYPE_TIMER;
 }
 
