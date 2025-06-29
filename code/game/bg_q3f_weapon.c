@@ -379,19 +379,17 @@ int BG_Q3F_GetRemappedAnimFromWeaponNumAndAnim( int weapNum, int classNum, int o
 
 void BG_Q3F_Request_Reload(playerState_t *ps)
 {
-	bg_q3f_weapon_t *wp;
-	int clipsize;
-	wp = BG_Q3F_GetWeapon(ps->weapon);
+	bg_q3f_weapon_t *wp = BG_Q3F_GetWeapon(ps->weapon);
 
 	// if we are reloading already, return
 	if( ps->weaponstate == WEAPON_RDROPPING )
 		return;
-	if( (clipsize = wp->clipsize) == 0 )
+	if( wp->clipsize == 0 )
 		return;
-	if( Q3F_GetClipValue(ps->weapon,ps) == clipsize )
+	if( Q3F_GetClipValue(ps->weapon,ps) == wp->clipsize )
 		return;
 	// RR2DO2 : if we don't have enough ammo to reload, return
-	if(Q3F_GetClipValue( ps->weapon,ps ) >= ps->ammo[ Q3F_GetAmmoTypeForWeapon(ps->weapon)] )
+	if(Q3F_GetClipValue( ps->weapon,ps ) >= ps->ammo[ wp->ammotype ] )
 		return;
 	if (ps->ammo[wp->ammotype] < wp->clipsize)
 		return;
