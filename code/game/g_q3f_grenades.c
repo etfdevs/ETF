@@ -883,7 +883,7 @@ static void NailThink( gentity_t *grenade )
 		damage = 120;
 		if( grenade->s.powerups & (1 << PW_QUAD) )
 			G_AddEvent( grenade, EV_POWERUP_QUAD, 0 );
-		G_RadiusDamage(	grenade->r.currentOrigin, grenade, &level.gentities[grenade->r.ownerNum],
+		G_RadiusDamage(	grenade->r.currentOrigin, grenade, grenade->activator,
 						damage, NULL, MOD_NAILGREN, 0 );
 		grenade->damage = 1;
 		grenade->r.contents = 0;	// no longer solid
