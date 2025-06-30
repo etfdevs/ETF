@@ -98,7 +98,21 @@ void	trap_SendConsoleCommand( int exec_when, const char *text ) {
 	SystemCall( G_SEND_CONSOLE_COMMAND, exec_when, text );
 }
 
-void	trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int flags ) {
+void	trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int flags, int extflags ) {
+	if ( cvar_notabcomplete && (extflags & EXT_CVAR_NOTABCOMPLETE) ) {
+		flags |= cvar_notabcomplete;
+	}
+	if ( cvar_nodefault && (extflags & EXT_CVAR_NODEFAULT) ) {
+		flags |= cvar_nodefault;
+	}
+	if ( cvar_archive_nd && (extflags & EXT_CVAR_ARCHIVE_ND) ) {
+		flags |= cvar_archive_nd;
+	}
+	else if (!(flags & CVAR_ARCHIVE) && (extflags & EXT_CVAR_ARCHIVE_ND)) {
+		// unsupported archive_nd so still add archive
+		flags |= CVAR_ARCHIVE;
+	}
+
 	SystemCall( G_CVAR_REGISTER, cvar, var_name, value, flags );
 }
 
@@ -336,4 +350,8 @@ messageStatus_t trap_MessageStatus( int clientNum ) {
 
 qboolean trap_GetValue( char *value, int valueSize, const char *key ) {
 	return (qboolean)SystemCall( dll_com_trapGetValue, value, valueSize, key );
+}
+
+int trap_FS_Delete( const char *filename ) {
+	return SystemCall( dll_trap_FS_Delete, filename );
 }

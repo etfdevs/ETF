@@ -808,9 +808,6 @@ qboolean	G_EntitiesFree( void );
 void	G_TouchTriggers (gentity_t *ent);
 //void	G_TouchSolids (gentity_t *ent); //djbob: not implemented ????
 
-float	*tv (float x, float y, float z);
-char	*vtos( const vec3_t v );
-
 float vectoyaw( const vec3_t vec );
 
 void G_AddPredictableEvent( gentity_t *ent, int event, int eventParm );
@@ -1164,7 +1161,7 @@ int		trap_FS_Rename( const char *from, const char *to );
 void	trap_FS_FCloseFile( fileHandle_t f );
 int		trap_FS_GetFileList( const char *path, const char *extension, char *listbuf, int bufsize );
 void	trap_SendConsoleCommand( int exec_when, const char *text );
-void	trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int flags );
+void	trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int flags, int extflags );
 void	trap_Cvar_Update( vmCvar_t *cvar );
 void	trap_Cvar_Set( const char *var_name, const char *value );
 int		trap_Cvar_VariableIntegerValue( const char *var_name );
@@ -1231,9 +1228,16 @@ void	trap_DropClient( int clientNum, const char *reason, int length );
 
 
 // extension interface
+extern	qboolean engine_is_ete;
+extern  qboolean deleteFile;
 
 qboolean trap_GetValue( char *value, int valueSize, const char *key );
+int	trap_FS_Delete(const char *filename);
 extern int dll_com_trapGetValue;
+extern int cvar_notabcomplete;
+extern int cvar_nodefault;
+extern int cvar_archive_nd;
+extern int dll_trap_FS_Delete;
 
 void QDECL G_DebugLog( const char *fmt, ... );
 

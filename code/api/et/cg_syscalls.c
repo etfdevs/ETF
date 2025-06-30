@@ -69,7 +69,21 @@ int		trap_Milliseconds( void ) {
 	return SystemCall_NoArgs( CG_MILLISECONDS );
 }
 
-void	trap_Cvar_Register( vmCvar_t *vmCvar, const char *varName, const char *defaultValue, int flags ) {
+void	trap_Cvar_Register( vmCvar_t *vmCvar, const char *varName, const char *defaultValue, int flags, int extflags ) {
+	if ( cvar_notabcomplete && (extflags & EXT_CVAR_NOTABCOMPLETE) ) {
+		flags |= cvar_notabcomplete;
+	}
+	if ( cvar_nodefault && (extflags & EXT_CVAR_NODEFAULT) ) {
+		flags |= cvar_nodefault;
+	}
+	if ( cvar_archive_nd && (extflags & EXT_CVAR_ARCHIVE_ND) ) {
+		flags |= cvar_archive_nd;
+	}
+	else if (!(flags & CVAR_ARCHIVE) && (extflags & EXT_CVAR_ARCHIVE_ND)) {
+		// unsupported archive_nd so still add archive
+		flags |= CVAR_ARCHIVE;
+	}
+
 	SystemCall( CG_CVAR_REGISTER, vmCvar, varName, defaultValue, flags );
 }
 

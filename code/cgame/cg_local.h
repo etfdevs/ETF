@@ -2110,7 +2110,7 @@ int			trap_Milliseconds( void );
 int			trap_RealTime(qtime_t *qtime);
 
 // console variable interaction
-void		trap_Cvar_Register( vmCvar_t *vmCvar, const char *varName, const char *defaultValue, int flags );
+void		trap_Cvar_Register( vmCvar_t *vmCvar, const char *varName, const char *defaultValue, int flags, int extflags );
 void		trap_Cvar_Update( vmCvar_t *vmCvar );
 void		trap_Cvar_Set( const char *var_name, const char *value );
 void		trap_Cvar_VariableStringBuffer( const char *var_name, char *buffer, int bufsize );
@@ -2366,6 +2366,7 @@ void CG_Q3F_ConcussionEffect2( int* x, int* y );
 qboolean CG_CullPointAndRadius( const vec3_t pt, vec_t radius );
 
 // extension interface
+extern	qboolean engine_is_ete;
 extern  qboolean intShaderTime;
 extern  qboolean linearLight;
 
@@ -2373,6 +2374,9 @@ qboolean trap_GetValue( char *value, int valueSize, const char *key );
 void trap_R_AddRefEntityToScene2( const refEntity_t *re );
 void trap_R_AddLinearLightToScene( const vec3_t start, const vec3_t end, float intensity, float r, float g, float b );
 extern int dll_com_trapGetValue;
+extern int cvar_notabcomplete;
+extern int cvar_nodefault;
+extern int cvar_archive_nd;
 extern int dll_trap_R_AddRefEntityToScene2;
 extern int dll_trap_R_AddLinearLightToScene;
 

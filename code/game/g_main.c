@@ -53,6 +53,7 @@ typedef struct {
 	const char	*cvarName;
 	const char	*defaultString;
 	int			cvarFlags;
+	int			extCvarFlags; // extension flags
 	qboolean	trackChange;	    // track this variable, and announce if changed
 	int			modificationCount;  // for tracking changes
 } cvarTable_t;
@@ -79,8 +80,16 @@ void G_RunFrame( int levelTime );
 void G_ShutdownGame( int restart );
 void CheckExitRules( void );
 
+qboolean engine_is_ete = qfalse;
+qboolean deleteFile = qfalse;
+
 // extension interface
 int dll_com_trapGetValue;
+int cvar_notabcomplete = 0;
+int cvar_nodefault = 0;
+int cvar_archive_nd = 0;
+
+int dll_trap_FS_Delete;
 
 /*
 ================
@@ -265,7 +274,7 @@ static void G_RegisterCvars( void ) {
 
 	for ( i = 0, cv = gameCvarTable ; i < gameCvarTableSize ; i++, cv++ ) {
 		trap_Cvar_Register( cv->vmCvar, cv->cvarName,
-			cv->defaultString, cv->cvarFlags );
+			cv->defaultString, cv->cvarFlags, cv->extCvarFlags );
 		if ( cv->vmCvar )
 			cv->modificationCount = cv->vmCvar->modificationCount;
 	}
@@ -622,6 +631,22 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	trap_Cvar_VariableStringBuffer( "//trap_GetValue", value, sizeof( value ) );
 	if ( value[0] ) {
 		dll_com_trapGetValue = atoi( value );
+		if ( trap_GetValue( value, sizeof( value ), "engine_is_ete" ) ) {
+			engine_is_ete = qtrue;
+		}
+		if ( trap_GetValue( value, sizeof( value ), "CVAR_NOTABCOMPLETE_ETE" ) ) {
+			cvar_notabcomplete = atoi( value );
+		}
+		if ( trap_GetValue( value, sizeof( value ), "CVAR_NODEFAULT_ETE" ) ) {
+			cvar_nodefault = atoi( value );
+		}
+		if ( trap_GetValue( value, sizeof( value ), "CVAR_ARCHIVE_ND_ETE" ) ) {
+			cvar_archive_nd = atoi( value );
+		}
+		if ( trap_GetValue( value, sizeof( value ), "trap_FS_Delete" ) ) {
+			dll_trap_FS_Delete = atoi( value );
+			deleteFile = qtrue;
+		}
 	}
 
 	trap_Cvar_Set("g_heavyWeaponRestriction", FORTS_SHORTVERSION);

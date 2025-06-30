@@ -1173,6 +1173,18 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 	trap_Cvar_VariableStringBuffer( "//trap_GetValue", value, sizeof( value ) );
 	if ( value[0] ) {
 		dll_com_trapGetValue = atoi( value );
+		if ( trap_GetValue( value, sizeof( value ), "engine_is_ete" ) ) {
+			engine_is_ete = qtrue;
+		}
+		if ( trap_GetValue( value, sizeof( value ), "CVAR_NOTABCOMPLETE_ETE" ) ) {
+			cvar_notabcomplete = atoi( value );
+		}
+		if ( trap_GetValue( value, sizeof( value ), "CVAR_NODEFAULT_ETE" ) ) {
+			cvar_nodefault = atoi( value );
+		}
+		if ( trap_GetValue( value, sizeof( value ), "CVAR_ARCHIVE_ND_ETE" ) ) {
+			cvar_archive_nd = atoi( value );
+		}
 		if ( trap_GetValue( value, sizeof( value ), "trap_R_AddRefEntityToScene2" ) ) {
 			dll_trap_R_AddRefEntityToScene2 = atoi( value );
 			intShaderTime = qtrue;

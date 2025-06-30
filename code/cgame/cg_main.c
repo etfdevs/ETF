@@ -46,10 +46,14 @@ int delayedSounds = 0;
 void CG_Shutdown( void );
 static qboolean CG_CheckExecKey( int key );
 
+qboolean engine_is_ete = qfalse;
 qboolean intShaderTime = qfalse;
 qboolean linearLight = qfalse;
 
 int dll_com_trapGetValue;
+int cvar_notabcomplete = 0;
+int cvar_nodefault = 0;
+int cvar_archive_nd = 0;
 int dll_trap_R_AddRefEntityToScene2;
 int dll_trap_R_AddLinearLightToScene;
 
@@ -129,6 +133,7 @@ typedef struct {
 	const char	*cvarName;
 	const char	*defaultString;
 	int			cvarFlags;
+	int			extCvarFlags; // extension flags
 	int			modificationCount;  //keeg for ET api
 } cvarTable_t;
 
@@ -397,7 +402,7 @@ void CG_RegisterCvars( void ) {
 
 	for ( i = 0, cv = cvarTable ; i < cvarTableSize ; i++, cv++ ) {
 		trap_Cvar_Register( cv->vmCvar, cv->cvarName,
-			cv->defaultString, cv->cvarFlags );
+			cv->defaultString, cv->cvarFlags, cv->extCvarFlags );
       if(cv->vmCvar != NULL) cv->modificationCount = cv->vmCvar->modificationCount;
 	}
 

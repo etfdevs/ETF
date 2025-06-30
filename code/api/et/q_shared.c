@@ -1021,6 +1021,53 @@ qboolean Info_SetValueForKey_s( char *s, int slen, const char *key, const char *
 }
 
 
+/*
+=============
+VectorToString
+
+This is just a convenience function
+for printing vectors
+=============
+*/
+char	*vtos( const vec3_t v ) {
+	static	int		index;
+	static	char	str[8][32];
+	char	*s;
+
+	// use an array so that multiple vtos won't collide
+	s = str[index];
+	index = (index + 1)&7;
+
+	Com_sprintf (s, 32, "(%i %i %i)", (int)v[0], (int)v[1], (int)v[2]);
+
+	return s;
+}
+
+/*
+=============
+VectorToString
+
+This is just a convenience function
+for printing vectors
+enable if you need it
+=============
+*/
+/*char* vtosf(const vec3_t v) {
+	static	int		index;
+	static	char	str[8][64];
+	char	*s;
+
+	// use an array so that multiple vtosf won't collide
+	s = str[index];
+	index = (index + 1)&7;
+
+	Com_sprintf (s, 64, "(%f %f %f)", v[0], v[1], v[2]);
+
+	return s;
+}*/
+
+
+
 /*void* Q_LinearSearch(const void* key, const void* ptr, size_t count,
 	size_t size, cmpFunc_t cmp )
 {

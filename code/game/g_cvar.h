@@ -32,17 +32,23 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef EXTERN_G_CVAR
 #define G_NULLCVAR( cvarName, defaultString, cvarFlags, trackChange )
+#define G_NULLEXTCVAR( cvarName, defaultString, cvarFlags, extCvarFlags, trackChange ) extern vmCvar_t vmCvar;
+#define G_EXTCVAR( vmCvar, cvarName, defaultString, cvarFlags, extCvarFlags, trackChange ) extern vmCvar_t vmCvar;
 #define G_CVAR( vmCvar, cvarName, defaultString, cvarFlags, trackChange ) extern vmCvar_t vmCvar;
 #endif
 
 #ifdef DECLARE_G_CVAR
 #define G_NULLCVAR( cvarName, defaultString, cvarFlags, trackChange )
+#define G_NULLEXTCVAR( cvarName, defaultString, cvarFlags, extCvarFlags, trackChange )
+#define G_EXTCVAR( vmCvar, cvarName, defaultString, cvarFlags, extCvarFlags, trackChange ) vmCvar_t vmCvar;
 #define G_CVAR( vmCvar, cvarName, defaultString, cvarFlags, trackChange ) vmCvar_t vmCvar;
 #endif
 
 #ifdef G_CVAR_LIST
-#define G_NULLCVAR( cvarName, defaultString, cvarFlags, trackChange ) { NULL, cvarName, defaultString, cvarFlags, trackChange, 0 },
-#define G_CVAR( vmCvar, cvarName, defaultString, cvarFlags, trackChange ) { & vmCvar, cvarName, defaultString, cvarFlags, trackChange, 0 },
+#define G_NULLCVAR( cvarName, defaultString, cvarFlags, trackChange ) { NULL, cvarName, defaultString, cvarFlags, 0, trackChange, 0 },
+#define G_NULLEXTCVAR( cvarName, defaultString, cvarFlags, extCvarFlags, trackChange ) { NULL, cvarName, defaultString, cvarFlags, extCvarFlags, trackChange, 0 },
+#define G_EXTCVAR( vmCvar, cvarName, defaultString, cvarFlags, extCvarFlags, trackChange ) { & vmCvar, cvarName, defaultString, cvarFlags, extCvarFlags, trackChange, 0 },
+#define G_CVAR( vmCvar, cvarName, defaultString, cvarFlags, trackChange ) { & vmCvar, cvarName, defaultString, cvarFlags, 0, trackChange, 0 },
 #endif
 
 // don't override the cheat state set by the system
@@ -55,10 +61,10 @@ G_NULLCVAR( "sv_pure", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, qtrue )
 
 // server browser vars abusing vanilla ET info response for our cvars
 G_NULLCVAR( "sv_numbots", "0", CVAR_SERVERINFO, qtrue )
-G_NULLCVAR( "g_maxlives", "1", CVAR_ROM|CVAR_NOTABCOMPLETE, qtrue )	// Slothy: pure info for server browser info
-G_NULLCVAR( "g_heavyWeaponRestriction", FORTS_SHORTVERSION, CVAR_ROM|CVAR_NOTABCOMPLETE, qtrue )		// Ensiform: ETF shortversion for server browser info
-G_NULLCVAR( "g_balancedteams", "0", CVAR_ROM|CVAR_NOTABCOMPLETE, qtrue )			// Ensiform: bot count for server browser info
-G_NULLCVAR( "g_antilag", "1", CVAR_ROM|CVAR_NOTABCOMPLETE, qfalse ) // gameindex for server browser
+G_NULLEXTCVAR( "g_maxlives", "1", CVAR_ROM, EXT_CVAR_NOTABCOMPLETE, qtrue )	// Slothy: pure info for server browser info
+G_NULLEXTCVAR( "g_heavyWeaponRestriction", FORTS_SHORTVERSION, CVAR_ROM, EXT_CVAR_NOTABCOMPLETE, qtrue )		// Ensiform: ETF shortversion for server browser info
+G_NULLEXTCVAR( "g_balancedteams", "0", CVAR_ROM, EXT_CVAR_NOTABCOMPLETE, qtrue )			// Ensiform: bot count for server browser info
+G_NULLEXTCVAR( "g_antilag", "1", CVAR_ROM, EXT_CVAR_NOTABCOMPLETE, qfalse ) // gameindex for server browser
 
 	// noset vars
 G_CVAR( g_restarted, "g_restarted", "0", CVAR_ROM, qfalse )
@@ -254,4 +260,6 @@ G_CVAR( g_newStunGren, "g_newStunGren", "1", CVAR_ARCHIVE, qfalse )
 G_CVAR( g_maxNailBombs, "g_maxNailBombs", "1", CVAR_SERVERINFO | CVAR_ARCHIVE, qfalse )
 
 #undef G_NULLCVAR
+#undef G_NULLEXTCVAR
+#undef G_EXTCVAR
 #undef G_CVAR

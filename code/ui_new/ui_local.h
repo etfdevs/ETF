@@ -579,7 +579,7 @@ void UI_DrawPlayerHead( float x, float y, float w, float h, playerInfo_t *pi, in
 void			trap_Print( const char *string );
 void NORETURN	trap_Error( const char *string );
 int				trap_Milliseconds( void );
-void			trap_Cvar_Register( vmCvar_t *vmCvar, const char *varName, const char *defaultValue, int flags );
+void			trap_Cvar_Register( vmCvar_t *vmCvar, const char *varName, const char *defaultValue, int flags, int extflags );
 void			trap_Cvar_Update( vmCvar_t *vmCvar );
 void			trap_Cvar_Set( const char *var_name, const char *value );
 float			trap_Cvar_VariableValue( const char *var_name );
@@ -703,6 +703,7 @@ void			trap_S_StartBackgroundTrack( const char *intro, const char *loop, int fad
 #define ASSET_BACKGROUND "uiBackground"
 
 // extension interface
+extern	qboolean engine_is_ete;
 extern  qboolean intShaderTime;
 extern  qboolean linearLight;
 extern	qboolean removeCommand;
@@ -712,6 +713,9 @@ void trap_R_AddRefEntityToScene2( const refEntity_t *re );
 void trap_R_AddLinearLightToScene( const vec3_t start, const vec3_t end, float intensity, float r, float g, float b );
 void trap_RemoveCommand( const char *cmdName );
 extern int dll_com_trapGetValue;
+extern int cvar_notabcomplete;
+extern int cvar_nodefault;
+extern int cvar_archive_nd;
 extern int dll_trap_R_AddRefEntityToScene2;
 extern int dll_trap_R_AddLinearLightToScene;
 extern int dll_trap_RemoveCommand;

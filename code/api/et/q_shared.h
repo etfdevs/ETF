@@ -456,14 +456,14 @@ int  QDECL Com_sprintf( char *dest, int size, const char *fmt, ... ) FORMAT_PRIN
 
 // mode parm for FS_FOpenFile
 typedef enum {
-	FS_READ,
+	FS_READ=0,
 	FS_WRITE,
 	FS_APPEND,
 	FS_APPEND_SYNC
 } fsMode_t;
 
 typedef enum {
-	FS_SEEK_CUR,
+	FS_SEEK_CUR=0,
 	FS_SEEK_END,
 	FS_SEEK_SET
 } fsOrigin_t;
@@ -489,6 +489,9 @@ qboolean Info_Validate( const char *s );
 qboolean Info_ValidateKeyValue( const char *s );
 const char *Info_NextPair( const char *s, char *key, char *value );
 int Info_RemoveKey( char *s, const char *key );
+
+char	*vtos( const vec3_t v );
+char	*vtosf( const vec3_t v );
 
 // this is only here so the functions in q_shared.c and bg_*.c can link
 void	NORETURN QDECL Com_Error( int level, const char *fmt, ... ) FORMAT_PRINTF(2, 3);
@@ -540,19 +543,16 @@ typedef enum cvarFlags_e {
 	CVAR_WOLFINFO = BIT(11),			// DHM - NERVE :: Like userinfo, but for wolf multiplayer info (ETF: do not use)
 	CVAR_UNSAFE = BIT(12),				// ydnar: unsafe system cvars (renderer, sound settings, anything that might cause a crash)
 	CVAR_SERVERINFO_NOUPDATE = BIT(13),	// gordon: WONT automatically send this to clients, but server browsers will see it
-	CVAR_RESERVED1 = BIT(14),			// not usable by mods
-	CVAR_RESERVED2 = BIT(15),			// not usable by mods
-	CVAR_RESERVED3 = BIT(16),			// not usable by mods
-	CVAR_NODEFAULT = BIT(17),			// do not write to etconfig.cfg if matching with default value (ETe)
-	CVAR_RESERVED4 = BIT(18),			// not usable by mods
-	CVAR_DEVELOPER = BIT(19),			// can be set only in developer mode
-	CVAR_NOTABCOMPLETE = BIT(20),		// no tab completion in console (ETe)
-	CVAR_ARCHIVE_ND = (CVAR_ARCHIVE | CVAR_NODEFAULT),
-	//CVAR_NOTABCOMPLETE = BIT(18),		// no tab completion in console (ETLegacy)
-	//CVAR_NODEFAULT = BIT(19),			// do not write to etconfig.cfg if matching with default value (ETLegacy)
 	CVAR_MODIFIED = BIT(30),			// do not use -- only usable by engine querying flags directly
 	//CVAR_NONEXISTENT = BIT(31)		// do not use
 } cvarFlags_t;
+
+typedef enum extCvarFlags_e {
+	EXT_CVAR_NONE = 0,
+	EXT_CVAR_NODEFAULT = BIT(0),
+	EXT_CVAR_NOTABCOMPLETE = BIT(1),
+	EXT_CVAR_ARCHIVE_ND = BIT(2),
+} extCvarFlags_t;
 
 // nothing outside the Cvar_*() functions should modify these fields!
 typedef struct cvar_s {

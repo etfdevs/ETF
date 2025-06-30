@@ -266,6 +266,7 @@ void CrossProduct( const vec3_t vec1, const vec3_t vec2, vec3_t vecOut );
 float DotProduct( const vec3_t vec1, const vec3_t vec2 );
 qboolean VectorCompare( const vec3_t vec1, const vec3_t vec2 );
 qboolean VectorCompare2( const vec3_t v1, const vec3_t v2 );
+float	*tv (float x, float y, float z);
 
 void SnapVector( float *v );
 void SnapVectorTowards( vec3_t v, const vec3_t to );

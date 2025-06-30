@@ -190,13 +190,14 @@ NULL will be returned if the end of the list is reached.
 gentity_t *G_Find (gentity_t *from, int fieldofs, const char *match)
 {
 	char	*s;
+	const gentity_t *max = &g_entities[level.num_entities];
 
 	if (!from)
 		from = g_entities;
 	else
 		from++;
 
-	for ( ; from < &g_entities[level.num_entities] ; from++)
+	for ( ; from < max ; from++)
 	{
 		if (!from->inuse)
 			continue;
@@ -329,55 +330,6 @@ void G_UseTargets( gentity_t *ent, gentity_t *activator ) {
 		}
 	}
 	// Golliwog.
-}
-
-
-/*
-=============
-TempVector
-
-This is just a convenience function
-for making temporary vectors for function calls
-=============
-*/
-float	*tv( float x, float y, float z ) {
-	static	int		index;
-	static	vec3_t	vecs[8];
-	float	*v;
-
-	// use an array so that multiple tempvectors won't collide
-	// for a while
-	v = vecs[index];
-	index = (index + 1)&7;
-
-	v[0] = x;
-	v[1] = y;
-	v[2] = z;
-
-	return v;
-}
-
-
-/*
-=============
-VectorToString
-
-This is just a convenience function
-for printing vectors
-=============
-*/
-char	*vtos( const vec3_t v ) {
-	static	int		index;
-	static	char	str[8][32];
-	char	*s;
-
-	// use an array so that multiple vtos won't collide
-	s = str[index];
-	index = (index + 1)&7;
-
-	Com_sprintf (s, 32, "(%i %i %i)", (int)v[0], (int)v[1], (int)v[2]);
-
-	return s;
 }
 
 

@@ -291,15 +291,18 @@ static int QDECL UI_ServersQsortCompare( const void *arg1, const void *arg2 );
 static const char *UI_SelectedMap(int index, int *actual);
 //static int UI_GetIndexFromSelection(int actual);
 
+qboolean engine_is_ete = qfalse;
 qboolean intShaderTime = qfalse;
 qboolean linearLight = qfalse;
 qboolean removeCommand = qfalse;
 
 int dll_com_trapGetValue;
+int cvar_notabcomplete = 0;
+int cvar_nodefault = 0;
+int cvar_archive_nd = 0;
 int dll_trap_R_AddRefEntityToScene2;
 int dll_trap_R_AddLinearLightToScene;
 int dll_trap_RemoveCommand;
-static qboolean engine_is_ETE = qfalse;
 
 /*
 ================
@@ -1380,7 +1383,7 @@ void UI_LoadMenus(const char *menuFile, qboolean reset) {
 
 	start = trap_Milliseconds();
 
-	if ( engine_is_ETE ) {
+	if ( engine_is_ete ) {
 		trap_PC_AddGlobalDefine("ETE");
 		trap_PC_AddGlobalDefine("NO_PUNKBUSTER");
 	}
@@ -1770,7 +1773,7 @@ static void UI_DrawPBStatus(rectDef_t *rect, float scale, vec4_t color, int text
 
 	int pbstat = trap_Cvar_VariableValue("cl_punkbuster");
 
-	if (engine_is_ETE) {
+	if (engine_is_ete) {
 		pbstat = 0;
 	}
 
@@ -5051,7 +5054,7 @@ static void UI_RunMenuScript(const char **args) {
 		} else if (Q_stricmp(name, "setMem") == 0) {
 			int memval;
 			memval = (int)trap_Cvar_VariableValue( "ui_memsize" );
-			if (engine_is_ETE) {
+			if (engine_is_ete) {
 				switch (memval) {
 				case 1:		// 256 - 512MB
 					trap_Cvar_Set("com_hunkmegs", "192");
@@ -5104,7 +5107,7 @@ static void UI_RunMenuScript(const char **args) {
 					break;
 				case 2:		// lan/cable/dsl
 					trap_Cvar_Set("rate", "25000");
-					if ( engine_is_ETE )
+					if ( engine_is_ete )
 						trap_Cvar_Set("cl_maxpackets", "125");
 					else
 						trap_Cvar_Set("cl_maxpackets", "60");
@@ -6800,7 +6803,16 @@ void UI_Init( void ) {
 	if ( value[0] ) {
 		dll_com_trapGetValue = atoi( value );
 		if ( trap_GetValue( value, sizeof( value ), "engine_is_ete" ) ) {
-			engine_is_ETE = qtrue;
+			engine_is_ete = qtrue;
+		}
+		if ( trap_GetValue( value, sizeof( value ), "CVAR_NOTABCOMPLETE_ETE" ) ) {
+			cvar_notabcomplete = atoi( value );
+		}
+		if ( trap_GetValue( value, sizeof( value ), "CVAR_NODEFAULT_ETE" ) ) {
+			cvar_nodefault = atoi( value );
+		}
+		if ( trap_GetValue( value, sizeof( value ), "CVAR_ARCHIVE_ND_ETE" ) ) {
+			cvar_archive_nd = atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "trap_R_AddRefEntityToScene2" ) ) {
 			dll_trap_R_AddRefEntityToScene2 = atoi( value );
@@ -6960,7 +6972,7 @@ void UI_Init( void ) {
 	uiInfo.hudCount = 0;
 	uiInfo.hudVariationCount = 0;
 
-	trap_Cvar_Register(NULL, "g_gameindex", "1", CVAR_SERVERINFO | CVAR_LATCH);
+	trap_Cvar_Register(NULL, "g_gameindex", "1", CVAR_SERVERINFO | CVAR_LATCH, 0);
 
 //	trap_Cvar_Set("ui_actualNetGameType", va("%d", ui_netGameType.integer));
 
@@ -7415,6 +7427,7 @@ typedef struct {
 	const char	*cvarName;
 	const char	*defaultString;
 	int			cvarFlags;
+	int			extCvarFlags; // extension flags
 	int			modificationCount;	// for tracking changes
 } cvarTable_t;
 
@@ -7507,16 +7520,16 @@ void UI_RegisterCvars( void ) {
 	cvarTable_t	*cv;
 
 	for ( i = 0, cv = cvarTable ; i < cvarTableSize ; i++, cv++ ) {
-		trap_Cvar_Register( cv->vmCvar, cv->cvarName, cv->defaultString, cv->cvarFlags );
+		trap_Cvar_Register( cv->vmCvar, cv->cvarName, cv->defaultString, cv->cvarFlags, cv->extCvarFlags );
 		if(cv->vmCvar != NULL) {
 			cv->modificationCount = cv->vmCvar->modificationCount;
       }
 	}
 
 	for ( i = Q3F_CLASS_RECON ; i < Q3F_CLASS_MAX ; i++ ) {
-		trap_Cvar_Register( NULL, va("discard_%s_shells",	bg_q3f_classlist[i]->commandstring), "-1", CVAR_ARCHIVE );
-		trap_Cvar_Register( NULL, va("discard_%s_cells",	bg_q3f_classlist[i]->commandstring), "-1", CVAR_ARCHIVE );
-		trap_Cvar_Register( NULL, va("discard_%s_rockets",	bg_q3f_classlist[i]->commandstring), "-1", CVAR_ARCHIVE );		
+		trap_Cvar_Register( NULL, va("discard_%s_shells",	bg_q3f_classlist[i]->commandstring), "-1", CVAR_ARCHIVE, 0 );
+		trap_Cvar_Register( NULL, va("discard_%s_cells",	bg_q3f_classlist[i]->commandstring), "-1", CVAR_ARCHIVE, 0 );
+		trap_Cvar_Register( NULL, va("discard_%s_rockets",	bg_q3f_classlist[i]->commandstring), "-1", CVAR_ARCHIVE, 0 );		
 	}
 
 	trap_Cvar_Set("ui_currentNetMap", "0");

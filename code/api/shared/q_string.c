@@ -686,3 +686,4 @@ int Q_vsnprintf(char *str, size_t size, const char *format, va_list ap)
 	return retval;
 }
 #endif
+

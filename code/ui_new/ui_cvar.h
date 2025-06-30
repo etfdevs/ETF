@@ -32,23 +32,29 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef EXTERN_UI_CVAR
 #define UI_NULLCVAR( cvarName, defaultString, cvarFlags )
+#define UI_NULLEXTCVAR( cvarName, defaultString, cvarFlags, extCvarFlags ) extern vmCvar_t vmCvar;
+#define UI_EXTCVAR( vmCvar, cvarName, defaultString, cvarFlags, extCvarFlags ) extern vmCvar_t vmCvar;
 #define UI_CVAR( vmCvar, cvarName, defaultString, cvarFlags ) extern vmCvar_t vmCvar;
 #endif
 
 #ifdef DECLARE_UI_CVAR
 #define UI_NULLCVAR( cvarName, defaultString, cvarFlags )
+#define UI_NULLEXTCVAR( cvarName, defaultString, cvarFlags, extCvarFlags )
+#define UI_EXTCVAR( vmCvar, cvarName, defaultString, cvarFlags, extCvarFlags ) vmCvar_t vmCvar;
 #define UI_CVAR( vmCvar, cvarName, defaultString, cvarFlags ) vmCvar_t vmCvar;
 #endif
 
 #ifdef UI_CVAR_LIST
-#define UI_NULLCVAR( cvarName, defaultString, cvarFlags ) { NULL, cvarName, defaultString, cvarFlags, 0 },
-#define UI_CVAR( vmCvar, cvarName, defaultString, cvarFlags ) { & vmCvar, cvarName, defaultString, cvarFlags, 0 },
+#define UI_NULLCVAR( cvarName, defaultString, cvarFlags ) { NULL, cvarName, defaultString, cvarFlags, 0, 0 },
+#define UI_NULLEXTCVAR( cvarName, defaultString, cvarFlags, extCvarFlags ) { NULL, cvarName, defaultString, cvarFlags, extCvarFlags, 0 },
+#define UI_EXTCVAR( vmCvar, cvarName, defaultString, cvarFlags, extCvarFlags ) { & vmCvar, cvarName, defaultString, cvarFlags, extCvarFlags, 0 },
+#define UI_CVAR( vmCvar, cvarName, defaultString, cvarFlags ) { & vmCvar, cvarName, defaultString, cvarFlags, 0, 0 },
 #endif
 
-UI_NULLCVAR( "g_maxlives",					"1",								CVAR_ROM|CVAR_NOTABCOMPLETE )	// Slothy: pure info for server browser info
-UI_NULLCVAR( "g_heavyWeaponRestriction",	FORTS_SHORTVERSION,					CVAR_ROM|CVAR_NOTABCOMPLETE )	// Ensiform: ETF shortversion for server browser info
-UI_NULLCVAR( "g_balancedteams",				"0",								CVAR_ROM|CVAR_NOTABCOMPLETE )	// Ensiform: bot count for server browser info
-UI_NULLCVAR( "g_antilag",					"1",								CVAR_ROM|CVAR_NOTABCOMPLETE )	// gameindex for server browser
+UI_NULLEXTCVAR( "g_maxlives",				"1",								CVAR_ROM, EXT_CVAR_NOTABCOMPLETE )	// Slothy: pure info for server browser info
+UI_NULLEXTCVAR( "g_heavyWeaponRestriction",	FORTS_SHORTVERSION,					CVAR_ROM, EXT_CVAR_NOTABCOMPLETE )	// Ensiform: ETF shortversion for server browser info
+UI_NULLEXTCVAR( "g_balancedteams",			"0",								CVAR_ROM, EXT_CVAR_NOTABCOMPLETE )	// Ensiform: bot count for server browser info
+UI_NULLEXTCVAR( "g_antilag",				"1",								CVAR_ROM, EXT_CVAR_NOTABCOMPLETE )	// gameindex for server browser
 UI_NULLCVAR( "allowRedirect",				"0",								CVAR_ARCHIVE )
 UI_NULLCVAR( "cg_adjustAgentSpeed",			"1",								CVAR_ARCHIVE )
 UI_NULLCVAR( "cg_atmosphericEffects",		"0",								CVAR_ARCHIVE )
@@ -162,4 +168,6 @@ UI_CVAR( ui_specifyPort,			"ui_specifyPort",			"27960",							CVAR_ARCHIVE )
 UI_CVAR( ui_specifyServer,		"ui_specifyServer",			"",									CVAR_ARCHIVE )
 
 #undef UI_NULLCVAR
+#undef UI_NULLEXTCVAR
+#undef UI_EXTCVAR
 #undef UI_CVAR

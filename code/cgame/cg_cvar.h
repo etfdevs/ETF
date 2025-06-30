@@ -32,17 +32,23 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef EXTERN_CG_CVAR
 #define CG_NULLCVAR( cvarName, defaultString, cvarFlags )
+#define CG_NULLEXTCVAR( cvarName, defaultString, cvarFlags, extCvarFlags ) extern vmCvar_t vmCvar;
+#define CG_EXTCVAR( vmCvar, cvarName, defaultString, cvarFlags, extCvarFlags ) extern vmCvar_t vmCvar;
 #define CG_CVAR( vmCvar, cvarName, defaultString, cvarFlags ) extern vmCvar_t vmCvar;
 #endif
 
 #ifdef DECLARE_CG_CVAR
 #define CG_NULLCVAR( cvarName, defaultString, cvarFlags )
+#define CG_NULLEXTCVAR( vmCvar, cvarName, defaultString, cvarFlags, extCvarFlags )
+#define CG_EXTCVAR( vmCvar, cvarName, defaultString, cvarFlags, extCvarFlags ) vmCvar_t vmCvar;
 #define CG_CVAR( vmCvar, cvarName, defaultString, cvarFlags ) vmCvar_t vmCvar;
 #endif
 
 #ifdef CG_CVAR_LIST
-#define CG_NULLCVAR( cvarName, defaultString, cvarFlags ) { NULL, cvarName, defaultString, cvarFlags, 0 },
-#define CG_CVAR( vmCvar, cvarName, defaultString, cvarFlags ) { & vmCvar, cvarName, defaultString, cvarFlags, 0 },
+#define CG_NULLCVAR( cvarName, defaultString, cvarFlags ) { NULL, cvarName, defaultString, cvarFlags, 0, 0 },
+#define CG_NULLEXTCVAR( cvarName, defaultString, cvarFlags, extCvarFlags ) { NULL, cvarName, defaultString, cvarFlags, extCvarFlags, 0 },
+#define CG_EXTCVAR( vmCvar, cvarName, defaultString, cvarFlags, extCvarFlags ) { & vmCvar, cvarName, defaultString, cvarFlags, extCvarFlags, 0 },
+#define CG_CVAR( vmCvar, cvarName, defaultString, cvarFlags ) { & vmCvar, cvarName, defaultString, cvarFlags, 0, 0 },
 #endif
 
 CG_NULLCVAR( "r_dynamiclight",									"1",								CVAR_ARCHIVE )
@@ -271,9 +277,11 @@ CG_CVAR( cg_shotgunPuff,			"cg_shotgunPuff",			"1",		CVAR_ARCHIVE )
 
 CG_CVAR( cl_anonymous,				"cl_anonymous",				"0",		CVAR_CHEAT )
 
-CG_CVAR( cg_cl_yawspeed,			"cl_yawspeed",				"140",		CVAR_ARCHIVE_ND )
-CG_CVAR( cg_cl_pitchspeed,			"cl_pitchspeed",			"140",		CVAR_ARCHIVE_ND )
-CG_CVAR( cg_cl_freelook,			"cl_freelook",				"1",		CVAR_ARCHIVE_ND )
+CG_EXTCVAR( cg_cl_yawspeed,			"cl_yawspeed",				"140",		0, EXT_CVAR_ARCHIVE_ND )
+CG_EXTCVAR( cg_cl_pitchspeed,		"cl_pitchspeed",			"140",		0, EXT_CVAR_ARCHIVE_ND )
+CG_EXTCVAR( cg_cl_freelook,			"cl_freelook",				"1",		0, EXT_CVAR_ARCHIVE_ND )
 
 #undef CG_NULLCVAR
+#undef CG_NULLEXTCVAR
+#undef CG_EXTCVAR
 #undef CG_CVAR
