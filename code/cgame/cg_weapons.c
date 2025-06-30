@@ -283,40 +283,14 @@ static void CG_ShotgunEjectBrass( centity_t *cent, refEntity_t *parent ) {
 	}
 }
 
-float           cg_q3f_trailteamcolours[5][3] = {
+float cg_q3f_trailteamcolours[Q3F_TEAM_NUM_TEAMS][3] = {
+	{1.f, 1.f, 1.f},			// FREE
 	{1.f, 0.f, 0.f},			// RED
 	{0.f, 0.f, 1.f},			// BLUE
 	{1.f, 1.f, 0.f},			// YELLOW
 	{0.f, 1.f, 0.f},			// GREEN
-	{1.f, 1.f, 1.f},			// FREE
+	{1.f, 1.f, 1.f},			// SPECTATOR
 };
-
-static float   *CG_MissileTrail_TeamColoured(int team, const vec4_t defaultclr, const char *src)
-{
-	static vec4_t   colour;
-
-	if(!Q_stricmp(src, "team"))
-	{
-		VectorCopy4(cg_q3f_trailteamcolours[team - Q3F_TEAM_RED], colour);
-	}
-	else if(GetColourFromHex(src, colour))
-	{
-		//
-	}
-	else if(GetColourFromString(src, colour))
-	{
-		//
-	}
-	else
-	{
-		VectorCopy4(defaultclr, colour);
-		//VectorSet4(colour, 1.f, 1.f, 1.f, 0.33f);
-	}
-
-	colour[3] = defaultclr[3];	//0.33f;
-
-	return colour;
-}
 
 static void CG_WeaponSmokeTrail( centity_t *ent, const weaponInfo_t *wi ) {
 	vec3_t	origin, lastPos;
@@ -324,7 +298,8 @@ static void CG_WeaponSmokeTrail( centity_t *ent, const weaponInfo_t *wi ) {
 	vec4_t          color;
 	int             team;
 	int             parent;
-	const char     *trailVar = 0;
+	float			*varColor = NULL;
+	qboolean		doTeamColor = qfalse;
 	qboolean        colorSupported = qfalse;
 
 	if( cg_lowEffects.integer )
@@ -343,53 +318,64 @@ static void CG_WeaponSmokeTrail( centity_t *ent, const weaponInfo_t *wi ) {
 	switch (wi->item->giTag)
 	{
 		default:
-			trailVar = 0;
 			colorSupported = qfalse;
 			break;
 		case WP_ROCKET_LAUNCHER:
-			trailVar = cg_rocketTrail.string;
+			varColor = cg.rocketTrailColor;
+			doTeamColor = cg.rocketTrailTeam;
 			colorSupported = qtrue;
 			break;
 		case WP_GRENADE_LAUNCHER:
-			trailVar = cg_grenadeTrail.string;
+			varColor = cg.grenadeTrailColor;
+			doTeamColor = cg.grenadeTrailTeam;
 			colorSupported = qtrue;
 			break;
 		case WP_PIPELAUNCHER:
-			trailVar = cg_pipeTrail.string;
+			varColor = cg.pipeTrailColor;
+			doTeamColor = cg.pipeTrailTeam;
 			colorSupported = qtrue;
 			break;
 		case WP_DARTGUN:
-			trailVar = cg_dartTrail.string;
+			if (!cg_dartTrail.integer) {
+				return;
+			}
 			colorSupported = qfalse;
 			break;
 		case WP_NAPALMCANNON:
-			trailVar = cg_napalmTrail.string;
+			if (!cg_napalmTrail.integer) {
+				return;
+			}
 			colorSupported = qfalse;
 			break;
 	}
 
-	if(((!trailVar || !trailVar[0]) && colorSupported) || !Q_stricmp(trailVar, "0"))
-		return;
+	if (colorSupported) {
+		if (doTeamColor) {
+			parent = es->otherEntityNum;
+			if (parent >= 0 && parent < MAX_CLIENTS) {
+				if (cg.gasEndTime && cg.gasPlayerTeam[parent] != 0xFF)
+					team = cg.gasPlayerTeam[parent];
+				else
+					team = cgs.clientinfo[parent].team;
+			}
+			else
+				team = Q3F_TEAM_FREE;
 
-	parent = es->otherEntityNum;
-	if(parent >= 0 && parent < MAX_CLIENTS) {
-		if(cg.gasEndTime && cg.gasPlayerTeam[parent] != 0xFF)
-			team = cg.gasPlayerTeam[parent];
-		else
-			team = cgs.clientinfo[parent].team;
+			VectorCopy(cg_q3f_trailteamcolours[team], color);
+		}
+		else {
+			VectorCopy(varColor, color);
+		}
+		color[3] = wi->trailColor[3];
 	}
-	else
-		team = Q3F_TEAM_FREE;
-
-	if(!colorSupported)
+	else {
 		VectorCopy4(wi->trailColor, color);
-	else
-		VectorCopy4(CG_MissileTrail_TeamColoured(team, wi->trailColor, trailVar), color);
+	}
 
 	for ( ; ent->trailTime <= cg.time ; ent->trailTime += wi->trailStep ) {
 		BG_EvaluateTrajectory( &es->pos, ent->trailTime, lastPos );
 		if (CG_PointContents( lastPos, 0 ) & CONTENTS_WATER ) continue;
-		CG_SpawnSmokeSprite( lastPos, wi->trailDuration , color/*wi->trailColor*/, 8, wi->trailRadius);
+		CG_SpawnSmokeSprite( lastPos, wi->trailDuration , color, 8, wi->trailRadius);
 	}
 }
 

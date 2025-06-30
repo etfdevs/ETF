@@ -891,6 +891,18 @@ typedef struct {
 	vec4_t		xhairColorAlt;
 	qhandle_t	crosshairShaderAlt[NUM_CROSSHAIRS];
 
+	qboolean	drawFriendTeam;
+	vec3_t		drawFriendColor;
+
+	qboolean	rocketTrailTeam;
+	vec3_t		rocketTrailColor;
+
+	qboolean	grenadeTrailTeam;
+	vec3_t		grenadeTrailColor;
+
+	qboolean	pipeTrailTeam;
+	vec3_t		pipeTrailColor;
+
 	//Canabis, special 2 tracking
 	int			special2_lastweapon;
 	char		ucmd_flags;
@@ -1443,9 +1455,8 @@ typedef struct {
 	// Golliwog: Teams and classes playing this map.
 	int				teams, classes;
 
-	// Golliwog: Gravity modification coutn
-	int				gravityModificationCount;
 	int				grenadePrimeSoundModificationCount;
+	int				drawSkyPortalModificationCount;
 
 	// RR2DO2: flyby cam data
 	campath_t		campaths[Q3F_MAX_PATHS];
@@ -1652,7 +1663,6 @@ void CG_DrawTopBottom(float x, float y, float w, float h, float size);
 //
 extern	int sortedTeamPlayers[TEAM_MAXOVERLAY];
 extern	int	numSortedTeamPlayers;
-extern	int drawTeamOverlayModificationCount;
 qboolean CG_AlliedTeam( int team, int isAlliedTeam);
 void CG_AddLagometerFrameInfo( void );
 void CG_AddLagometerSnapshotInfo( snapshot_t *snap );

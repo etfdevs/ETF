@@ -46,8 +46,6 @@ If you have questions concerning this license or the applicable additional terms
 
 extern int menuCount;
 
-int drawTeamOverlayModificationCount = -1;
-
 int sortedTeamPlayers[TEAM_MAXOVERLAY];
 int	numSortedTeamPlayers;
 

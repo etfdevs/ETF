@@ -538,6 +538,57 @@ int Com_ParseInfos( const char *buf, int max, char infos[][MAX_INFO_STRING] ) {
 	return count;
 }
 
+static int Hex( char c )
+{
+	if ( c >= '0' && c <= '9' ) {
+		return c - '0';
+	}
+	else
+	if ( c >= 'A' && c <= 'F' ) {
+		return 10 + c - 'A';
+	}
+	else
+	if ( c >= 'a' && c <= 'f' ) {
+		return 10 + c - 'a';
+	}
+
+	return -1;
+}
+
+
+/*
+===================
+Com_HexStrToInt
+===================
+*/
+int Com_HexStrToInt( const char *str )
+{
+	if ( !str )
+		return -1;
+
+	// check for hex code
+	if ( str[ 0 ] == '0' && str[ 1 ] == 'x' && str[ 2 ] != '\0' )
+	{
+		int i, digit, n = 0, len = strlen( str );
+
+		for( i = 2; i < len; i++ )
+		{
+			n *= 16;
+
+			digit = Hex( str[ i ] );
+
+			if ( digit < 0 )
+				return -1;
+
+			n += digit;
+		}
+
+		return n;
+	}
+
+	return -1;
+}
+
 int QDECL Com_sprintf( char *dest, int size, const char *fmt, ...) {
 	int		ret;
 	va_list		argptr;

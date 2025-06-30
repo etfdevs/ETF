@@ -60,6 +60,9 @@ vec4_t		colorMdOrange	=	{0.5, 0.25, 0, 1};
 vec4_t		colorMdBlue		=	{0, 0, 0.5, 1};
 vec4_t		colorLtBlue	= {0.367f, 0.261f, 0.722f, 1};
 vec4_t		colorDkBlue	= {0.199f, 0.0f,   0.398f, 1};
+vec4_t		colorPurple	=	{0.5, 0, 0.5, 1};
+vec4_t		colorPipeTrail = { 0.75, 0.75, 0.5, 1 };
+vec4_t		colorDrawFriend = { 32.f / 255.f, 1, 32.f / 255.f, 1 };
 
 const vec4_t g_color_table[Q_COLOR_BITS+1] = {
 		{ 0.0,	0.0,	0.0,	1.0 },	// 0 - black		0
@@ -96,6 +99,7 @@ const vec4_t g_color_table[Q_COLOR_BITS+1] = {
 		{ 1.0,	1.0,	0.5,	1.0 },	// O				31
 };
 
+#if 0
 qboolean GetColourFromHex( const char *string, vec4_t colour ) {
 	char hexvalue[2];
 	const char *ptr, *digits = "0123456789ABCDEF\0";
@@ -149,6 +153,7 @@ qboolean GetColourFromString( const char *string, vec4_t colour ) {
 	}
 	return( qtrue );
 }
+#endif
 
 unsigned ColorBytes3 (float r, float g, float b) {
 	unsigned i;

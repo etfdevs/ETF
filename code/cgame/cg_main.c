@@ -41,7 +41,6 @@ displayContextDef_t cgDC;
 
 const char *teamnames[4] = { "red", "blue", "yellow", "green" };
 
-int drawSkyPortalModificationCount = -1;
 int delayedSounds = 0;
 
 void CG_Shutdown( void );
@@ -316,6 +315,76 @@ void CG_Q3F_UpdateCvarLimits(void) {
 	}
 }
 
+//teamcolor and color array pointer must not be null
+static void CG_UpdateColorFromCvar(const char *cvarval, float *defcolor, qboolean *teamcolor, float *color) {
+	int h = Com_HexStrToInt(cvarval);
+	*teamcolor = qfalse;
+	VectorCopy(defcolor, color);
+	if (!Q_stricmp(cvarval, "team") ) {
+		*teamcolor = qtrue;
+		return;
+	}
+	else if (h >= 0) {
+		color[0] = ((h >> 16) & 0xFF) / 255.0f;
+		color[1] = ((h >> 8) & 0xFF) / 255.0f;
+		color[2] = ((h) & 0xFF) / 255.0f;
+	}
+	else if (!Q_stricmp(cvarval, "white")) {
+		VectorCopy(colorWhite, color);
+	}
+	else if (!Q_stricmp(cvarval, "black")) {
+		VectorCopy(colorBlack, color);
+	}
+	else if (!Q_stricmp(cvarval, "red")) {
+		VectorCopy(colorRed, color);
+	}
+	else if (!Q_stricmp(cvarval, "maroon")) {
+		VectorCopy(colorMdRed, color);
+	}
+	else if (!Q_stricmp(cvarval, "green") || !Q_stricmp(cvarval, "lime")) {
+		VectorCopy(colorGreen, color);
+	}
+	else if (!Q_stricmp(cvarval, "mdgreen")) {
+		VectorCopy(colorMdGreen, color);
+	}
+	else if (!Q_stricmp(cvarval, "blue")) {
+		VectorCopy(colorBlue, color);
+	}
+	else if (!Q_stricmp(cvarval, "navy")) {
+		VectorCopy(colorMdBlue, color);
+	}
+	else if (!Q_stricmp(cvarval, "yellow")) {
+		VectorCopy(colorYellow, color);
+	}
+	else if (!Q_stricmp(cvarval, "olive")) {
+		VectorCopy(colorMdYellow, color);
+	}
+	else if (!Q_stricmp(cvarval, "magenta") || !Q_stricmp(cvarval, "fuchsia")) {
+		VectorCopy(colorMagenta, color);
+	}
+	else if (!Q_stricmp(cvarval, "purple")) {
+		VectorCopy(colorPurple, color);
+	}
+	else if (!Q_stricmp(cvarval, "cyan") || !Q_stricmp(cvarval, "aqua")) {
+		VectorCopy(colorCyan, color);
+	}
+	else if (!Q_stricmp(cvarval, "teal")) {
+		VectorCopy(colorMdCyan, color);
+	}
+	else if (!Q_stricmp(cvarval, "gray") || !Q_stricmp(cvarval, "grey")) {
+		VectorCopy(colorMdGrey, color);
+	}
+	else if (!Q_stricmp(cvarval, "silver")) {
+		VectorCopy(colorLtGrey, color);
+	}
+	else if (!Q_stricmp(cvarval, "orange")) {
+		VectorCopy(colorOrange, color);
+	}
+	else {
+		VectorCopy(defcolor, color);
+	}
+}
+
 /*
 =================
 CG_RegisterCvars
@@ -346,11 +415,16 @@ void CG_RegisterCvars( void ) {
 	cgs.localServer = atoi( var );
 
 	cgs.grenadePrimeSoundModificationCount = cg_grenadePrimeSound.modificationCount;
-	drawSkyPortalModificationCount = cg_drawSkyPortal.modificationCount;
+	cgs.drawSkyPortalModificationCount = cg_drawSkyPortal.modificationCount;
 
    //keeg set crosshair colors, taken from ET code
 	BG_setCrosshair(cg_crosshairColor.string, cg.xhairColor, cg_crosshairAlpha.value, "cg_crosshairColor");
 	BG_setCrosshair(cg_crosshairColorAlt.string, cg.xhairColorAlt, cg_crosshairAlphaAlt.value, "cg_crosshairColorAlt");
+
+	CG_UpdateColorFromCvar(cg_drawFriend.string, colorDrawFriend, &cg.drawFriendTeam, cg.drawFriendColor);
+	CG_UpdateColorFromCvar(cg_rocketTrail.string, colorWhite, &cg.rocketTrailTeam, cg.rocketTrailColor);
+	CG_UpdateColorFromCvar(cg_grenadeTrail.string, colorLtGrey, &cg.grenadeTrailTeam, cg.grenadeTrailColor);
+	CG_UpdateColorFromCvar(cg_pipeTrail.string, colorPipeTrail, &cg.pipeTrailTeam, cg.pipeTrailColor);
 
 	if ( *cg_grenadePrimeSound.string )
 		cgs.media.grenadePrimeSound = trap_S_RegisterSound( cg_grenadePrimeSound.string, qfalse );
@@ -423,6 +497,19 @@ void CG_UpdateCvars( void ) {
 						trap_Cvar_Update( cv->vmCvar );
 					}
 				}
+
+				else if (cv->vmCvar == &cg_drawFriend) {
+					CG_UpdateColorFromCvar(cg_drawFriend.string, colorDrawFriend, &cg.drawFriendTeam, cg.drawFriendColor);
+				}
+				else if (cv->vmCvar == &cg_rocketTrail) {
+					CG_UpdateColorFromCvar(cg_rocketTrail.string, colorWhite, &cg.rocketTrailTeam, cg.rocketTrailColor);
+				}
+				else if (cv->vmCvar == &cg_grenadeTrail) {
+					CG_UpdateColorFromCvar(cg_grenadeTrail.string, colorLtGrey, &cg.grenadeTrailTeam, cg.grenadeTrailColor);
+				}
+				else if (cv->vmCvar == &cg_pipeTrail) {
+					CG_UpdateColorFromCvar(cg_pipeTrail.string, colorPipeTrail, &cg.pipeTrailTeam, cg.pipeTrailColor);
+				}
 			}
 		}
 	}
@@ -438,8 +525,8 @@ void CG_UpdateCvars( void ) {
 	}
 
 	// if cg_drawSkyPortal changed, update skybox shader remapping
-	if( drawSkyPortalModificationCount != cg_drawSkyPortal.modificationCount ) {
-		drawSkyPortalModificationCount = cg_drawSkyPortal.modificationCount;
+	if( cgs.drawSkyPortalModificationCount != cg_drawSkyPortal.modificationCount ) {
+		cgs.drawSkyPortalModificationCount = cg_drawSkyPortal.modificationCount;
 		CG_Q3F_RemapSkyShader();
 	}
 

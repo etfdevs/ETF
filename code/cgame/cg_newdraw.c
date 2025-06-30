@@ -652,18 +652,22 @@ Pass NULL for a dropped packet.
 ==============
 */
 void CG_AddLagometerSnapshotInfo( snapshot_t *snap ) {
+	unsigned int index = lagometer.snapshotCount & (LAG_SAMPLES - 1);
+
 	// dropped packet
 	if ( !snap ) {
-		lagometer.snapshotSamples[ lagometer.snapshotCount & ( LAG_SAMPLES - 1) ] = -1;
+		lagometer.snapshotSamples[ index ] = -1;
 		lagometer.snapshotCount++;
 		return;
 	}
 
+	// TODO add demoplayback delta with sv_fps
+
 	// add this snapshot's info
-	lagometer.snapshotSamples[ lagometer.snapshotCount & ( LAG_SAMPLES - 1) ] = snap->ping;
-	lagometer.snapshotFlags[ lagometer.snapshotCount & ( LAG_SAMPLES - 1) ] = snap->snapFlags;
+	lagometer.snapshotSamples[ index ] = snap->ping;
+	lagometer.snapshotFlags[ index ] = snap->snapFlags;
 	if ( snap->ps.persistant[PERS_FLAGS] & PF_SKIPPEDFRAME )
-		lagometer.snapshotFlags[ lagometer.snapshotCount & ( LAG_SAMPLES - 1) ] |= SNAPFLAG_NOUSERCMD;
+		lagometer.snapshotFlags[ index ] |= SNAPFLAG_NOUSERCMD;
 	lagometer.snapshotCount++;
 }
 

@@ -125,21 +125,14 @@ extern vec4_t colorMdCyan;
 extern vec4_t colorMdYellow;
 extern vec4_t colorMdOrange;
 extern vec4_t colorMdBlue;
-
-extern vec4_t clrBrown;
-extern vec4_t clrBrownDk;
-extern vec4_t clrBrownLine;
-extern vec4_t clrBrownText;
-extern vec4_t clrBrownTextDk;
-extern vec4_t clrBrownTextDk2;
-extern vec4_t clrBrownTextLt;
-extern vec4_t clrBrownTextLt2;
-extern vec4_t clrBrownLineFull;
+extern vec4_t colorPurple;
+extern vec4_t colorPipeTrail;
+extern vec4_t colorDrawFriend;
 
 extern const vec4_t g_color_table[Q_COLOR_BITS+1];
 
-qboolean GetColourFromHex( const char *string, vec4_t colour );
-qboolean GetColourFromString( const char *string, vec4_t colour );
+//qboolean GetColourFromHex( const char *string, vec4_t colour );
+//qboolean GetColourFromString( const char *string, vec4_t colour );
 unsigned ColorBytes3 (float r, float g, float b);
 unsigned ColorBytes4 (float r, float g, float b, float a);
 float NormalizeColor( const vec3_t in, vec3_t out );

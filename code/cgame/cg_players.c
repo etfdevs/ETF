@@ -1174,18 +1174,18 @@ static void CG_PlayerFloatSprite( centity_t *cent, qhandle_t shader ) {
 	trap_R_AddRefEntityToScene( &ent, cent );
 }
 
-byte cg_q3f_iconteamcolours[5][3] = {
+byte cg_q3f_iconteamcolours[Q3F_TEAM_NUM_TEAMS][3] = {
+	{ 0xFF, 0xFF, 0xFF },		// FREE
 	{ 0xFF, 0x20, 0x20 },		// RED
 	{ 0x20, 0x20, 0xFF },		// BLUE
 	{ 0xFF, 0xFF, 0x20 },		// YELLOW
 	{ 0x20, 0xFF, 0x20 },		// GREEN
-	{ 0xFF, 0xFF, 0xFF },		// FREE
+	{ 0xFF, 0xFF, 0xFF },		// SPECTATOR
 };
 
 static void CG_PlayerFloatSprite_TeamColoured( centity_t *cent, qhandle_t shader, int team ) {
 	int				rf;
 	refEntity_t		ent;
-	vec4_t			colour;
 	
 	if ( cent->currentState.number == cg.snap->ps.clientNum && !cg.renderingThirdPerson && !cg.renderingFlyBy && !cg.rendering2ndRefDef ) {
 		rf = RF_THIRD_PERSON;		// only show in mirrors
@@ -1203,22 +1203,15 @@ static void CG_PlayerFloatSprite_TeamColoured( centity_t *cent, qhandle_t shader
 
 	ent.shaderRGBA[3] = 200;
 
-	if( !Q_stricmp( cg_drawFriend.string, "team" ) ) {
-		ent.shaderRGBA[0] = cg_q3f_iconteamcolours[team - Q3F_TEAM_RED][0];
-		ent.shaderRGBA[1] = cg_q3f_iconteamcolours[team - Q3F_TEAM_RED][1];
-		ent.shaderRGBA[2] = cg_q3f_iconteamcolours[team - Q3F_TEAM_RED][2];
-	} else if( GetColourFromHex( cg_drawFriend.string, colour ) ) {
-		ent.shaderRGBA[0] = colour[0];
-		ent.shaderRGBA[1] = colour[1];
-		ent.shaderRGBA[2] = colour[2];
-	} else if( GetColourFromString( cg_drawFriend.string, colour ) ) {
-		ent.shaderRGBA[0] = colour[0] * 0xFF;
-		ent.shaderRGBA[1] = colour[1] * 0xFF;
-		ent.shaderRGBA[2] = colour[2] * 0xFF;
-	} else {
-		ent.shaderRGBA[0] = 0x20;
-		ent.shaderRGBA[1] = 0xFF;
-		ent.shaderRGBA[2] = 0x20;
+	if (cg.drawFriendTeam) {
+		ent.shaderRGBA[0] = cg_q3f_iconteamcolours[team][0];
+		ent.shaderRGBA[1] = cg_q3f_iconteamcolours[team][1];
+		ent.shaderRGBA[2] = cg_q3f_iconteamcolours[team][2];
+	}
+	else {
+		ent.shaderRGBA[0] = cg.drawFriendColor[0] * 0xFF;
+		ent.shaderRGBA[1] = cg.drawFriendColor[1] * 0xFF;
+		ent.shaderRGBA[2] = cg.drawFriendColor[2] * 0xFF;
 	}
 
 	trap_R_AddRefEntityToScene( &ent, cent );
