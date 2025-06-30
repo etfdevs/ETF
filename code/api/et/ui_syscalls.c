@@ -73,6 +73,9 @@ void trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value
 		// unsupported archive_nd so still add archive
 		flags |= CVAR_ARCHIVE;
 	}
+	if ( cvar_developer && (extflags & EXT_CVAR_DEVELOPER) ) {
+		flags |= cvar_developer;
+	}
 
 	SystemCall( UI_CVAR_REGISTER, cvar, var_name, value, flags );
 }

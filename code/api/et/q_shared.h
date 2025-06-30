@@ -552,6 +552,7 @@ typedef enum extCvarFlags_e {
 	EXT_CVAR_NODEFAULT = BIT(0),
 	EXT_CVAR_NOTABCOMPLETE = BIT(1),
 	EXT_CVAR_ARCHIVE_ND = BIT(2),
+	EXT_CVAR_DEVELOPER = BIT(3),
 } extCvarFlags_t;
 
 // nothing outside the Cvar_*() functions should modify these fields!

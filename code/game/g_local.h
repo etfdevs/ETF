@@ -1237,6 +1237,7 @@ extern int dll_com_trapGetValue;
 extern int cvar_notabcomplete;
 extern int cvar_nodefault;
 extern int cvar_archive_nd;
+extern int cvar_developer;
 extern int dll_trap_FS_Delete;
 
 void QDECL G_DebugLog( const char *fmt, ... );

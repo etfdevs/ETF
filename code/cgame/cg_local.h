@@ -2377,6 +2377,7 @@ extern int dll_com_trapGetValue;
 extern int cvar_notabcomplete;
 extern int cvar_nodefault;
 extern int cvar_archive_nd;
+extern int cvar_developer;
 extern int dll_trap_R_AddRefEntityToScene2;
 extern int dll_trap_R_AddLinearLightToScene;
 

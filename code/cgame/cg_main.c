@@ -54,6 +54,7 @@ int dll_com_trapGetValue;
 int cvar_notabcomplete = 0;
 int cvar_nodefault = 0;
 int cvar_archive_nd = 0;
+int cvar_developer = 0;
 int dll_trap_R_AddRefEntityToScene2;
 int dll_trap_R_AddLinearLightToScene;
 

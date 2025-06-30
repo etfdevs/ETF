@@ -300,6 +300,7 @@ int dll_com_trapGetValue;
 int cvar_notabcomplete = 0;
 int cvar_nodefault = 0;
 int cvar_archive_nd = 0;
+int cvar_developer = 0;
 int dll_trap_R_AddRefEntityToScene2;
 int dll_trap_R_AddLinearLightToScene;
 int dll_trap_RemoveCommand;
@@ -6813,6 +6814,9 @@ void UI_Init( void ) {
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_ARCHIVE_ND_ETE" ) ) {
 			cvar_archive_nd = atoi( value );
+		}
+		if ( trap_GetValue( value, sizeof( value ), "CVAR_DEVELOPER_ETE" ) ) {
+			cvar_developer = atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "trap_R_AddRefEntityToScene2" ) ) {
 			dll_trap_R_AddRefEntityToScene2 = atoi( value );

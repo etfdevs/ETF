@@ -1185,6 +1185,9 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_ARCHIVE_ND_ETE" ) ) {
 			cvar_archive_nd = atoi( value );
 		}
+		if ( trap_GetValue( value, sizeof( value ), "CVAR_DEVELOPER_ETE" ) ) {
+			cvar_developer = atoi( value );
+		}
 		if ( trap_GetValue( value, sizeof( value ), "trap_R_AddRefEntityToScene2" ) ) {
 			dll_trap_R_AddRefEntityToScene2 = atoi( value );
 			intShaderTime = qtrue;

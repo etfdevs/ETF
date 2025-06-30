@@ -88,6 +88,7 @@ int dll_com_trapGetValue;
 int cvar_notabcomplete = 0;
 int cvar_nodefault = 0;
 int cvar_archive_nd = 0;
+int cvar_developer = 0;
 
 int dll_trap_FS_Delete;
 
@@ -642,6 +643,9 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_ARCHIVE_ND_ETE" ) ) {
 			cvar_archive_nd = atoi( value );
+		}
+		if ( trap_GetValue( value, sizeof( value ), "CVAR_DEVELOPER_ETE" ) ) {
+			cvar_developer = atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "trap_FS_Delete" ) ) {
 			dll_trap_FS_Delete = atoi( value );
