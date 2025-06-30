@@ -2042,12 +2042,13 @@ PM_BeginWeaponReload
 ===================
 */
 static void PM_BeginWeaponReload( void ) {
+	bg_q3f_weapon_t *wp;
+	float reloadtime;
 	PM_AddEvent( EV_COCK_WEAPON );
 	pm->ps->weaponstate = WEAPON_RDROPPING;
 
-	bg_q3f_weapon_t* wp;
 	wp = BG_Q3F_GetWeapon(pm->ps->weapon);
-	float reloadtime = wp->clipsize > 0 ? wp->reloadtime / wp->clipsize : wp->reloadtime; //(wp->reloadtime)*((float)(ammo-curammo)/(float)ammo);
+	reloadtime = wp->clipsize > 0 ? wp->reloadtime / wp->clipsize : wp->reloadtime; //(wp->reloadtime)*((float)(ammo-curammo)/(float)ammo);
 	pm->ps->weaponTime += reloadtime;
 
 	pm->ps->stats[STAT_Q3F_FLAGS] &= ~(1<<Q3F_WEAPON_RELOAD);	// Reset Flag
@@ -2110,10 +2111,10 @@ static void PM_FinishWeaponReload( void ) {
 	}
 }
 
-static void PM_DoWeaponReload(void)
+/*static void PM_DoWeaponReload(void)
 {
 	pm->ps->weaponstate = WEAPON_RELOADING;
-}
+}*/
 
 
 /*
@@ -2147,6 +2148,7 @@ Generates weapon events and modifes the weapon counter
 static void PM_Weapon( void ) {
 	int		addTime;
 	int q3f_ammo_type;
+	int curammo;
 	bg_q3f_playerclass_t *cls;
 	bg_q3f_weapon_t *wp, *wp2;
 	vec3_t testvel;
@@ -2229,7 +2231,7 @@ static void PM_Weapon( void ) {
 	}
 // <- JT
 
-	int curammo = Q3F_GetClipValue(pm->ps->weapon, pm->ps);
+	curammo = Q3F_GetClipValue(pm->ps->weapon, pm->ps);
 	// Allow interrupting a reload by firing if we have the clip
 	if ((pm->ps->weaponstate == WEAPON_RELOADING || pm->ps->weaponstate == WEAPON_RDROPPING) && pm->cmd.buttons & BUTTON_ATTACK && curammo > 0)
 	{

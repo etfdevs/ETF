@@ -2056,12 +2056,6 @@ static char *q3f_fdrestoremessagekeys[3][8];	// Keep the strings for a little ex
 //static char *q3f_fddamagemessagekeys[3][4];	// Keep the strings for a little extra speed
 //static char *q3f_fdrestoremessagekeys[3][4];	// Keep the strings for a little extra speed
 
-#if !defined(__clang__) && (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
-#pragma GCC diagnostic push
-#endif
-#ifdef __GNUC__
-#pragma GCC diagnostic ignored "-Wstringop-overflow"
-#endif
 static void G_Q3F_FuncDamageCalc( gentity_t *self, gentity_t *other, qboolean checkcriteria )
 {
 	// Think about where we are, and when next to think.
@@ -2285,9 +2279,6 @@ static void G_Q3F_FuncDamageCalc( gentity_t *self, gentity_t *other, qboolean ch
 	if( self->mapdata->state == Q3F_STATE_ACTIVE )
 		G_Q3F_TriggerEntity( self, other, Q3F_STATE_INACTIVE, NULL, qtrue );
 }
-#if !defined(__clang__) && (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
-#pragma GCC diagnostic pop
-#endif
 
 static void G_Q3F_FuncDamageThink( gentity_t *ent )
 	{ G_Q3F_FuncDamageCalc( ent, NULL, qfalse ); }
@@ -3305,13 +3296,6 @@ void SP_Q3F_func_visibility(gentity_t * ent)
 ***** Accumulator.
 ****/
 
-#if !defined(__clang__) && (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
-#pragma GCC diagnostic push
-#endif
-#ifdef __GNUC__
-#pragma GCC diagnostic ignored "-Wstringop-overflow"
-#endif
-
 static int G_Q3F_TargetAccumulatorStateThink( gentity_t *ent, gentity_t *activator, int targetstate, int oldstate, int force, trace_t *trace )
 {
 	// Called every time the accumulator state changes.
@@ -3384,9 +3368,6 @@ static int G_Q3F_TargetAccumulatorStateThink( gentity_t *ent, gentity_t *activat
 
 	return( Q3F_STATE_INACTIVE );	// We always force back to inactive if we did something.
 }
-#if !defined(__clang__) && (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
-#pragma GCC diagnostic pop
-#endif
 
 
 void SP_Q3F_target_accumulator( gentity_t *ent )
@@ -3577,12 +3558,6 @@ static int G_Q3F_MiscMatchtimerStateThink( gentity_t *ent, gentity_t *activator,
 	return( targetstate );
 }
 
-#if !defined(__clang__) && (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
-#pragma GCC diagnostic push
-#endif
-#ifdef __GNUC__
-#pragma GCC diagnostic ignored "-Wstringop-overflow"
-#endif
 void G_Q3F_MiscMatchtimerThink( gentity_t *ent )
 {
 	// Called every time the accumulator state changes.
@@ -3674,9 +3649,6 @@ void G_Q3F_MiscMatchtimerThink( gentity_t *ent )
 
 	return;
 }
-#if !defined(__clang__) && (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
-#pragma GCC diagnostic pop
-#endif
 
 void SP_Q3F_misc_matchtimer( gentity_t *ent ) {
 	q3f_keypair_t* kp;

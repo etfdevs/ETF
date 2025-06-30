@@ -2072,7 +2072,7 @@ CG_AddPacketEntities
 
 ===============
 */
-void CG_UpdateLocalPredictedEnts();
+void CG_UpdateLocalPredictedEnts(void);
 
 void CG_AddPacketEntities( void ) {
 	int					num;

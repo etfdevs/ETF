@@ -46,6 +46,14 @@ float	Q_random( int *seed ) {
 	return ( Q_rand( seed ) & 0xffff ) / (float)0x10000;
 }
 
+#if defined(_MSC_VER)
+// disable conversionn from double to float warning to avoid any possible changes
+#pragma warning (push)
+#pragma warning (disable : 4244)
+#endif
 float	Q_crandom( int *seed ) {
 	return 2.0 * ( Q_random( seed ) - 0.5 );
 }
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif

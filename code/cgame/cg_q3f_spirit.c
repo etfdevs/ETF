@@ -850,10 +850,8 @@ void Spirit_RunScript( const SpiritScript_t *SpiritScript, const vec3_t origin, 
 	Spirit_RunSystem( SpiritScript->SpiritSystem, key, origin, oldorigin, axis );
 }
 
-#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#if defined(__clang__) || defined(__GNUC__)
 #pragma GCC diagnostic push
-#endif
-#ifdef __GNUC__
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #endif
 // We promise we aren't changing ref ent here
@@ -890,7 +888,7 @@ qboolean Spirit_UpdateModel( const SpiritScript_t *SpiritScript, const refEntity
 	MatrixMultiply( lerped.axis, ((refEntity_t *)re)->axis, axis );
 	return Spirit_UpdateScript( SpiritScript, origin , axis, key );
 }
-#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#if defined(__clang__) || defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif
 

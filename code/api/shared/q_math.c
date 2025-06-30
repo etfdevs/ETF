@@ -494,6 +494,11 @@ RotatePointAroundVertex
 Rotate a point around a vertex
 ===============
 */
+#if defined(_MSC_VER)
+#pragma warning (push)
+// disable double to float warning for now
+#pragma warning (disable : 4244)
+#endif
 void RotatePointAroundVertex ( vec3_t pnt, float rot_x, float rot_y, float rot_z, const vec3_t origin ) {
 	// move pnt to rel{0,0,0}
 	VectorSubtract( pnt, origin, pnt );
@@ -518,6 +523,9 @@ void RotatePointAroundVertex ( vec3_t pnt, float rot_x, float rot_y, float rot_z
 	// move pnt back
 	VectorAdd( pnt, origin, pnt );
 }
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
 
 // Keeg from ET code
 /*
@@ -1006,8 +1014,8 @@ qboolean CylinderTraceImpact( const vec3_t start, const vec3_t forward, const ve
 			return qtrue;
 	}
 
-	if (base >=0 ) {
-		t = (-b - sqrt( base )) / 2*a;
+	if (base >= 0 ) {
+		t = (-b - sqrtf( base )) / 2*a;
 		VectorMA( start, t, forward, result );
 		//r = result[0] * result[0] + result[1]*result[1];
 		if (result[2] >= container[0] && result[2]<= container[1])
@@ -1066,7 +1074,7 @@ void AxisToAngles( matrix3_t axis, vec3_t angles ) {
 	}
 	else {
 		if ( axis[0][0] ) {
-			yaw = ( atan2 ( axis[0][1], axis[0][0] ) * 180 / M_PI );
+			yaw = ( atan2f ( axis[0][1], axis[0][0] ) * 180 / M_PI );
 		}
 		else if ( axis[0][1] > 0 ) {
 			yaw = 90;
@@ -1078,13 +1086,13 @@ void AxisToAngles( matrix3_t axis, vec3_t angles ) {
 			yaw += 360;
 		}
 
-		length1 = sqrt ( axis[0][0]*axis[0][0] + axis[0][1]*axis[0][1] );
-		pitch = ( atan2( axis[0][2], length1) * 180 / M_PI );
+		length1 = sqrtf ( axis[0][0]*axis[0][0] + axis[0][1]*axis[0][1] );
+		pitch = ( atan2f( axis[0][2], length1) * 180 / M_PI );
 		if ( pitch < 0 ) {
 			pitch += 360;
 		}
 
-		roll = ( atan2( axis[1][2], axis[2][2] ) * 180 / M_PI );
+		roll = ( atan2f( axis[1][2], axis[2][2] ) * 180 / M_PI );
 		if ( roll < 0 ) {
 			roll += 360;
 		}
@@ -1317,6 +1325,10 @@ qboolean VectorCompare2( const vec3_t v1, const vec3_t v2 )
 	return qtrue;
 }
 
+#if defined(_MSC_VER)
+#pragma warning (push)
+#pragma warning (disable : 4244)
+#endif
 void SnapVector( float *v )
 {
 #if defined(_MSC_VER) && id386
@@ -1363,8 +1375,10 @@ void SnapVectorTowards( vec3_t v, const vec3_t to ) {
 		else
 			v[i] = ceil(v[i]);
 	}
-
 }
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
 
 float DistanceHorizontal( const vec3_t p1, const vec3_t p2 )
 {

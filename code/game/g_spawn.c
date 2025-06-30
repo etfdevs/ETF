@@ -104,10 +104,8 @@ qboolean	G_SpawnVector( const char *key, const char *defaultString, float *out )
 	return present;
 }
 
-#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#if defined(__clang__) || defined(__GNUC__)
 #pragma GCC diagnostic push
-#endif
-#ifdef __GNUC__
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #endif
 //Keeger for tracemap support
@@ -132,7 +130,7 @@ qboolean G_SpawnStringExt( const char *key, const char *defaultString, char **ou
 	*out = (char *)defaultString;
 	return qfalse;
 }
-#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#if defined(__clang__) || defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif
 

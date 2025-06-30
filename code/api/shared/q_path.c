@@ -53,6 +53,10 @@ const char *COM_GetExtension( const char *name )
 		return "";
 }
 
+#if defined(_MSC_VER)
+#pragma warning (push)
+#pragma warning (disable : 4244)
+#endif
 void COM_StripExtension( const char *in, char *out, int destsize )
 {
 	const char *dot = strrchr(in, '.'), *slash;
@@ -65,6 +69,9 @@ void COM_StripExtension( const char *in, char *out, int destsize )
 	else
 		Q_strncpyz(out, in, destsize);
 }
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
 
 qboolean COM_CompareExtension(const char *in, const char *ext)
 {

@@ -728,12 +728,6 @@ static char *flagusetargetptr, *flagusegiveptr, *flaguseteamscoreptr;
 static char *flagusemessagestrings[3][8];
 //static char *flagusemessagestrings[3][4];
 
-#if !defined(__clang__) && (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
-#pragma GCC diagnostic push
-#endif
-#ifdef __GNUC__
-#pragma GCC diagnostic ignored "-Wstringop-overflow"
-#endif
 void G_Q3F_FlagUseHeld( gentity_t *player )
 {
 	gentity_t *scan;
@@ -800,7 +794,3 @@ void G_Q3F_FlagUseHeld( gentity_t *player )
 	if ( !EntsUsed )
 		G_AddEvent( player, EV_ETF_USE_ITEM_FAILED, 0 );
 }
-#if !defined(__clang__) && (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
-#pragma GCC diagnostic pop
-#endif
-

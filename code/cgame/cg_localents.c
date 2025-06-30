@@ -946,7 +946,7 @@ returned by the server (e.g. a fired rocket)
 static localEntity_t* predicted_ents[NUM_PRED];
 static int num_predicted_ents;
 
-static ID_INLINE int CG_PredictedMissilesEnabled() {
+static ID_INLINE int CG_PredictedMissilesEnabled(void) {
 	// Not yet default enabled.  Needs antilag on and prediction on.
 	// TODO: Cap prediction to antilag_ms
 	return cg_predictWeapons.integer && cg_unlagged.integer && cgs.antilag_ms;
@@ -1002,7 +1002,7 @@ void CG_MatchPredictedEnt(centity_t* cent) {
 	}
 }
 
-void CG_UpdateLocalPredictedEnts() {
+void CG_UpdateLocalPredictedEnts(void) {
 	float now = cg.time;
 
 	for (int i = 0; i < num_predicted_ents; i++) {

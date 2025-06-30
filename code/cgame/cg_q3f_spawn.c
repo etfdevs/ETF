@@ -63,10 +63,8 @@ static char *CG_Q3F_GetEntValue( const char *key )
 	return( NULL );
 }
 
-#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#if defined(__clang__) || defined(__GNUC__)
 #pragma GCC diagnostic push
-#endif
-#ifdef __GNUC__
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #endif
 static qboolean CG_Q3F_SpawnString( const char *key, const char *defaultString, char **out ) {
@@ -142,7 +140,7 @@ static qboolean CG_SpawnVector2D( const char *key, const char *defaultString, fl
 	(void)sscanf( s, "%f %f", &out[0], &out[1] );
 	return present;
 }
-#if defined(__clang__) || (defined(__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
+#if defined(__clang__) || defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif
 
