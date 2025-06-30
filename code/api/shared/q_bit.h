@@ -38,6 +38,14 @@ If you have questions concerning this license or the applicable additional terms
 extern "C" {
 #endif
 
+#ifndef BIT
+	#define BIT( num )				( 1U << ( num ) )
+#endif
+
+#ifndef BIT64
+	#define BIT64( num )			( 1ULL << ( num ) )
+#endif
+
 qboolean COM_BitCheck( const int array[], unsigned int bitNum );
 void COM_BitSet( int array[], unsigned int bitNum );
 void COM_BitClear( int array[], unsigned int bitNum );

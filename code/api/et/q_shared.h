@@ -96,27 +96,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #endif
 
-#include "../shared/q_math.h"
-#include "../shared/q_rand.h"
-#include "../shared/q_bit.h"
-#include "../shared/q_color.h"
-#include "../shared/q_string.h"
-#include "../shared/q_path.h"
-
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
-#include <ctype.h>
-#include <limits.h>
-#include <errno.h>
-#include <stddef.h>
-#include <sys/stat.h> // rain
-#include <float.h>
-
 //Ignore __attribute__ on non-gcc/clang platforms
 #if !defined(__GNUC__) && !defined(__clang__)
 #ifndef __attribute__
@@ -159,6 +138,27 @@ If you have questions concerning this license or the applicable additional terms
 #else
 #define FORMAT_PRINTF(x, y) /* nothing */
 #endif
+
+#include "../shared/q_math.h"
+#include "../shared/q_rand.h"
+#include "../shared/q_bit.h"
+#include "../shared/q_color.h"
+#include "../shared/q_string.h"
+#include "../shared/q_path.h"
+
+#include <assert.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+#include <ctype.h>
+#include <limits.h>
+#include <errno.h>
+#include <stddef.h>
+#include <sys/stat.h> // rain
+#include <float.h>
 
 #include "../shared/q_primitives.h"
 #include "../shared/q_platform.h"
@@ -521,40 +521,38 @@ default values.
 ==========================================================
 */
 
-#define	CVAR_ARCHIVE		0x0001	// set to cause it to be saved to vars.rc
-								// used for system variables, not for player
-								// specific configurations
-#define	CVAR_USERINFO		0x0002	// sent to server on connect or change
-#define	CVAR_SERVERINFO		0x0004	// sent in response to front end requests
-#define	CVAR_SYSTEMINFO		0x0008	// these cvars will be duplicated on all clients
-#define	CVAR_INIT			0x0010	// don't allow change from console at all,
-								// but can be set from the command line
-#define	CVAR_LATCH			0x0020	// will only change when C code next does
-								// a Cvar_Get(), so it can't be changed
-								// without proper initialization.  modified
-								// will be set, even though the value hasn't
-								// changed yet
-#define	CVAR_ROM			0x0040	// display only, cannot be set by user at all
-#define	CVAR_USER_CREATED	0x0080	// created by a set command
-#define	CVAR_TEMP			0x0100	// can be set even when cheats are disabled, but is not archived
-#define CVAR_CHEAT			0x0200	// can not be changed if cheats are disabled
-#define CVAR_NORESTART		0x0400	// do not clear when a cvar_restart is issued
-#define CVAR_WOLFINFO		0x0800	// DHM - NERVE :: Like userinfo, but for wolf multiplayer info
-
-#define CVAR_UNSAFE			0x1000	// ydnar: unsafe system cvars (renderer, sound settings, anything that might cause a crash)
-#define	CVAR_SERVERINFO_NOUPDATE		0x2000	// gordon: WONT automatically send this to clients, but server browsers will see it
-
-// 0x4000 0x8000 0x10000 reserved by engine
-
-#define CVAR_NODEFAULT		0x20000	// do not write to config if matching with default value
-
-// 0x40000 reserved by engine
-
-#define CVAR_DEVELOPER		0x80000	// can be set only in developer mode
-
-#define CVAR_NOTABCOMPLETE	0x100000 // no tab completion in console
-
-#define CVAR_ARCHIVE_ND		(CVAR_ARCHIVE | CVAR_NODEFAULT)
+typedef enum cvarFlags_e {
+	CVAR_NONE = 0,
+	CVAR_ARCHIVE = BIT(0),				// set to cause it to be saved to etconfig.cfg
+	CVAR_USERINFO = BIT(1),				// sent to server on connect or change
+	CVAR_SERVERINFO	= BIT(2),			// sent in response to front end requests (server browser, server status queries) parse w/CG_ParseServerinfo
+	CVAR_SYSTEMINFO = BIT(3),			// these cvars will be duplicated on all clients, clients cannot change, parse w/CG_ParseSysteminfo or add CVAR_SYSTEMINFO to client side cvar as well
+	CVAR_INIT = BIT(4),					// don't allow change from console at all, but can be set from the startup command line
+	CVAR_LATCH = BIT(5),				// will only change when C code next does a Cvar_Get(), so it can't be changed
+										// without proper initialization.  modified
+										// will be set, even though the value hasn't
+										// changed yet
+	CVAR_ROM = BIT(6),					// display only, cannot be set by server or user at all
+	CVAR_USER_CREATED = BIT(7),			// created by a set command
+	CVAR_TEMP = BIT(8),					// can be set even when cheats are disabled, but is not archived
+	CVAR_CHEAT = BIT(9),				// can not be changed if cheats are disabled
+	CVAR_NORESTART = BIT(10),			// do not clear when a cvar_restart is issued
+	CVAR_WOLFINFO = BIT(11),			// DHM - NERVE :: Like userinfo, but for wolf multiplayer info (ETF: do not use)
+	CVAR_UNSAFE = BIT(12),				// ydnar: unsafe system cvars (renderer, sound settings, anything that might cause a crash)
+	CVAR_SERVERINFO_NOUPDATE = BIT(13),	// gordon: WONT automatically send this to clients, but server browsers will see it
+	CVAR_RESERVED1 = BIT(14),			// not usable by mods
+	CVAR_RESERVED2 = BIT(15),			// not usable by mods
+	CVAR_RESERVED3 = BIT(16),			// not usable by mods
+	CVAR_NODEFAULT = BIT(17),			// do not write to etconfig.cfg if matching with default value (ETe)
+	CVAR_RESERVED4 = BIT(18),			// not usable by mods
+	CVAR_DEVELOPER = BIT(19),			// can be set only in developer mode
+	CVAR_NOTABCOMPLETE = BIT(20),		// no tab completion in console (ETe)
+	CVAR_ARCHIVE_ND = (CVAR_ARCHIVE | CVAR_NODEFAULT),
+	//CVAR_NOTABCOMPLETE = BIT(18),		// no tab completion in console (ETLegacy)
+	//CVAR_NODEFAULT = BIT(19),			// do not write to etconfig.cfg if matching with default value (ETLegacy)
+	CVAR_MODIFIED = BIT(30),			// do not use -- only usable by engine querying flags directly
+	//CVAR_NONEXISTENT = BIT(31)		// do not use
+} cvarFlags_t;
 
 // nothing outside the Cvar_*() functions should modify these fields!
 typedef struct cvar_s {
@@ -637,7 +635,7 @@ typedef struct {
 
 // sound channels
 // channel 0 never willingly overrides
-// other channels will allways override a playing sound on that channel
+// other channels will always override a playing sound on that channel
 typedef enum {
 	CHAN_AUTO,
 	CHAN_LOCAL,		// menu sounds, etc

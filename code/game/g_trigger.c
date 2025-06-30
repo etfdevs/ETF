@@ -48,6 +48,17 @@ void InitTrigger( gentity_t *self ) {
 // the wait time has passed, so set back up for another activation
 void multi_wait( gentity_t *ent ) {
 	ent->nextthink = 0;
+
+	if (ent->hud_ent && ent->hud_ent->inuse) {
+		ent->hud_ent->soundLoop = 0;
+		if (ent->hud_ent->s.eFlags & EF_TEAMVOTED)
+			ent->hud_ent->s.eFlags &= ~EF_TEAMVOTED;
+		if (ent->hud_ent->s.constantLight != 0)
+			ent->hud_ent->s.constantLight = 0;
+		G_Q3F_UpdateHUD(ent->hud_ent);
+		if (g_mapentDebug.integer)
+			G_Printf("Trigger HUD updated (cleared think).\n");
+	}
 }
 
 
@@ -80,6 +91,14 @@ void multi_trigger( gentity_t *ent, gentity_t *activator ) {
 		{
 			ent->think = multi_wait;
 			ent->nextthink = level.time + ( ent->wait + ent->random * ETF_crandom() ) * 1000;
+
+			if (ent->wait > 0 && ent->hud_ent && ent->hud_ent->inuse) {
+				ent->hud_ent->soundLoop = ent->nextthink;
+				ent->hud_ent->s.eFlags |= EF_TEAMVOTED;
+				G_Q3F_UpdateHUD(ent->hud_ent);
+				if (g_mapentDebug.integer)
+					G_Printf("Trigger HUD updated (think %d).\n", ent->nextthink);
+			}
 		}
 		// Golliwog.
 	} else {

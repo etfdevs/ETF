@@ -620,6 +620,14 @@ void Reached_BinaryMover( gentity_t *ent ) {
 			ent->nextthink = level.time + ent->wait;
 		}
 
+		if (ent->wait > 0 && ent->hud_ent && ent->hud_ent->inuse) {
+			ent->hud_ent->soundLoop = ent->nextthink;
+			ent->hud_ent->s.eFlags |= EF_TEAMVOTED;
+			G_Q3F_UpdateHUD(ent->hud_ent);
+			if (g_mapentDebug.integer)
+				G_Printf("Mover HUD updated (think %d).\n", ent->nextthink);
+		}
+
 		// fire targets
 		if ( !ent->activator ) {
 			ent->activator = ent;
@@ -628,6 +636,17 @@ void Reached_BinaryMover( gentity_t *ent ) {
 	} else if ( ent->moverState == MOVER_2TO1 ) {
 		// reached pos1
 		SetMoverState( ent, MOVER_POS1, level.time );
+
+		if (ent->hud_ent && ent->hud_ent->inuse) {
+			ent->hud_ent->soundLoop = 0;
+			if (ent->hud_ent->s.eFlags & EF_TEAMVOTED)
+				ent->hud_ent->s.eFlags &= ~EF_TEAMVOTED;
+			if (ent->hud_ent->s.constantLight != 0)
+				ent->hud_ent->s.constantLight = 0;
+			G_Q3F_UpdateHUD(ent->hud_ent);
+			if (g_mapentDebug.integer)
+				G_Printf("Mover HUD updated (cleared think).\n");
+		}
 
 		// play sound
 		if ( ent->soundPos1 ) {

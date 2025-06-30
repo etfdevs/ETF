@@ -1221,6 +1221,60 @@ void G_Q3F_SetFlagHudTimers(void) {
 	}
 }
 
+void G_Q3F_SetSecurityHudTimers(void) {
+	gentity_t *mover;
+	intptr_t index, targindex;
+	q3f_keypair_t* curr, * targetkp;
+	q3f_array_t* targetarray;
+	q3f_data_t* target;
+	for (mover = g_entities; mover < &g_entities[level.num_entities]; mover++)
+	{
+		if (!mover->inuse)
+			continue;
+		if ((mover->s.eType == ET_MOVER) && mover->wait > 0 && mover->mapdata &&
+			mover->mapdata->activetarget && mover->mapdata->activetarget->used)
+		{
+			for (index = -1; (curr = G_Q3F_KeyPairArrayTraverse(mover->mapdata->activetarget, &index)); )
+			{
+				if (!(targetkp = G_Q3F_KeyPairArrayFind(level.targetnameArray, curr->key))) {
+					continue;
+				}
+				targetarray = targetkp->value.d.arraydata;
+				for (targindex = -1; (target = G_Q3F_ArrayTraverse(targetarray, &targindex)); )
+				{
+					gentity_t *hud = target->d.entitydata;
+					if (hud->s.eType == ET_Q3F_HUD) {
+						mover->hud_ent = hud;
+						hud->flags = 666;
+						hud->s.eFlags &= ~EF_TEAMVOTED;
+						hud->s.constantLight = 0;
+					}
+				}
+			}
+		}
+		else if (mover->s.eType == ET_GENERAL && mover->r.contents & CONTENTS_TRIGGER && mover->wait > 0 && mover->mapdata && mover->mapdata->activetarget && mover->mapdata->activetarget->used)
+		{
+			for (index = -1; (curr = G_Q3F_KeyPairArrayTraverse(mover->mapdata->activetarget, &index)); )
+			{
+				if (!(targetkp = G_Q3F_KeyPairArrayFind(level.targetnameArray, curr->key))) {
+					continue;
+				}
+				targetarray = targetkp->value.d.arraydata;
+				for (targindex = -1; (target = G_Q3F_ArrayTraverse(targetarray, &targindex)); )
+				{
+					gentity_t *hud = target->d.entitydata;
+					if (hud->s.eType == ET_Q3F_HUD) {
+						mover->hud_ent = hud;
+						hud->flags = 666;
+						hud->s.eFlags &= ~EF_TEAMVOTED;
+						hud->s.constantLight = 0;
+					}
+				}
+			}
+		}
+	}
+}
+
 
 /*
 ** 'Command' entity

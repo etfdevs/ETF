@@ -783,6 +783,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_Q3F_CTFCompatAdjust();
 
 	G_Q3F_SetFlagHudTimers();
+	G_Q3F_SetSecurityHudTimers();
 
 	// Sort the location data
 	G_Q3F_LocationSort();
