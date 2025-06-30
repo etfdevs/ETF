@@ -2079,17 +2079,17 @@ static void PM_FinishWeaponReload( void ) {
 	if (ammo > pm->ps->ammo[wp->ammotype]) {
 		ammo = pm->ps->ammo[wp->ammotype];
 	}
-
+	
 	curammo = Q3F_GetClipValue(pm->ps->weapon, pm->ps);
 
 	// Not actually done reloading singly - go back to RDROPPING
-	if (curammo < wp->clipsize && pm->ps->ammo[wp->ammotype] >= wp->numammo)
+	if (curammo < wp->clipsize && curammo < pm->ps->ammo[wp->ammotype] && pm->ps->ammo[wp->ammotype] >= wp->numammo)
 	{
 		reloadtime = wp->clipsize > 0 ? wp->reloadtime / wp->clipsize : wp->reloadtime; //(wp->reloadtime)*((float)(ammo-curammo)/(float)ammo);
 		pm->ps->weaponTime = reloadtime;
 		Q3F_SetClipValue(pm->ps->weapon, curammo + ammo, pm->ps);
 
-		if (curammo + ammo >= wp->clipsize)
+		if ((curammo + ammo >= wp->clipsize) || (curammo + ammo >= pm->ps->ammo[wp->ammotype]))
 		{
 			// Finished reloading so transition to the next state immediately
 			pm->ps->weaponTime = 0;
@@ -2224,7 +2224,7 @@ static void PM_Weapon( void ) {
 // JT ->
 	if( pm->ps->weaponstate == WEAPON_READY && 
 		(pm->ps->stats[STAT_Q3F_FLAGS] & (1 << Q3F_WEAPON_RELOAD))
-		&& wp->clipsize && pm->ps->ammo[wp->ammotype] >= wp->numammo && pm->ps->ammo[wp->ammotype] >= wp->clipsize)
+		&& wp->clipsize && pm->ps->ammo[wp->ammotype] >= wp->numammo && pm->ps->ammo[wp->ammotype] >= Q3F_GetClipValue(pm->ps->weapon, pm->ps))
 	{
 		PM_BeginWeaponReload();
 		return;
@@ -2367,7 +2367,7 @@ static void PM_Weapon( void ) {
 			&& pm->ps->weaponstate == WEAPON_READY
 			&& pm->ps->ammo[wp->ammotype] >= wp->numammo
 			&& pm->ps->ammo[wp->ammotype] > curammo
-			&& pm->ps->ammo[wp->ammotype] >= wp->clipsize
+			&& pm->ps->ammo[wp->ammotype] >= Q3F_GetClipValue(pm->ps->weapon, pm->ps)
 			&& pm->autoreload == 1)
 		{
 			PM_BeginWeaponReload(); // Automatically start reloading if we need to
