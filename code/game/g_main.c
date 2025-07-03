@@ -2095,6 +2095,7 @@ void G_RunEntities(void) {
 	gentity_t* ent;
 	int i,e;
 	trace_t trace;
+	int projectile_now;
 
 	//
 	// go through all allocated objects
@@ -2143,10 +2144,12 @@ void G_RunEntities(void) {
 			continue;
 		}
 
-		if ( ent->s.eType == ET_MISSILE ) {
-			G_RunMissile( ent );
+
+//unlagged - backward reconciliation #2
+		// we'll run missiles separately to save CPU in backward reconciliation
+		if ( ent->s.eType == ET_MISSILE )
 			continue;
-		}
+//unlagged - backward reconciliation #2
 
 		// Golliwog: Custom types
 		if ( ent->s.eType == ET_Q3F_GRENADE ) {
@@ -2212,6 +2215,51 @@ void G_RunEntities(void) {
 
 		G_RunThink( ent );
 	}
+//unlagged - backward reconciliation #3
+	// NOW run the missiles, with all players backward-reconciled
+	// to the positions they were at the end of the last server frame
+	projectile_now = level.previousTime;
+	G_TimeShiftAllClients( projectile_now, NULL );
+
+	ent = &g_entities[0];
+	for (i=0 ; i<level.num_entities ; i++, ent++) {
+		if ( !ent->inuse || ent->freeAfterEvent)
+			continue;
+
+		switch (ent->s.eType) {
+		case ET_MISSILE: {
+			if (ent->antilag_time) {
+				int snap_ms = 1000 / sv_fps.integer;
+				int prestep = ent->s.pos.trTime - projectile_now;
+				int steps = (projectile_now - ent->antilag_time) / snap_ms, rs = 0;
+				int ot = ent->s.pos.trTime - prestep;
+				ent->s.pos.trTime = ent->antilag_time + prestep;
+
+				while (steps > 0) {
+					int now = projectile_now - steps * snap_ms;
+					G_TimeShiftAllClients(now, ent->parent);
+					G_RunMissile(ent, now);
+
+					if (!ent->inuse)
+						break;
+
+					rs = 1;
+					steps--;
+				}
+				ent->antilag_time = 0;
+				if (rs)
+					G_TimeShiftAllClients( projectile_now, NULL );
+			}
+
+			if (ent->inuse)
+				G_RunMissile( ent, level.time );
+			break;
+										 }
+		}
+	}
+
+	G_UnTimeShiftAllClients( NULL );
+//unlagged - backward reconciliation #2
 }
 
 /*

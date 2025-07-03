@@ -1047,6 +1047,8 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 	}
 
 	// see if the player is nudging his shots
+	s = Info_ValueForKey( userinfo, "cl_timeNudge" );
+	client->pers.timeNudge = atoi( s );
 	s = Info_ValueForKey( userinfo, "cg_cmdTimeNudge" );
 	client->pers.cmdTimeNudge = atoi( s );
 

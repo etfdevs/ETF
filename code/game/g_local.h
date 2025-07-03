@@ -367,6 +367,7 @@ typedef struct {
 //unlagged - these correspond with variables in the userinfo string
 	int			unlagged;
 	int			debugDelag;
+	int			timeNudge;
 	int			cmdTimeNudge;
 //unlagged - client options
 	int			latentSnaps;
@@ -530,6 +531,7 @@ struct gclient_s {
 	// the serverTime the button was pressed
 	// (stored before pmove_fixed changes serverTime)
 	int			attackTime;
+	int			attackTimeProj;
 	// the head of the history queue
 	int			historyHead;
 	// the history queue
@@ -858,7 +860,7 @@ void G_Q3F_RegisterTeamKill( gentity_t *attacker, gentity_t *obituary );
 //
 // g_missile.c
 //
-void G_RunMissile( gentity_t *ent );
+void G_RunMissile( gentity_t *ent, int now );
 
 gentity_t *fire_flame (gentity_t *self, vec3_t start, vec3_t aimdir);
 gentity_t *fire_mapflame (gentity_t *self, vec3_t start, vec3_t aimdir);

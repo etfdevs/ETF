@@ -967,7 +967,8 @@ static void CG_UntrackPredictedEnt(localEntity_t *le) {
 
 void CG_MatchPredictedEnt(centity_t* cent) {
 	localEntity_t* match = NULL;
-	float best = SQR(64), sgn;
+	float best = SQR(64);
+	vec3_t diff;
 
 	// Can only match entities we own.
 	if (!CG_PredictedMissilesEnabled() ||
@@ -975,52 +976,51 @@ void CG_MatchPredictedEnt(centity_t* cent) {
 		return;
 
 	for (int i = 0; i < num_predicted_ents; i++) {
-		vec3_t diff;
 		localEntity_t* le = predicted_ents[i];
 		float len;
 
-		VectorSubtract(cent->lerpOrigin, le->pos.trBase, diff);
-		len = VectorLengthSquared(diff);
+		if (cent->currentState.eType == ET_MISSILE) {
+			VectorSubtract(cent->lerpOrigin, le->lerp.trBase, diff);
+			len = VectorLengthSquared(diff);
+		}
+
 		if (len < best) {
 			match = le;
 			best = len;
-			sgn = DotProduct(diff, le->pos.trDelta) > 0 ? 1 : -1;
 		}
 	}
 
-	if (match) {
-		float dist = sgn * sqrt(best);
-		if (match->angles.trTime < 0)
-			match->angles.trTime += cg.time;
+	if (match && (cg_predictWeapons.integer & 4)) {
+		float dist, sgn;
+		VectorSubtract(cent->lerpOrigin, match->lerp.trBase, diff);
+		sgn = DotProduct(diff, match->pos.trDelta) > 0 ? 1 : -1;
+		dist = sgn * VectorLength(diff);
 
-		if (cg_predictWeapons.integer & 4)
-			Com_Printf("BEST MATCH: %0.2f [%0.1fms] [age=%dms] [%d]\n",
-					dist, 1000 * dist / VectorLength(match->pos.trDelta),
-					match->angles.trTime, num_predicted_ents);
-
-		match->endTime = 0;  // Latch expiry.
+		Com_Printf("BEST MATCH [%d]: %0.2f [%0.1fms] [age=%dms] [%d]\n",
+				cent->currentState.number, dist,
+				1000 * dist / VectorLength(match->pos.trDelta),
+				cg.time - match->startTime, num_predicted_ents);
 	}
+	if (match)
+		match->endTime = 0;  // Latch expiry.
 }
 
 void CG_UpdateLocalPredictedEnts(void) {
-	float now = cg.time;
+	float now = cg.time + 1000 / cgs.sv_fps;
 
 	for (int i = 0; i < num_predicted_ents; i++) {
 		localEntity_t* le = predicted_ents[i];
 		vec3_t next;
 		trace_t trace;
 
-		if (le->pos.trTime >= now)
-			continue;
-
 		BG_EvaluateTrajectory(&le->pos, now, next);
-		CG_Trace(&trace, le->pos.trBase, NULL, NULL, next, -1, CONTENTS_SOLID);
+		CG_Trace(&trace, le->lerp.trBase, NULL, NULL, next, -1, CONTENTS_SOLID);
 
 		if (trace.fraction < 1)
 			le->endTime = 0;  // Latch for free
 
-		VectorCopy(trace.endpos, le->pos.trBase);
-		le->pos.trTime = now;
+		VectorCopy(trace.endpos, le->lerp.trBase);
+		le->lerp.trTime = now;
 	}
 }
 
@@ -1059,10 +1059,10 @@ void CG_AddPredictedMissile(entityState_t* ent, vec3_t origin, vec3_t forward) {
 	le->pred_weapon = ent->weapon;
 
 	le->pos.trType = TR_LINEAR;
-	le->pos.trTime = cg.time - 23 - tmod;
-	le->angles.trTime = -cg.time;
+	le->pos.trTime = cg.time - tmod + cl_timeNudge.integer;
 
-	VectorCopy(origin, le->pos.trBase );
+	VectorCopy(origin, le->lerp.trBase);
+	VectorCopy(origin, le->pos.trBase);
 	if (ent->weapon == WP_SUPERNAILGUN || ent->weapon == WP_NAILGUN) {
 		VectorMA(le->pos.trBase, -15, forward, le->pos.trBase);
 		le->pos.trBase[2] -= 6;
@@ -1080,15 +1080,16 @@ static void CG_AddPredictedEnt(  localEntity_t *le ) {
 	memset(&cent, 0, sizeof(cent));
 
 	cent.currentState.weapon = le->pred_weapon;
-	VectorCopy(le->pos.trBase, cent.lerpOrigin);
+	VectorCopy(le->lerp.trBase, cent.lerpOrigin);
 	VectorCopy(le->pos.trDelta, cent.currentState.pos.trDelta); // Needed for axis
-	CG_Missile(&cent);
+
+	if (le->pos.trType == TR_LINEAR) {
+		CG_Missile(&cent);
+	}
 
 	if (cg_predictWeapons.integer & 4) {
-		vec3_t mins, maxs;
-		VectorSet(mins, -5, -5, -5);
-		VectorScale(mins, -1, maxs);
-		CG_DrawBoundingBox( le->pos.trBase, mins, maxs, colorYellow );
+		vec3_t mins = {-5, -5, -5}, maxs = {5, 5, 5};
+		CG_DrawBoundingBox( le->lerp.trBase, mins, maxs, colorYellow );
 	}
 }
 

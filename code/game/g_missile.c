@@ -265,7 +265,7 @@ G_RunMissile
 
 ================
 */
-void G_RunMissileTime( gentity_t *ent, int time ) {
+void G_RunMissile( gentity_t *ent, int time ) {
 //	vec3_t		origin;
 //	trace_t		tr;
 //	trace_t		tr2;
@@ -472,33 +472,6 @@ void G_RunMissileTime( gentity_t *ent, int time ) {
 
 	// check think function after bouncing
 	G_RunThink( ent );
-}
-
-void G_RunMissile( gentity_t *ent ) {
-	if (ent->antilag_time) {
-		const int kStep = 10;
-		int time = Q_max(level.time - g_antilag_ms.integer, ent->antilag_time);
-		int end = level.time - kStep;
-		qboolean ran = qfalse;
-
-		if (end > time) {
-			ent->s.pos.trTime -= (end - time);
-
-			while (end > time && ent->s.eType == ET_MISSILE) {
-				time += Q_min(end - time, kStep);
-				ran = qtrue;
-
-				G_TimeShiftAllClients(time, ent->parent);
-				G_RunMissileTime(ent, time);
-			}
-			if (ran)
-				G_UnTimeShiftAllClients(ent->parent);
-		}
-
-		ent->antilag_time = 0;
-	}
-
-	G_RunMissileTime(ent, level.time);
 }
 
 //=============================================================================
@@ -770,7 +743,7 @@ gentity_t *fire_rocket (gentity_t *self, vec3_t start, vec3_t dir) {
 	// need to check for client being valid, as this can be a shooter_rocket
 	// there is also shooter_grenade if fire_grenade gets this too eventually
 	if (self->client && self->client->pers.unlagged)
-		bolt->antilag_time = self->client->attackTime;
+		bolt->antilag_time = self->client->attackTimeProj;
 
 	return bolt;
 }
@@ -824,7 +797,7 @@ gentity_t *fire_nail (gentity_t *self, vec3_t start, vec3_t dir, int damage, int
 	VectorCopy (start, bolt->r.currentOrigin);
 
 	if (self->client && self->client->pers.unlagged)
-		bolt->antilag_time = self->client->attackTime;
+		bolt->antilag_time = self->client->attackTimeProj;
 
 	return bolt;
 }
