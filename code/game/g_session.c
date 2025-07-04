@@ -276,7 +276,7 @@ void G_ReadSessionData( void ) {
 	char *buffer = NULL;
 	fileHandle_t f = NULL_FILE;
 	int len = 0;
-	cJSON *root = NULL;
+	cJSON *root = NULL, *object = NULL;
 
 	Com_Printf( "G_ReadSessionData: reading %s...", metaFileName );
 	len = trap_FS_FOpenFile( metaFileName, &f, FS_READ );
@@ -305,14 +305,19 @@ void G_ReadSessionData( void ) {
 
 	// read buffer
 	root = cJSON_Parse( buffer );
+	cJSON_free( buffer );
 
-	// if the gametype changed since the last session, don't use any client sessions
-	if ( g_gametype.integer != cJSON_GetObjectItem( root, "gametype" )->valueint ) {
-		level.newSession = qtrue;
-		Com_Printf( "gametype changed, clearing session data..." );
+	if ( !root ) {
+		Com_Printf( "G_ReadSessionData: could not parse session from json, clearing session data\n" );
+		return;
 	}
 
-	cJSON_free( buffer );
+	object = cJSON_GetObjectItem( root, "gameindex" );
+	if ( !cJSON_IsNumber(object) || g_gameindex.integer != object->valueint ) {
+		level.newSession = qtrue;
+		Com_Printf( "gameindex changed, clearing session data..." );
+	}
+
 	cJSON_Delete( root );
 	root = NULL;
 	Com_Printf( "done\n" );
@@ -330,7 +335,11 @@ void G_WriteSessionData( void ) {
 	const gclient_t *client = NULL;
 	cJSON *root = cJSON_CreateObject();
 
-	cJSON_AddNumberToObject( root, "gametype", g_gametype.integer );
+	if (!root) {
+		G_Error("Could not allocate memory for session meta data");
+	}
+
+	cJSON_AddNumberToObject( root, "gameindex", g_gameindex.integer );
 
 	Com_Printf( "G_WriteSessionData: writing %s...", metaFileName );
 	trap_FS_FOpenFile( metaFileName, &f, FS_WRITE );
