@@ -542,96 +542,340 @@ ClientTimerActions
 Actions that happen once a second
 ==================
 */
-void ClientTimerActions( gentity_t *ent, int msec ) {
+void ClientTimerActions( gentity_t *ent ) {
 	gclient_t *client;
-	bg_q3f_playerclass_t *cls;
+	bg_q3f_playerclass_t *cls, *agentcls;
 	char userinfo[MAX_INFO_STRING];
 	const char *dataptr;
+	gentity_t *other;
 	int data;
 
 	client = ent->client;
-	cls = BG_Q3F_GetClass( &client->ps );
-	client->timeResidual += msec;
 
-	while ( client->timeResidual >= 1000 ) {
-		client->timeResidual -= 1000;
-
-		// regenerate
-		if ( client->ps.powerups[PW_REGEN] ) {
-			if ( ent->health < cls->maxhealth) {
-				ent->health += 15;
-				if ( ent->health > cls->maxhealth * 1.1 ) {
-					ent->health = cls->maxhealth * 1.1;
-				}
-				G_AddEvent( ent, EV_POWERUP_REGEN, 0 );
-			} else if ( ent->health < cls->maxhealth * 2) {
-				ent->health += 5;
-				if ( ent->health > cls->maxhealth * 2 ) {
-					ent->health = cls->maxhealth * 2;
-				}
-				G_AddEvent( ent, EV_POWERUP_REGEN, 0 );
-			}
-		} else {
-			// count down health when over max
-			if ( ent->health > cls->maxhealth ) {
-				ent->health--;
-			}
-		}
-
-		// count down armor when over max
-		// FALCON: Modified to suit Q3F's per-class max armour
-		if ( client->ps.stats[STAT_ARMOR] > cls->maxarmour ) {
-			client->ps.stats[STAT_ARMOR]--;
-		// FALCON: END
-		}
-
-		// Golliwog: Agent invisible, consumes cells. This should be handled
-		// in Pmove, I think.
-		if( ent->s.eFlags & EF_Q3F_INVISIBLE )
-		{
-			if( --client->ps.ammo[AMMO_CELLS] <= 0 )
-			{
-				client->ps.ammo[AMMO_CELLS] = 0;
-				G_Q3F_StopAgentInvisible( ent );
-				trap_SendServerCommand( ent->s.number, "print \"Invisibility failed for lack of cells!\n\"" );
-			}
-			else if( VectorLength( ent->client->ps.velocity ) > 20 )
-			{
-				G_Q3F_StopAgentInvisible( ent );
-				trap_SendServerCommand( ent->s.number, "print \"Invisibility failed because of movement!\n\"" );
-			}
-		}
-		// Golliwog.
-
-		// Golliwog: Do a minimum rate check.
-		if( g_minRate.integer && g_banRules.value > 1 )
-		{
-			trap_GetUserinfo( ent->s.number, userinfo, sizeof(userinfo) );
-			dataptr = Info_ValueForKey( userinfo, "rate" );
-			data = 0;
-			if( !dataptr || (data = Q_atoi( dataptr )) < g_minRate.integer ) {
-				G_Q3F_AdminTempBan( ent, va( "Rate set to %d (sv_MinRate is %d)", data, g_minRate.integer ), Q3F_ADMIN_TEMPBAN_TIME );
-			}
-		}
-		// Golliwog.
-		// RR2DO2: Do a minimum snaps check.
-		if( g_minSnaps.integer && g_banRules.value > 1 )
-		{
-			trap_GetUserinfo( ent->s.number, userinfo, sizeof(userinfo) );
-			dataptr = Info_ValueForKey( userinfo, "snaps" );
-			data = 0;
-			if( !dataptr || (data = Q_atoi( dataptr )) < g_minSnaps.integer )
-				G_Q3F_AdminTempBan( ent, va( "Snaps set to %d (sv_MinSnaps is %d)", data, g_minSnaps.integer ), Q3F_ADMIN_TEMPBAN_TIME );
-		}
-
-		// Check for valid cg_adjustAgentSpeed
-		trap_GetUserinfo( ent->s.number, userinfo, sizeof(userinfo) );
-		dataptr = Info_ValueForKey( userinfo, "cg_adjustAgentSpeed" );
-		data = 0;
-		if( dataptr && ent->client )
-			ent->client->sess.adjustAgentSpeed = Q_atoi( dataptr );
-		// RR2DO2
+	if ( client->wantsscore ) {
+		G_SendScore(ent);
+		client->wantsscore = qfalse;
 	}
+
+	// clear the rewards if time
+	if ( level.time > client->rewardTime ) {
+		client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT );
+	}
+
+	// clear drop anim if time
+	if( !(client->ps.extFlags & EXTF_ANI_THROWING) &&
+		!(client->ps.extFlags & EXTF_ANI_OPERATING)) {
+		client->torsoanimEndTime = 0;
+	} else if( client->torsoanimEndTime < level.time ) {
+		client->ps.extFlags &= ~EXTF_ANI_THROWING;
+		client->ps.extFlags &= ~EXTF_ANI_OPERATING;
+	}
+
+	if ( client->noclip ) {
+		client->ps.pm_type = PM_NOCLIP;
+	} else if ( client->ps.stats[STAT_HEALTH] <= 0 ) {
+		client->ps.pm_type = PM_DEAD;
+	} else if( client->ps.eFlags & EF_Q3F_INVISIBLE ) {
+		client->ps.pm_type = PM_INVISIBLE;
+	} else {
+		client->ps.pm_type = PM_NORMAL;
+	}
+
+	//	JT: Pay attention to STAT_Q3F_FLAGS
+
+	client->ps.gravity = g_gravity.value;
+
+	// set speed
+	// Golliwog: Altered for class speeds, and max health
+	if( (cls = BG_Q3F_GetClass( &client->ps )) != NULL )
+		client->ps.speed = cls->maxspeed;
+	else
+		client->ps.speed = g_speed.value;
+	// Golliwog.
+
+	// Golliwog: Have agents slow down to apparent class speed
+	if( client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_AGENT && client->agentclass  && client->sess.adjustAgentSpeed )
+	{
+		agentcls = bg_q3f_classlist[client->agentclass];
+		if( client->ps.speed > agentcls->maxspeed )
+			client->ps.speed = agentcls->maxspeed;
+	}
+	// Golliwog.
+
+	// Tranquilised
+	if( client->tranqTime ) {
+		if( level.time >= client->tranqTime ) {
+			trap_SendServerCommand( ent->s.number, "print \"You feel better now.\n\"" );
+			client->tranqTime = 0;
+			client->tranqEnt = NULL;
+			client->ps.stats[STAT_Q3F_FLAGS] &= ~(1<<FL_Q3F_TRANQ);
+		 } else {
+			client->ps.speed /= 2;
+			client->ps.stats[STAT_Q3F_FLAGS] |= (1<<FL_Q3F_TRANQ);
+		}
+	} else {
+		client->ps.stats[STAT_Q3F_FLAGS] &= ~(1<<FL_Q3F_TRANQ);
+	}
+	//Canabis, am i burning?
+	if (client->flames > 0 && ent->health > 0) {
+		client->ps.extFlags |= EXTF_BURNING;
+	} else {
+		client->ps.extFlags &= ~EXTF_BURNING;
+	}
+	//Canabis, am i tranqed?
+	if (client->tranqTime >= level.time && ent->health > 0) {
+		client->ps.extFlags |= EXTF_TRANQED;
+	} else {
+		client->ps.extFlags &= ~EXTF_TRANQED;
+	}
+	//Ensiform, am i legshot?
+	if (client->legwounds && ent->health > 0) {
+		if( client->legwounds > 6 )
+			client->legwounds = 6;			// Cap the wounds to something sensible.
+		client->ps.extFlags |= EXTF_LEGWOUNDS;
+	} else {
+		client->ps.extFlags &= ~EXTF_LEGWOUNDS;
+	}
+	// Agent invisible
+	if( client->ps.eFlags & EF_Q3F_INVISIBLE )
+		client->ps.speed = 0;		// Can't move if invisible.
+
+	// Laying a charge.
+	if( client->chargeTime ) {
+		if( client->chargeTime <= level.time ) {
+			client->ps.ammoclip[3] = client->chargeEntity->soundPos1;
+			trap_SendServerCommand( ent->s.number, "print \"Charge set.\n\"" );
+			if( client->ps.ammo[AMMO_CHARGE] > 0 )
+				client->ps.ammo[AMMO_CHARGE]--;
+			client->chargeTime = 0;		// Allow movement again
+			client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_LAYCHARGE);
+			client->chargeEntity->s.legsAnim = 1;
+			#ifdef BUILD_BOTS
+			Bot_Event_DetpackBuilt(ent, client->chargeEntity);
+			#endif
+			ent->client->pers.stats.data[STATS_GREN + Q3F_GREN_CHARGE].shots++;
+		} else {
+			other = client->chargeEntity;
+			if( Distance( other->r.currentOrigin, ent->r.currentOrigin ) > 100 ) {
+				// They've moved too far, cancel the lay.
+				if( other->inuse &&	(other->s.eType == ET_Q3F_GRENADE && other->s.weapon == Q3F_GREN_CHARGE))
+					G_FreeEntity( other );
+				else G_Printf( "Attempted to free '%s' as charge.\n", other->classname );
+				client->chargeEntity = NULL;
+				client->chargeTime = 0;
+				client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_LAYCHARGE);
+			}
+			else client->ps.speed = 0;		// Stop all movement.
+		}
+	}
+	// Disarming a charge
+	if( client->chargeDisarmTime )
+	{
+		if( !client->chargeDisarmEnt || !client->chargeDisarmEnt->inuse )
+		{
+			// Lost our disarm ent?
+
+			client->chargeDisarmEnt = NULL;
+			client->chargeDisarmTime = 0;
+		}
+		else if(	!(client->ps.pm_flags & PMF_DUCKED) ||
+					!trap_EntityContact( ent->r.absmin, ent->r.absmax, client->chargeDisarmEnt ) )
+		{
+			// We've lost contact.
+
+			if( client->chargeDisarmEnt->count >= 5 && !(rand() % 10) )
+			{
+				// They've flumped the disarming process :)
+
+				trap_SendServerCommand( ent->s.number, "print \"HE Charge Triggered! RUN!\n\"" );
+				client->chargeDisarmEnt->count = 5;
+				client->chargeDisarmEnt->nextthink = level.time;
+			}
+			client->chargeDisarmEnt = NULL;
+			client->chargeDisarmTime = 0;
+		}
+		else if( client->chargeDisarmTime <= level.time )
+		{
+			// We've finished, clean this ent up.
+
+			trap_SendServerCommand( ent->s.number, "print \"HE Charge Disarmed.\n\"" );
+			if( client->chargeDisarmEnt->activator && client->chargeDisarmEnt->activator->inuse )
+			{
+				client->chargeDisarmEnt->activator->client->chargeEntity = NULL;
+				client->chargeDisarmEnt->activator->client->chargeTime = 0;
+				client->chargeDisarmEnt->activator->client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_LAYCHARGE);
+			}
+			G_FreeEntity( client->chargeDisarmEnt );
+			client->chargeDisarmEnt = NULL;
+			client->chargeDisarmTime = 0;
+		} else client->ps.speed = 0;		// Stop all movement.
+	}
+
+	if( client->buildTime ) {
+		if( client->buildTime <= level.time ) {
+			client->buildTime = 0;		// Allow movement again
+			client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_BUILDING);
+		} else {
+			if(	(client->sentry && !client->sentry->s.legsAnim &&
+				Distance( client->sentry->r.currentOrigin, ent->r.currentOrigin ) > 100) ||
+				(client->supplystation && !client->supplystation->s.legsAnim &&
+				Distance( client->supplystation->r.currentOrigin, ent->r.currentOrigin ) > 100) )
+				{
+				// They've moved too far, cancel the build.
+				if( client->sentry )
+					G_Q3F_SentryCancel( client->sentry );
+				if( client->supplystation )
+					G_Q3F_SupplyStationCancel( client->supplystation );
+				client->buildTime = 0;
+				client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_BUILDING);
+			} else
+				client->ps.speed = 0;		// Stop all movement.
+		}
+	}
+	if( client->repairEnt && client->repairEnt->inuse ) {
+		if( client->repairEnt->s.eType == ET_Q3F_SENTRY && !G_Q3F_CheckSentryUpgradeable( ent, client->repairEnt->s.number, qtrue, qtrue ) ) {
+			trap_SendServerCommand( ent->s.number, "menu cancel upgradeautosentry" );
+			client->repairEnt = NULL;
+		} else if ( client->repairEnt->s.eType == ET_Q3F_SUPPLYSTATION && !G_Q3F_CheckSupplyStation( ent, client->repairEnt->s.number, qtrue ) ) {
+			trap_SendServerCommand( ent->s.number, "menu cancel upgradesupplystation" );
+			client->repairEnt = NULL;
+		}
+	}
+
+	if( client->speedscale )				// Goalitem speed scale
+		client->ps.speed *= client->speedscale;
+
+	if( client->callTime && client->callTime <= level.time ) {
+		// Golliwog: Reset call flags (should use a PlayerStateToEntityState call)
+		client->ps.eFlags	&= ~EF_Q3F_MASKME;
+		ent->s.eFlags		&= ~EF_Q3F_MASKME;
+		client->callTime	= 0;
+	}
+	if ( client->ps.powerups[PW_HASTE] ) {
+		client->ps.speed *= 1.3;
+	}
+#ifdef SENTRY_MOVE
+	if ( client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_MOVING)) {
+		client->ps.speed *= 0.5;
+	}
+#endif
+	// Sniper shots to legs.
+	if(client->legwounds) {
+		client->ps.speed -= 0.1 * client->ps.speed * client->legwounds;
+	}
+
+	if( client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_GRENADIER )
+		G_Q3F_CheckPipesForPlayer(ent);
+
+	G_Q3F_Check_Maladies(ent);
+
+	// turn off any expired powerups
+	for (int i = 0 ; i < MAX_POWERUPS ; i++ ) {
+		if ( ent->client->ps.powerups[ i ] && ent->client->ps.powerups[ i ] < level.time ) {
+			switch( i )
+			{
+				case PW_Q3F_CONCUSS:
+					trap_SendServerCommand( ent->s.number, "print \"You can see straight again.\n\"" );
+					break;
+				case PW_Q3F_FLASH:
+					trap_SendServerCommand( ent->s.number, "print \"Your blindness has cleared.\n\"" );
+					break;
+				case PW_Q3F_GAS:
+					trap_SendServerCommand( ent->s.number, "print \"You feel a little less confused now.\n\"" );
+					break;
+			}
+			ent->client->ps.powerups[ i ] = 0;
+		}
+	}
+
+	// canabis: Check for automatic reload
+	if( client->pers.autoReload == 3 && client->ps.weaponstate == WEAPON_READY )
+	{
+		if( Q3F_GetClipValue( client->ps.weapon, &client->ps ) < BG_Q3F_GetWeapon( client->ps.weapon )->numammo )
+			BG_Q3F_Request_Reload( &client->ps );
+	}
+
+	// PERIODIC (1hz) ACTIONS BELOW
+	if (client->periodicNext > level.time)
+		return;
+	client->periodicNext = level.time + 1000;
+
+	cls = BG_Q3F_GetClass( &client->ps );
+	// regenerate
+	if ( client->ps.powerups[PW_REGEN] ) {
+		if ( ent->health < cls->maxhealth) {
+			ent->health += 15;
+			if ( ent->health > cls->maxhealth * 1.1 ) {
+				ent->health = cls->maxhealth * 1.1;
+			}
+			G_AddEvent( ent, EV_POWERUP_REGEN, 0 );
+		} else if ( ent->health < cls->maxhealth * 2) {
+			ent->health += 5;
+			if ( ent->health > cls->maxhealth * 2 ) {
+				ent->health = cls->maxhealth * 2;
+			}
+			G_AddEvent( ent, EV_POWERUP_REGEN, 0 );
+		}
+	} else {
+		// count down health when over max
+		if ( ent->health > cls->maxhealth ) {
+			ent->health--;
+		}
+	}
+
+	// count down armor when over max
+	// FALCON: Modified to suit Q3F's per-class max armour
+	if ( client->ps.stats[STAT_ARMOR] > cls->maxarmour ) {
+		client->ps.stats[STAT_ARMOR]--;
+		// FALCON: END
+	}
+
+	// Golliwog: Agent invisible, consumes cells. This should be handled
+	// in Pmove, I think.
+	if( ent->s.eFlags & EF_Q3F_INVISIBLE )
+	{
+		if( --client->ps.ammo[AMMO_CELLS] <= 0 )
+		{
+			client->ps.ammo[AMMO_CELLS] = 0;
+			G_Q3F_StopAgentInvisible( ent );
+			trap_SendServerCommand( ent->s.number, "print \"Invisibility failed for lack of cells!\n\"" );
+		}
+		else if( VectorLength( ent->client->ps.velocity ) > 20 )
+		{
+			G_Q3F_StopAgentInvisible( ent );
+			trap_SendServerCommand( ent->s.number, "print \"Invisibility failed because of movement!\n\"" );
+		}
+	}
+	// Golliwog.
+
+	// Golliwog: Do a minimum rate check.
+	if( g_minRate.integer && g_banRules.value > 1 )
+	{
+		trap_GetUserinfo( ent->s.number, userinfo, sizeof(userinfo) );
+		dataptr = Info_ValueForKey( userinfo, "rate" );
+		data = 0;
+		if( !dataptr || (data = Q_atoi( dataptr )) < g_minRate.integer ) {
+			G_Q3F_AdminTempBan( ent, va( "Rate set to %d (sv_MinRate is %d)", data, g_minRate.integer ), Q3F_ADMIN_TEMPBAN_TIME );
+		}
+	}
+	// Golliwog.
+	// RR2DO2: Do a minimum snaps check.
+	if( g_minSnaps.integer && g_banRules.value > 1 )
+	{
+		trap_GetUserinfo( ent->s.number, userinfo, sizeof(userinfo) );
+		dataptr = Info_ValueForKey( userinfo, "snaps" );
+		data = 0;
+		if( !dataptr || (data = Q_atoi( dataptr )) < g_minSnaps.integer )
+			G_Q3F_AdminTempBan( ent, va( "Snaps set to %d (sv_MinSnaps is %d)", data, g_minSnaps.integer ), Q3F_ADMIN_TEMPBAN_TIME );
+	}
+
+	// Check for valid cg_adjustAgentSpeed
+	trap_GetUserinfo( ent->s.number, userinfo, sizeof(userinfo) );
+	dataptr = Info_ValueForKey( userinfo, "cg_adjustAgentSpeed" );
+	data = 0;
+	if( dataptr && ent->client )
+		ent->client->sess.adjustAgentSpeed = atoi( dataptr );
+	// RR2DO2
 }
 
 /*
@@ -847,10 +1091,10 @@ void ClientThink_real( gentity_t *ent ) {
 	int			oldEventSequence;
 	int			msec;
 	usercmd_t	*ucmd;
-	bg_q3f_playerclass_t *cls, *agentcls;
-	gentity_t *other;
 
 	client = ent->client;
+
+	ucmd = &ent->client->pers.cmd;
 
 	// don't think if the client is not yet connected (and thus not yet spawned in)
 	if (client->pers.connected != CON_CONNECTED) {
@@ -985,11 +1229,6 @@ void ClientThink_real( gentity_t *ent ) {
 		//	return;
 	}
 
-	if ( client->wantsscore ) {
-		G_SendScore(ent);
-		client->wantsscore = qfalse;
-	}
-
 	//
 	// check for exiting intermission
 	//
@@ -1009,221 +1248,8 @@ void ClientThink_real( gentity_t *ent ) {
 	}
 
 	// check for inactivity timer, but never drop the local client of a non-dedicated server
-	if ( !ClientInactivityTimer( ent ) ) {
+	if ( !ClientInactivityTimer( ent ) )
 		return;
-	}
-
-	// clear the rewards if time
-	if ( level.time > client->rewardTime ) {
-		client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT );
-	}
-
-	// clear drop anim if time
-	if( !(client->ps.extFlags & EXTF_ANI_THROWING) &&
-		!(client->ps.extFlags & EXTF_ANI_OPERATING)) {
-		client->torsoanimEndTime = 0;
-	} else if( client->torsoanimEndTime < level.time ) {
-		client->ps.extFlags &= ~EXTF_ANI_THROWING;
-		client->ps.extFlags &= ~EXTF_ANI_OPERATING;
-	}
-
-	if ( client->noclip ) {
-		client->ps.pm_type = PM_NOCLIP;
-	} else if ( client->ps.stats[STAT_HEALTH] <= 0 ) {
-		client->ps.pm_type = PM_DEAD;
-	} else if( client->ps.eFlags & EF_Q3F_INVISIBLE ) {
-		client->ps.pm_type = PM_INVISIBLE;
-	} else {
-		client->ps.pm_type = PM_NORMAL;
-	}
-
-	//	JT: Pay attention to STAT_Q3F_FLAGS
-
-	client->ps.gravity = g_gravity.value;
-
-	// set speed
-	// Golliwog: Altered for class speeds, and max health
-	if( (cls = BG_Q3F_GetClass( &client->ps )) != NULL )
-		client->ps.speed = cls->maxspeed;
-	else
-		client->ps.speed = g_speed.value;
-	// Golliwog.
-
-	// Golliwog: Have agents slow down to apparent class speed
-	if( client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_AGENT && client->agentclass  && client->sess.adjustAgentSpeed )
-	{
-		agentcls = bg_q3f_classlist[client->agentclass];
-		if( client->ps.speed > agentcls->maxspeed )
-			client->ps.speed = agentcls->maxspeed;
-	}
-	// Golliwog.
-
-	// Tranquilised
-	if( client->tranqTime ) {
-		if( level.time >= client->tranqTime ) {
-			trap_SendServerCommand( ent->s.number, "print \"You feel better now.\n\"" );
-			client->tranqTime = 0;
-			client->tranqEnt = NULL;
-			client->ps.stats[STAT_Q3F_FLAGS] &= ~(1<<FL_Q3F_TRANQ);
-		 } else {
-			client->ps.speed /= 2;
-			client->ps.stats[STAT_Q3F_FLAGS] |= (1<<FL_Q3F_TRANQ);
-		}
-	} else {
-		client->ps.stats[STAT_Q3F_FLAGS] &= ~(1<<FL_Q3F_TRANQ);
-	}
-	//Canabis, am i burning?
-	if (client->flames > 0 && ent->health > 0) {
-		client->ps.extFlags |= EXTF_BURNING;
-	} else {
-		client->ps.extFlags &= ~EXTF_BURNING;
-	}
-	//Canabis, am i tranqed?
-	if (client->tranqTime >= level.time && ent->health > 0) {
-		client->ps.extFlags |= EXTF_TRANQED;
-	} else {
-		client->ps.extFlags &= ~EXTF_TRANQED;
-	}
-	//Ensiform, am i legshot?
-	if (client->legwounds && ent->health > 0) {
-		if( client->legwounds > 6 )
-			client->legwounds = 6;			// Cap the wounds to something sensible.
-		client->ps.extFlags |= EXTF_LEGWOUNDS;
-	} else {
-		client->ps.extFlags &= ~EXTF_LEGWOUNDS;
-	}
-	// Agent invisible
-	if( client->ps.eFlags & EF_Q3F_INVISIBLE )
-		client->ps.speed = 0;		// Can't move if invisible.
-
-	// Laying a charge.
-	if( client->chargeTime ) {
-		if( client->chargeTime <= level.time ) {
-			client->ps.ammoclip[3] = client->chargeEntity->soundPos1;
-			trap_SendServerCommand( ent->s.number, "print \"Charge set.\n\"" );
-			if( client->ps.ammo[AMMO_CHARGE] > 0 )
-				client->ps.ammo[AMMO_CHARGE]--;
-			client->chargeTime = 0;		// Allow movement again
-			client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_LAYCHARGE);
-			client->chargeEntity->s.legsAnim = 1;
-			#ifdef BUILD_BOTS
-			Bot_Event_DetpackBuilt(ent, client->chargeEntity);
-			#endif
-			ent->client->pers.stats.data[STATS_GREN + Q3F_GREN_CHARGE].shots++;
-		} else {
-			other = client->chargeEntity;
-			if( Distance( other->r.currentOrigin, ent->r.currentOrigin ) > 100 ) {
-				// They've moved too far, cancel the lay.
-				if( other->inuse &&	(other->s.eType == ET_Q3F_GRENADE && other->s.weapon == Q3F_GREN_CHARGE))
-					G_FreeEntity( other );
-				else G_Printf( "Attempted to free '%s' as charge.\n", other->classname );
-				client->chargeEntity = NULL;
-				client->chargeTime = 0;
-				client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_LAYCHARGE);
-			}
-			else client->ps.speed = 0;		// Stop all movement.
-		}
-	}
-	// Disarming a charge
-	if( client->chargeDisarmTime )
-	{
-		if( !client->chargeDisarmEnt || !client->chargeDisarmEnt->inuse )
-		{
-			// Lost our disarm ent?
-
-			client->chargeDisarmEnt = NULL;
-			client->chargeDisarmTime = 0;
-		}
-		else if(	!(client->ps.pm_flags & PMF_DUCKED) ||
-					!trap_EntityContact( ent->r.absmin, ent->r.absmax, client->chargeDisarmEnt ) )
-		{
-			// We've lost contact.
-
-			if( client->chargeDisarmEnt->count >= 5 && !(rand() % 10) )
-			{
-				// They've flumped the disarming process :)
-
-				trap_SendServerCommand( ent->s.number, "print \"HE Charge Triggered! RUN!\n\"" );
-				client->chargeDisarmEnt->count = 5;
-				client->chargeDisarmEnt->nextthink = level.time;
-			}
-			client->chargeDisarmEnt = NULL;
-			client->chargeDisarmTime = 0;
-		}
-		else if( client->chargeDisarmTime <= level.time )
-		{
-			// We've finished, clean this ent up.
-
-			trap_SendServerCommand( ent->s.number, "print \"HE Charge Disarmed.\n\"" );
-			if( client->chargeDisarmEnt->activator && client->chargeDisarmEnt->activator->inuse )
-			{
-				client->chargeDisarmEnt->activator->client->chargeEntity = NULL;
-				client->chargeDisarmEnt->activator->client->chargeTime = 0;
-				client->chargeDisarmEnt->activator->client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_LAYCHARGE);
-			}
-			G_FreeEntity( client->chargeDisarmEnt );
-			client->chargeDisarmEnt = NULL;
-			client->chargeDisarmTime = 0;
-		} else client->ps.speed = 0;		// Stop all movement.
-	}
-
-	if( client->buildTime ) {
-		if( client->buildTime <= level.time ) {
-			client->buildTime = 0;		// Allow movement again
-			client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_BUILDING);
-		} else {
-			if(	(client->sentry && !client->sentry->s.legsAnim &&
-				Distance( client->sentry->r.currentOrigin, ent->r.currentOrigin ) > 100) ||
-				(client->supplystation && !client->supplystation->s.legsAnim &&
-				Distance( client->supplystation->r.currentOrigin, ent->r.currentOrigin ) > 100) )
-				{
-				// They've moved too far, cancel the build.
-				if( client->sentry )
-					G_Q3F_SentryCancel( client->sentry );
-				if( client->supplystation )
-					G_Q3F_SupplyStationCancel( client->supplystation );
-				client->buildTime = 0;
-				client->ps.stats[STAT_Q3F_FLAGS] &= ~(1 << FL_Q3F_BUILDING);
-			} else 
-				client->ps.speed = 0;		// Stop all movement.
-		}
-	}
-	if( client->repairEnt && client->repairEnt->inuse ) {
-		if( client->repairEnt->s.eType == ET_Q3F_SENTRY && !G_Q3F_CheckSentryUpgradeable( ent, client->repairEnt->s.number, qtrue, qtrue ) ) {
-			trap_SendServerCommand( ent->s.number, "menu cancel upgradeautosentry" );
-			client->repairEnt = NULL;
-		} else if ( client->repairEnt->s.eType == ET_Q3F_SUPPLYSTATION && !G_Q3F_CheckSupplyStation( ent, client->repairEnt->s.number, qtrue ) ) {
-			trap_SendServerCommand( ent->s.number, "menu cancel upgradesupplystation" );
-			client->repairEnt = NULL;
-		}
-	}
-
-	if( client->speedscale )				// Goalitem speed scale
-		client->ps.speed *= client->speedscale;
-
-	if( client->callTime && client->callTime <= level.time ) {
-		// Golliwog: Reset call flags (should use a PlayerStateToEntityState call)
-		client->ps.eFlags	&= ~EF_Q3F_MASKME;
-		ent->s.eFlags		&= ~EF_Q3F_MASKME;
-		client->callTime	= 0;
-	}
-	if ( client->ps.powerups[PW_HASTE] ) {
-		client->ps.speed *= 1.3;
-	}
-#ifdef SENTRY_MOVE
-	if ( client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_MOVING)) {
-		client->ps.speed *= 0.5;
-	}
-#endif
-	// Sniper shots to legs.
-	if(client->legwounds) {
-		client->ps.speed -= 0.1 * client->ps.speed * client->legwounds;
-	}
-
-	if( client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_GRENADIER )
-		G_Q3F_CheckPipesForPlayer(ent);
-
-	G_Q3F_Check_Maladies(ent);
 
 	// set up for pmove
 	oldEventSequence = client->ps.eventSequence;
@@ -1378,13 +1404,6 @@ void ClientThink_real( gentity_t *ent ) {
 	if( !(ucmd->buttons & BUTTON_ATTACK) )
 		client->lastflame = 0;
 
-	// canabis: Check for automatic reload
-	if( client->pers.autoReload == 3 && client->ps.weaponstate == WEAPON_READY )
-	{
-		if( Q3F_GetClipValue( client->ps.weapon, &client->ps ) < BG_Q3F_GetWeapon( client->ps.weapon )->numammo )
-			BG_Q3F_Request_Reload( &client->ps );
-	}
-
 	// RR2DO2: if we carry an item with "revealagent" make sure we stop our disguise as agent, just in case
 	if( client->agentdata && ( (client->agentdata->s.modelindex2 & Q3F_AGENT_DISGUISEMASK) == 1 || (client->agentdata->s.modelindex2 & Q3F_AGENT_INVISMASK) == 4 ) ) {
 		gentity_t *goalitem;
@@ -1471,9 +1490,6 @@ void ClientThink_real( gentity_t *ent ) {
 			break;
 		}
 	}
-
-	// perform once-a-second actions
-	ClientTimerActions( ent, msec );
 }
 
 /*
@@ -1581,9 +1597,7 @@ while a slow client may have multiple ClientEndFrame between ClientThink.
 ==============
 */
 void ClientEndFrame( gentity_t *ent ) {
-	int			i;
-	//clientPersistant_t	*pers;
-	int			frames;
+	int frames;
 
 	if ( !ent->client )
 		return;
@@ -1636,25 +1650,7 @@ void ClientEndFrame( gentity_t *ent ) {
 	}
 
 	//pers = &ent->client->pers;
-
-	// turn off any expired powerups
-	for ( i = 0 ; i < MAX_POWERUPS ; i++ ) {
-		if ( ent->client->ps.powerups[ i ] && ent->client->ps.powerups[ i ] < level.time ) {
-			switch( i )
-			{
-				case PW_Q3F_CONCUSS:	
-					trap_SendServerCommand( ent->s.number, "print \"You can see straight again.\n\"" );
-					break;
-				case PW_Q3F_FLASH:
-					trap_SendServerCommand( ent->s.number, "print \"Your blindness has cleared.\n\"" );
-					break;
-				case PW_Q3F_GAS:
-					trap_SendServerCommand( ent->s.number, "print \"You feel a little less confused now.\n\"" );
-					break;
-			}
-			ent->client->ps.powerups[ i ] = 0;
-		}
-	}
+	ClientTimerActions(ent);
 
 	// save network bandwidth
 #if 0

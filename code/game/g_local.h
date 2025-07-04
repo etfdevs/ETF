@@ -446,9 +446,9 @@ struct gclient_s {
 
 	int			switchTeamTime;		// time the player switched teams
 
-	// timeResidual is used to handle events that happen every second
+	// periodicNext is used to handle events that happen every second
 	// like health / armor countdowns and regeneration
-	int			timeResidual;
+	int			periodicNext;
 
 	char		*areabits;
 
