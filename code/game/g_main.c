@@ -414,6 +414,11 @@ static void G_UpdateCvars( void ) {
 		}
 	}
 
+	if (pmove_msec.integer < 8)
+		trap_Cvar_Set("pmove_msec", "8");
+	else if (pmove_msec.integer > 33)
+		trap_Cvar_Set("pmove_msec", "33");
+
 	// Golliwog: Check the damage type and gravity
 	if( g_friendlyFire.modificationCount != level.friendlyFireCount )
 	{
@@ -1525,7 +1530,7 @@ void LogExit( const char *string ) {
 			continue;
 		}
 
-		ping = cl->pers.realPing < 999 ? cl->pers.realPing : 999;//ps.ping
+		ping = cl->ps.ping < 999 ? cl->ps.ping : 999;
 
 		G_LogPrintf( "score: %i  ping: %i  client: %i %s^7\n", cl->ps.persistant[PERS_SCORE], ping, level.sortedClients[i],	cl->pers.netname );
 	}
@@ -1980,7 +1985,7 @@ void G_Q3F_CalculateTeamPings(void)
 		if( !scan->inuse || !scan->client )
 			continue;
 		counts[scan->client->sess.sessionTeam]++;
-		pings[scan->client->sess.sessionTeam] += scan->client->pers.realPing;//		ps.ping;
+		pings[scan->client->sess.sessionTeam] += scan->client->ps.ping;
 	}
 
 	for( index = 0; index < Q3F_TEAM_NUM_TEAMS - 1; index++ )
@@ -2226,14 +2231,12 @@ void G_RunEntities(void) {
 			continue;
 
 		switch (ent->s.eType) {
-		case ET_MISSILE:
-			{
-				if (ent->antilag_time) {
-					int snap_ms = 1000 / sv_fps.integer;
-					int prestep = ent->s.pos.trTime - projectile_now;
-					int steps = (projectile_now - ent->antilag_time) / snap_ms, rs = 0;
-					//int ot = ent->s.pos.trTime - prestep;
-					ent->s.pos.trTime = ent->antilag_time + prestep;
+		case ET_MISSILE: {
+			if (ent->antilag_time) {
+				int snap_ms = 1000 / sv_fps.integer;
+				int prestep = ent->s.pos.trTime - projectile_now;
+				int steps = (projectile_now - ent->antilag_time) / snap_ms, rs = 0;
+				ent->s.pos.trTime = ent->antilag_time + prestep;
 
 					while (steps > 0) {
 						int now = projectile_now - steps * snap_ms;

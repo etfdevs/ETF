@@ -756,10 +756,7 @@ void CG_PredictPlayerState( void ) {
 	// except a frame following a new snapshot in which there was a prediction
 	// error.  This yeilds anywhere from a 15% to 40% performance increase,
 	// depending on how much of a bottleneck the CPU is.
-
-	// we check for cg_latentCmds because it'll mess up the optimization
-	// FIXME: make cg_latentCmds work with cg_optimizePrediction?
-	if ( cg_optimizePrediction.integer && !cg_latentCmds.integer ) {
+	if ( cg_optimizePrediction.integer) {
 		if ( cg.nextFrameTeleport || cg.thisFrameTeleport ) {
 			// do a full predict
 			cg.lastPredictedCommand = 0;
@@ -934,8 +931,7 @@ void CG_PredictPlayerState( void ) {
 		} else {
 			cg_pmove.agentclass = 0;
 		}
-		// we check for cg_latentCmds because it'll mess up the optimization
-		if ( cg_optimizePrediction.integer && !cg_latentCmds.integer ) {
+		if ( cg_optimizePrediction.integer ) {
 			// if we need to predict this command, or we've run out of space in the saved states queue
 			if ( cmdNum >= predictCmd || (stateIndex + 1) % NUM_SAVED_STATES == cg.stateHead ) {
 				// run the Pmove

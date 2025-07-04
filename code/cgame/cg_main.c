@@ -197,8 +197,6 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	//Unlagged cvars
 	{ &cg_cmdTimeNudge,		"cg_cmdTimeNudge",		0,		0,		999,	0,	0,	qtrue },
 	{ &cl_timeNudge,		"cl_timeNudge",			0,		-50,	50,		0,	0,	qtrue },
-	{ &cg_latentSnaps,		"cg_latentSnaps",		0,		0,		10,		0,	0,	qtrue },
-	{ &cg_latentCmds,		"cg_latentCmds",		0,		0,	MAX_LATENT_CMDS - 1 ,	0,	0,	qtrue },
 	{ &cg_plOut,			"cg_plOut",				0,		0,		100 ,	0,	0,	qtrue },
 	// hunkmegs
 	{ &com_hunkmegs,		"com_hunkmegs",			128,		128,		-1,		0,	0,	qfalse },

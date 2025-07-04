@@ -1089,7 +1089,6 @@ void ClientThink_real( gentity_t *ent ) {
 	gclient_t	*client;
 	pmove_t		pm;
 	int			oldEventSequence;
-	int			msec;
 	usercmd_t	*ucmd;
 
 	client = ent->client;
@@ -1119,59 +1118,6 @@ void ClientThink_real( gentity_t *ent ) {
 	// does a G_RunFrame()
 	client->frameOffset = trap_Milliseconds() - level.frameStartTime;
 
-	// save the estimated ping in a queue for averaging later
-	// we use level.previousTime to account for 50ms lag correction
-	// besides, this will turn out numbers more like what players are used to
-	client->pers.pingsamples[client->pers.samplehead] = level.previousTime + client->frameOffset - ucmd->serverTime;
-	client->pers.samplehead++;
-	if ( client->pers.samplehead >= NUM_PING_SAMPLES ) {
-		client->pers.samplehead -= NUM_PING_SAMPLES;
-	}
-
-	// initialize the real ping
-	if ( g_truePing.integer ) {
-		int i, sum = 0;
-
-		// get an average of the samples we saved up
-		for ( i = 0; i < NUM_PING_SAMPLES; i++ ) {
-			sum += client->pers.pingsamples[i];
-		}
-
-		client->pers.realPing = sum / NUM_PING_SAMPLES;
-	}
-	else {
-		// if g_truePing is off, use the normal ping
-		client->pers.realPing = client->ps.ping;
-	}
-
-//unlagged - lag simulation #2
-	// keep a queue of past commands
-	client->pers.cmdqueue[client->pers.cmdhead] = client->pers.cmd;
-	client->pers.cmdhead++;
-	if ( client->pers.cmdhead >= MAX_LATENT_CMDS ) {
-		client->pers.cmdhead -= MAX_LATENT_CMDS;
-	}
-
-	// if the client wants latency in commands (client-to-server latency)
-	if ( client->pers.latentCmds ) {
-		// save the actual command time
-		int time = ucmd->serverTime;
-
-		// find out which index in the queue we want
-		int cmdindex = client->pers.cmdhead - client->pers.latentCmds - 1;
-		while ( cmdindex < 0 ) {
-			cmdindex += MAX_LATENT_CMDS;
-		}
-
-		// read in the old command
-		client->pers.cmd = client->pers.cmdqueue[cmdindex];
-
-		// adjust the real ping to reflect the new latency
-		client->pers.realPing += time - ucmd->serverTime;
-	}
-//unlagged - lag simulation #2
-
-
 //unlagged - backward reconciliation #4
 	// save the command time *before* pmove_fixed messes with the serverTime,
 	// and *after* lag simulation messes with it :)
@@ -1187,44 +1133,9 @@ void ClientThink_real( gentity_t *ent ) {
 	client->lastUpdateFrame = level.framenum;
 //unlagged - smooth clients #1
 
-
-//unlagged - lag simulation #1
-	// if the client is adding latency to received snapshots (server-to-client latency)
-	if ( client->pers.latentSnaps ) {
-		// adjust the real ping
-		client->pers.realPing += client->pers.latentSnaps * (1000 / sv_fps.integer);
-		// adjust the attack time so backward reconciliation will work
-		client->attackTime -= client->pers.latentSnaps * (1000 / sv_fps.integer);
-	}
-//unlagged - lag simulation #1
-
-
-//unlagged - true ping
-	// make sure the true ping is over 0 - with cl_timenudge it can be less
-	if ( client->pers.realPing < 0 ) {
-		client->pers.realPing = 0;
-	}
-//unlagged - true ping
-
-	msec = ucmd->serverTime - client->ps.commandTime;
-	// following others may result in bad times, but we still want
-	// to check for follow toggles
-	if ( msec < 1 && client->sess.spectatorState != SPECTATOR_FOLLOW && client->sess.spectatorState != SPECTATOR_CHASE ) {
-		return;
-	}
-	if ( msec > 200 ) {
-		msec = 200;
-	}
-
-	if ( pmove_msec.integer < 8 ) {
-		trap_Cvar_Set("pmove_msec", "8");
-	}
-	else if (pmove_msec.integer > 33) {
-		trap_Cvar_Set("pmove_msec", "33");
-	}
-
-	if ( pmove_fixed.integer || client->pers.pmoveFixed ) {
-		ucmd->serverTime = ((ucmd->serverTime + pmove_msec.integer-1) / pmove_msec.integer) * pmove_msec.integer;
+	if ( pmove_fixed.integer ) {
+		int pms = pmove_msec.integer;
+		ucmd->serverTime = ((ucmd->serverTime + pms - 1) / pms) * pms;
 		//if (ucmd->serverTime - client->ps.commandTime <= 0)
 		//	return;
 	}
@@ -1275,7 +1186,7 @@ void ClientThink_real( gentity_t *ent ) {
 	pm.debugLevel = g_debugMove.integer;
 	pm.noFootsteps = ( g_dmflags.integer & DF_NO_FOOTSTEPS ) > 0;
 
-	pm.pmove_fixed = pmove_fixed.integer | client->pers.pmoveFixed;
+	pm.pmove_fixed = pmove_fixed.integer;
 	pm.pmove_msec = pmove_msec.integer;
 	pm.pmove_float = pmove_float.integer;
 

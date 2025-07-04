@@ -1208,8 +1208,6 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	}
 
 	cg.time = serverTime;
-	// adjust the clock to reflect latent snaps
-	cg.time -= cg_latentSnaps.integer * (1000 / cgs.sv_fps);
 
 	cg.demoPlayback = demoPlayback;
 

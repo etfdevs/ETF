@@ -228,8 +228,6 @@ CG_CVAR( cg_cmdTimeNudge,			"cg_cmdTimeNudge",			"0",		CVAR_ARCHIVE | CVAR_USERI
 CG_CVAR( cg_projectileNudge,		"cg_projectileNudge",		"0",		CVAR_ARCHIVE )
 CG_CVAR( cg_optimizePrediction,		"cg_optimizePrediction",	"1",		CVAR_ARCHIVE )
 CG_CVAR( cl_timeNudge,				"cl_timeNudge",				"0",		CVAR_ARCHIVE | CVAR_USERINFO )
-CG_CVAR( cg_latentSnaps,			"cg_latentSnaps",			"0",		CVAR_USERINFO | CVAR_CHEAT )
-CG_CVAR( cg_latentCmds,				"cg_latentCmds",			"0",		CVAR_USERINFO | CVAR_CHEAT )
 CG_CVAR( cg_plOut,					"cg_plOut",					"0",		CVAR_USERINFO | CVAR_CHEAT )
 CG_CVAR( cg_predictItems,			"cg_predictItems",			"1",		CVAR_ARCHIVE )
 CG_CVAR( cg_predictWeapons,			"cg_predictWeapons",		"0",		CVAR_ARCHIVE )
