@@ -163,6 +163,8 @@ CG_CVAR( cg_timescaleFadeEnd,		"cg_timescaleFadeEnd",		"1",		0 )
 CG_CVAR( cg_timescaleFadeSpeed,		"cg_timescaleFadeSpeed",	"0",		0 )
 CG_CVAR( cg_timescale,				"timescale",				"1",		0 )
 CG_CVAR( r_clear,					"r_clear",					"0",		0 )
+CG_CVAR( cg_packetdelay,				"cg_packetdelay",				"0",	CVAR_USERINFO )
+CG_CVAR( cl_packetdelay,				"cl_packetdelay",				"0",	CVAR_CHEAT )
 
 
 CG_CVAR( r_debugSort,				"r_debugSort",				"0",		CVAR_CHEAT )

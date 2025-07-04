@@ -209,6 +209,8 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	{ &cg_cl_yawspeed,		"cl_yawspeed",			140,	0,		0,		0,	0,	qfalse },
 	{ &cg_cl_pitchspeed,	"cl_pitchspeed",		140,	0,		0,		0,	0,	qfalse },
 	{ &cg_cl_freelook,		"cl_freelook",			1,		1,		1,		0,	0,	qfalse },
+
+	{ &cg_packetdelay,		"cg_packetdelay",		0,		0,		200,		0,	0,	qfalse },
 };
 
 static const int cvarLimitTableSize = (int)ARRAY_LEN( cvarLimitTable );
@@ -538,6 +540,10 @@ void CG_UpdateCvars( void ) {
 
 	// limit cvars
 	CG_LimitCvars();
+
+	// Handle packet delay
+	if (cg_packetdelay.integer != cl_packetdelay.integer)
+		trap_Cvar_Set("cl_packetdelay", cg_packetdelay.string);
 }
 
 

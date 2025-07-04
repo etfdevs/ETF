@@ -1458,7 +1458,6 @@ typedef struct {
 	qboolean		synchronousClients;
 
 	qboolean		sv_cheats;
-
 } cgs_t;
 
 //==============================================================================
