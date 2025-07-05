@@ -1458,6 +1458,8 @@ typedef struct {
 	qboolean		synchronousClients;
 
 	qboolean		sv_cheats;
+
+	int active_maxfps;
 } cgs_t;
 
 //==============================================================================
@@ -2301,5 +2303,6 @@ extern int cvar_developer;
 extern int dll_trap_R_AddRefEntityToScene2;
 extern int dll_trap_R_AddLinearLightToScene;
 
+void CG_Update_MaxFPS(void);
 
 #endif	//__CG_LOCAL_H

@@ -865,7 +865,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_LuaHook_InitGame( levelTime, randomSeed, restart );
 #endif // BUILD_LUA
 
-
 #ifdef PERFLOG
 	BG_Q3F_PerformanceMonitor_LogFunctionStop();
 #endif

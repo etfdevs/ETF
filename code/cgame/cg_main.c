@@ -170,7 +170,6 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	{ &cl_maxpackets,		"cl_maxpackets",		40,		30,		-1,		0,	0,	qfalse },
 	{ &r_maxpolys,			"r_maxpolys",			1800,	1800,	-1,		0,	0,	qfalse },
 	{ &r_maxpolyverts,		"r_maxpolyverts",		9000,	9000,	-1,		0,	0,	qfalse },
-	{ &com_maxfps,			"com_maxfps",			85,		30,		130,	0,	0,	qfalse },
 	{ &cg_fov,				"cg_fov",				90,		5,		135,	0,	0,	qfalse },
 	{ &cg_thirdPerson,		"cg_thirdPerson",		0,		0,		0,		0,	0,	qfalse },
 	{ &r_lodCurveError,		"r_lodCurveError",		250,	1,		-1,		0,	0,	qfalse },
@@ -517,6 +516,8 @@ void CG_UpdateCvars( void ) {
 				}
 				else if (cv->vmCvar == &cg_pipeTrail) {
 					CG_UpdateColorFromCvar(cg_pipeTrail.string, colorPipeTrail, &cg.pipeTrailTeam, cg.pipeTrailColor);
+				} else if (cv->vmCvar == &cl_maxfps || cv->vmCvar == &com_maxfps) {
+					CG_Update_MaxFPS();
 				}
 			}
 		}
@@ -542,8 +543,10 @@ void CG_UpdateCvars( void ) {
 	CG_LimitCvars();
 
 	// Handle packet delay
-	if (cg_packetdelay.integer != cl_packetdelay.integer)
+	if (cg_packetdelay.integer != cl_packetdelay.integer) {
 		trap_Cvar_Set("cl_packetdelay", cg_packetdelay.string);
+		trap_Cvar_Update(&cl_packetdelay);
+	}
 }
 
 
