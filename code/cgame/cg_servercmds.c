@@ -217,6 +217,7 @@ void CG_ParseSysteminfo( void ) {
 	} else if ( cgs.pmove_msec > 33 ) {
 		cgs.pmove_msec = 33;
 	}
+	cgs.pmove_float = ( atoi( Info_ValueForKey( info, "pmove_float" ) ) ) ? qtrue : qfalse;
 	CG_Update_MaxFPS();
 
 	cgs.sv_fps = Q_atoi( Info_ValueForKey( info, "sv_fps" ) );

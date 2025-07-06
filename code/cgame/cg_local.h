@@ -1450,7 +1450,8 @@ typedef struct {
 	float oldtimescale;									// Timescale value prior to pausing
 
 	qboolean		pmove_fixed;
-	int				pmove_msec;
+	int			pmove_msec;
+	int			pmove_float;
 
 	int				sv_fps;
 
