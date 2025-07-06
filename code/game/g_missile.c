@@ -788,12 +788,12 @@ gentity_t *fire_nail (gentity_t *self, vec3_t start, vec3_t dir, int damage, int
 	bolt->r.maxs[2] = 1;
 
 	bolt->s.pos.trTime = level.time;
-	//VectorMA( muzzle, -50, dir, bolt->s.pos.trBase );		// Draw a frame previous.
-	VectorMA( start, -15, dir, bolt->s.pos.trBase );		// Draw a frame previous.
-	bolt->s.pos.trBase[2] -= 6;
-//	VectorScale( dir, 1100, bolt->s.pos.trDelta );
+	VectorMA( start, -15, dir, start);		// Draw a frame previous.
+	start[2] -= 6;
 	VectorScale( dir, mod == MOD_SUPERNAILGUN ? PROJ_SPEED_SNG : PROJ_SPEED_NG, bolt->s.pos.trDelta ); // djbob: 2.2 value 1.6 1250 for both nailguns
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
+	SnapVector(start);
+	VectorCopy (start, bolt->s.pos.trBase);
 	VectorCopy (start, bolt->r.currentOrigin);
 
 	if (self->client && self->client->pers.unlagged)

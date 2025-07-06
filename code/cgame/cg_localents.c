@@ -967,7 +967,7 @@ static void CG_UntrackPredictedEnt(localEntity_t *le) {
 
 void CG_MatchPredictedEnt(centity_t* cent) {
 	localEntity_t* match = NULL;
-	float best = SQR(64);
+	float best = SQR(32);
 	vec3_t diff;
 
 	// Can only match entities we own.
@@ -1025,6 +1025,7 @@ void CG_UpdateLocalPredictedEnts(void) {
 }
 
 void CG_AddPredictedMissile(entityState_t* ent, vec3_t origin, vec3_t forward) {
+	usercmd_t cmd;
 	localEntity_t *le;
 	int vel, tmod = 0;
 
@@ -1058,15 +1059,21 @@ void CG_AddPredictedMissile(entityState_t* ent, vec3_t origin, vec3_t forward) {
 	le->leFlags = LEF_PREDICTED;
 	le->pred_weapon = ent->weapon;
 
-	le->pos.trType = TR_LINEAR;
-	le->pos.trTime = cg.time - tmod + cl_timeNudge.integer;
+	// Technically we could chain this from where we predict the event but this
+	// should always be correct since command generation is tied to frame
+	// generation.
+	trap_GetUserCmd( trap_GetCurrentCmdNumber(), &cmd );
 
+	le->pos.trType = TR_LINEAR;
+	le->pos.trTime = cmd.serverTime - tmod + cl_timeNudge.integer;
+
+	if (ent->weapon == WP_SUPERNAILGUN || ent->weapon == WP_NAILGUN) {
+		VectorMA(origin, -15, forward, origin);
+		origin[2] -= 6;
+		SnapVector(origin);
+	}
 	VectorCopy(origin, le->lerp.trBase);
 	VectorCopy(origin, le->pos.trBase);
-	if (ent->weapon == WP_SUPERNAILGUN || ent->weapon == WP_NAILGUN) {
-		VectorMA(le->pos.trBase, -15, forward, le->pos.trBase);
-		le->pos.trBase[2] -= 6;
-	}
 
 	VectorScale(forward, vel, le->pos.trDelta );
 	SnapVector(le->pos.trDelta);
