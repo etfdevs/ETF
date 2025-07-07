@@ -572,6 +572,14 @@ static void CG_MapRestart( void ) {
 
 	CG_LoadHud_f();
 
+	// FIXMEHACK
+	trap_SendConsoleCommand("-forward\n");
+	trap_SendConsoleCommand("-back\n");
+	trap_SendConsoleCommand("-moveleft\n");
+	trap_SendConsoleCommand("-moveright\n");
+	trap_SendConsoleCommand("-moveup\n");
+	trap_SendConsoleCommand("-movedown\n");
+
 	CG_EventHandling(CGAME_EVENT_NONE, qtrue);
 }
 
