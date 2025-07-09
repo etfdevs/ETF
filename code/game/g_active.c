@@ -1086,14 +1086,10 @@ once for each server frame, which makes for smooth demo recording.
 ==============
 */
 void ClientThink_real( gentity_t *ent ) {
-	gclient_t	*client;
+	gclient_t	*client = ent->client;
 	pmove_t		pm;
 	int			oldEventSequence;
-	usercmd_t	*ucmd;
-
-	client = ent->client;
-
-	ucmd = &ent->client->pers.cmd;
+	usercmd_t	*ucmd = &ent->client->pers.cmd;
 
 	// don't think if the client is not yet connected (and thus not yet spawned in)
 	if (client->pers.connected != CON_CONNECTED) {
@@ -1132,13 +1128,6 @@ void ClientThink_real( gentity_t *ent ) {
 	// to send extrapolated positions for this client
 	client->lastUpdateFrame = level.framenum;
 //unlagged - smooth clients #1
-
-	if ( pmove_fixed.integer ) {
-		int pms = pmove_msec.integer;
-		ucmd->serverTime = ((ucmd->serverTime + pms - 1) / pms) * pms;
-		//if (ucmd->serverTime - client->ps.commandTime <= 0)
-		//	return;
-	}
 
 	//
 	// check for exiting intermission
@@ -1254,11 +1243,13 @@ void ClientThink_real( gentity_t *ent ) {
 	// use the snapped origin for linking so it matches client predicted versions
 	VectorCopy( ent->s.pos.trBase, ent->r.currentOrigin );
 
-	VectorCopy (pm.mins, ent->r.mins);
-	VectorCopy (pm.maxs, ent->r.maxs);
+	if ((pm.retflags & PMRF_PMOVE_PARTIAL) == 0) {
+		VectorCopy (pm.mins, ent->r.mins);
+		VectorCopy (pm.maxs, ent->r.maxs);
 
-	ent->waterlevel = pm.waterlevel;
-	ent->watertype = pm.watertype;
+		ent->waterlevel = pm.waterlevel;
+		ent->watertype = pm.watertype;
+	}
 
 	// execute client events
 	ClientEvents( ent, oldEventSequence );
@@ -1277,9 +1268,8 @@ void ClientThink_real( gentity_t *ent ) {
 	ClientImpacts( ent, &pm );
 
 	// save results of triggers and client events
-	if (ent->client->ps.eventSequence != oldEventSequence) {
+	if (ent->client->ps.eventSequence != oldEventSequence)
 		ent->eventTime = level.time;
-	}
 
 	// swap and latch button actions
 	client->oldbuttons = client->buttons;

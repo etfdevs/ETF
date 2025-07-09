@@ -827,10 +827,6 @@ void CG_PredictPlayerState( void ) {
 		// get the command
 		trap_GetUserCmd( cmdNum, &cg_pmove.cmd );
 
-		if ( cg_pmove.pmove_fixed ) {
-			PM_UpdateViewAngles( cg_pmove.ps, &cg_pmove.cmd );
-		}
-
 		// don't do anything if the time is before the snapshot player time
 		if ( cg_pmove.cmd.serverTime <= cg.predictedPlayerState.commandTime ) {
 			continue;
@@ -915,22 +911,20 @@ void CG_PredictPlayerState( void ) {
 			VectorSet( cg_pmove.groundVelocity, 0, 0, 0 );
 		}
 
-		if ( cg_pmove.pmove_fixed ) {
-			cg_pmove.cmd.serverTime = ((cg_pmove.cmd.serverTime + cgs.pmove_msec-1) / cgs.pmove_msec) * cgs.pmove_msec;
-		}
-
 		// ydnar: if server respawning, freeze the player
 		if ( cg.serverRespawning ) {
 			cg_pmove.ps->pm_type = PM_FREEZE;
 		}
 
 		cg_pmove.airleft = (cg.waterundertime - cg.time);
+		cg_pmove.retflags = 0;
 
 		if( cg.agentDataEntity && cg.agentDataEntity->currentValid ) {
 			cg_pmove.agentclass = cg.agentDataEntity->currentState.torsoAnim;
 		} else {
 			cg_pmove.agentclass = 0;
 		}
+
 		if ( cg_optimizePrediction.integer ) {
 			// if we need to predict this command, or we've run out of space in the saved states queue
 			if ( cmdNum >= predictCmd || (stateIndex + 1) % NUM_SAVED_STATES == cg.stateHead ) {
