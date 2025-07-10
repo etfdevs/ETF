@@ -194,7 +194,7 @@ static qboolean ParseF2RFile_Spirit( const int handle, const char *F2RFile, F2RL
 
 		Q_strncpyz( tagname, token.string, TAGLENGTH );
 
-		Com_Printf( "'%s' contains tagname: '%s'\n", F2RFile, tagname );
+		//Com_Printf( "'%s' contains tagname: '%s'\n", F2RFile, tagname );
 
 		if (!trap_PC_ReadToken( handle, &token ) ) {
 			Com_Printf( "Corrupt spirit section in F2R file '%s'\n", F2RFile );
@@ -203,7 +203,7 @@ static qboolean ParseF2RFile_Spirit( const int handle, const char *F2RFile, F2RL
 
 		SpiritScript = Spirit_LoadScript( token.string );
 
-		Com_Printf( "'%s' contains spirit file: '%s'\n", F2RFile, token.string );
+		//Com_Printf( "'%s' contains spirit file: '%s'\n", F2RFile, token.string );
 		
 		if ( !SpiritScript ) {
 			Com_Printf( "Failed to load spirit system %s for tag %s F2R file '%s'\n", token.string, tagname, F2RFile );
