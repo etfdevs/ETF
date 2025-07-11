@@ -166,6 +166,7 @@ CG_CVAR( cg_timescale,				"timescale",				"1",		0 )
 CG_CVAR( r_clear,					"r_clear",					"0",		0 )
 CG_CVAR( cg_packetdelay,				"cg_packetdelay",				"0",	CVAR_USERINFO )
 CG_CVAR( cl_packetdelay,				"cl_packetdelay",				"0",	CVAR_CHEAT )
+CG_CVAR( cg_pmovesmooth,		"cg_pmovesmooth",		"1",								CVAR_ARCHIVE )
 
 
 CG_CVAR( r_debugSort,				"r_debugSort",				"0",		CVAR_CHEAT )

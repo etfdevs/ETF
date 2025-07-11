@@ -664,11 +664,11 @@ void CG_PredictPlayerState( void ) {
 		cg.predictedPlayerState = cg.snap->ps;
 	}
 
-	// demo playback just copies the moves
-	if ( cg.demoPlayback ||
-		(cg.snap->ps.pm_flags & PMF_FOLLOW) ||
-		(cg.snap->ps.pm_flags & PMF_CHASE) ) {
+	// demo playback/spectating just copies the moves
+	if ( cg.demoPlayback || (cg.snap->ps.pm_flags & PMF_FOLLOW) ||
+		   (cg.snap->ps.pm_flags & PMF_CHASE) ) {
 		CG_InterpolatePlayerState( qfalse );
+		VectorCopy( cg.predictedPlayerState.origin, cg.view_org );
 		return;
 	}
 
@@ -976,6 +976,8 @@ void CG_PredictPlayerState( void ) {
 		//CG_CheckChangedPredictableEvents(&cg.predictedPlayerState);
 	}
 
+	VectorCopy( cg.predictedPlayerState.origin, cg.view_org );
+
 	if ( cg_showmiss.integer > 1 ) {
 		CG_Printf( BOX_PRINT_MODE_CHAT, "[%i : %i] ", cg_pmove.cmd.serverTime, cg.time );
 	}
@@ -1005,6 +1007,25 @@ void CG_PredictPlayerState( void ) {
 		if (cg.eventSequence > cg.predictedPlayerState.eventSequence) {
 			CG_Printf(BOX_PRINT_MODE_CHAT, "WARNING: double event\n");
 			cg.eventSequence = cg.predictedPlayerState.eventSequence;
+		}
+	}
+
+	// Need to interp with pmove_fixed to avoid effective 1/pmove_msec fps.
+	if (cgs.pmove_fixed) {
+		if ((cg_pmove.retflags & PMRF_PMOVE_PARTIAL) == 0)  // New full frame
+			VectorCopy(oldPlayerState.origin, cg.last_pmove_fixed);
+
+		// We can be very conservative about when we choose to stitch.
+		if (cg_pmovesmooth.integer &&
+				cg.predictedPlayerState.commandTime - oldPlayerState.commandTime <= cgs.pmove_msec &&
+				DistanceSquared(cg.predictedPlayerState.origin, cg.last_pmove_fixed) < SQR(16) &&
+				!cg.thisFrameTeleport) {
+			vec3_t diff;
+			float dt = 1 + (cg.predictedPlayerState.commandTime % cgs.pmove_msec);
+			dt /= 1.0 * cgs.pmove_msec;
+
+			VectorSubtract(cg.predictedPlayerState.origin, cg.last_pmove_fixed, diff);
+			VectorMA(cg.last_pmove_fixed, dt, diff, cg.view_org);
 		}
 	}
 }

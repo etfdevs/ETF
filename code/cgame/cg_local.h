@@ -763,6 +763,7 @@ typedef struct {
 	vec3_t		kick_origin;
 
 	// temp working variables for player view
+	vec3_t		view_org, last_pmove_fixed;
 	float		bobfracsin;
 	int			bobcycle;
 	float		xyspeed;
