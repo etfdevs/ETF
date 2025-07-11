@@ -98,9 +98,9 @@ typedef struct centFlameInfo_s
 
 	qboolean	lastFiring;
 
-	int		lastDmgUpdate;			// time we last told server about this ent's flame damage
-	int		lastDmgCheck;			// only check once per 100ms
-	int		lastDmgEnemy;			// entity that inflicted the damage
+	//int		lastDmgUpdate;			// time we last told server about this ent's flame damage
+	//int		lastDmgCheck;			// only check once per 100ms
+	//int		lastDmgEnemy;			// entity that inflicted the damage
 } centFlameInfo_t;
 
 static centFlameInfo_t centFlameInfo[MAX_GENTITIES];

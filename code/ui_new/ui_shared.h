@@ -39,6 +39,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../../assets/ui/menudef.h"
 
+#define BLINK_DIVISOR			200
+#define PULSE_DIVISOR			75
 
 #define MAX_MENUNAME 32
 #define MAX_ITEMTEXT 64

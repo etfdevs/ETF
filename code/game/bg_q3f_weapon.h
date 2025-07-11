@@ -41,8 +41,6 @@ If you have questions concerning this license or the applicable additional terms
 #define __BG_Q3F_WEAPON_H
 
 #include "../api/et/q_shared.h"
-// #include "g_local.h"	 - Not safe on bg_modules.
-
 
 #define Q3F_MINIGUN_WARMUP_TIME			700
 
@@ -95,7 +93,7 @@ typedef enum {
 };
 */ 
 /*typedef*/ enum {
-	Q3F_WP_NONE,
+	Q3F_WP_NONE = 0,
 	Q3F_WP_BIOAXE,
 	Q3F_WP_KNIFE,
 	Q3F_WP_WRENCH

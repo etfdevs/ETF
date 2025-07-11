@@ -169,12 +169,12 @@ qboolean CG_Q3F_WaypointDetail( float x, float y, cg_q3f_waypoint_t *wp, vec3_t 
 	rightmargin	= x + width - 4;
 	if( height < 0 )
 	{
-		locy = y - 4 - TINYCHAR_HEIGHT;
-		msgy = y - 4 - TINYCHAR_HEIGHT * 3;
+		locy = y - 4 - SMALLCHAR_HEIGHT;
+		msgy = y - 4 - SMALLCHAR_HEIGHT * 3;
 	}
 	else {
-		locy = y + 4 + TINYCHAR_HEIGHT;
-		msgy = y + 4 + 3 * TINYCHAR_HEIGHT;
+		locy = y + 4 + SMALLCHAR_HEIGHT;
+		msgy = y + 4 + 3 * SMALLCHAR_HEIGHT;
 	}
 
 	colour[0] = colour[3] = 1.0f;
@@ -186,15 +186,15 @@ qboolean CG_Q3F_WaypointDetail( float x, float y, cg_q3f_waypoint_t *wp, vec3_t 
 
 	colour[0] = colour[1] = colour[2] = 1.0f;
 	colour[3] = frac;
-//	CG_DrawStringExt( rightmargin - wp->locwidth, locy, wp->loc, colour, qfalse, qtrue, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 256 );
-//	CG_DrawStringExt( rightmargin - wp->messagewidth, msgy, wp->message, colour, qfalse, qtrue, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 256 );
+//	CG_DrawStringExt( rightmargin - wp->locwidth, locy, wp->loc, colour, qfalse, qtrue, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 256 );
+//	CG_DrawStringExt( rightmargin - wp->messagewidth, msgy, wp->message, colour, qfalse, qtrue, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 256 );
 	CG_Text_Paint( rightmargin - wp->locwidth, locy, 0.2f, colour, wp->loc, 0, 0, 0, &cgDC.Assets.font, ITEM_ALIGN_LEFT );
 	CG_Text_Paint( rightmargin - wp->messagewidth, msgy, 0.2f, colour, wp->message, 0, 0, 0, &cgDC.Assets.font, ITEM_ALIGN_LEFT );
 
 	vdist = fabs( ydist );
 	Com_sprintf(	buff, sizeof(buff), "%s%d.%d",
 					(ydist > 0) ? "-" : "+", (int) (vdist * 0.01), ((int) (vdist * 0.1)) % 10 );
-//	CG_DrawStringExt( rightmargin + 8, y + height, buff, colour, qfalse, qtrue, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 10 );
+//	CG_DrawStringExt( rightmargin + 8, y + height, buff, colour, qfalse, qtrue, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 10 );
 	CG_Text_Paint( rightmargin + 8, y + height, 0.2f, colour, buff, 0, 0, 0, &cgDC.Assets.font, ITEM_ALIGN_LEFT );
 
 	return( qtrue );
@@ -258,19 +258,19 @@ void CG_Q3F_Waypoint(void)
 		dist = (int) (0.1 * wp->distance);
 		Com_sprintf( buff, sizeof(buff), "%d.%d", (int) (0.1 * dist), ((int) dist) % 10 );
 		distsize = strlen( buff );
-		txtx = x - 0.5 * distsize * TINYCHAR_WIDTH;
+		txtx = x - 0.5 * distsize * SMALLCHAR_WIDTH;
 		txty = y + 4;
 
 		if( txtx < 0 )										txtx = 0;
-		else if( txtx > 640 - distsize * TINYCHAR_WIDTH )	txtx = 640 - distsize * TINYCHAR_WIDTH;
+		else if( txtx > 640 - distsize * SMALLCHAR_WIDTH )	txtx = 640 - distsize * SMALLCHAR_WIDTH;
 		if( txty < 4 )										txty = 4;
-		else if( txty > 476 - TINYCHAR_HEIGHT )				txty = 476 - TINYCHAR_HEIGHT;
+		else if( txty > 476 - SMALLCHAR_HEIGHT )				txty = 476 - SMALLCHAR_HEIGHT;
 		if( x < 0 )											x = 0;
 		else if( x > 638 )									x = 638;
 		if( y < 0 )											y = 4;
 		else if( y > 488 )									y = 488;
 
-//		CG_DrawStringExt( txtx, txty, buff, NULL, qfalse, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, distsize );
+//		CG_DrawStringExt( txtx, txty, buff, NULL, qfalse, qfalse, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, distsize );
 		CG_Text_Paint( txtx, txty, 0.2f, colorWhite, buff, 0, 0, 0, &cgDC.Assets.font, ITEM_ALIGN_LEFT );
 		CG_DrawPic( x, y, 2, 2, cgs.media.whiteShader );
 
@@ -435,8 +435,8 @@ void CG_Q3F_WaypointCommand(void)
 	wp->time = cg.time;
 	if( !(wp->loc = CG_Q3F_GetLocation( pos, qtrue )) )
 		wp->loc = "Unknown Location";
-	wp->locwidth		= TINYCHAR_WIDTH * strlen( wp->loc );
-	wp->messagewidth	= TINYCHAR_WIDTH * strlen( wp->message );
+	wp->locwidth		= SMALLCHAR_WIDTH * strlen( wp->loc );
+	wp->messagewidth	= SMALLCHAR_WIDTH * strlen( wp->message );
 	wp->highlightEnd = wp->highlightStart = 0;
 
 	CG_Printf(	BOX_PRINT_MODE_CHAT, "Received waypoint from %s^7, \"%s^7\" at %s^7.\n",

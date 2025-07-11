@@ -61,12 +61,8 @@ If you have questions concerning this license or the applicable additional terms
 // 1.1b5 - Mac update merge in
 
 #define CONFIG_NAME		"etconfig.cfg"
-#define MAX_LATENT_CMDS 64
 
 //#define LOCALIZATION_SUPPORT
-
-#define NEW_ANIMS
-#define	MAX_TEAMNAME	32
 
 #ifdef _MSC_VER
 
@@ -275,31 +271,18 @@ typedef enum {
 	MESSAGE_WAITING_OVERFLOW,   // packet too large with message
 } messageStatus_t;
 
-#define	MAX_OBITS			4
-#define SHOW_OBIT			5000		// 5 seconds
-
 // paramters for command buffer stuffing
 typedef enum {
-	EXEC_NOW,			// don't return until completed, a VM should NEVER use this,
+	EXEC_NOW = 0,			// don't return until completed, a VM should NEVER use this,
 						// because some commands might cause the VM to be unloaded...
 	EXEC_INSERT,		// insert at current position, but don't run yet
 	EXEC_APPEND			// add to end of the command buffer (normal case)
 } cbufExec_t;
 
-
 //
 // these aren't needed by any of the VMs.  put in another header?
 //
 #define	MAX_MAP_AREA_BYTES		32		// bit vector of area visibility
-
-
-// print levels from renderer (FIXME: set up for game / cgame?)
-typedef enum {
-	PRINT_ALL,
-	PRINT_DEVELOPER,		// only print when "developer 1"
-	PRINT_WARNING,
-	PRINT_ERROR
-} printParm_t;
 
 #ifdef	ERR_FATAL
 #undef	ERR_FATAL				// this is be defined in malloc.h
@@ -307,7 +290,7 @@ typedef enum {
 
 // parameters to the main Error routine
 typedef enum {
-	ERR_FATAL,					// exit the entire game with a popup window
+	ERR_FATAL = 0,					// exit the entire game with a popup window
 	ERR_VID_FATAL,				// exit the entire game with a popup window and doesn't delete profile.pid
 	ERR_DROP,					// print to console and disconnect from game
 	ERR_SERVERDISCONNECT,		// don't kill server
@@ -316,90 +299,21 @@ typedef enum {
 	ERR_AUTOUPDATE
 } errorParm_t;
 
-
-// font rendering values used by ui and cgame
-
-#define PROP_GAP_WIDTH			3
-#define PROP_SPACE_WIDTH		8
-#define PROP_HEIGHT				27
-#define PROP_SMALL_SIZE_SCALE	0.75
-
-#define BLINK_DIVISOR			200
-#define PULSE_DIVISOR			75
-
-#define UI_LEFT			0x00000000	// default
-#define UI_CENTER		0x00000001
-#define UI_RIGHT		0x00000002
-#define UI_FORMATMASK	0x00000007
-#define UI_SMALLFONT	0x00000010
-#define UI_BIGFONT		0x00000020	// default
-#define UI_GIANTFONT	0x00000040
-#define UI_DROPSHADOW	0x00000800
-#define UI_BLINK		0x00001000
-#define UI_INVERSE		0x00002000
-#define UI_PULSE		0x00004000
-// JOSEPH 10-24-99
-#define UI_MENULEFT		0x00008000
-#define UI_MENURIGHT	0x00010000
-#define UI_EXSMALLFONT	0x00020000
-#define UI_MENUFULL		0x00080000
-// END JOSEPH
-
-#define UI_SMALLFONT75	0x00100000
-
-#if defined(_DEBUG) && !defined(BSPC)
-	#define HUNK_DEBUG
-#endif
-
-typedef enum {
-	h_high,
-	h_low,
-	h_dontcare
-} ha_pref;
-
-#ifdef HUNK_DEBUG
-#define Hunk_Alloc( size, preference )				Hunk_AllocDebug(size, preference, #size, __FILE__, __LINE__)
-void *Hunk_AllocDebug( int size, ha_pref preference, char *label, char *file, int line );
-#else
-void *Hunk_Alloc( int size, ha_pref preference );
-#endif
-
-#ifdef __linux__
-// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=371
-// custom Snd_Memset implementation for glibc memset bug workaround
-void Snd_Memset (void* dest, const int val, const size_t count);
-#else
-#define Snd_Memset Com_Memset
-#endif
-
-void Com_Memset (void* dest, const int val, const size_t count);
-void Com_Memcpy (void* dest, const void* src, const size_t count);
-
-#define CIN_system	1
-#define CIN_loop	2
-#define	CIN_hold	4
-#define CIN_silent	8
-#define CIN_shader	16
+enum {
+	CIN_system = BIT(0),
+	CIN_loop = BIT(1),
+	CIN_hold = BIT(2),
+	CIN_silent = BIT(3),
+	CIN_shader = BIT(4)
+};
 
 // all drawing is done to a 640*480 virtual screen size
 // and will be automatically scaled to the real resolution
 #define	SCREEN_WIDTH		640
 #define	SCREEN_HEIGHT		480
 
-#define TINYCHAR_WIDTH		(SMALLCHAR_WIDTH)
-#define TINYCHAR_HEIGHT		(SMALLCHAR_HEIGHT)
-
-#define MINICHAR_WIDTH		8
-#define MINICHAR_HEIGHT		12
-
 #define SMALLCHAR_WIDTH		8
 #define SMALLCHAR_HEIGHT	16
-
-#define BIGCHAR_WIDTH		16
-#define BIGCHAR_HEIGHT		16
-
-#define	GIANTCHAR_WIDTH		32
-#define	GIANTCHAR_HEIGHT	48
 
 // ----------------------------------------------------
 
@@ -491,7 +405,7 @@ const char *Info_NextPair( const char *s, char *key, char *value );
 int Info_RemoveKey( char *s, const char *key );
 
 char	*vtos( const vec3_t v );
-char	*vtosf( const vec3_t v );
+//char	*vtosf( const vec3_t v );
 
 // this is only here so the functions in q_shared.c and bg_*.c can link
 void	NORETURN QDECL Com_Error( int level, const char *fmt, ... ) FORMAT_PRINTF(2, 3);
@@ -572,7 +486,7 @@ typedef struct cvar_s {
 
 #define	MAX_CVAR_VALUE_STRING	256
 
-typedef int	cvarHandle_t;
+typedef int32_t	cvarHandle_t;
 
 // the modules that run in the virtual machine can't access the cvar_t directly,
 // so they must ask for structured updates
@@ -638,7 +552,7 @@ typedef struct {
 // channel 0 never willingly overrides
 // other channels will always override a playing sound on that channel
 typedef enum {
-	CHAN_AUTO,
+	CHAN_AUTO = 0,
 	CHAN_LOCAL,		// menu sounds, etc
 	CHAN_WEAPON,
 	CHAN_VOICE,

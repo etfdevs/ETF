@@ -187,7 +187,7 @@ void CG_QuadExplosion( const vec3_t origin, int team ) {
 	}
 	Spirit_SetCustomShader( CG_Q3F_ShaderForQuad (team ) );
 	Spirit_SetCustomColor( CG_Q3F_LightForQuad( team ) );
-	Spirit_RunScript( cgs.spirit.explosion_quad, origin, origin, axisDefault,0 );
+	Spirit_RunScript( cgs.spirit.explosion_quad, origin, origin, axisDefault, 0 );
 }
 
 /*

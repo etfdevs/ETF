@@ -372,10 +372,6 @@ const char *COM_ParseExt( const char **data_p, qboolean allowLineBreaks )
 	*data_p = data;
 	return com_token;
 }
-	
-
-
-
 
 /*
 ==================

@@ -94,7 +94,7 @@ static void G_Q3F_ChargeThink( gentity_t *ent )
 		if(ent->activator)
 			Bot_Event_DetpackDetonated(ent->activator);
 		#endif
-		G_RadiusDamage(	ent->r.currentOrigin, ent, &level.gentities[ent->r.ownerNum], Q3F_CHARGE_DAMAGE, 0, MOD_CHARGE, 0 );
+		G_RadiusDamage(	ent->r.currentOrigin, ent, &level.gentities[ent->r.ownerNum], Q3F_CHARGE_DAMAGE, NULL, MOD_CHARGE, 0 );
 		trap_SendServerCommand( -1, "print \"FIRE IN THE HOLE!\n\"" );
 		G_AddEvent( ent, EV_HE_EXPLODE, 0);
 		ent->r.svFlags |= SVF_BROADCAST;

@@ -514,6 +514,9 @@ typedef struct bufferedSound_s
 	int maxtime;
 } bufferedSound_t;
 
+#define	MAX_OBITS			4
+#define SHOW_OBIT			5000		// 5 seconds
+
 typedef struct altObit_s
 {
 	int attacklen, viclen;
@@ -1087,8 +1090,6 @@ typedef struct {
 	qhandle_t	battleSuitShader;
 	qhandle_t	battleWeaponShader;
 	qhandle_t	hastePuffShader;
-	qhandle_t	redKamikazeShader;
-	qhandle_t	blueKamikazeShader;
 	qhandle_t	onFireShader0;
 	qhandle_t	onFireShader1;
 
@@ -2139,7 +2140,6 @@ int			trap_FS_Delete( const char *filename );
 void		trap_SendConsoleCommand( const char *text );
 
 // register a command name so the console can perform command completion.
-// FIXME: replace this with a normal console command "defineCommand"?
 void		trap_AddCommand( const char *cmdName );
 
 void		trap_RemoveCommand( const char *cmdName );

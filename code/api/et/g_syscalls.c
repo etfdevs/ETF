@@ -224,6 +224,9 @@ qboolean trap_AreasConnected( int area1, int area2 ) {
 void trap_LinkEntityExt( gentity_t *ent, const char *file, int line ) {
 	if(trap_Cvar_VariableIntegerValue("developer") && ent /*&& ent->inuse */&& !ent->r.bmodel && VectorCompare(ent->r.currentOrigin, vec3_origin)) {
 		G_Printf("WARNING: BBOX entity {%s} is being linked at world origin, this is probably a bug\n", ent->classname);
+		if (ent->s.eType > ET_EVENTS) {
+			G_Printf("TempEntity Event: %d [%s]\n", ent->s.eType - ET_EVENTS, eventnames[ent->s.eType - ET_EVENTS]);
+		}
 		G_Printf("File: %s, Line: %i\n", file, line );
 	}
 
@@ -285,11 +288,10 @@ int trap_RealTime( qtime_t *qtime ) {
 
 void trap_SnapVector( float *v ) {
 	SystemCall( G_SNAPVECTOR, v );
-	return;
 }
 
-qboolean trap_GetTag( int clientNum, int tagFileNumber, char *tagName, orientation_t *or ) {
-	return SystemCall( G_GETTAG, clientNum, tagFileNumber, tagName, or );
+qboolean trap_GetTag( int clientNum, int tagFileNumber, char *tagName, orientation_t *ori ) {
+	return SystemCall( G_GETTAG, clientNum, tagFileNumber, tagName, ori );
 }
 
 qboolean trap_LoadTag( const char* filename ) {

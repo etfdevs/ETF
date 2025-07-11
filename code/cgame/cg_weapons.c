@@ -2193,37 +2193,6 @@ void CG_FireWeapon( centity_t *cent ) {
 
 
 /*
-==============
-CG_WaterRipple
-==============
-*/
-void CG_WaterRipple( qhandle_t shader, vec3_t loc, vec3_t dir, int size, int lifetime ) {
-	localEntity_t   *le;
-	refEntity_t     *re;
-
-	le = CG_AllocLocalEntity(0);
-	le->leType          = LE_SCALE_FADE;
-	//le->leFlags         = LEF_PUFF_DONT_SCALE;
-
-	le->startTime       = cg.time;
-	le->endTime         = cg.time + lifetime;
-	le->lifeRate        = 1.0 / ( le->endTime - le->startTime );
-
-	re = &le->refEntity;
-	VectorCopy( loc, re->origin );
-	re->shaderTime      = cg.time / 1000.0f;
-	re->reType          = RT_SPLASH;
-	re->radius          = size;
-	re->customShader    = shader;
-	re->shaderRGBA[0]   = 0xff;
-	re->shaderRGBA[1]   = 0xff;
-	re->shaderRGBA[2]   = 0xff;
-	re->shaderRGBA[3]   = 0xff;
-	le->color[3]        = 1.0;
-}
-
-
-/*
 =================
 CG_MissileHitWall
 

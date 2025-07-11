@@ -874,4 +874,6 @@ char *_MS_FixColour( char *ptr, int colour );
 #define PROJ_SPEED_NG				1250
 #define PROJ_SPEED_SNG			1500
 
+#define MAX_LATENT_CMDS 64
+
 #endif
