@@ -38,6 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma once
 
 #include "q_primitives.h"
+#include <stddef.h>
 
 #if defined(__cplusplus)
 extern "C" {

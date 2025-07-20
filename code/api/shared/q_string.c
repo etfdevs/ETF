@@ -41,7 +41,6 @@ If you have questions concerning this license or the applicable additional terms
 #include <ctype.h>
 #include <errno.h>
 #include <math.h>
-#include <stddef.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
