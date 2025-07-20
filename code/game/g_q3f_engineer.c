@@ -2009,7 +2009,7 @@ void G_Q3F_Supply_Command( gentity_t *player )
 #endif
 
 	trap_Argv( 2, buff, sizeof(buff) );
-	suppnum = atoi( buff );
+	suppnum = Q_atoi( buff );
 
 	supplystation = G_Q3F_CheckSupplyStation( player, suppnum, qtrue );
 	if( !supplystation )
@@ -2676,7 +2676,7 @@ void G_Q3F_EngineerBuild_Command( gentity_t *ent )
 		if( ent->client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING) )
 			return;
 		trap_Argv( 2, cmdbuff, sizeof(cmdbuff) );
-		id = atoi( cmdbuff );
+		id = Q_atoi( cmdbuff );
 		G_Q3F_SentryUpgrade( ent, id );
 		return;
 	}*/
@@ -2685,7 +2685,7 @@ void G_Q3F_EngineerBuild_Command( gentity_t *ent )
 		if( ent->client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING) )
 			return;
 		trap_Argv( 2, cmdbuff, sizeof(cmdbuff) );
-		id = atoi( cmdbuff );
+		id = Q_atoi( cmdbuff );
 		G_Q3F_SentryRepair( ent, id );
 		G_Q3F_SupplyStationRepair( ent, id );
 		return;
@@ -2695,7 +2695,7 @@ void G_Q3F_EngineerBuild_Command( gentity_t *ent )
 		if( ent->client->ps.stats[STAT_Q3F_FLAGS] & (1 << FL_Q3F_BUILDING) )
 			return;
 		trap_Argv( 2, cmdbuff, sizeof(cmdbuff) );
-		id = atoi( cmdbuff );
+		id = Q_atoi( cmdbuff );
 		G_Q3F_SentryRefill( ent, id );
 		G_Q3F_SupplyStationRefill( ent, id );
 		return;
@@ -2703,16 +2703,16 @@ void G_Q3F_EngineerBuild_Command( gentity_t *ent )
 	if( !Q_stricmp( "rotate", cmdbuff ) )
 	{
 		trap_Argv( 2, anglebuff, sizeof(angle) );
-		angle = atof( anglebuff );
+		angle = Q_atof( anglebuff );
 		trap_Argv( 3, cmdbuff, sizeof(cmdbuff) );
-		id = atoi( cmdbuff );
+		id = Q_atoi( cmdbuff );
 		G_Q3F_SentryRotate( ent, id, angle );
 		return;
 	}
 	if( !Q_stricmp( "dismantle", cmdbuff ) )
 	{
 		trap_Argv( 2, cmdbuff, sizeof(cmdbuff) );
-		id = atoi( cmdbuff );
+		id = Q_atoi( cmdbuff );
 		G_Q3F_SentryDismantle( ent, id );
 		G_Q3F_SupplyStationDismantle( ent, id );
 		return;
@@ -2721,7 +2721,7 @@ void G_Q3F_EngineerBuild_Command( gentity_t *ent )
 	if( !Q_stricmp( "move", cmdbuff ) )
 	{
 		trap_Argv( 2, cmdbuff, sizeof(cmdbuff) );
-		id = atoi( cmdbuff );
+		id = Q_atoi( cmdbuff );
 		G_Q3F_SentryPlrMove( ent, id );
 		//G_Q3F_SupplyStationDismantle( ent, id );
 		return;

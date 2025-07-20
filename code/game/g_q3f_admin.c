@@ -137,7 +137,7 @@ qboolean StringToFilter( gentity_t *admin, const char *s, g_q3f_extIpFilter_t *f
 			num[j++] = *s++;
 		}
 		num[j] = 0;
-		b[i] = atoi(num);
+		b[i] = Q_atoi(num);
 		if (b[i] != 0)
 			m[i] = 255;
 
@@ -370,7 +370,7 @@ void G_ProcessIPBans(void)
 			{
 				// Look at the timestamp - if it's higher than current, we
 				// lose temp bans since they'll be invalid now.
-				keeptempbans = (atoi( u ) <= level.time);
+				keeptempbans = (Q_atoi( u ) <= level.time);
 				firstline = qfalse;
 			}
 			else {
@@ -380,7 +380,7 @@ void G_ProcessIPBans(void)
 				for( reason = time; *reason && *reason != ' '; reason++ );
 				while( *reason == ' ' )
 					*reason++ = 0;
-				realtime = time ? atoi(time) : 0;
+				realtime = time ? Q_atoi(time) : 0;
 				if( realtime && !keeptempbans )
 					continue;
 				if( realtime )
@@ -493,7 +493,7 @@ static void G_Q3F_AdminAddIP( gentity_t *admin )
 
 	trap_Argv( 2, str, sizeof( str ) );
 	trap_Argv( 3, reason, sizeof(reason) );
-	time = atoi( reason );
+	time = Q_atoi( reason );
 
 	if( trap_Argc() >= 4 && !time )
 	{
@@ -666,7 +666,7 @@ static void G_Q3F_AdminMatch( gentity_t *admin )
 	if( !Q_stricmp( cmdbuff, "warmup" ) ) {
 		if( trap_Argc() > 3 ) {
 			trap_Argv( 3, cmdbuff, sizeof(cmdbuff) );
-			trap_Cvar_Set( "g_warmup", va ( "%i", atoi(cmdbuff)));
+			trap_Cvar_Set( "g_warmup", va ( "%i", Q_atoi(cmdbuff)));
 			trap_Cvar_Update( &g_warmup );
 		}
 		G_Q3F_AdminPrint( admin, "Warmup set at %i seconds.\n", g_warmup.integer );
@@ -819,7 +819,7 @@ static void G_Q3F_AdminTimelimit( gentity_t *admin )
 		return;
 	}
 	
-	index = atoi(num);
+	index = Q_atoi(num);
 	if(index < 0)
 		index = 0;
 	if(index > 999)
@@ -849,7 +849,7 @@ static void G_Q3F_AdminCapturelimit( gentity_t *admin )
 		return;
 	}
 	
-	index = atoi(num);
+	index = Q_atoi(num);
 	if(index < 0)
 		index = 0;
 	if(index > INT_MAX-1)
@@ -879,7 +879,7 @@ static void G_Q3F_AdminGameIndex( gentity_t *admin )
 		return;
 	}
 
-	index = atoi(num);
+	index = Q_atoi(num);
 
 	if(index <= 0) {
 		G_Q3F_AdminPrint( admin, "Usage: admin gameindex <index>\n");
@@ -935,10 +935,10 @@ static void G_ETF_AdminPunish( gentity_t *admin )
 		return;
 	}
 
-	clientNum = atoi(player);
+	clientNum = Q_atoi(player);
 
 	if(*minutes) {
-		mins = atoi(minutes);
+		mins = Q_atoi(minutes);
 		if(mins == 0)
 			mins = 1;
 	}
@@ -972,7 +972,7 @@ static void G_ETF_AdminMute( gentity_t *admin )
 		return;
 	}
 
-	clientNum = atoi(player);
+	clientNum = Q_atoi(player);
 
 	// sanity check if it's a number
 	if(player[0] >= '0' && player[0] <= '9')
@@ -1017,7 +1017,7 @@ static void G_ETF_AdminUnMute( gentity_t *admin )
 		return;
 	}
 
-	clientNum = atoi(player);
+	clientNum = Q_atoi(player);
 
 	// sanity check if it's a number
 	if(player[0] >= '0' && player[0] <= '9')
@@ -1055,7 +1055,7 @@ static void G_ETF_AdminWarn( gentity_t *admin )
 		return;
 	}
 
-	trap_SendServerCommand( atoi(player), va("cp \"^1Warning from admin!\n^3%s\"", text ));
+	trap_SendServerCommand( Q_atoi(player), va("cp \"^1Warning from admin!\n^3%s\"", text ));
 }
 
 static void G_ETF_AdminTeamName( gentity_t *admin ) {
@@ -1075,7 +1075,7 @@ static void G_ETF_AdminTeamName( gentity_t *admin ) {
 	}
 
 	if (teamselect[0] >= '1' && teamselect[0] <= '4' && teamselect[1] == '\0')
-		team = atoi(teamselect);
+		team = Q_atoi(teamselect);
 	else
 		team = G_Q3F_GetTeamNum( teamselect );
 

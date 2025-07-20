@@ -65,7 +65,7 @@ qboolean	G_SpawnFloat( const char *key, const char *defaultString, float *out ) 
 	qboolean	present;
 
 	present = G_SpawnString( key, defaultString, &s );
-	*out = atof( s );
+	*out = Q_atof( s );
 	return present;
 }
 
@@ -74,7 +74,7 @@ qboolean	G_SpawnInt( const char *key, const char *defaultString, int *out ) {
 	qboolean	present;
 
 	present = G_SpawnString( key, defaultString, &s );
-	*out = atoi( s );
+	*out = Q_atoi( s );
 	return present;
 }
 
@@ -174,7 +174,7 @@ qboolean	G_Q3F_SpawnFloatOverride( const char *key, const char *defaultString, f
 	qboolean	present;
 
 	present = G_Q3F_SpawnStringOverride( key, defaultString, &s );
-	*out = atof( s );
+	*out = Q_atof( s );
 	return present;
 }
 
@@ -183,7 +183,7 @@ qboolean	G_Q3F_SpawnIntOverride( const char *key, const char *defaultString, int
 	qboolean	present;
 
 	present = G_Q3F_SpawnStringOverride( key, defaultString, &s );
-	*out = atoi( s );
+	*out = Q_atoi( s );
 	return present;
 }
 
@@ -594,13 +594,13 @@ void G_ParseField( const char *key, const char *value, gentity_t *ent ) {
 				((float *)(b+f->ofs))[2] = vec[2];
 				break;
 			case F_INT:
-				*(int *)(b+f->ofs) = atoi(value);
+				*(int *)(b+f->ofs) = Q_atoi(value);
 				break;
 			case F_FLOAT:
-				*(float *)(b+f->ofs) = atof(value);
+				*(float *)(b+f->ofs) = Q_atof(value);
 				break;
 			case F_ANGLEHACK:
-				v = atof(value);
+				v = Q_atof(value);
 				((float *)(b+f->ofs))[0] = 0;
 				((float *)(b+f->ofs))[1] = v;
 				((float *)(b+f->ofs))[2] = 0;

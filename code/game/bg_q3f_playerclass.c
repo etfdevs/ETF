@@ -631,7 +631,7 @@ int BG_Q3F_GetClassNum(const char *classname)
 {
 	int i;
 	
-	i = atoi( classname );
+	i = Q_atoi( classname );
 	if( i )
 		return( i );
 	for ( i = Q3F_CLASS_NULL; i < Q3F_CLASS_MAX; i++ )

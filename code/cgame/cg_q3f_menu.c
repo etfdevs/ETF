@@ -203,7 +203,7 @@ void CG_Q3F_MenuNumCommand( void ) {
 	int num;
 
 	trap_Argv( 1, buff, sizeof(num) );
-	num = atoi( buff );
+	num = Q_atoi( buff );
 	CG_Q3F_MenuChoice( num );
 }
 
@@ -334,7 +334,7 @@ static void SpectatorTeamMenu(void) {
 
 
 	trap_Argv( trap_Argc() - 1, buff, 2 );
-	isAdmin = atoi( buff );
+	isAdmin = Q_atoi( buff );
 
 	// if they want to spectate
 	if ( g_spectatorMode.value == 0 || ( g_spectatorMode.value == 1 && isAdmin ) ) {
@@ -430,7 +430,7 @@ void CG_Q3F_SpectatorTypeMenu(void) {
 	}
 
 	trap_Argv( trap_Argc() - 1, buff, 2 );
-	isAdmin = atoi( buff );
+	isAdmin = Q_atoi( buff );
 
 	// if they want to spectate
 	if ( g_spectatorMode.value == 0 || ( g_spectatorMode.value == 1 && isAdmin ) ) {
@@ -546,8 +546,8 @@ static void ClassMenu(void) {
 			buf[1][1] = classLimits[(i * 2)+1];
 			buf[1][2] = '\0';
 
-			current	= atoi(buf[0]);
-			max		= atoi(buf[1]);
+			current	= Q_atoi(buf[0]);
+			max		= Q_atoi(buf[1]);
 
 			CG_Q3F_MenuAddOption( i, cls->title, va(max ? "%i/%i" : "%i", current, max), va("%s\n", cls->commandstring));
 		} else {
@@ -836,15 +836,15 @@ static void UpgradeSentryMenu(void)
 	if( trap_Argc() < 3 )
 		return;
 	trap_Argv( 2, buff, 5 );
-	id = atoi( buff );
+	id = Q_atoi( buff );
 /*	trap_Argv( 3, buff, 5 );
-	health = atoi( buff );
+	health = Q_atoi( buff );
 	trap_Argv( 4, buff, 5 );
-	nails = atoi( buff );
+	nails = Q_atoi( buff );
 	trap_Argv( 5, buff, 5 );
-	rockets = atoi( buff );
+	rockets = Q_atoi( buff );
 	trap_Argv( 6, buff, 5 );
-	level = atoi( buff );*/
+	level = Q_atoi( buff );*/
 
 	cent = &cg_entities[id];
 	if( !cent->currentValid ) {
@@ -890,7 +890,7 @@ static void SupplyStationMenu(void)
 	if( trap_Argc() < 3 )
 		return;
 	trap_Argv( 2, buff, 5 );
-	id = atoi( buff );
+	id = Q_atoi( buff );
 
 	cent = &cg_entities[id];
 	if( !cent->currentValid )
@@ -923,7 +923,7 @@ static void UpgradeSupplyStationMenu(void)
 	if( trap_Argc() < 3 )
 		return;
 	trap_Argv( 2, buff, 5 );
-	id = atoi( buff );
+	id = Q_atoi( buff );
 
 	cent = &cg_entities[id];
 	if( !cent->currentValid )

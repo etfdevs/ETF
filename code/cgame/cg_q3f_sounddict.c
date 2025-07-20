@@ -139,7 +139,7 @@ void CG_Q3F_ParseSoundDictionary(void)
 		if( keyptr && pathptr )
 		{
 			linebuff[MAX_STRING_CHARS - 1] = 0;		// Just in case
-			sounddict[dictsize].time	= atoi( timeptr );
+			sounddict[dictsize].time	= Q_atoi( timeptr );
 			if( sounddict[dictsize].time <= 0 )
 			{
 				CG_Printf( BOX_PRINT_MODE_CHAT, "Sound dictionary: invalid time for '%s'.\n", keyptr );

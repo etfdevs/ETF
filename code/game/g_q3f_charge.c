@@ -271,7 +271,7 @@ qboolean G_Q3F_ChargeCommand( gentity_t *ent )
 		trap_SendServerCommand( ent->s.number, "menu charge" );
 		return( qtrue );
 	}
-	else if( (timer = atoi( strbuff )) > 0 )
+	else if( (timer = Q_atoi( strbuff )) > 0 )
 	{
 		int contents;
 		// Lay charge

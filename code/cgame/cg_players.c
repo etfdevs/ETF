@@ -365,7 +365,7 @@ CG_ColorFromString
 
 	VectorClear( color );
 
-	val = atoi( v );
+	val = Q_atoi( v );
 
 	if ( val < 1 || val > 7 ) {
 		VectorSet( color, 1, 1, 1 );
@@ -433,22 +433,23 @@ void CG_NewClientInfo( int clientNum ) {
 	// isolate the player's name
 	v = Info_ValueForKey(configstring, "n");
 	Q_strncpyz( newInfo.name, v, sizeof( newInfo.name ) );
+	BG_cleanName( v, newInfo.cleanname, sizeof( newInfo.name ), qfalse );
 
 	// team
 	v = Info_ValueForKey( configstring, "t" );
-	newInfo.team = atoi( v );
+	newInfo.team = Q_atoi( v );
 
 	// Golliwog: class
 	v = Info_ValueForKey( configstring, "cls" );
-	newInfo.cls = atoi( v );
+	newInfo.cls = Q_atoi( v );
 
 	// djbob: gender
 	v = Info_ValueForKey( configstring, "g" );
-	newInfo.gender = atoi( v );
+	newInfo.gender = Q_atoi( v );
 
 	// Ensiform: shoutcaster
 	v = Info_ValueForKey( configstring, "sc" );
-	newInfo.shoutcaster = atoi( v ) != 0;
+	newInfo.shoutcaster = Q_atoi( v ) != 0;
 
 	//CG_LoadClientInfo( clientNum );
 

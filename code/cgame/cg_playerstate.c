@@ -478,7 +478,7 @@ void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops ) {
 			cls = BG_Q3F_GetClass( ps );
 			if( cls->commandstring && *cls->commandstring ) {
 				trap_Cvar_VariableStringBuffer(va("cg_execClass%sConfig", cls->commandstring), buf, 32);
-				execClassConfig = atoi(buf);
+				execClassConfig = Q_atoi(buf);
 			}
 		}
 

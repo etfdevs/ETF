@@ -172,7 +172,7 @@ void G_Q3F_WaypointCommand( gentity_t *ent )
 	}
 
 	trap_Argv( 2, location, sizeof(location) );
-	index = atoi( location );
+	index = Q_atoi( location );
 	if( index == -1 )
 	{
 		// Debug 'dump all waypoints' command.

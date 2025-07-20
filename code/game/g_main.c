@@ -325,7 +325,7 @@ static int G_Q3F_ParseFriendlyFire( char *ffstring )
 	char *ptr;
 	qboolean ismirror;
 
-	val = atoi( ffstring );
+	val = Q_atoi( ffstring );
 	if( val )
 		return( val );
 
@@ -631,24 +631,24 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	// extension interface
 	trap_Cvar_VariableStringBuffer( "//trap_GetValue", value, sizeof( value ) );
 	if ( value[0] ) {
-		dll_com_trapGetValue = atoi( value );
+		dll_com_trapGetValue = Q_atoi( value );
 		if ( trap_GetValue( value, sizeof( value ), "engine_is_ete" ) ) {
 			engine_is_ete = qtrue;
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_NOTABCOMPLETE_ETE" ) ) {
-			cvar_notabcomplete = atoi( value );
+			cvar_notabcomplete = Q_atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_NODEFAULT_ETE" ) ) {
-			cvar_nodefault = atoi( value );
+			cvar_nodefault = Q_atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_ARCHIVE_ND_ETE" ) ) {
-			cvar_archive_nd = atoi( value );
+			cvar_archive_nd = Q_atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_DEVELOPER_ETE" ) ) {
-			cvar_developer = atoi( value );
+			cvar_developer = Q_atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "trap_FS_Delete" ) ) {
-			dll_trap_FS_Delete = atoi( value );
+			dll_trap_FS_Delete = Q_atoi( value );
 			deleteFile = qtrue;
 		}
 	}

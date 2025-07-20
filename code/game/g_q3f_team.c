@@ -98,7 +98,7 @@ int G_Q3F_GetTeamNum(const char *team)
 {
 	int i;
 	
-	i = atoi( team );
+	i = Q_atoi( team );
 	if( i )
 		return( i );
 	for ( i = Q3F_TEAM_FREE + 1; i < Q3F_TEAM_NUM_TEAMS; i++ )

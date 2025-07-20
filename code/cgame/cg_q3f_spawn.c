@@ -85,7 +85,7 @@ static qboolean CG_Q3F_SpawnFloat( const char *key, const char *defaultString, f
 	s = CG_Q3F_GetEntValue( key );
 	if( !(present = s != NULL) )
 		s = (char *)defaultString;
-	*out = atof( s );
+	*out = Q_atof( s );
 	return present;
 }
 
@@ -96,7 +96,7 @@ static qboolean CG_Q3F_SpawnInt( const char *key, const char *defaultString, int
 	s = CG_Q3F_GetEntValue( key );
 	if( !(present = s != NULL) )
 		s = (char *)defaultString;
-	*out = atoi( s );
+	*out = Q_atoi( s );
 	return present;
 }
 
@@ -614,7 +614,7 @@ static qboolean CG_Q3F_CheckSpawnGameIndex(void)
 			ptr++;
 		}
 
-		index = atoi( ptr );
+		index = Q_atoi( ptr );
 		if( !index ) // integer, DUH
 			CG_Error( "CG_Q3F_CheckSpawnGameIndex: Invalid gameindex '%i'.", index );
 		if( index == cgs.gameindex )

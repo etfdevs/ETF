@@ -1242,11 +1242,11 @@ qboolean G_Q3F_GrenadeCommand( gentity_t *ent )
 		return( qfalse );			// Can't throw during ceasefires
 
 	trap_Argv( 1, strbuff, 16 );
-	grentype = atoi( strbuff );
+	grentype = Q_atoi( strbuff );
 	trap_Argv( 2, strbuff, 16 );
-	primetime = atoi( strbuff );
+	primetime = Q_atoi( strbuff );
 	trap_Argv( 3, strbuff, 16 );
-	throwtime = atoi( strbuff );
+	throwtime = Q_atoi( strbuff );
 
 	limittime = level.time + FRAMETIME / 2;
 	if( primetime >= throwtime || primetime > limittime || throwtime > limittime )

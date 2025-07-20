@@ -2185,7 +2185,7 @@ void		trap_R_ClearDecals( void );
 
 // normal sounds will have their volume dynamically changed as their entity
 // moves and the listener moves
-#define		trap_S_StartSound( origin, entityNum, entchannel, sfx ) trap_S_RealStartSound( origin, entityNum, entchannel, sfx, __FILE__, __LINE__ )
+#define		trap_S_StartSound( origin, entityNum, entchannel, sfx ) trap_S_RealStartSound( origin, entityNum, entchannel, sfx, RELATIVE_FILENAME, __LINE__ )
 void		trap_S_RealStartSound( const vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx, const char* file, int line );
 void		trap_S_StartSoundVControl( const vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx, int volume );
 void		trap_S_StartSoundEx( const vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx, int flags );
@@ -2195,7 +2195,7 @@ int			trap_S_GetSoundLength(sfxHandle_t sfx);
 int			trap_S_GetCurrentSoundTime( void );	// ydnar
 
 // a local sound is always played full volume
-#define		trap_S_StartLocalSound( sfx, channelNum ) trap_S_RealStartLocalSound( sfx, channelNum, __FILE__, __LINE__ )
+#define		trap_S_StartLocalSound( sfx, channelNum ) trap_S_RealStartLocalSound( sfx, channelNum, RELATIVE_FILENAME, __LINE__ )
 void		trap_S_RealStartLocalSound( sfxHandle_t sfx, int channelNum, const char* file, int line );
 //void		trap_S_ClearLoopingSounds( void );
 void		trap_S_ClearSounds( qboolean killmusic );

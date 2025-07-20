@@ -401,7 +401,7 @@ int G_Q3F_ProcessGameIndexString( const char *value )
 	bitfield = 0;
 	for( index = -1; (data = G_Q3F_ArrayTraverse( array, &index )); )
 	{
-		gameindex = atoi( data->d.strdata );
+		gameindex = Q_atoi( data->d.strdata );
 		if( !gameindex ) // integer, DUH
 			G_Error( "Invalid gameindex '%s'.", data->d.strdata );
 		bitfield |= 1 << gameindex;
@@ -1826,7 +1826,7 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 	data = G_Q3F_KeyPairArrayFind( other->mapdata->other, affectteamsptr );
 	teams |= data ? G_Q3F_ProcessTeamString( data->value.d.strdata ) : 0;
 	data = G_Q3F_KeyPairArrayFind( other->mapdata->other, effectradiusptr );
-	distance = data ? atof( data->value.d.strdata ) : 0;
+	distance = data ? Q_atof( data->value.d.strdata ) : 0;
 
 	/*data = G_Q3F_KeyPairArrayFind( level.targetnameArray, holdingptr );
 	holding = data ? data->value.d.arraydata : NULL;
@@ -1844,7 +1844,7 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 		{
 			if( data->value.type == Q3F_TYPE_STRING )
 			{
-				index = atoi( data->value.d.strdata );
+				index = Q_atoi( data->value.d.strdata );
 				G_Q3F_RemString( &data->value.d.strdata );
 				data->value.d.intdata = index;
 				data->value.type = Q3F_TYPE_INTEGER;

@@ -609,7 +609,7 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 			trap_GetUserinfo( ent->s.number, userinfo, sizeof(userinfo) );
 			dataptr = Info_ValueForKey( userinfo, "rate" );
 			data = 0;
-			if( !dataptr || (data = atoi( dataptr )) < g_minRate.integer ) {
+			if( !dataptr || (data = Q_atoi( dataptr )) < g_minRate.integer ) {
 				G_Q3F_AdminTempBan( ent, va( "Rate set to %d (sv_MinRate is %d)", data, g_minRate.integer ), Q3F_ADMIN_TEMPBAN_TIME );
 			}
 		}
@@ -620,7 +620,7 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 			trap_GetUserinfo( ent->s.number, userinfo, sizeof(userinfo) );
 			dataptr = Info_ValueForKey( userinfo, "snaps" );
 			data = 0;
-			if( !dataptr || (data = atoi( dataptr )) < g_minSnaps.integer )
+			if( !dataptr || (data = Q_atoi( dataptr )) < g_minSnaps.integer )
 				G_Q3F_AdminTempBan( ent, va( "Snaps set to %d (sv_MinSnaps is %d)", data, g_minSnaps.integer ), Q3F_ADMIN_TEMPBAN_TIME );
 		}
 
@@ -629,7 +629,7 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 		dataptr = Info_ValueForKey( userinfo, "cg_adjustAgentSpeed" );
 		data = 0;
 		if( dataptr && ent->client )
-			ent->client->sess.adjustAgentSpeed = atoi( dataptr );
+			ent->client->sess.adjustAgentSpeed = Q_atoi( dataptr );
 		// RR2DO2
 	}
 }
@@ -691,7 +691,7 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 	{
 		char buf[256];
 		trap_Cvar_VariableStringBuffer("showevents", buf, sizeof(buf));
-		if ( atof(buf) != 0 ) {
+		if ( Q_atof(buf) != 0 ) {
 			G_Printf("Game event %20s\n", eventnames[event]);
 		}
 	}

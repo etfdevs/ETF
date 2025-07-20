@@ -123,7 +123,7 @@ static qboolean MapInfo_KeyHandlerGameIndexDef(mapInfo_t* info, const char* valu
 	char	key[MAX_TOKEN_CHARS];
 	const gameIndexKeyHandler_t* handler;
 
-	info->gameIndiciesInfo[info->numGameIndicies].number = atoi(value);
+	info->gameIndiciesInfo[info->numGameIndicies].number = Q_atoi(value);
 	info->gameIndiciesInfo[info->numGameIndicies].description = NULL;
 
 	info->numGameIndicies++;

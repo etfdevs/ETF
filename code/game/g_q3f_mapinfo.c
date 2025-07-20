@@ -224,7 +224,7 @@ q3f_keypairarray_t *G_Q3F_LoadMapInfo( const char *mapname )
 	G_Q3F_KeyPairArrayAdd( kpa, "mapinfo", Q3F_TYPE_STRING, 0, (intptr_t) rawmpi );
 	for( ptr = rawmpi; ptr && *ptr; ptr++ )
 	{
-		c1 = atoi( ptr );
+		c1 = Q_atoi( ptr );
 		if( c1 != 0 )
 		{
 			// It's a number, let's see if we can find a marker and a second number.
@@ -233,7 +233,7 @@ q3f_keypairarray_t *G_Q3F_LoadMapInfo( const char *mapname )
 			for( ptr3 = ptr2; *ptr3 && (*ptr3 <'0' || *ptr3 > '9') && !G_Q3F_MI_IsSpace( *ptr3 ); ptr3++ );
 			for( ptr4 = ptr3; *ptr4 && G_Q3F_MI_IsSpace( *ptr4 ); ptr4++ );
 
-			c2 = atoi( ptr4 );
+			c2 = Q_atoi( ptr4 );
 			if( c2 != 0 && c2 > c1 )
 			{
 				// Check the marker.

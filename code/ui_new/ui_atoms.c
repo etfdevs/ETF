@@ -284,12 +284,12 @@ void UI_Q3F_MapSelectTally(void) {
 	p = strchr(s, ' ');
 	while(p) {
 		*p++ = '\0';
-		uiInfo.mapSelectTally[i++] = atoi(s);
+		uiInfo.mapSelectTally[i++] = Q_atoi(s);
 		s = p;
 		p = strchr(s, ' ');
 	}
 	if(*s) {
-		uiInfo.mapSelectTally[i++] = atoi(s);
+		uiInfo.mapSelectTally[i++] = Q_atoi(s);
 	}
 }
 
@@ -383,7 +383,7 @@ static void UI_HudIngame_f( void ) {
 	char buffer[64];
 	trap_GetConfigString( CS_INTERMISSION, buffer, sizeof(buffer) );
 
-	if ( atoi( buffer ) ) {
+	if ( Q_atoi( buffer ) ) {
 		HUD_Setup_Menu("tab_scores");
 		UI_ShowEndGame();
 	} else {

@@ -925,11 +925,11 @@ static void CG_Q3F_InitPhaseClasses(void)
 	bg_q3f_playerclass_t *cls;
 
 	if ( cgs.initIndex == Q3F_CLASS_NULL ) {
-		cgs.teams =  atoi( CG_ConfigString( CS_TEAMMASK ));
+		cgs.teams =  Q_atoi( CG_ConfigString( CS_TEAMMASK ));
 		sscanf(	CG_ConfigString( CS_TEAMALLIED ), "%i %i %i %i",
 			&cg.teamAllies[0], &cg.teamAllies[1],
 			&cg.teamAllies[2], &cg.teamAllies[3] );
-		cgs.classes = atoi( CG_ConfigString( CS_CLASSMASK ));
+		cgs.classes = Q_atoi( CG_ConfigString( CS_CLASSMASK ));
 		cgs.initIndex++;
 	} else if( cgs.initIndex >= Q3F_CLASS_MAX) {
 		CG_Q3F_SetInitPhase( cgs.initPhase + 1 );
@@ -1172,28 +1172,28 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 
 	trap_Cvar_VariableStringBuffer( "//trap_GetValue", value, sizeof( value ) );
 	if ( value[0] ) {
-		dll_com_trapGetValue = atoi( value );
+		dll_com_trapGetValue = Q_atoi( value );
 		if ( trap_GetValue( value, sizeof( value ), "engine_is_ete" ) ) {
 			engine_is_ete = qtrue;
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_NOTABCOMPLETE_ETE" ) ) {
-			cvar_notabcomplete = atoi( value );
+			cvar_notabcomplete = Q_atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_NODEFAULT_ETE" ) ) {
-			cvar_nodefault = atoi( value );
+			cvar_nodefault = Q_atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_ARCHIVE_ND_ETE" ) ) {
-			cvar_archive_nd = atoi( value );
+			cvar_archive_nd = Q_atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_DEVELOPER_ETE" ) ) {
-			cvar_developer = atoi( value );
+			cvar_developer = Q_atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "trap_R_AddRefEntityToScene2" ) ) {
-			dll_trap_R_AddRefEntityToScene2 = atoi( value );
+			dll_trap_R_AddRefEntityToScene2 = Q_atoi( value );
 			intShaderTime = qtrue;
 		}
 		if ( trap_GetValue( value, sizeof( value ), "trap_R_AddLinearLightToScene_ETE" ) ) {
-			dll_trap_R_AddLinearLightToScene = atoi( value );
+			dll_trap_R_AddLinearLightToScene = Q_atoi( value );
 			linearLight = qtrue;
 		}
 	}
@@ -1274,7 +1274,7 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 	// Golliwog.
 
 	s = CG_ConfigString( CS_LEVEL_START_TIME );
-	cgs.levelStartTime = atoi( s );
+	cgs.levelStartTime = Q_atoi( s );
 
 	CG_ParseServerinfo();
 	CG_ParseSysteminfo();
@@ -1307,7 +1307,7 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 		
 		trap_Cvar_VariableStringBuffer("cg_drawSkyPortal", buffer, 256);
 
-		dValue = atoi(buffer);
+		dValue = Q_atoi(buffer);
 
 		if(dValue == 1) {
 			trap_Print("^1Disabling Portal Skies On PowerVR Kyro, Set cg_drawSkyPortal To 2 To Force On");

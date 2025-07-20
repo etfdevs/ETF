@@ -89,23 +89,23 @@ CG_ParseScores
 static void CG_ParseScores( void ) {
 	int		i;
 
-	cg.numScores = atoi( CG_Argv( 1 ) );
+	cg.numScores = Q_atoi( CG_Argv( 1 ) );
 	if ( cg.numScores > MAX_CLIENTS ) {
 		cg.numScores = MAX_CLIENTS;
 	}
 
-	cg.teamScores[0] = atoi( CG_Argv( 2 ) );
-	cg.teamScores[1] = atoi( CG_Argv( 3 ) );
-	cg.teamScores[2] = atoi( CG_Argv( 4 ) );
-	cg.teamScores[3] = atoi( CG_Argv( 5 ) );
+	cg.teamScores[0] = Q_atoi( CG_Argv( 2 ) );
+	cg.teamScores[1] = Q_atoi( CG_Argv( 3 ) );
+	cg.teamScores[2] = Q_atoi( CG_Argv( 4 ) );
+	cg.teamScores[3] = Q_atoi( CG_Argv( 5 ) );
 
 	memset( cg.scores, 0, sizeof( cg.scores ) );
 	for ( i = 0 ; i < cg.numScores ; i++ ) {
-		cg.scores[i].client =	atoi(CG_Argv(i * 5 + 6));
-		cg.scores[i].score =	atoi(CG_Argv(i * 5 + 7));
-		cg.scores[i].ping =		atoi(CG_Argv(i * 5 + 8));
-		cg.scores[i].time =		atoi(CG_Argv(i * 5 + 9));
-		cg.scores[i].flags =	atoi(CG_Argv(i * 5 + 10));
+		cg.scores[i].client =	Q_atoi(CG_Argv(i * 5 + 6));
+		cg.scores[i].score =	Q_atoi(CG_Argv(i * 5 + 7));
+		cg.scores[i].ping =		Q_atoi(CG_Argv(i * 5 + 8));
+		cg.scores[i].time =		Q_atoi(CG_Argv(i * 5 + 9));
+		cg.scores[i].flags =	Q_atoi(CG_Argv(i * 5 + 10));
 
 		if ( cg.scores[i].client < 0 || cg.scores[i].client >= MAX_CLIENTS ) {
 			cg.scores[i].client = 0;
@@ -132,14 +132,14 @@ static void CG_ParseTeamInfo( void ) {
 	int		i;
 	int		client;
 
-	numSortedTeamPlayers = atoi( CG_Argv( 1 ) );
+	numSortedTeamPlayers = Q_atoi( CG_Argv( 1 ) );
 
 	if( numSortedTeamPlayers < 0 || numSortedTeamPlayers > TEAM_MAXOVERLAY ) {
 		CG_Error("CG_ParseTeamInfo: numSortedTeamPlayers out of range (%d)", numSortedTeamPlayers);
 	}
 
 	for ( i = 0 ; i < numSortedTeamPlayers ; i++ ) {
-		client = atoi( CG_Argv( i * 3 + 2 ) );
+		client = Q_atoi( CG_Argv( i * 3 + 2 ) );
 		if  ( client < 0 || client >= MAX_CLIENTS ) {
 			CG_Error("CG_ParseTeamInfo: bad client number: %d", client);
 			continue;
@@ -147,8 +147,8 @@ static void CG_ParseTeamInfo( void ) {
 
 		sortedTeamPlayers[i] = client;
 
-		cgs.clientinfo[ client ].health =	atoi( CG_Argv( i * 3 + 3 ) );
-		cgs.clientinfo[ client ].armor =	atoi( CG_Argv( i * 3 + 4 ) );
+		cgs.clientinfo[ client ].health =	Q_atoi( CG_Argv( i * 3 + 3 ) );
+		cgs.clientinfo[ client ].armor =	Q_atoi( CG_Argv( i * 3 + 4 ) );
 	}
 }
 
@@ -182,27 +182,27 @@ void CG_ParseServerinfo( void ) {
 	const char	*mapname;
 
 	info = CG_ConfigString( CS_SERVERINFO );
-	cgs.gametype = atoi( Info_ValueForKey( info, "g_gametype" ) );
+	cgs.gametype = Q_atoi( Info_ValueForKey( info, "g_gametype" ) );
 	trap_Cvar_Set("g_gametype", va("%i", cgs.gametype));
-	cgs.dmflags = atoi( Info_ValueForKey( info, "dmflags" ) );
-	cgs.teamflags = atoi( Info_ValueForKey( info, "teamflags" ) );
-//	cgs.fraglimit = atoi( Info_ValueForKey( info, "fraglimit" ) );
-//	cgs.capturelimit = atoi( Info_ValueForKey( info, "capturelimit" ) );
-	cgs.timelimit = atoi( Info_ValueForKey( info, "timelimit" ) );
-	cgs.maxclients = atoi( Info_ValueForKey( info, "sv_maxclients" ) );
-	cgs.gameindex = atoi( Info_ValueForKey( info, "g_gameindex" ) );
+	cgs.dmflags = Q_atoi( Info_ValueForKey( info, "dmflags" ) );
+	cgs.teamflags = Q_atoi( Info_ValueForKey( info, "teamflags" ) );
+//	cgs.fraglimit = Q_atoi( Info_ValueForKey( info, "fraglimit" ) );
+//	cgs.capturelimit = Q_atoi( Info_ValueForKey( info, "capturelimit" ) );
+	cgs.timelimit = Q_atoi( Info_ValueForKey( info, "timelimit" ) );
+	cgs.maxclients = Q_atoi( Info_ValueForKey( info, "sv_maxclients" ) );
+	cgs.gameindex = Q_atoi( Info_ValueForKey( info, "g_gameindex" ) );
 	mapname = Info_ValueForKey( info, "mapname" );
 	Q_strncpyz( cgs.rawmapname, mapname, sizeof(cgs.rawmapname) );  //keeg for tracemap support
 	Com_sprintf( cgs.pathmapname, sizeof( cgs.pathmapname ), "maps/%s", mapname );
 	Com_sprintf( cgs.mapname, sizeof( cgs.mapname ), "maps/%s.bsp", mapname );
 
-	cg.teamScores[0] = atoi( Info_ValueForKey( info, "score_red" ) );
-	cg.teamScores[1] = atoi( Info_ValueForKey( info, "score_blue" ) );
-	cg.teamScores[2] = atoi( Info_ValueForKey( info, "score_yellow" ) );
-	cg.teamScores[3] = atoi( Info_ValueForKey( info, "score_green" ) );
+	cg.teamScores[0] = Q_atoi( Info_ValueForKey( info, "score_red" ) );
+	cg.teamScores[1] = Q_atoi( Info_ValueForKey( info, "score_blue" ) );
+	cg.teamScores[2] = Q_atoi( Info_ValueForKey( info, "score_yellow" ) );
+	cg.teamScores[3] = Q_atoi( Info_ValueForKey( info, "score_green" ) );
 
-	cgs.unlagged = atoi( Info_ValueForKey( info, "g_unlagged" ) );
-	cgs.antilag_ms = atoi( Info_ValueForKey( info, "g_antilag_ms" ) );
+	cgs.unlagged = Q_atoi( Info_ValueForKey( info, "g_unlagged" ) );
+	cgs.antilag_ms = Q_atoi( Info_ValueForKey( info, "g_antilag_ms" ) );
 }
 
 void CG_ParseSysteminfo( void ) {
@@ -210,28 +210,28 @@ void CG_ParseSysteminfo( void ) {
 
 	info = CG_ConfigString( CS_SYSTEMINFO );
 
-	cgs.pmove_fixed = ( atoi( Info_ValueForKey( info, "pmove_fixed" ) ) ) ? qtrue : qfalse;
-	cgs.pmove_msec = atoi( Info_ValueForKey( info, "pmove_msec" ) );
+	cgs.pmove_fixed = ( Q_atoi( Info_ValueForKey( info, "pmove_fixed" ) ) ) ? qtrue : qfalse;
+	cgs.pmove_msec = Q_atoi( Info_ValueForKey( info, "pmove_msec" ) );
 	if ( cgs.pmove_msec < 8 ) {
 		cgs.pmove_msec = 8;
 	} else if ( cgs.pmove_msec > 33 ) {
 		cgs.pmove_msec = 33;
 	}
 
-	cgs.sv_fps = atoi( Info_ValueForKey( info, "sv_fps" ) );
+	cgs.sv_fps = Q_atoi( Info_ValueForKey( info, "sv_fps" ) );
 
-	cgs.sv_cheats = ( atoi( Info_ValueForKey( info, "sv_cheats" ) ) ) ? qtrue : qfalse;
+	cgs.sv_cheats = ( Q_atoi( Info_ValueForKey( info, "sv_cheats" ) ) ) ? qtrue : qfalse;
 
-	cgs.synchronousClients = ( atoi( Info_ValueForKey( info, "g_synchronousClients" ) ) ) ? qtrue : qfalse;
+	cgs.synchronousClients = ( Q_atoi( Info_ValueForKey( info, "g_synchronousClients" ) ) ) ? qtrue : qfalse;
 
-	bg_evaluategravity = atof( Info_ValueForKey( info, "g_gravity" ) );
+	bg_evaluategravity = Q_atof( Info_ValueForKey( info, "g_gravity" ) );
 }
 
 
 static void CG_ParseMatchState( void ) {
 	int	oldstate = cg.matchState;
 
-	cg.matchState = atoi (CG_ConfigString( CS_MATCH_STATE ));
+	cg.matchState = Q_atoi (CG_ConfigString( CS_MATCH_STATE ));
 	if (cg.matchState == oldstate)
 		return;
 	if (cg.matchState == MATCH_STATE_WARMUP) {
@@ -249,7 +249,7 @@ CG_ParseWarmup
 */
 static void CG_ParseWarmup( void ) {
 	cg.warmupCount = -1;
-	cg.warmup = atoi( CG_ConfigString( CS_WARMUP ));
+	cg.warmup = Q_atoi( CG_ConfigString( CS_WARMUP ));
 }
 
 /*
@@ -262,10 +262,10 @@ static void CG_ParseTeamScores( void ) {
 
 	info = CG_ConfigString( CS_SERVERINFO );
 
-	cg.teamScores[0] = atoi( Info_ValueForKey( info, "score_red" ) );
-	cg.teamScores[1] = atoi( Info_ValueForKey( info, "score_blue" ) );
-	cg.teamScores[2] = atoi( Info_ValueForKey( info, "score_yellow" ) );
-	cg.teamScores[3] = atoi( Info_ValueForKey( info, "score_green" ) );
+	cg.teamScores[0] = Q_atoi( Info_ValueForKey( info, "score_red" ) );
+	cg.teamScores[1] = Q_atoi( Info_ValueForKey( info, "score_blue" ) );
+	cg.teamScores[2] = Q_atoi( Info_ValueForKey( info, "score_yellow" ) );
+	cg.teamScores[3] = Q_atoi( Info_ValueForKey( info, "score_green" ) );
 }
 
 /*
@@ -279,14 +279,14 @@ void CG_SetConfigValues( void ) {
 //	const char *s;
 
 	CG_ParseTeamScores();
-	cgs.levelStartTime = atoi( CG_ConfigString( CS_LEVEL_START_TIME ) );
+	cgs.levelStartTime = Q_atoi( CG_ConfigString( CS_LEVEL_START_TIME ) );
 
 	CG_ParseWarmup();
 	CG_ParseMatchState();
 	if ( cg_atmosphericEffects.integer )
 		//CG_Q3F_EffectParse( CG_ConfigString( CS_Q3F_ATMOSEFFECT ) );
       CG_EffectParse( CG_ConfigString( CS_FORTS_ATMOSEFFECT ) );  //keeger new atmospherics
-	cg.ceaseFire = atoi( CG_ConfigString( CS_FORTS_CEASEFIRE ) ) ? qtrue : qfalse;	// Golliwog: Can't shoot/gren/pickup if set
+	cg.ceaseFire = Q_atoi( CG_ConfigString( CS_FORTS_CEASEFIRE ) ) ? qtrue : qfalse;	// Golliwog: Can't shoot/gren/pickup if set
 }
 
 /*
@@ -424,7 +424,7 @@ static void CG_ConfigStringModified( void ) {
 	const char	*str;
 	int		num;
 
-	num = atoi( CG_Argv( 1 ) );
+	num = Q_atoi( CG_Argv( 1 ) );
 
 	// get the gamestate from the client system, which will have the
 	// new configstring already integrated
@@ -447,20 +447,20 @@ static void CG_ConfigStringModified( void ) {
 	} else if ( num == CS_MATCH_STATE ) {
 		CG_ParseMatchState();
 	} else if ( num == CS_LEVEL_START_TIME ) {
-		cgs.levelStartTime = atoi( str );
+		cgs.levelStartTime = Q_atoi( str );
 	} else if ( num == CS_VOTE_TIME ) {
-		cgs.voteTime = atoi( str );
+		cgs.voteTime = Q_atoi( str );
 		cgs.voteModified = qtrue;
 	} else if ( num == CS_VOTE_YES ) {
-		cgs.voteYes = atoi( str );
+		cgs.voteYes = Q_atoi( str );
 		cgs.voteModified = qtrue;
 	} else if ( num == CS_VOTE_NO ) {
-		cgs.voteNo = atoi( str );
+		cgs.voteNo = Q_atoi( str );
 		cgs.voteModified = qtrue;
 	} else if ( num == CS_VOTE_STRING ) {
 		Q_strncpyz( cgs.voteString, str, sizeof( cgs.voteString ) );
 	} else if ( num == CS_INTERMISSION ) {
-		cg.intermissionStarted = atoi( str );
+		cg.intermissionStarted = Q_atoi( str );
 		if(cg.intermissionStarted) {
 			CG_SetupIntermissionMenu();
 		} else {
@@ -490,7 +490,7 @@ static void CG_ConfigStringModified( void ) {
 		//CG_Q3F_EffectParse( str );
 		CG_EffectParse( str );  //Keeger atmospheric code
 	} else if( num == CS_FORTS_CEASEFIRE ) {
-		cg.ceaseFire = atoi( str ) ? qtrue : qfalse;
+		cg.ceaseFire = Q_atoi( str ) ? qtrue : qfalse;
 	} else if( num == CS_FORTS_MAPVOTENAMES ) {
 		trap_SendConsoleCommand( "ui_updatemapvotes\n" );
 //		CG_Q3F_MapSelectInit( str );
@@ -507,14 +507,14 @@ static void CG_ConfigStringModified( void ) {
 	} else if ( num == CS_Q3F_CVARLIMITS ) {
 		CG_Q3F_UpdateCvarLimits();
 	} else if ( num == CS_TEAMMASK ) {
-		cgs.teams = atoi( str );
+		cgs.teams = Q_atoi( str );
 	} else if ( num == CS_TEAMALLIED ) {
 		sscanf(	str, "%i %i %i %i",
 			&cg.teamAllies[0], &cg.teamAllies[1],
 			&cg.teamAllies[2], &cg.teamAllies[3] );
 	} else if ( num == CS_CLASSMASK && !cgs.initing ) {
 		int oldClasses = cgs.classes;
-		cgs.classes = atoi( CG_ConfigString( CS_CLASSMASK ) );
+		cgs.classes = Q_atoi( CG_ConfigString( CS_CLASSMASK ) );
 		if ( oldClasses != cgs.classes ) {
 			int i;
 			for ( i = Q3F_CLASS_RECON; i < Q3F_CLASS_MAX; i++ ) {
@@ -737,7 +737,7 @@ static void CG_ServerCommand( void ) {
 			CG_Printf( BOX_PRINT_MODE_CHAT_REAL, "%s\n", text );
 
 			cmd = CG_Argv(2);
-			if ( cg_teamChatSounds.integer >= 1 && atoi(cmd) )
+			if ( cg_teamChatSounds.integer >= 1 && Q_atoi(cmd) )
 				CG_Q3F_PlayLocalSound( cmd );
 			else
 				trap_S_StartLocalSound( cgs.media.talkSound, CHAN_LOCAL_SOUND );
@@ -754,7 +754,7 @@ static void CG_ServerCommand( void ) {
 		CG_Printf( BOX_PRINT_MODE_TEAMCHAT, "%s\n", text );
 
 		cmd = CG_Argv(2);
-		if ( cg_teamChatSounds.integer >= 1 && atoi(cmd) )
+		if ( cg_teamChatSounds.integer >= 1 && Q_atoi(cmd) )
 			CG_Q3F_PlayLocalSound( cmd );
 		else
 			trap_S_StartLocalSound( cgs.media.talkSound, CHAN_LOCAL_SOUND );

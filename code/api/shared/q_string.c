@@ -43,6 +43,7 @@ If you have questions concerning this license or the applicable additional terms
 #include <math.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -207,6 +208,32 @@ qboolean Q_isintegral( float f )
 	return (qboolean)( (int)f == f );
 }
 
+#ifdef _WIN32
+#define QDECL __cdecl
+#define NORETURN __declspec(noreturn)
+#define FORMAT_PRINTF(x, y) /* nothing */
+#elif defined(__GNUC__) || defined(__clang__)
+#define QDECL
+#define NORETURN __attribute__((noreturn))
+#define FORMAT_PRINTF(x, y) __attribute__((format (printf, x, y)))
+#else
+#define QDECL
+#define NORETURN /* nothing */
+#endif
+
+void NORETURN trap_Error(const char *fmt);
+
+static void FORMAT_PRINTF(1,2) NORETURN QDECL Lib_Error( const char *error, ... ) {
+	va_list		argptr;
+	char		text[8192];
+
+	va_start (argptr, error);
+	Q_vsnprintf (text, sizeof(text), error, argptr);
+	va_end (argptr);
+
+	trap_Error( text );
+}
+
 /*
 =============
 Q_strncpyz
@@ -214,12 +241,18 @@ Q_strncpyz
 Safe strncpy that ensures a trailing zero
 =============
 */
-void Q_strncpyz( char *dest, const char *src, int destsize ) {
-	assert(src);
-	assert(dest);
-	assert(destsize);
+void Q_strncpyz_fn( char *dest, const char *src, const int destsize, const char *func, const char *file, const int line ) {
+	if (!dest) {
+		Lib_Error("Q_strncpyz: NULL dest (%s, %s:%i)", func, file, line);
+	}
+	if (!src) {
+		Lib_Error("Q_strncpyz: NULL src (%s, %s:%i)", func, file, line);
+	}
+	if (destsize < 1) {
+		Lib_Error("Q_strncpyz: destsize < 1 (%s, %s:%i)", func, file, line);
+	}
 	
-	strncpy( dest, src, destsize-1 );
+	strncpy( dest, src, (size_t)destsize-1 );
 	dest[destsize-1] = '\0';
 }
 
@@ -386,20 +419,30 @@ char *Q_strupr( char *s1 ) {
 }
 
 // never goes past bounds or leaves without a terminating 0
-void Q_strcat( char *dest, int size, const char *src ) {
-	int		l1;
+void Q_strcat_fn( char *dest, const int size, const char *src, const char *func, const char *file, const int line ) {
+	const int l1 = (int)strlen( dest );
 
-	l1 = strlen( dest );
 	if ( l1 >= size ) {
-		//Com_Error( ERR_FATAL, "Q_strcat: already overflowed" );
-		return;
+		Lib_Error( "Q_strcat: already overflowed" );
+		//return;
 	}
 	if ( strlen(src)+1 > (size_t)(size - l1))
 	{	//do the error here instead of in Q_strncpyz to get a meaningful msg
-		//Com_Error(ERR_FATAL,"Q_strcat: cannot append \"%s\" to \"%s\"", src, dest);
-		return;
+		Lib_Error("Q_strcat: cannot append \"%s\" to \"%s\"", src, dest);
+		//return;
 	}
-	Q_strncpyz( dest + l1, src, size - l1 );
+	Q_strncpyz_fn( dest + l1, src, size - l1, func, file, line );
+}
+
+size_t Q_strnlen_fn(const char *str, size_t strsz, const char *func, const char *file, const int line ) {
+	const char *p;
+	if (!str) {
+		Lib_Error("Q_strnlen: NULL str (%s, %s:%i)", func, file, line);
+		//return 0;
+	}
+
+	p = memchr(str, 0, strsz);
+	return p ? p - str : strsz;
 }
 
 char *Q_stradd( char *dst, const char *src )
@@ -687,3 +730,11 @@ int Q_vsnprintf(char *str, size_t size, const char *format, va_list ap)
 }
 #endif
 
+float Q_atof(const char *str) {
+	const float f = strtof(str, NULL);
+	return (isfinite(f) ? f : 0);
+}
+
+int Q_atoi(const char *str) {
+	return (int)strtol(str, NULL, 10);
+}

@@ -321,7 +321,7 @@ static int G_Q3F_SC_ParseMapIndexField( const char *str )
 		for( ; *str && (*str < '0' || *str > '9'); str++ );
 		if( *str )
 		{
-			bitfield |= (1 << atoi( str ));
+			bitfield |= (1 << Q_atoi( str ));
 			for( ; *str && *str >= '0' && *str <= '9'; str++ );
 		}
 	}
@@ -451,8 +451,8 @@ static void G_Q3F_SC_FilterByPlayers( int playerCount, const char *playerLower, 
 	q3f_array_t *newmaplist;
 
 		// Work out our acceptable boundaries.
-	pLow	= playerLower ? atoi( playerLower ) : 6;
-	pHigh	= playerUpper ? atoi( playerUpper ) : 6;
+	pLow	= playerLower ? Q_atoi( playerLower ) : 6;
+	pHigh	= playerUpper ? Q_atoi( playerUpper ) : 6;
 	if( pHigh <= 0 || pHigh > 6 )
 		pHigh = 6;
 	if( pLow <= 6 || pLow > 6 )//;//|| pLow > pHigh )
@@ -499,7 +499,7 @@ static void G_Q3F_SC_FilterByHistory( const char *historyLimit )
 	q3f_keypair_t *kp;
 	q3f_array_t *newmaplist;
 
-	limit = historyLimit ? atoi( historyLimit ) : 5;
+	limit = historyLimit ? Q_atoi( historyLimit ) : 5;
 	if( limit <= 0 || limit >= 100 )
 		limit = 5;
 
@@ -570,11 +570,11 @@ static void G_Q3F_SC_CompileMapList( q3f_array_t *setting, int playerCount, qboo
 					if( gameIndices & (1 << gameIndex) )
 					{
 						str = G_Q3F_GetMapInfoEntry( mapinfo, "minplayers", gameIndex, "0" );
-						minPlayers = str ? atoi( str ) : 0;
+						minPlayers = str ? Q_atoi( str ) : 0;
 						str = G_Q3F_GetMapInfoEntry( mapinfo, "maxplayers", gameIndex, "32" );
-						maxPlayers = str ? atoi( str ) : 32;
+						maxPlayers = str ? Q_atoi( str ) : 32;
 						str = G_Q3F_GetMapInfoEntry( mapinfo, "novote", gameIndex, "0");
-						if(atoi(str) == 1)
+						if(Q_atoi(str) == 1)
 							continue;
 
 						G_Q3F_KeyPairArrayAdd(	sc.sourceMapList, va( "%s+%d", mapname, gameIndex ),
@@ -1088,7 +1088,7 @@ void G_Q3F_UpdateMapHistory( const char *mapname )
 		G_Q3F_DetermineSetting();
 	str = G_Q3F_SC_GetSetting(	G_Q3F_SC_FindKPEntry( sc.settings, sc.currSetting )->value.d.arraydata,
 										"map_historyUnit" );
-	bumpValue = str ? atoi( str ) : 0;
+	bumpValue = str ? Q_atoi( str ) : 0;
 	if( bumpValue < 1 || bumpValue > 50 )
 		bumpValue = 10;
 

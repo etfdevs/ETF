@@ -171,7 +171,7 @@ void CG_Q3F_ParallaxShader( char *spawnVars[], int numSpawnVars, vec3_t entOrigi
 		{
 			// This is a depth layer.
 
-			depth = atof( key + 5 );
+			depth = Q_atof( key + 5 );
 			shaders[numLayers].shader = trap_R_RegisterShader( value );
 			if( shaders[numLayers].shader != NULL_HANDLE )
 				shaders[numLayers++].depth = depth;
@@ -180,7 +180,7 @@ void CG_Q3F_ParallaxShader( char *spawnVars[], int numSpawnVars, vec3_t entOrigi
 		{
 			// This is a vertex.
 
-			vertex = atoi( key + 6 );
+			vertex = Q_atoi( key + 6 );
 			if( vertex > 0 && vertex <= MAXPARALLAXPOINTS )
 			{
 				sscanf( value, "%f %f %f",	&vertices[vertex - 1][0],

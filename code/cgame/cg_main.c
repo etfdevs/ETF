@@ -218,7 +218,7 @@ static const int cvarLimitTableSize = (int)ARRAY_LEN( cvarLimitTable );
 CG_LimitCvars
 =================
 */
-void CG_LimitCvars( void ) {
+static void CG_LimitCvars( void ) {
 	int					i;
 	cvarLimitTable_t	*cvl;
 
@@ -272,14 +272,14 @@ void CG_LimitCvars( void ) {
 CG_Q3F_UpdateCvarLimits
 =================
 */
-void CG_Q3F_UpdateCvarLimit( const char *cvarname, int *min, int *max ) {
+static void CG_Q3F_UpdateCvarLimit( const char *cvarname, int *cvmin, int *cvmax ) {
 	int					i;
 	cvarLimitTable_t	*cvl;
 
 	for ( i = 0, cvl = cvarLimitTable; i < cvarLimitTableSize ; i++, cvl++ ) {
 		if( !Q_stricmp( cvarname, cvl->cvarName ) ) {
-			cvl->min = *min;
-			cvl->max = *max;
+			cvl->min = *cvmin;
+			cvl->max = *cvmax;
 			break;
 		}
 	}
@@ -287,8 +287,8 @@ void CG_Q3F_UpdateCvarLimit( const char *cvarname, int *min, int *max ) {
 
 void CG_Q3F_UpdateCvarLimits(void) {
 	const char *ptr;
-	char cvarname[64], buff[16];
-	int min, max;
+	char cvarname[64] = { 0 }, buff[16] = { 0 };
+	int cvmin, cvmax;
 	size_t len;
 
 	ptr = CG_ConfigString( CS_Q3F_CVARLIMITS );
@@ -299,25 +299,25 @@ void CG_Q3F_UpdateCvarLimits(void) {
 		}
 		while( *ptr && *ptr == ' ' )
 			ptr++;
-		cvarname[len] = 0;
+		cvarname[len] = '\0';
 
 		for( len = 0; *ptr && *ptr != ' ' && len < (sizeof(buff) - 1); len++ ) {
 			buff[len] = *ptr++;
 		}
 		while( *ptr && *ptr == ' ' )
 			ptr++;
-		buff[len] = 0;
-		min = atoi(buff);
+		buff[len] = '\0';
+		cvmin = Q_atoi(buff);
 
 		for( len = 0; *ptr && *ptr != ' ' && len < (sizeof(buff) - 1); len++ ) {
 			buff[len] = *ptr++;
 		}
 		while( *ptr && *ptr == ' ' )
 			ptr++;
-		buff[len] = 0;
-		max = atoi(buff);
+		buff[len] = '\0';
+		cvmax = Q_atoi(buff);
 
-		CG_Q3F_UpdateCvarLimit( cvarname, &min, &max );
+		CG_Q3F_UpdateCvarLimit( cvarname, &cvmin, &cvmax );
 	}
 }
 
@@ -418,7 +418,7 @@ void CG_RegisterCvars( void ) {
 
 	// see if we are also running the server on this machine
 	trap_Cvar_VariableStringBuffer( "sv_running", var, sizeof( var ) );
-	cgs.localServer = atoi( var );
+	cgs.localServer = Q_atoi( var );
 
 	cgs.grenadePrimeSoundModificationCount = cg_grenadePrimeSound.modificationCount;
 	cgs.drawSkyPortalModificationCount = cg_drawSkyPortal.modificationCount;
@@ -614,7 +614,7 @@ void CG_Q3F_PlayLocalSound( const char *sound )
 		soundid = -1;
 
 	if( soundid == -2 )
-		soundid = (sfxHandle_t)atoi( sound );
+		soundid = (sfxHandle_t)Q_atoi( sound );
 
 	if ( soundid >= 0 && soundid < MAX_SOUNDS )
 	{
@@ -1296,7 +1296,7 @@ void CG_LoadMenus(const char *menuFile, qboolean resetHud) {
 	}
 
 	trap_FS_Read( buf, len, f );
-	buf[len] = 0;
+	buf[len] = '\0';
 	trap_FS_FCloseFile( f );
 	
 	COM_Compress(buf);
@@ -1372,8 +1372,8 @@ void CG_LoadMenus(const char *menuFile, qboolean resetHud) {
 					}
 				}
 
-				x = atof(_p);
-				y = atof(p2);
+				x = Q_atof(_p);
+				y = Q_atof(p2);
 
 				menu = Menus_FindByName( linebuff );
 
@@ -1978,7 +1978,7 @@ static float CG_Cvar_Get(const char *cvar) {
 	char buff[128];
 	memset(buff, 0, sizeof(buff));
 	trap_Cvar_VariableStringBuffer(cvar, buff, sizeof(buff));
-	return atof(buff);
+	return Q_atof(buff);
 }
 
 void CG_Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const char *text, int cursorPos, char cursor, int limit, int style, fontStruct_t *parentfont, int textalignment) {
@@ -2062,7 +2062,7 @@ static void CG_RunCinematicFrame(int handle) {
 }
 
 static void CG_S_StartLocalSound( sfxHandle_t sfx, int channelNum ) {
-	trap_S_RealStartLocalSound(sfx, channelNum, __FILE__, __LINE__ );
+	trap_S_RealStartLocalSound(sfx, channelNum, RELATIVE_FILENAME, __LINE__ );
 }
 
 qboolean CG_FileExists( const char *filename ) {

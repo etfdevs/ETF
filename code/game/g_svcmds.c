@@ -118,7 +118,7 @@ static qboolean StringToFilter (char *s, ipFilter_t *f)
 			num[j++] = *s++;
 		}
 		num[j] = 0;
-		b[i] = atoi(num);
+		b[i] = Q_atoi(num);
 		if (b[i] != 0)
 			m[i] = 255;
 
@@ -263,7 +263,7 @@ void Svcmd_AddIP_f (void)
 
 	trap_Argv( 1, str, sizeof( str ) );
 	trap_Argv( 2, reason, sizeof(reason) );
-	time = atoi( reason );
+	time = Q_atoi( reason );
 	trap_Argv( 3, reason, sizeof(reason) );
 
 	if( trap_Argc() >= 3 && !time )
@@ -433,7 +433,7 @@ gclient_t	*ClientForString( const char *s ) {
 
 	// numeric values are just slot numbers
 	if ( s[0] >= '0' && s[0] <= '9' ) {
-		idnum = atoi( s );
+		idnum = Q_atoi( s );
 		if ( idnum < 0 || idnum >= level.maxclients ) {
 			Com_Printf( "Bad client slot: %i\n", idnum );
 			return NULL;
@@ -584,7 +584,7 @@ void	G_ETF_ClientKick( void ) {
 		return;
 	}
 
-	num = atoi(index);
+	num = Q_atoi(index);
 
 	// sanity check if it's a number
 	if(index[0] >= '0' && index[0] <= '9')
@@ -629,7 +629,7 @@ void	G_ETF_Mute( void ) {
 		return;
 	}
 
-	num = atoi(index);
+	num = Q_atoi(index);
 
 	// sanity check if it's a number
 	if(index[0] >= '0' && index[0] <= '9')
@@ -673,7 +673,7 @@ void	G_ETF_UnMute( void ) {
 		return;
 	}
 
-	num = atoi(index);
+	num = Q_atoi(index);
 
 	// sanity check if it's a number
 	if(index[0] >= '0' && index[0] <= '9')
@@ -755,10 +755,10 @@ void	G_ETF_BanNum( void ) {
 		return;
 	}
 
-	num = atoi(index);
+	num = Q_atoi(index);
 
 	trap_Argv(2, reason, sizeof(reason));
-	time = atoi(reason);
+	time = Q_atoi(reason);
 	trap_Argv(3, reason, sizeof(reason));
 
 	if(trap_Argc() >= 3 && !time)
@@ -836,7 +836,7 @@ void	G_ETF_BanName( void ) {
 	}
 
 	trap_Argv(2, reason, sizeof(reason));
-	time = atoi(reason);
+	time = Q_atoi(reason);
 	trap_Argv(3, reason, sizeof(reason));
 
 	if(trap_Argc() >= 3 && !time)

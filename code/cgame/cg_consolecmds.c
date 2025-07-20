@@ -466,9 +466,9 @@ static void CG_Q3F_DumpSpeaker( void )
 		Q_strncpyz( buff, buff, buffptr - buff + 1 );
 
 		if( !Q_stricmp( buff, "wait" ) )
-			wait = atoi( valueptr );
+			wait = Q_atoi( valueptr );
 		else if( !Q_stricmp( buff, "random" ) )
-			random = atoi( valueptr );
+			random = Q_atoi( valueptr );
 	}
 
 		// Open locations file
@@ -1291,27 +1291,27 @@ static void CG_Q3F_Discard_f( void ) {
 	}
 
 	trap_Cvar_VariableStringBuffer(va("discard_%s_cells", cls->commandstring), buffer, 256);
-	cells = atoi(buffer);
+	cells = Q_atoi(buffer);
 
 	trap_Cvar_VariableStringBuffer(va("discard_%s_shells", cls->commandstring), buffer, 256);
-	shells = atoi(buffer);
+	shells = Q_atoi(buffer);
 
 	trap_Cvar_VariableStringBuffer(va("discard_%s_rockets", cls->commandstring), buffer, 256);
-	rockets = atoi(buffer);
+	rockets = Q_atoi(buffer);
 
 	if(cells == -1) {
 		trap_Cvar_VariableStringBuffer("discard_cells", buffer, 256);
-		cells = atoi(buffer);
+		cells = Q_atoi(buffer);
 	}
 
 	if(shells == -1) {
 		trap_Cvar_VariableStringBuffer("discard_shells", buffer, 256);
-		shells = atoi(buffer);
+		shells = Q_atoi(buffer);
 	}
 
 	if(rockets == -1) {
 		trap_Cvar_VariableStringBuffer("discard_rockets", buffer, 256);
-		rockets = atoi(buffer);
+		rockets = Q_atoi(buffer);
 	}
 
 	trap_SendConsoleCommand(va("discard_etf %d %d %d\n", cells, shells, rockets));

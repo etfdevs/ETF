@@ -214,7 +214,7 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 	*infoname = '\0';
 		// Extract the gameIndex from the mapname if not supplied explicitely.
 	if( ptr4 && !gameIndex )
-		gameIndex = atoi( ptr4 + 1 );
+		gameIndex = Q_atoi( ptr4 + 1 );
 
 		// Reset our array.
 	for( index = foundItems = 0; index < numItems; index++ )
@@ -315,7 +315,7 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 
 	for( ptr = buff; ptr && *ptr; ptr++ )
 	{
-		c1 = atoi( ptr );
+		c1 = Q_atoi( ptr );
 		if( c1 != 0 )
 		{
 			// It's a number, let's see if we can find a marker and a second number.
@@ -324,7 +324,7 @@ int CG_Q3F_GetMapInfo( const char *mapname, cg_q3f_mapinfo_t _mapInfo[], int num
 			for( ptr3 = ptr2; *ptr3 && (*ptr3 <'0' || *ptr3 > '9') && !CG_Q3F_MI_IsSpace( *ptr3 ); ptr3++ );
 			for( ptr4 = ptr3; *ptr4 && CG_Q3F_MI_IsSpace( *ptr4 ); ptr4++ );
 
-			c2 = atoi( ptr4 );
+			c2 = Q_atoi( ptr4 );
 			if( c2 != 0 && c2 > c1 )
 			{
 				// Check the marker.

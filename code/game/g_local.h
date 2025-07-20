@@ -732,8 +732,8 @@ typedef struct
 } field_t;
 
 //keeg for tracemap support -- could technically change this to older style, but the FILE, LINE is nice
-#define		G_SpawnString(		key, def, out ) G_SpawnStringExt	( key, def, out, __FILE__, __LINE__ )
-#define		G_SpawnVector2D(	key, def, out ) G_SpawnVector2DExt	( key, def, out, __FILE__, __LINE__ )
+#define		G_SpawnString(		key, def, out ) G_SpawnStringExt	( key, def, out, RELATIVE_FILENAME, __LINE__ )
+#define		G_SpawnVector2D(	key, def, out ) G_SpawnVector2DExt	( key, def, out, RELATIVE_FILENAME, __LINE__ )
 qboolean	G_SpawnStringExt( const char *key, const char *defaultString, char **out, const char* file, int line );
 
 // spawn string returns a temporary reference, you must CopyString() if you want to keep it
@@ -1189,7 +1189,7 @@ qboolean trap_InPVSIgnorePortals( const vec3_t p1, const vec3_t p2 );
 void	trap_AdjustAreaPortalState( gentity_t *ent, qboolean open );
 qboolean trap_AreasConnected( int area1, int area2 );
 void	trap_LinkEntityExt( gentity_t *ent, const char *file, int line );
-#define trap_LinkEntity( ent ) trap_LinkEntityExt( ent, __FILE__, __LINE__ )
+#define trap_LinkEntity( ent ) trap_LinkEntityExt( ent, RELATIVE_FILENAME, __LINE__ )
 void	trap_UnlinkEntity( gentity_t *ent );
 int		trap_EntitiesInBox( const vec3_t mins, const vec3_t maxs, int *entityList, int maxcount );
 qboolean trap_EntityContact( const vec3_t mins, const vec3_t maxs, const gentity_t *ent );

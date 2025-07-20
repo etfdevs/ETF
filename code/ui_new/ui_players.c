@@ -910,7 +910,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t *pi, int ti
 	trap_GetClientState( &cs );
 	trap_GetConfigString( CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING );
 
-	team = atoi(Info_ValueForKey(info, "t"));
+	team = Q_atoi(Info_ValueForKey(info, "t"));
 	if(team < Q3F_TEAM_RED || team > Q3F_TEAM_GREEN) {
 		team = Q3F_TEAM_RED; // djbob: team bogged up :?
 	}

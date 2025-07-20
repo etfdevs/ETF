@@ -402,10 +402,10 @@ void CG_Q3F_WaypointCommand(void)
 	char buff[256];
 	cg_q3f_waypoint_t *wp;
 
-	trap_Argv( 1, buff, sizeof(buff) );		sender = atoi( buff );
-	trap_Argv( 2, buff, sizeof(buff) );		pos[0] = atof( buff );
-	trap_Argv( 3, buff, sizeof(buff) );		pos[1] = atof( buff );
-	trap_Argv( 4, buff, sizeof(buff) );		pos[2] = atof( buff );
+	trap_Argv( 1, buff, sizeof(buff) );		sender = Q_atoi( buff );
+	trap_Argv( 2, buff, sizeof(buff) );		pos[0] = Q_atof( buff );
+	trap_Argv( 3, buff, sizeof(buff) );		pos[1] = Q_atof( buff );
+	trap_Argv( 4, buff, sizeof(buff) );		pos[2] = Q_atof( buff );
 	trap_Argv( 5, buff, sizeof(buff) );
 
 	for(	index = 0, wpIndex = oldIndex = -1, oldTime = cg.time + 1;

@@ -121,7 +121,7 @@ void G_Q3F_CommandPointThink( gentity_t *ent )
 			{
 				if( kp->value.type == Q3F_TYPE_STRING )
 				{
-					index = atoi( kp->value.d.strdata );
+					index = Q_atoi( kp->value.d.strdata );
 					G_Q3F_RemString( &kp->value.d.strdata );
 					kp->value.d.intdata = index;
 					kp->value.type = Q3F_TYPE_INTEGER;
@@ -328,7 +328,7 @@ void SP_Q3F_func_commandpoint( gentity_t *ent )
 	{
 		// Convert to an integer
 		str = kp->value.d.strdata;
-		kp->value.d.intdata = atoi( str );
+		kp->value.d.intdata = Q_atoi( str );
 		kp->value.type = Q3F_TYPE_INTEGER;
 		G_Q3F_RemString( &str );
 	}
@@ -336,7 +336,7 @@ void SP_Q3F_func_commandpoint( gentity_t *ent )
 	{
 		// Convert to an integer
 		str = kp->value.d.strdata;
-		//kp->value.d.intdata = atoi( str );
+		//kp->value.d.intdata = Q_atoi( str );
 		kp->value.d.intdata = G_Q3F_ProcessTeamString( str );
 		kp->value.type = Q3F_TYPE_INTEGER;
 		G_Q3F_RemString( &str );
@@ -605,14 +605,14 @@ void SP_Q3F_func_hud( gentity_t *ent )
 
 	kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "slot" ) );
 	if( kp )
-		ent->s.weapon = atoi( kp->value.d.strdata );
+		ent->s.weapon = Q_atoi( kp->value.d.strdata );
 	if( ent->s.weapon < 1 || ent->s.weapon > Q3F_SLOT_MAX )
 		G_Error( "func_hud with no/invalid slot specified." );
 	ent->s.weapon--;		// The actual slots start at zero
 
 	kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "scale" ) );
 	if( kp )
-		ent->s.apos.trBase[0] = atof( kp->value.d.strdata );
+		ent->s.apos.trBase[0] = Q_atof( kp->value.d.strdata );
 	else {
 		ent->s.apos.trBase[0] = 1;
 	}
@@ -1648,9 +1648,9 @@ void G_Q3F_TargetCycleTouch( gentity_t *ent, gentity_t *other, trace_t *tr )
 		// causing an infinite loop, or an invalid clientnum on carried goalitems.
 		if( !player->inuse || !client || client->pers.connected != CON_CONNECTED )
 			continue;
-		if( allowteams && !(allowteams->value.d.intdata & (int)(1u << client->sess.sessionTeam)) )
+		if( allowteams && !(allowteams->value.d.intdata & (1ULL << (int64_t)client->sess.sessionTeam)) )
 			continue;
-		if( allowclasses && !(allowclasses->value.d.intdata & (int)(1u << client->ps.persistant[PERS_CURRCLASS])) )
+		if( allowclasses && !(allowclasses->value.d.intdata & (1ULL << (int64_t)client->ps.persistant[PERS_CURRCLASS])) )
 			continue;
 		if( holding && !G_Q3F_CheckHeld( other, holding->value.d.arraydata ) )
 			continue;
@@ -1803,7 +1803,7 @@ static void G_Q3F_TargetRespawnTouch( gentity_t *respawn, gentity_t *player, tra
 		data = G_Q3F_KeyPairArrayFind( respawn->mapdata->other, affectteamsptr );
 		teams |= data ? G_Q3F_ProcessTeamString( data->value.d.strdata ) : 0;
 		data = G_Q3F_KeyPairArrayFind( respawn->mapdata->other, effectradiusptr );
-		distance = data ? atof( data->value.d.strdata ) : 0;
+		distance = data ? Q_atof( data->value.d.strdata ) : 0;
 
 		if( respawn->mapdata->flags & Q3F_FLAG_ENVIRONMENT )
 			pointcontents = trap_PointContents( respawn->s.pos.trBase, respawn - level.gentities ) & MASK_WATER;
@@ -1945,7 +1945,7 @@ static void G_Q3F_TargetMultiportTouch( gentity_t *respawn, gentity_t *player, t
 		data = G_Q3F_KeyPairArrayFind( respawn->mapdata->other, affectteamsptr );
 		teams |= data ? G_Q3F_ProcessTeamString( data->value.d.strdata ) : 0;
 		data = G_Q3F_KeyPairArrayFind( respawn->mapdata->other, effectradiusptr );
-		distance = data ? atof( data->value.d.strdata ) : 0;
+		distance = data ? Q_atof( data->value.d.strdata ) : 0;
 
 		if( respawn->mapdata->flags & Q3F_FLAG_ENVIRONMENT )
 			pointcontents = trap_PointContents( respawn->s.pos.trBase, respawn - level.gentities ) & MASK_WATER;
@@ -2463,7 +2463,7 @@ static g_q3f_onkill_t *G_Q3F_OnKillCriteria( gentity_t *ent, char *prefix )
 		else if( !Q_stricmp( buffclientstats, key ) )
 			criteria->clientstats = G_Q3F_ProcessClientStatsString( value );
 //		else if( !Q_stricmp( buffteamscore, key ) )
-//			criteria->teamscore = atoi( value );
+//			criteria->teamscore = Q_atoi( value );
 //		else if( !Q_stricmp( buffgive, key ) )
 //			criteria->give = G_Q3F_ProcessGiveString( value );
 		else if( !Q_stricmp( bufftarget, key ) )
@@ -2691,7 +2691,7 @@ void SP_Q3F_misc_onkill( gentity_t *self )
 		(str = G_Q3F_GetString( "range" )) &&
 		(kp = G_Q3F_KeyPairArrayFind( self->mapdata->other, str )) )
 	{
-		self->damage = atoi( kp->value.d.strdata );
+		self->damage = Q_atoi( kp->value.d.strdata );
 		G_Q3F_KeyPairArrayDel( self->mapdata->other, str );
 		if( self->damage < 0 )
 			self->damage = 0;
@@ -2712,7 +2712,7 @@ void SP_Q3F_misc_onkill( gentity_t *self )
 		if( (str = G_Q3F_GetString( "watchrange" )) &&
 			(kp = G_Q3F_KeyPairArrayFind( self->mapdata->other, str )) )
 		{
-			self->health = atoi( kp->value.d.strdata );
+			self->health = Q_atoi( kp->value.d.strdata );
 			G_Q3F_KeyPairArrayDel( self->mapdata->other, str );
 			if( self->health < 0 )
 				self->health = 0;
@@ -3730,7 +3730,7 @@ void SP_Q3F_misc_matchtimer( gentity_t *ent ) {
 
 	kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "slot" ));
 	if( kp ) {
-		ent->s.weapon = atoi( kp->value.d.strdata );
+		ent->s.weapon = Q_atoi( kp->value.d.strdata );
 	}
 
 //	G_SpawnColor( "1 1 1", ent->s.angles2);
@@ -4121,7 +4121,7 @@ static void G_Q3F_MiscDisableWeaponsTouch( gentity_t *disabler, gentity_t *playe
 		teams |= data ? G_Q3F_ProcessTeamString( data->value.d.strdata ) : 0;
 
 		data = G_Q3F_KeyPairArrayFind( disabler->mapdata->other, effectradiusptr );
-		distance = data ? atof( data->value.d.strdata ) : 0;
+		distance = data ? Q_atof( data->value.d.strdata ) : 0;
 
 		data = G_Q3F_KeyPairArrayFind( disabler->mapdata->other, affectclassesptr );
 		classes |= data ? G_Q3F_ProcessClassString( data->value.d.strdata ) : 0;
@@ -4559,7 +4559,7 @@ void SP_Q3F_misc_flamethrower( gentity_t *ent ) {
 
 /*
 	G_SpawnString( "size", "0", &size );
-	dsize = atof( size );
+	dsize = Q_atof( size );
 	if ( !dsize ) {
 		dsize = 1;
 	}

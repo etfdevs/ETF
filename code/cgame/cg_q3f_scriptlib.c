@@ -363,7 +363,7 @@ Float_Parse
 	char	*token;
 	token = COM_ParseExt(p, qfalse);
 	if (token && token[0] != 0) {
-		*f = atof(token);
+		*f = Q_atof(token);
 		return qtrue;
 	} else {
 		return qfalse;
@@ -479,7 +479,7 @@ Int_Parse
 	token = COM_ParseExt(p, qfalse);
 
 	if (token && token[0] != 0) {
-		*i = atoi(token);
+		*i = Q_atoi(token);
 		return qtrue;
 	} else {
 		return qfalse;

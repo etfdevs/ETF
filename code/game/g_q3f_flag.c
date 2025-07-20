@@ -329,7 +329,7 @@ void SP_Q3F_func_flag( gentity_t *ent )
 	kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "speedscale" ) );
 
 	if( kp )
-		ent->speed = atof( kp->value.d.strdata );
+		ent->speed = Q_atof( kp->value.d.strdata );
 	else ent->speed = -1;
 	
 	VectorCopy( ent->s.angles, ent->s.apos.trBase );
@@ -576,7 +576,7 @@ void G_Q3F_DropFlag( gentity_t *ent )
 	ent->s.eFlags		&= ~EF_Q3F_SHOWCARRY;
 	ent->physicsObject	= qtrue;		// Allow it to be stopped by brushes
 	data = G_Q3F_KeyPairArrayFind( ent->mapdata->other, G_Q3F_GetString( "bouncefactor" ) );
-	ent->physicsBounce	= data ? atof( data->value.d.strdata ) : 0.3;		// Bit of a bounce
+	ent->physicsBounce	= data ? Q_atof( data->value.d.strdata ) : 0.3;		// Bit of a bounce
 
 	VectorCopy( ent->activator->s.apos.trBase, angles );
 	angles[YAW] += ETF_crandom() * 30;

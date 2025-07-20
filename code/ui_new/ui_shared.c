@@ -420,7 +420,7 @@ qboolean Float_Parse(const char **p, float *f) {
 	const char	*token;
 	token = COM_ParseExt(p, qfalse);
 	if (token && token[0] != 0) {
-		*f = atof(token);
+		*f = Q_atof(token);
 		return qtrue;
 	} else {
 		return qfalse;
@@ -500,7 +500,7 @@ qboolean Int_Parse(const char **p, int *i) {
 	token = COM_ParseExt(p, qfalse);
 
 	if (token && token[0] != 0) {
-		*i = atoi(token);
+		*i = Q_atoi(token);
 		return qtrue;
 	} else {
 		return qfalse;
@@ -2289,7 +2289,7 @@ void UI_CycleFloatList(configData_t* configData) {
 			*p++ = '\0';
 		}
 
-		numbers[i] = atof(pos[1]);
+		numbers[i] = Q_atof(pos[1]);
 
 		if(++i == 16)
 			break;
@@ -3837,7 +3837,7 @@ void Item_Text_Paint(itemDef_t *item) {
 				strip_decimal( text );
 				item->textRect.w = 0;	// force recalculation
 			} else if( item->window.flags & WINDOW_TEXTASFLOAT ) {
-				const char *s = va( "%.2f", atof(text) );
+				const char *s = va( "%.2f", Q_atof(text) );
 				Q_strncpyz( text, s, sizeof(text) );
 				item->textRect.w = 0;	// force recalculation
 			}
@@ -4349,7 +4349,7 @@ const char* Item_Listbox_FeederTextForControl_FloatList(int column, const config
 				*p++ = '\0';
 			}
 
-			if(fabs(atof(pos[1]) - configData->value) < 0.01) {
+			if(fabs(Q_atof(pos[1]) - configData->value) < 0.01) {
 				return pos[0];
 			}
 

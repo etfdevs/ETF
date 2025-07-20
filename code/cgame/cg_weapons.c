@@ -2021,7 +2021,7 @@ CG_Weapon_f
 void CG_Weapon_f( void ) {
 	int		num;
 
-	num = atoi( CG_Argv( 1 ) );
+	num = Q_atoi( CG_Argv( 1 ) );
 
 	if ( !cg.snap ) {
 		return;
@@ -2065,7 +2065,7 @@ static weapon_t WeaponSlotTable[Q3F_CLASS_MAX][4] = {
 void CG_WeaponSlot_f( void ) {
 	int		num, index;
 
-	num = atoi( CG_Argv( 1 ) );
+	num = Q_atoi( CG_Argv( 1 ) );
 
 	if ( !cg.snap ) {
 		return;

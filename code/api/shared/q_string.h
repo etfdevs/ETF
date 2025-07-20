@@ -65,9 +65,16 @@ int	Q_stricmpn(const char *s1, const char *s2, int n);
 char *Q_strlwr( char *s1 );
 char *Q_strupr( char *s1 );
 
+// relative path to a source file (src/foo/bar.c)
+#define RELATIVE_FILENAME ((__FILE__) + (SOURCE_PATH_SIZE))
+
 // buffer size safe library replacements
-void Q_strncpyz( char *dest, const char *src, int destsize );
-void Q_strcat( char *dest, int size, const char *src );
+#define Q_strncpyz(dest, src, destsize) Q_strncpyz_fn(dest, src, destsize, __func__, RELATIVE_FILENAME, __LINE__)
+#define Q_strcat(dest, size, src) Q_strcat_fn(dest, size, src, __func__, RELATIVE_FILENAME, __LINE__)
+#define Q_strnlen(str, strsz ) Q_strnlen_fn(str, strsz, __func__, RELATIVE_FILENAME, __LINE__)
+void Q_strncpyz_fn( char *dest, const char *src, const int destsize, const char *func, const char *file, int line );
+void Q_strcat_fn( char *dest, const int size, const char *src, const char *func, const char *file, int line );
+size_t Q_strnlen_fn(const char *str, size_t strsz, const char *func, const char *file, int line );
 
 const char *Q_stristr( const char *s, const char *find);
 
@@ -94,6 +101,9 @@ char *Q_CleanDirName( char *dirname );
 #else // not using MSVC
 	#define Q_vsnprintf vsnprintf
 #endif
+
+float Q_atof(const char *str);
+int Q_atoi(const char *str);
 
 #if defined(__cplusplus)
 } // extern "C"

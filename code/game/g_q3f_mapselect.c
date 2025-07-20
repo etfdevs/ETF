@@ -533,7 +533,7 @@ void G_Q3F_MapSelectVote( gentity_t *ent )
 		return;
 
 	trap_Argv( 1, buff, sizeof(buff) );
-	num = atoi( buff );
+	num = Q_atoi( buff );
 	if( num < 0 || num >= mapSelectNumMaps )
 		return;
 

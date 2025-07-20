@@ -294,7 +294,7 @@ int ClientNumberFromString( gentity_t *to, const char *s ) {
 
 	// numeric values are just slot numbers
 	if (s[0] >= '0' && s[0] <= '9') {
-		idnum = atoi( s );
+		idnum = Q_atoi( s );
 		if ( idnum < 0 || idnum >= level.maxclients ) {
 			trap_SendServerCommand( to-g_entities, va("print \"Bad client slot: %i\n\"", idnum));
 			return -1;
@@ -1911,7 +1911,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 		char *p = strchr(arg2, '+');
 		if(p) {
 			*p++ = '\0';
-			gi = atoi(p);
+			gi = Q_atoi(p);
 		}
 
 		if (!CheckValidMap(arg2)) {
@@ -1951,7 +1951,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 		// ---
 		Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "Go To Next Map (%s)", s );
 	} else if ( !Q_stricmp( arg1, "timelimit" ) ) {
-		int tlimit = atoi(arg2);
+		int tlimit = Q_atoi(arg2);
 
 		if(arg2[0] == '+') {
 			tlimit = ((level.time - level.startTime) / 60000) + tlimit;		// elapsed minutes + 
@@ -1970,7 +1970,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 		// ---
 		Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "Set Timelimit to %d", tlimit);
 	} else if ( !Q_stricmp( arg1, "capturelimit" ) ) {
-		int climit = atoi(arg2);
+		int climit = Q_atoi(arg2);
 
 		if(arg2[0] == '+') {
 			climit += g_capturelimit.integer;		// number of captures + 
@@ -2045,7 +2045,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 
 		Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "kick %s", player->client->pers.netname);
 	} else if ( !Q_stricmp( arg1, "clientkick" ) ) {
-		int pnum = atoi(arg2);
+		int pnum = Q_atoi(arg2);
 		gentity_t *player;
 		qboolean found = qfalse;
 
@@ -2099,7 +2099,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 
 		Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "kick %s", player->client->pers.netname);
 	} else if ( !Q_stricmp( arg1, "mute" ) ) {
-		int pnum = atoi(arg2);
+		int pnum = Q_atoi(arg2);
 		gentity_t *player;
 		qboolean found = qfalse;
 
@@ -2130,7 +2130,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 
 		Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "mute %s", player->client->pers.netname);
 	} else if ( !Q_stricmp( arg1, "unmute" ) ) {
-		int pnum = atoi(arg2);
+		int pnum = Q_atoi(arg2);
 		gentity_t *player;
 		qboolean found = qfalse;
 
@@ -2251,11 +2251,11 @@ void Cmd_SetViewpos_f( gentity_t *ent ) {
 	VectorClear( angles );
 	for ( i = 0 ; i < 3 ; i++ ) {
 		trap_Argv( i + 1, buffer, sizeof( buffer ) );
-		origin[i] = atof( buffer );
+		origin[i] = Q_atof( buffer );
 	}
 
 	trap_Argv( 4, buffer, sizeof( buffer ) );
-	angles[YAW] = atof( buffer );
+	angles[YAW] = Q_atof( buffer );
 
 	TeleportPlayer( ent, origin, angles );
 }
@@ -2479,21 +2479,21 @@ void G_Q3F_DiscardCommand( gentity_t *ent )
 
 	trap_Argv(1, buffer, 16);
 	if(*buffer) {
-		cellcount = atoi(buffer);
+		cellcount = Q_atoi(buffer);
 	} else {
 		cellcount = -1;
 	}
 
 	trap_Argv(2, buffer, 16);
 	if(*buffer) {
-		shellcount = atoi(buffer);
+		shellcount = Q_atoi(buffer);
 	} else {
 		shellcount = -1;
 	}
 
 	trap_Argv(3, buffer, 16);
 	if(*buffer) {
-		rocketcount = atoi(buffer);
+		rocketcount = Q_atoi(buffer);
 	} else {
 		rocketcount = -1;
 	}
@@ -2654,7 +2654,7 @@ void G_Q3F_DropAmmoToCommand( gentity_t *ent ) {
 		if( index == 1 )
 		{
 			// It's a count of ammo to drop
-			count = atoi( buff );
+			count = Q_atoi( buff );
 		}
 		else {
 					if(	!Q_stricmp( buff, "shell" ) ||
@@ -2803,7 +2803,7 @@ void G_Q3F_DropAmmoCommand( gentity_t *ent )
 	{
 		trap_Argv( index, buff, sizeof(buff) );
 		index++;
-		temp = atoi( buff );
+		temp = Q_atoi( buff );
 		if( temp && temp >= 0 )
 		{
 			// It's a count of ammo to drop
@@ -3293,7 +3293,7 @@ static void G_Q3F_Flyby( gentity_t *ent ) {
 		int clienttime;
 
 		trap_Argv( 2, strbuff, 16 );
-		clienttime = atoi( strbuff );
+		clienttime = Q_atoi( strbuff );
 	
 		SetTeam( ent, "s" ); // join the spectators
 
@@ -3342,7 +3342,7 @@ static void G_Q3F_Flyby( gentity_t *ent ) {
 		int clienttime;
 
 		trap_Argv( 2, strbuff, 16 );
-		clienttime = atoi( strbuff );
+		clienttime = Q_atoi( strbuff );
 
 		ent->client->currtrajindex++;
 		if ( ent->client->currtrajindex >= level.campaths[level.flybyPathIndex].numsplines )

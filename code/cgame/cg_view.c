@@ -97,7 +97,7 @@ void CG_TestModel_f (void) {
 	cg.testModelEntity.hModel = trap_R_RegisterModel( cg.testModelName );
 
 	if ( trap_Argc() == 3 ) {
-		cg.testModelEntity.backlerp = atof( CG_Argv( 2 ) );
+		cg.testModelEntity.backlerp = Q_atof( CG_Argv( 2 ) );
 		cg.testModelEntity.frame = 1;
 		cg.testModelEntity.oldframe = 0;
 	}
@@ -1139,9 +1139,9 @@ static void CG_FirstFrame( void )
 {
 	CG_SetConfigValues();
 
-	cgs.voteTime = atoi( CG_ConfigString( CS_VOTE_TIME ) );
-	cgs.voteYes = atoi( CG_ConfigString( CS_VOTE_YES ) );
-	cgs.voteNo = atoi( CG_ConfigString( CS_VOTE_NO ) );
+	cgs.voteTime = Q_atoi( CG_ConfigString( CS_VOTE_TIME ) );
+	cgs.voteYes = Q_atoi( CG_ConfigString( CS_VOTE_YES ) );
+	cgs.voteNo = Q_atoi( CG_ConfigString( CS_VOTE_NO ) );
 	Q_strncpyz( cgs.voteString, CG_ConfigString( CS_VOTE_STRING ), sizeof( cgs.voteString ) );
 
 	if ( cgs.voteTime )

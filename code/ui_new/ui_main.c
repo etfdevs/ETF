@@ -355,7 +355,7 @@ Q_EXPORT intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t ar
 			char buffer[64];
 
 			trap_GetConfigString( CS_INTERMISSION, buffer, sizeof(buffer));
-			if(atoi( buffer )) {
+			if(Q_atoi( buffer )) {
 				HUD_Setup_Menu("tab_scores");
 				arg0 = UIMENU_ENDGAME;
 			} else {
@@ -367,7 +367,7 @@ Q_EXPORT intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t ar
 						HUD_Setup_Menu("tab_chooseclass");
 					} else {
 						trap_GetConfigString(CS_VOTE_TIME, buffer, sizeof(buffer));
-						if(atoi( buffer )) {
+						if(Q_atoi( buffer )) {
 							HUD_Setup_Menu( "menu_dovote");
 						}
 					}
@@ -1081,7 +1081,7 @@ void UI_Refresh( int realtime )
 	} 
 	
 	trap_GetConfigString(CS_INTERMISSION, buffer, 64);
-	intermissiontime = atoi( buffer );
+	intermissiontime = Q_atoi( buffer );
 	if( intermissiontime && !uiInfo.ScoreSnapshotTaken && uiInfo.ScoreFetched && cg_scoreSnapshot.integer ) {//uiInfo.uiDC.realTime - intermissiontime > 1000 && uiInfo.Q3F_scoreNum) {
 		if(nextframe)
 			nextframe = qfalse;
@@ -1119,9 +1119,9 @@ void UI_Shutdown( void ) {
 	trap_LAN_SaveCachedServers();
 }
 
-char *defaultMenu = NULL;
+/*char* defaultMenu = NULL;
 
-char *GetMenuBuffer(const char *filename) {
+char* GetMenuBuffer(const char* filename) {
 	int	len;
 	fileHandle_t	f;
 	static char buf[MAX_MENUFILE];
@@ -1138,11 +1138,11 @@ char *GetMenuBuffer(const char *filename) {
 	}
 
 	trap_FS_Read( buf, len, f );
-	buf[len] = 0;
+	buf[len] = '\0';
 	trap_FS_FCloseFile( f );
   return buf;
 
-}
+}*/
 
 qboolean Asset_Parse(int handle) {
 	pc_token_t token;
@@ -1811,9 +1811,9 @@ static void UI_BuildPlayerList(void) {
 	trap_GetClientState( &cs );
 	trap_GetConfigString( CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING );
 	uiInfo.playerNumber = cs.clientNum;
-	team = atoi(Info_ValueForKey(info, "t"));
+	team = Q_atoi(Info_ValueForKey(info, "t"));
 	trap_GetConfigString( CS_SERVERINFO, info, sizeof(info) );
-	count = atoi( Info_ValueForKey( info, "sv_maxclients" ) );
+	count = Q_atoi( Info_ValueForKey( info, "sv_maxclients" ) );
 	uiInfo.playerCount = 0;
 	uiInfo.myTeamCount = 0;
 	playerTeamNumber = 0;
@@ -1825,7 +1825,7 @@ static void UI_BuildPlayerList(void) {
 			Q_CleanStr( uiInfo.playerNames[uiInfo.playerCount] );
 
 			uiInfo.playerCount++;
-			team2 = atoi(Info_ValueForKey(info, "t"));
+			team2 = Q_atoi(Info_ValueForKey(info, "t"));
 			if (team2 == team) {
 				Q_strncpyz( uiInfo.teamNames[uiInfo.myTeamCount], Info_ValueForKey( info, "n" ), MAX_NAME_LENGTH );
 				Q_CleanStr( uiInfo.teamNames[uiInfo.myTeamCount] );
@@ -1856,7 +1856,7 @@ qboolean UI_PlayerOnTeam(void) {
 
 	trap_GetClientState( &cs );
 	trap_GetConfigString( CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING );
-	team = atoi(Info_ValueForKey(info, "t"));
+	team = Q_atoi(Info_ValueForKey(info, "t"));
 	if(team >= Q3F_TEAM_RED && team <= Q3F_TEAM_GREEN) {
 		return qtrue;
 	}
@@ -1870,7 +1870,7 @@ qboolean UI_PlayerHasClass(void) {
 
 	trap_GetClientState( &cs );
 	trap_GetConfigString( CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING );
-	team = atoi(Info_ValueForKey(info, "cls"));
+	team = Q_atoi(Info_ValueForKey(info, "cls"));
 	if(team >= Q3F_CLASS_RECON && team <= Q3F_CLASS_CIVILIAN) {
 		return qtrue;
 	}
@@ -2088,12 +2088,12 @@ void UI_Q3F_SetVersion(void) {
 	Q_strncpyz( buf, compiledate + 4, sizeof(buf) );
 	buf[3] = '\0';
 
-	compileday = atoi(buf);
+	compileday = Q_atoi(buf);
 
 	// get the year
 	Q_strncpyz( buf, compiledate + 7, sizeof(buf) );
 
-	compileyear = atoi(buf);
+	compileyear = Q_atoi(buf);
 }
 
 static void UI_DrawGLInfo(rectDef_t *rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t *font) {
@@ -2997,7 +2997,7 @@ static qboolean UI_OwnerDrawVisible(int flags) {
 
 		trap_GetConfigString(CS_TEAMMASK, buffer, 16);
 
-		mask = atoi(buffer);
+		mask = Q_atoi(buffer);
 
 		if(!(mask & (1 << Q3F_TEAM_RED))) {
 			return qfalse;
@@ -3010,7 +3010,7 @@ static qboolean UI_OwnerDrawVisible(int flags) {
 
 		trap_GetConfigString(CS_TEAMMASK, buffer, 16);
 
-		mask = atoi(buffer);
+		mask = Q_atoi(buffer);
 
 		if(!(mask & (1 << Q3F_TEAM_BLUE))) {
 			return qfalse;
@@ -3023,7 +3023,7 @@ static qboolean UI_OwnerDrawVisible(int flags) {
 
 		trap_GetConfigString(CS_TEAMMASK, buffer, 16);
 
-		mask = atoi(buffer);
+		mask = Q_atoi(buffer);
 
 		if(!(mask & (1 << Q3F_TEAM_GREEN))) {
 			return qfalse;
@@ -3036,7 +3036,7 @@ static qboolean UI_OwnerDrawVisible(int flags) {
 
 		trap_GetConfigString(CS_TEAMMASK, buffer, 16);
 
-		mask = atoi(buffer);
+		mask = Q_atoi(buffer);
 
 		if(!(mask & (1 << Q3F_TEAM_YELLOW))) {
 			return qfalse;
@@ -3047,7 +3047,7 @@ static qboolean UI_OwnerDrawVisible(int flags) {
 		trap_GetClientState( &cs );
 		trap_GetConfigString( CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING );
 
-		team = atoi(Info_ValueForKey(info, "t"));
+		team = Q_atoi(Info_ValueForKey(info, "t"));
 		if(team != Q3F_TEAM_RED) {
 			return qfalse;
 		}
@@ -3057,7 +3057,7 @@ static qboolean UI_OwnerDrawVisible(int flags) {
 		trap_GetClientState( &cs );
 		trap_GetConfigString( CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING );
 
-		team = atoi(Info_ValueForKey(info, "t"));
+		team = Q_atoi(Info_ValueForKey(info, "t"));
 		if(team != Q3F_TEAM_BLUE) {
 			return qfalse;
 		}
@@ -3067,7 +3067,7 @@ static qboolean UI_OwnerDrawVisible(int flags) {
 		trap_GetClientState( &cs );
 		trap_GetConfigString( CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING );
 
-		team = atoi(Info_ValueForKey(info, "t"));
+		team = Q_atoi(Info_ValueForKey(info, "t"));
 		if(team != Q3F_TEAM_YELLOW) {
 			return qfalse;
 		}
@@ -3077,7 +3077,7 @@ static qboolean UI_OwnerDrawVisible(int flags) {
 		trap_GetClientState( &cs );
 		trap_GetConfigString( CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING );
 
-		team = atoi(Info_ValueForKey(info, "t"));
+		team = Q_atoi(Info_ValueForKey(info, "t"));
 		if(team != Q3F_TEAM_GREEN) {
 			return qfalse;
 		}
@@ -3246,7 +3246,7 @@ static qboolean UI_CheckFavServerVersion( const char *info )
 	//int pure = 0;
 
 	val = Info_ValueForKey(info, "weaprestrict");
-	//pure = atoi(Info_ValueForKey(info, "maxlives")) != 0;
+	//pure = Q_atoi(Info_ValueForKey(info, "maxlives")) != 0;
 	if( strcmp(val, FORTS_SHORTVERSION) != 0 /*&& pure*/ )
 	{
 		Com_Error(ERR_DROP, "This server is NOT running " FORTS_VERSION "!\nJoining this server will not function properly with this version." );
@@ -3709,7 +3709,7 @@ void UI_SetupGameIndexMulti(void) {
 					*p = '\0';
 
 					multiPtr->cvarList[multiPtr->count] = String_Alloc(start);
-					multiPtr->cvarValue[multiPtr->count] = atof(start);
+					multiPtr->cvarValue[multiPtr->count] = Q_atof(start);
 
 					multiPtr->count++;
 
@@ -4098,7 +4098,7 @@ static qboolean UI_CheckVersion( void )
 	trap_LAN_GetServerInfo(ui_netSource.integer, uiInfo.serverStatus.displayServers[index], info, MAX_STRING_CHARS);
 
 	val = Info_ValueForKey(info, "weaprestrict");
-	//pure = atoi(Info_ValueForKey(info, "maxlives")) != 0;
+	//pure = Q_atoi(Info_ValueForKey(info, "maxlives")) != 0;
 	if( strcmp(val, FORTS_SHORTVERSION) != 0 /*&& pure*/ )
 	{
 		Com_Error(ERR_DROP, "This server is NOT running " FORTS_VERSION "!\nJoining this server will not function properly with this version." );
@@ -5302,7 +5302,7 @@ static void UI_BuildServerDisplayList(qboolean force) {
 			trap_LAN_GetServerInfo(ui_netSource.integer, i, info, sizeof(info));
 
 			// bogus servers
-			maxClients = atoi(Info_ValueForKey(info, "sv_maxclients"));
+			maxClients = Q_atoi(Info_ValueForKey(info, "sv_maxclients"));
 			if( maxClients < 0 || maxClients > MAX_CLIENTS) {
 				uiInfo.serverStatus.numIncompatibleServers++;
 				trap_LAN_MarkServerVisible( ui_netSource.integer, i, qfalse );
@@ -5310,7 +5310,7 @@ static void UI_BuildServerDisplayList(qboolean force) {
 			}
 
 			// no punkbuster in GPL ET
-			punkbuster = atoi(Info_ValueForKey(info, "punkbuster"));
+			punkbuster = Q_atoi(Info_ValueForKey(info, "punkbuster"));
 			if( punkbuster ) {
 				uiInfo.serverStatus.numIncompatibleServers++;
 				trap_LAN_MarkServerVisible( ui_netSource.integer, i, qfalse );
@@ -5330,7 +5330,7 @@ static void UI_BuildServerDisplayList(qboolean force) {
 			}
 			// RR2DO2
 
-			clients = atoi(Info_ValueForKey(info, "clients"));
+			clients = Q_atoi(Info_ValueForKey(info, "clients"));
 			uiInfo.serverStatus.numTotalPlayers += clients;
 
 			if ( ui_browserShowEmpty.integer == 0 ) {
@@ -5348,7 +5348,7 @@ static void UI_BuildServerDisplayList(qboolean force) {
 			}
 
 			if ( ui_browserShowPasswordProtected.integer == 0 ) {
-				passw = atoi(Info_ValueForKey(info, "needpass"));
+				passw = Q_atoi(Info_ValueForKey(info, "needpass"));
 				if (passw && !ui_browserShowPasswordProtected.integer) {
 					trap_LAN_MarkServerVisible(ui_netSource.integer, i, qfalse);
 					continue;
@@ -5833,8 +5833,8 @@ static void UI_BuildServerPlayerList(qboolean force) {
 			p++;
 			*p++ = '\0';
 
-			uiInfo.ServerPlayerScores[uiInfo.numServerPlayers] = atoi(score);
-			uiInfo.ServerPlayerPings[uiInfo.numServerPlayers] = atoi(ping);
+			uiInfo.ServerPlayerScores[uiInfo.numServerPlayers] = Q_atoi(score);
+			uiInfo.ServerPlayerPings[uiInfo.numServerPlayers] = Q_atoi(ping);
 			Q_strncpyz(uiInfo.ServerPlayers[uiInfo.numServerPlayers], name, 3 * MAX_NAME_LENGTH);
 			uiInfo.numServerPlayers++;
 		}
@@ -6041,7 +6041,7 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 				lastColumn = column;
 				lastTime = uiInfo.uiDC.realTime;
 			}
-			ping = atoi(Info_ValueForKey(info, "ping"));
+			ping = Q_atoi(Info_ValueForKey(info, "ping"));
 			if (ping == -1) {
 				// if we ever see a ping that is out of date, do a server refresh
 				// UI_UpdatePendingPings();
@@ -6052,7 +6052,7 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 						return Info_ValueForKey(info, "addr");
 					} else {
 						if ( ui_netSource.integer == AS_LOCAL ) {
-							int nettype = atoi(Info_ValueForKey(info, "nettype"));
+							int nettype = Q_atoi(Info_ValueForKey(info, "nettype"));
 
 							if (nettype < 0 || nettype >= (int)ARRAY_LEN(netnames)) {
 								nettype = 0;
@@ -6082,14 +6082,14 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 						return Info_ValueForKey(info, "ping");
 					}
 				case SORT_PASSWORDED:
-					if (atoi(Info_ValueForKey(info, "needpass")) != 0) {
+					if (Q_atoi(Info_ValueForKey(info, "needpass")) != 0) {
 						*handle = uiInfo.uiDC.Assets.lock;
 						return NULL;
 					}
 					else
 						return "";
 				case SORT_PURE:
-					if (atoi(Info_ValueForKey(info, "maxlives")) != 0) {
+					if (Q_atoi(Info_ValueForKey(info, "maxlives")) != 0) {
 						*handle = uiInfo.uiDC.Assets.pureon;
 					}
 					else {
@@ -6098,7 +6098,7 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 					return NULL;
 #if 0
 				case SORT_NUMBOTS:
-					if (atoi(Info_ValueForKey(info, "weaprestrict")) != 0) {
+					if (Q_atoi(Info_ValueForKey(info, "weaprestrict")) != 0) {
 						*handle = uiInfo.uiDC.Assets.pureon;
 					}
 					else {
@@ -6109,8 +6109,8 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 				case SORT_PUNKBUSTER:// {
 					//char *s;
 					//s = Info_ValueForKey(info, "punkbuster");
-					//if (atoi(s) != 0) {
-					/*if (atoi(Info_ValueForKey(info, "punkbuster")) != 0) {
+					//if (Q_atoi(s) != 0) {
+					/*if (Q_atoi(Info_ValueForKey(info, "punkbuster")) != 0) {
 						*handle = uiInfo.uiDC.Assets.pureon;
 					}
 					else {
@@ -6120,7 +6120,7 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 				//}
 #if 0
 				case SORT_VERSION:
-					if (atoi(Info_ValueForKey(info, "weaprestrict")) == FORTS_VERSIONINT) {
+					if (Q_atoi(Info_ValueForKey(info, "weaprestrict")) == FORTS_VERSIONINT) {
 						*handle = uiInfo.uiDC.Assets.pureon;
 					}
 					else {
@@ -6245,7 +6245,7 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 				return va("%s: %s", p, buffer);
 			}
 
-			j = atoi(p);
+			j = Q_atoi(p);
 
 			for(i = 0; i < mInfo->numGameIndicies; i++) {
 				if(mInfo->gameIndiciesInfo[i].number == j) {
@@ -6802,32 +6802,32 @@ void UI_Init( void ) {
 
 	trap_Cvar_VariableStringBuffer( "//trap_GetValue", value, sizeof(value) );
 	if ( value[0] ) {
-		dll_com_trapGetValue = atoi( value );
+		dll_com_trapGetValue = Q_atoi( value );
 		if ( trap_GetValue( value, sizeof( value ), "engine_is_ete" ) ) {
 			engine_is_ete = qtrue;
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_NOTABCOMPLETE_ETE" ) ) {
-			cvar_notabcomplete = atoi( value );
+			cvar_notabcomplete = Q_atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_NODEFAULT_ETE" ) ) {
-			cvar_nodefault = atoi( value );
+			cvar_nodefault = Q_atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_ARCHIVE_ND_ETE" ) ) {
-			cvar_archive_nd = atoi( value );
+			cvar_archive_nd = Q_atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "CVAR_DEVELOPER_ETE" ) ) {
-			cvar_developer = atoi( value );
+			cvar_developer = Q_atoi( value );
 		}
 		if ( trap_GetValue( value, sizeof( value ), "trap_R_AddRefEntityToScene2" ) ) {
-			dll_trap_R_AddRefEntityToScene2 = atoi( value );
+			dll_trap_R_AddRefEntityToScene2 = Q_atoi( value );
 			intShaderTime = qtrue;
 		}
 		if ( trap_GetValue( value, sizeof( value ), "trap_R_AddLinearLightToScene_ETE" ) ) {
-			dll_trap_R_AddLinearLightToScene = atoi( value );
+			dll_trap_R_AddLinearLightToScene = Q_atoi( value );
 			linearLight = qtrue;
 		}
 		if ( trap_GetValue( value, sizeof( value ), "trap_RemoveCommand" ) ) {
-			dll_trap_RemoveCommand = atoi( value );
+			dll_trap_RemoveCommand = Q_atoi( value );
 			removeCommand = qtrue;
 		}
 	}
@@ -7234,11 +7234,11 @@ static void UI_DisplayDownloadInfo( const char *downloadName, float centerPoint,
 	const char *s;
 
 	trap_Cvar_VariableStringBuffer( "cl_downloadSize", buf, sizeof( buf ) );
-	downloadSize = atoi( buf );
+	downloadSize = Q_atoi( buf );
 	trap_Cvar_VariableStringBuffer( "cl_downloadCount", buf, sizeof( buf ) );
-	downloadCount = atoi( buf ); 
+	downloadCount = Q_atoi( buf ); 
 	trap_Cvar_VariableStringBuffer( "cl_downloadTime", buf, sizeof( buf ) );
-	downloadTime = atoi( buf );
+	downloadTime = Q_atoi( buf );
 
 	if ( downloadSize > 0 ) {
 		if ( downloadCount > 21474836 ) {// x100 could cause overflow!
@@ -7411,8 +7411,7 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 		return;
 	}
 
-
-	if (Q_stricmp(cstate.servername,"localhost")) {
+	if (Q_stricmp(cstate.servername, "localhost")) {
 		Text_PaintCenter(centerPoint, yStart + 80, scale, colorWhite, s, 0, NULL);
 	}
 
@@ -7478,7 +7477,7 @@ void UI_LimitCvars( void ) {
 	char var[MAX_TOKEN_CHARS];
 
 	trap_Cvar_VariableStringBuffer( "developer", var, sizeof( var ) );
-	if ( atoi(var) ) {
+	if ( Q_atoi(var) ) {
 		return;
 	}
 
@@ -8237,10 +8236,10 @@ void HUD_DrawClassButton(rectDef_t *rect, vec4_t color, int cls) {
 
 	trap_GetClientState( &cs );
 	trap_GetConfigString( CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING );
-	selteam = atoi(Info_ValueForKey(info, "t"));
+	selteam = Q_atoi(Info_ValueForKey(info, "t"));
 
 	trap_GetConfigString(CS_TEAMMASK, buffer, 16);
-	mask = atoi(buffer);
+	mask = Q_atoi(buffer);
 
 	if(!(mask & (1 << team))) {
 		clr[3] *= 0.4f;
@@ -8281,7 +8280,7 @@ void HUD_DrawFollowText(rectDef_t *rect, float scale, vec4_t color, int textStyl
 
 
 	trap_GetConfigString(CS_TEAMMASK, buffer, 16);
-	mask = atoi(buffer);
+	mask = Q_atoi(buffer);
 
 	if(!(mask & (1 << team))) {
 		clr[3] *= 0.2f;
@@ -8301,7 +8300,7 @@ void HUD_DrawChaseText(rectDef_t *rect, float scale, vec4_t color, int textStyle
 
 
 	trap_GetConfigString(CS_TEAMMASK, buffer, 16);
-	mask = atoi(buffer);
+	mask = Q_atoi(buffer);
 
 	if(!(mask & (1 << team))) {
 		clr[3] *= 0.2f;
@@ -8323,7 +8322,7 @@ void HUD_DrawTeamButtonText(rectDef_t *rect, float scale, vec4_t color, int text
 
 
 	trap_GetConfigString(CS_TEAMMASK, buffer, sizeof(buffer));
-	mask = atoi(buffer);
+	mask = Q_atoi(buffer);
 
 	if(!(mask & (1 << team))) {
 		Q_strncpyz(tbuffer, "Disabled", 64);
@@ -8413,8 +8412,8 @@ void HUD_DrawClassInfo( rectDef_t* rect, float scale, vec4_t color, int textStyl
 	buf[1][1] = hud_maxClasses.string[(cls * 2)+1];
 	buf[1][2] = '\0';
 
-	current	= atoi(buf[0]);
-	max		= atoi(buf[1]);
+	current	= Q_atoi(buf[0]);
+	max		= Q_atoi(buf[1]);
 
 	Com_sprintf(out, sizeof(out), "%i", current);
 	if(max) {
@@ -8444,8 +8443,8 @@ int HUD_ClassUnavailable (int cls) {
 	buf[1][1] = hud_maxClasses.string[(cls * 2)+1];
 	buf[1][2] = '\0';
 
-	current	= atoi(buf[0]);
-	max		= atoi(buf[1]);
+	current	= Q_atoi(buf[0]);
+	max		= Q_atoi(buf[1]);
 
 	if(max && current == max) {
 		return 2;
@@ -8518,7 +8517,7 @@ static void HUD_BuildPlayerList(void) {
 	char	info[MAX_INFO_STRING];
 
 	trap_GetConfigString( CS_SERVERINFO, info, sizeof(info) );
-	count = atoi( Info_ValueForKey( info, "sv_maxclients" ) );
+	count = Q_atoi( Info_ValueForKey( info, "sv_maxclients" ) );
 	
 	uiInfo.Q3F_playercount = 0;
 	uiInfo.Q3F_playerindex = -1;
@@ -8710,22 +8709,22 @@ void HUD_ParseScoreInfo(void) {
 	trap_Argv(1, uiInfo.Q3F_uiScores[k].name, 64);
 
 	trap_Argv(2, buffer, 64);
-	uiInfo.Q3F_uiScores[k].score = atoi(buffer);
+	uiInfo.Q3F_uiScores[k].score = Q_atoi(buffer);
 
 	trap_Argv(3, buffer, 64);
-	uiInfo.Q3F_uiScores[k].team = atoi(buffer);
+	uiInfo.Q3F_uiScores[k].team = Q_atoi(buffer);
 
 	trap_Argv(4, buffer, 64);
 //	uiInfo.Q3F_uiScores[k].class;
 
 	trap_Argv(5, buffer, 64);
-	uiInfo.Q3F_uiScores[k].time = atoi(buffer);
+	uiInfo.Q3F_uiScores[k].time = Q_atoi(buffer);
 
 	trap_Argv(6, buffer, 64);
 	if(Q_stricmp(buffer, "BOT") == 0)
 		uiInfo.Q3F_uiScores[k].bot = qtrue;
 	else
-		uiInfo.Q3F_uiScores[k].ping = atoi(buffer);
+		uiInfo.Q3F_uiScores[k].ping = Q_atoi(buffer);
 
 	uiInfo.Q3F_scoreNum++;
 }
@@ -8736,18 +8735,18 @@ void HUD_ParseTeamScoreInfo(void) {
 
 	for(i = 1; i < 5; i++) {
 		trap_Argv(i, buffer, 64);
-		uiInfo.Q3F_teamScores[i-1] = atoi(buffer);
+		uiInfo.Q3F_teamScores[i-1] = Q_atoi(buffer);
 	}
 
 	trap_Argv(5, buffer, 64);
-	uiInfo.Q3F_scoreTeams = atoi(buffer);
+	uiInfo.Q3F_scoreTeams = Q_atoi(buffer);
 }
 
 int UI_intArgv(int argnum)
 {
 	char buffer[64];
 	trap_Argv(argnum, buffer, 64);
-	return atoi(buffer);
+	return Q_atoi(buffer);
 }
 
 /*
@@ -8959,7 +8958,7 @@ void HUD_DrawMapVoteName( rectDef_t *rect, float scale, vec4_t color, int textSt
 			p = buffer;
 		} else {
 
-			j = atoi(p);
+			j = Q_atoi(p);
 
 			for(i = 0; i < mInfo->numGameIndicies; i++) {
 				if(mInfo->gameIndiciesInfo[i].number == j) {
@@ -9069,7 +9068,7 @@ void HUD_DrawVoteMapInfoBlurb(rectDef_t* rect, float scale, vec4_t color, int te
 	p = strchr(mapname, '+');
 	if(p) {
 		*p++ = '\0';
-		j = atoi(p);
+		j = Q_atoi(p);
 	} else {
 		j = 1;
 	}

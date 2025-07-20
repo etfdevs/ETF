@@ -370,7 +370,7 @@ gentity_t *SelectQ3FSpawnPoint(	vec3_t avoidPoint, vec3_t origin, vec3_t angles,
 				kp = G_Q3F_KeyPairArrayFind( scan->mapdata->other, weightkeystr );
 				if(kp) {
 					if( kp->value.type == Q3F_TYPE_STRING ) {
-						kp->value.d.intdata = atoi( tmp = kp->value.d.strdata );
+						kp->value.d.intdata = Q_atoi( tmp = kp->value.d.strdata );
 						kp->value.type = Q3F_TYPE_INTEGER;
 						G_Q3F_RemString( &tmp );
 					}
@@ -1032,7 +1032,7 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 
 	// check the item prediction
 	s = Info_ValueForKey( userinfo, "cg_predictItems" );
-	if ( !atoi( s ) ) {
+	if ( !Q_atoi( s ) ) {
 		client->pers.predictItemPickup = qfalse;
 	} else {
 		client->pers.predictItemPickup = qtrue;
@@ -1040,21 +1040,21 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 
 	// see if the player has opted out
 	s = Info_ValueForKey( userinfo, "cg_unlagged" );
-	if ( !atoi( s ) ) {
+	if ( !Q_atoi( s ) ) {
 		client->pers.unlagged = 0;
 	} else {
-		client->pers.unlagged = atoi( s );
+		client->pers.unlagged = Q_atoi( s );
 	}
 
 	// see if the player is nudging his shots
 	s = Info_ValueForKey( userinfo, "cl_timeNudge" );
-	client->pers.timeNudge = atoi( s );
+	client->pers.timeNudge = Q_atoi( s );
 	s = Info_ValueForKey( userinfo, "cg_cmdTimeNudge" );
-	client->pers.cmdTimeNudge = atoi( s );
+	client->pers.cmdTimeNudge = Q_atoi( s );
 
 	// see if the player wants to debug the backward reconciliation
 	s = Info_ValueForKey( userinfo, "cg_debugDelag" );
-	if ( !atoi( s ) ) {
+	if ( !Q_atoi( s ) ) {
 		client->pers.debugDelag = qfalse;
 	}
 	else {
@@ -1063,18 +1063,18 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 
 	// see if the player is simulating incoming latency
 	s = Info_ValueForKey( userinfo, "cg_latentSnaps" );
-	client->pers.latentSnaps = atoi( s );
+	client->pers.latentSnaps = Q_atoi( s );
 
 	// see if the player is simulating outgoing latency
 	s = Info_ValueForKey( userinfo, "cg_latentCmds" );
-	client->pers.latentCmds = atoi( s );
+	client->pers.latentCmds = Q_atoi( s );
 
 	// see if the player is simulating outgoing packet loss
 	s = Info_ValueForKey( userinfo, "cg_plOut" );
-	client->pers.plOut = atoi( s );
+	client->pers.plOut = Q_atoi( s );
 
 	s = Info_ValueForKey( userinfo, "cg_gender" );
-	client->pers.gender = atoi( s );
+	client->pers.gender = Q_atoi( s );
 	if(client->pers.gender < GENDER_MALE) {
 		client->pers.gender = GENDER_MALE;
 	} else if(client->pers.gender > GENDER_FEMALE) {
@@ -1085,7 +1085,7 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 	Q_strncpyz ( oldname, client->pers.netname, sizeof( oldname ) );
 	s = Info_ValueForKey (userinfo, "name");
 	ClientCleanName( clientNum, s, client->pers.newnetname, sizeof(client->pers.newnetname) );
-	if( ((client->pers.namechangeTime <= level.time) || (client->pers.connected < CON_CONNECTED && strcmp(reason, "connect") == 0 )) && client->pers.newnetname[0])
+	if( ((client->pers.namechangeTime <= level.time) || (client->pers.connected < CON_CONNECTED && strcmp(reason, "connect") == 0 )) && client->pers.newnetname[0] && strcmp( oldname, client->pers.newnetname ) )
 	{
 		G_LogPrintf("%d changed name. new = %s, ct = %d, t = %d\n", clientNum, client->pers.newnetname, client->pers.namechangeTime, level.time);
 		Q_strncpyz( client->pers.netname, client->pers.newnetname, sizeof(client->pers.netname) );
@@ -1121,7 +1121,7 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 	{
 		s = Info_ValueForKey( userinfo, "cg_autoReload" );
 		// Canabis, updated weapon reload settings
-		client->pers.autoReload = (s ? atoi( s ) : 1);
+		client->pers.autoReload = (s ? Q_atoi( s ) : 1);
 		if ( client->pers.autoReload < 0 ) 
 			client->pers.autoReload = 0;
 		else if ( client->pers.autoReload > 3) 
@@ -1130,7 +1130,7 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 
 	// Golliwog: Check for 'init' flag if they're reinitializing
 	s = Info_ValueForKey( userinfo, "init" );
-	if ( !atoi( s ) ) {
+	if ( !Q_atoi( s ) ) {
 		client->pers.initializing = qfalse;
 	} else {
 		client->pers.initializing = qtrue;
