@@ -1571,7 +1571,7 @@ static void CG_InterpolateEntityPosition( centity_t *cent ) {
 CG_InterpolateEntityPosition
 =============================
 */
-static void CG_InterpolateEntityAngle( centity_t *cent ) {
+/*static void CG_InterpolateEntityAngle(centity_t* cent) {
 	vec3_t		current, next;
 	float		f;
 
@@ -1583,7 +1583,7 @@ static void CG_InterpolateEntityAngle( centity_t *cent ) {
 	cent->lerpAngles[0] = LerpAngle( current[0], next[0], f );
 	cent->lerpAngles[1] = LerpAngle( current[1], next[1], f );
 	cent->lerpAngles[2] = LerpAngle( current[2], next[2], f );
-}
+}*/
 
 
 /*

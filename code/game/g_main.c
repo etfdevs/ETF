@@ -2227,34 +2227,35 @@ void G_RunEntities(void) {
 			continue;
 
 		switch (ent->s.eType) {
-		case ET_MISSILE: {
-			if (ent->antilag_time) {
-				int snap_ms = 1000 / sv_fps.integer;
-				int prestep = ent->s.pos.trTime - projectile_now;
-				int steps = (projectile_now - ent->antilag_time) / snap_ms, rs = 0;
-				int ot = ent->s.pos.trTime - prestep;
-				ent->s.pos.trTime = ent->antilag_time + prestep;
+		case ET_MISSILE:
+			{
+				if (ent->antilag_time) {
+					int snap_ms = 1000 / sv_fps.integer;
+					int prestep = ent->s.pos.trTime - projectile_now;
+					int steps = (projectile_now - ent->antilag_time) / snap_ms, rs = 0;
+					//int ot = ent->s.pos.trTime - prestep;
+					ent->s.pos.trTime = ent->antilag_time + prestep;
 
-				while (steps > 0) {
-					int now = projectile_now - steps * snap_ms;
-					G_TimeShiftAllClients(now, ent->parent);
-					G_RunMissile(ent, now);
+					while (steps > 0) {
+						int now = projectile_now - steps * snap_ms;
+						G_TimeShiftAllClients(now, ent->parent);
+						G_RunMissile(ent, now);
 
-					if (!ent->inuse)
-						break;
+						if (!ent->inuse)
+							break;
 
-					rs = 1;
-					steps--;
+						rs = 1;
+						steps--;
+					}
+					ent->antilag_time = 0;
+					if (rs)
+						G_TimeShiftAllClients( projectile_now, NULL );
 				}
-				ent->antilag_time = 0;
-				if (rs)
-					G_TimeShiftAllClients( projectile_now, NULL );
-			}
 
-			if (ent->inuse)
-				G_RunMissile( ent, level.time );
-			break;
-										 }
+				if (ent->inuse)
+					G_RunMissile( ent, level.time );
+				break;
+			}
 		}
 	}
 

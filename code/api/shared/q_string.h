@@ -38,7 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma once
 
 #include "q_primitives.h"
-#include <stddef.h>
+#include <stddef.h> // Q_vsnprintf or Q_strnlen needs size_t
 
 #if defined(__cplusplus)
 extern "C" {
@@ -72,10 +72,10 @@ char *Q_strupr( char *s1 );
 // buffer size safe library replacements
 #define Q_strncpyz(dest, src, destsize) Q_strncpyz_fn(dest, src, destsize, __func__, RELATIVE_FILENAME, __LINE__)
 #define Q_strcat(dest, size, src) Q_strcat_fn(dest, size, src, __func__, RELATIVE_FILENAME, __LINE__)
-#define Q_strnlen(str, strsz ) Q_strnlen_fn(str, strsz, __func__, RELATIVE_FILENAME, __LINE__)
+//#define Q_strnlen(str, strsz ) Q_strnlen_fn(str, strsz, __func__, RELATIVE_FILENAME, __LINE__)
 void Q_strncpyz_fn( char *dest, const char *src, const int destsize, const char *func, const char *file, int line );
 void Q_strcat_fn( char *dest, const int size, const char *src, const char *func, const char *file, int line );
-size_t Q_strnlen_fn(const char *str, size_t strsz, const char *func, const char *file, int line );
+//size_t Q_strnlen_fn(const char *str, size_t strsz, const char *func, const char *file, int line );
 
 const char *Q_stristr( const char *s, const char *find);
 

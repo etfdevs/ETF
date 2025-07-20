@@ -433,7 +433,7 @@ void Q_strcat_fn( char *dest, const int size, const char *src, const char *func,
 	Q_strncpyz_fn( dest + l1, src, size - l1, func, file, line );
 }
 
-size_t Q_strnlen_fn(const char *str, size_t strsz, const char *func, const char *file, const int line ) {
+/*size_t Q_strnlen_fn(const char* str, size_t strsz, const char* func, const char* file, const int line) {
 	const char *p;
 	if (!str) {
 		Lib_Error("Q_strnlen: NULL str (%s, %s:%i)", func, file, line);
@@ -442,7 +442,7 @@ size_t Q_strnlen_fn(const char *str, size_t strsz, const char *func, const char 
 
 	p = memchr(str, 0, strsz);
 	return p ? p - str : strsz;
-}
+}*/
 
 char *Q_stradd( char *dst, const char *src )
 {
