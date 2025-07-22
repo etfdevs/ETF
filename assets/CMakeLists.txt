@@ -1,5 +1,5 @@
-#set(PK3_NAME "${CMAKE_PROJECT_NAME}-${ETF_GAME_VERSION}")
-set(PK3_NAME "mp_bin")
+string(TIMESTAMP TODAY "%Y-%m-%d_%H-%M")
+set(PK3_NAME "${CMAKE_PROJECT_NAME}-${TODAY}")
 set(PK3_PATH "${BASE_DIR_PATH}/${PK3_NAME}.pk3")
 
 add_custom_target(mod_pk3
@@ -8,11 +8,11 @@ add_custom_target(mod_pk3
 			-DOUTPUT="${PK3_PATH}"
 			-P ${CMAKE_SOURCE_DIR}/cmake/AssetsPackager.cmake
 		WORKING_DIRECTORY ${BASE_DIR_PATH}
-		DEPENDS cgame ui remove_old_pk3
+		DEPENDS cgame ui remove_timestamp remove_old_pk3
 		COMMENT "Packing ${PK3_NAME}.pk3"
 )
 
-set(RELEASE_NAME "${CMAKE_PROJECT_NAME}-${ETF_GAME_VERSION}")
+set(RELEASE_NAME "${CMAKE_PROJECT_NAME}-${TODAY}-${ETF_GAME_VERSION}")
 set(RELEASE_PATH "${CMAKE_BINARY_DIR}/${RELEASE_NAME}.zip")
 
 add_custom_target(mod_release
@@ -31,4 +31,10 @@ add_custom_target(remove_old_pk3
 			-P ${CMAKE_SOURCE_DIR}/cmake/RemoveOldPK3.cmake
 		WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
 		COMMENT "Cleaning old mod pk3 files"
+)
+
+add_custom_target(remove_timestamp
+		COMMAND ${CMAKE_COMMAND}
+			-U TODAY ${CMAKE_BINARY_DIR}
+		COMMENT "Cleaning timestamp"
 )
