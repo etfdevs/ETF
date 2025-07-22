@@ -84,7 +84,7 @@ void trap_R_AddRefEntityToScene( const refEntity_t *re, const centity_t *cent ) 
 		refEntity_t temp;
 		memcpy(&temp, re, sizeof(*re));
 		temp.customShader = cgs.media.celshader;
-		trap_R_RealAddRefEntityToScene( re );
+		trap_R_RealAddRefEntityToScene( &temp );
 		temp.customShader = realShader;
 	}
 }

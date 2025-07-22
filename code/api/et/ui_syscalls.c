@@ -186,7 +186,7 @@ void trap_R_AddRefEntityToScene( const refEntity_t *re ) {
 	memcpy(&temp, re, sizeof(*re));
 	temp.renderfx |= RF_THIRD_PERSON;
 
-	SystemCall( UI_R_ADDREFENTITYTOSCENE, re );
+	SystemCall( UI_R_ADDREFENTITYTOSCENE, &temp );
 }
 
 void trap_R_AddPolyToScene( qhandle_t hShader , int numVerts, const polyVert_t *verts ) {
