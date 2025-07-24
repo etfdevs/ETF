@@ -433,6 +433,7 @@ void CG_NewClientInfo( int clientNum ) {
 	// isolate the player's name
 	v = Info_ValueForKey(configstring, "n");
 	Q_strncpyz( newInfo.name, v, sizeof( newInfo.name ) );
+	BG_cleanName( v, newInfo.cleanname, sizeof( newInfo.name ), qfalse );
 
 	// team
 	v = Info_ValueForKey( configstring, "t" );

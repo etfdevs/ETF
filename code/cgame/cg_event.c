@@ -91,12 +91,10 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 	const char	*message = NULL;
 	const char	*message2;
 	const char	*obit;
-	const char	*targetInfo;
-	const char	*attackerInfo;
-	char		targetName[34];
-	char		attackerName[34];
-	char		tempbuf[32];
-	clientInfo_t	*ci;
+	const clientInfo_t	*targetInfo;
+	const clientInfo_t	*attackerInfo;
+	char		targetName[MAX_NAME_LENGTH+2];
+	char		attackerName[MAX_NAME_LENGTH+2];
 	int			r;
 	int			mynum;
 
@@ -105,280 +103,62 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 	mod = ent->eventParm;
 	mynum = cg.snap->ps.clientNum;
 
-	if((attacker == mynum) && (target != mynum)) {
-		cg.mykills++;
-		cg.kills[target]++;
+	if ( target < 0 || target >= MAX_CLIENTS ) {
+		CG_Error( "CG_Obituary: target out of range" );
 	}
 
-	if(target == mynum) {
+	if ((attacker == mynum) && (target != mynum)) {
+		cg.mykills++;
+		cg.kills[target]++;
+		if (cg_killBeep.integer && !isally) {
+			trap_S_StartLocalSound( cgs.media.killBeepSound, CHAN_LOCAL_SOUND );
+		}
+
+	}
+
+	if (target == mynum) {
 		cg.mydeaths++;
 		cg.deaths[attacker]++;
 	}
 
-	if( mod == MOD_DISCONNECT )
+	if ( mod == MOD_DISCONNECT )
 		return;
 
-	if( mod == MOD_CUSTOM && !cg_altObits.integer && !cg_filterObituaries.integer )
+	if ( mod == MOD_CUSTOM && !cg_killFeed.integer )
 		return;			// Golliwog: Server handled this obit
-
-	if ( target < 0 || target >= MAX_CLIENTS ) {
-		CG_Error( "CG_Obituary: target out of range" );
-	}
-	ci = &cgs.clientinfo[target];
 
 	if ( attacker < 0 || attacker >= MAX_CLIENTS ) {
 		attacker = ENTITYNUM_WORLD;
 		attackerInfo = NULL;
 	} else {
-		attackerInfo = CG_ConfigString( CS_PLAYERS + attacker );
+		attackerInfo = &cgs.clientinfo[attacker];
 	} 
 
-	targetInfo = CG_ConfigString( CS_PLAYERS + target );
-	if ( !targetInfo || !*targetInfo ) {
+	targetInfo = &cgs.clientinfo[target];
+	if ( !targetInfo || !targetInfo->infoValid ) {
 		return;
 	}
-	Q_strncpyz( targetName, Info_ValueForKey( targetInfo, "n" ), sizeof(targetName) - 2);
-	Q_strcat( targetName, sizeof(targetName), S_COLOR_WHITE );
+	Com_sprintf( targetName, sizeof(targetName), "%s%s", targetInfo->name, S_COLOR_WHITE );
 
 	// check for double client messages
-	if ( !attackerInfo || !*attackerInfo ) {
+	if ( !attackerInfo || !attackerInfo->infoValid ) {
 		attacker = ENTITYNUM_WORLD;
-		Q_strncpyz( attackerName, "noname", sizeof(attackerName) - 2 );
-		Q_strcat( attackerName, sizeof(attackerName), S_COLOR_WHITE );
+		Q_strncpyz( attackerName, "noname", sizeof(attackerName) );
 	} else {
-		Q_strncpyz( attackerName, Info_ValueForKey( attackerInfo, "n" ), sizeof(attackerName) - 2);
-		Q_strcat( attackerName, sizeof(attackerName), S_COLOR_WHITE );
+		Com_sprintf(attackerName, sizeof(attackerName), "%s%s", attackerInfo->name, S_COLOR_WHITE );
 		// check for kill messages about the current clientNum
 		if ( target == cg.snap->ps.clientNum ) {
 			Q_strncpyz( cg.killerName, attackerName, sizeof( cg.killerName ) );
 		}
 	}
 
-	if(cg_altObits.integer && !cg_filterObituaries.integer)
-	{
+	if(cg_killFeed.integer) {
 		qboolean islocal = qfalse;
 
 		if((attacker == mynum) || (target == mynum))
 			islocal = qtrue;
 
-		if(cg.numObits == (MAX_OBITS)) 
-		{
-			memmove(&cg.obits[0], &cg.obits[1], sizeof(altObit_t) * (MAX_OBITS - 1));
-			memset(&cg.obits[MAX_OBITS - 1], 0, sizeof(altObit_t));
-			cg.numObits--;
-		}
-		if((attackerInfo != NULL) && (target != attacker)) {
-			Q_strncpyz( cg.obits[cg.numObits].attacker, CG_Q3F_GetTeamColorString(atoi(Info_ValueForKey(attackerInfo, "t"))), 3);
-			BG_cleanName(attackerName, tempbuf, sizeof(tempbuf), qfalse);
-			Q_strcat( cg.obits[cg.numObits].attacker, 34, attackerName);
-			cg.obits[cg.numObits].attacklen = CG_Text_Width(tempbuf, 0.2f, 0, NULL);
-		}
-		Q_strncpyz( cg.obits[cg.numObits].victim, CG_Q3F_GetTeamColorString(atoi(Info_ValueForKey(targetInfo, "t"))), 3);
-		BG_cleanName(targetName, tempbuf, sizeof(tempbuf), qfalse);
-		Q_strcat( cg.obits[cg.numObits].victim, 34, tempbuf);
-		cg.obits[cg.numObits].viclen = CG_Text_Width(tempbuf, 0.2f, 0, NULL);
-		cg.obits[cg.numObits].endtime = cg.time + SHOW_OBIT + (islocal ? 3000 : 0);		// obits stay visible for a few secs
-
-		switch(mod)
-		{
-		case MOD_SWITCHTEAM:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[switchteam]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_SUICIDE:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[suicide]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-			
-		case MOD_HANDGREN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[handgren]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_FLASHGREN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[flash]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_CLUSTERGREN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[cluster]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_GASGREN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[gas]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_PULSEGREN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[pulse]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_CHARGE:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[charge]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_GRENADE:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[directgrenade]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-		case MOD_GRENADE_SPLASH:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[grenade]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_PIPE:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[pipebomb]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_ROCKET:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[directrocket]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-		case MOD_ROCKET_SPLASH:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[rocket]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_RAILGUN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[railgun]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_NAILGREN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[nailgren]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_SUPERNAILGUN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[supernailgun]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_NAILGUN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[nailgun]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_SHOTGUN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[shotgun]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_SINGLESHOTGUN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[singleshotgun]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_MINIGUN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[minigun]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_AXE:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[axe]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_KNIFE:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[knife]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_DISEASE:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[disease]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_NEEDLE_PRICK:
-		case MOD_FAILED_OPERATION:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[syringe]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_WRENCH:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[wrench]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_FLAME:
-		case MOD_FLAME_SPLASH:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[flame]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_NAPALMGREN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[napalmgren]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_GASEXPLOSION:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[gasexplosion]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_SNIPER_RIFLE:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[sniped]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-		case MOD_SNIPER_RIFLE_HEAD:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[headshot]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-		case MOD_SNIPER_RIFLE_FEET:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[legshot]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_RIFLE_ASSAULT:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[autorifle]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_WATER:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[drown]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_SLIME:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[slime]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_LAVA:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[lava]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_TELEFRAG:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[telefrag]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_CRUSH:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[crush]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_FALLING:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[fall]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_TARGET_LASER:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[laser]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-		
-		case MOD_BEAM:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[beam]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_MIRROR:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[mirror]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_DARTGUN:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[dartgun]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_AUTOSENTRY_ROCKET:
-		case MOD_AUTOSENTRY_BULLET:
-		case MOD_AUTOSENTRY_EXPLODE:
-		case MOD_CRUSHEDBYSENTRY:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[sentry]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_MAPSENTRY:
-		case MOD_MAPSENTRY_BULLET:
-		case MOD_MAPSENTRY_ROCKET:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[mapsentry]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-
-		case MOD_SUPPLYSTATION_EXPLODE:
-		case MOD_CRUSHEDBYSUPPLYSTATION:
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[supply]^7", sizeof(cg.obits[cg.numObits].mod));
-			break;
-		default:
-			// handled below
-			break;
-		}
-
-		if(cg.obits[cg.numObits].mod[0] == 0)
-			Q_strncpyz(cg.obits[cg.numObits].mod, "^1[unknown]^7", sizeof(cg.obits[cg.numObits].mod));
-
-		if(isally)
-			cg.obits[cg.numObits].mod[1] = '2'; 
-
-
-		cg.obits[cg.numObits].modlen = (CG_Text_Width(cg.obits[cg.numObits].mod, 0.2f, 0, NULL) / 2);
-
-		++cg.numObits;
+		CG_AddObituary(attacker, target, mod, isally, islocal);
 	}
 
 	if( mod == MOD_CUSTOM )
@@ -408,7 +188,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		r = rand() % 5;
 		switch(r) {
 	case 0:	message = "cratered"; break;
-	case 1: message = ci->gender == GENDER_MALE ? "broke his legs" : "broke her legs"; break;
+	case 1: message = targetInfo->gender == GENDER_MALE ? "broke his legs" : "broke her legs"; break;
 	case 2:	message = "felt the wrath of gravity"; break;
 	case 3: message = "found out Newton was right"; break;
 	case 4: message = "tried to fly"; break;
@@ -419,7 +199,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		switch(r) {
 	case 0:	message = "was squished"; break;
 	case 1: message = "was piledriven"; break;
-	case 2:	message = ci->gender == GENDER_MALE ? "forgot to wear his helmet" : "forgot to wear her helmet"; break;
+	case 2:	message = targetInfo->gender == GENDER_MALE ? "forgot to wear his helmet" : "forgot to wear her helmet"; break;
 	case 3: message = "was pressed flat"; break;
 	case 4: message = "couldn't hold as much as Atlas"; break;
 		}
@@ -429,7 +209,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		switch(r) {
 	case 0:	message = "sank like a rock"; break;
 	case 1: message = "sleeps in Davy Jones' locker. Yarrrrrr"; break;
-	case 2:	message = ci->gender == GENDER_MALE ? "thought he could evolve gills" : "thought she could evolve gills"; break;
+	case 2:	message = targetInfo->gender == GENDER_MALE ? "thought he could evolve gills" : "thought she could evolve gills"; break;
 	case 3: message = "tried to find Nemo"; break;
 	case 4: message = "couldn't find the sunken treasure"; break;
 		}
@@ -439,7 +219,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		switch(r) {
 	case 0:	message = "melted"; break;
 	case 1: message = "dissolved into nothingness"; break;
-	case 2:	message = ci->gender == GENDER_MALE ? "dissolved himself" : "dissolved herself"; break;
+	case 2:	message = targetInfo->gender == GENDER_MALE ? "dissolved himself" : "dissolved herself"; break;
 		}
 		break;
 	case MOD_LAVA:
@@ -447,7 +227,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		switch(r) {
 	case 0:	message = "did a back flip into the lava"; break;
 	case 1: message = "did a cannonball into the lava"; break;
-	case 2:	message = ci->gender == GENDER_MALE ? "sacrificed himself to the lava god" : "sacrificed herself to the lava god"; break;
+	case 2:	message = targetInfo->gender == GENDER_MALE ? "sacrificed himself to the lava god" : "sacrificed herself to the lava god"; break;
 	case 3: message = "found out molten rock is hot"; break;
 		}
 		break;
@@ -485,162 +265,160 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		break;
 	}
 
-	// 	message = ci->gender == GENDER_MALE ? his : hers;
+	// 	message = targetInfo->gender == GENDER_MALE ? his : hers;
 	if ((message == NULL) && (attacker == target)) {
 		switch (mod) {
 		case MOD_GRENADE_SPLASH:
 			r = rand() % 4;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "tripped on his own grenade" : "tripped on her own grenade"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "launched himself a present" : "launched herself a present"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "fed himself some pineapples" : "fed herself some pineapples"; break;
-		case 3: message = ci->gender == GENDER_MALE ? "stepped on his own spam" : "stepped on her own spam"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "tripped on his own grenade" : "tripped on her own grenade"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "launched himself a present" : "launched herself a present"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "fed himself some pineapples" : "fed herself some pineapples"; break;
+		case 3: message = targetInfo->gender == GENDER_MALE ? "stepped on his own spam" : "stepped on her own spam"; break;
 			}
 			break;
 		case MOD_ROCKET_SPLASH:
 			r = rand() % 3;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "blew himself up" : "blew herself up"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "missed with his rocket" : "missed with her rocket"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "became disgusted with his own rocket aim" : "became disgusted with her own rocket aim"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "blew himself up" : "blew herself up"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "missed with his rocket" : "missed with her rocket"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "became disgusted with his own rocket aim" : "became disgusted with her own rocket aim"; break;
 			}
 			break;
 		case MOD_FLAME_SPLASH:
 			r = rand() % 4;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "burned himself" : "burned herself"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "incinerated himself" : "incinerated herself"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "couldn't take the heat" : "couldn't take the heat"; break;
-		case 3: message = ci->gender == GENDER_MALE ? "burned through his own flame-retardant armor" : "burned through her own flame-retardant armor"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "burned himself" : "burned herself"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "incinerated himself" : "incinerated herself"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "couldn't take the heat" : "couldn't take the heat"; break;
+		case 3: message = targetInfo->gender == GENDER_MALE ? "burned through his own flame-retardant armor" : "burned through her own flame-retardant armor"; break;
 			}
 			break;
 		case MOD_HANDGREN:
 			r = rand() % 7;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "swallowed his own grenade" : "swallowed her own grenade"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "and his grenade had a violent divorce" : "and her grenade had a violent divorce"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "needed to see his grenade one last time" : "needed to see her grenade one last time"; break;
-		case 3: message = ci->gender == GENDER_MALE ? "couldn't avoid his own grenade" : "couldn't avoid her own grenade"; break;
-		case 4:	message = ci->gender == GENDER_MALE ? "miscalculated his grenade toss just a little bit" : "miscalculated her grenade toss just a little bit"; break;
-		case 5: message = ci->gender == GENDER_MALE ? "played hide & seek with his own grenade, and lost" : "played hide & seek with her own grenade, and lost"; break;
-		case 6: message = ci->gender == GENDER_MALE ? "threw the pin" : "threw the pin"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "swallowed his own grenade" : "swallowed her own grenade"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "and his grenade had a violent divorce" : "and her grenade had a violent divorce"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "needed to see his grenade one last time" : "needed to see her grenade one last time"; break;
+		case 3: message = targetInfo->gender == GENDER_MALE ? "couldn't avoid his own grenade" : "couldn't avoid her own grenade"; break;
+		case 4:	message = targetInfo->gender == GENDER_MALE ? "miscalculated his grenade toss just a little bit" : "miscalculated her grenade toss just a little bit"; break;
+		case 5: message = targetInfo->gender == GENDER_MALE ? "played hide & seek with his own grenade, and lost" : "played hide & seek with her own grenade, and lost"; break;
+		case 6: message = targetInfo->gender == GENDER_MALE ? "threw the pin" : "threw the pin"; break;
 			}
 			break;
 		case MOD_FLASHGREN:
 			r = rand() % 3;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "was dazzled by his own grenade" : "was dazzled by her own grenade"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "was blinded by his own light" : "was blinded by her own light"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "burned out his own eye sockets" : "burned out her own eye sockets"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "was dazzled by his own grenade" : "was dazzled by her own grenade"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "was blinded by his own light" : "was blinded by her own light"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "burned out his own eye sockets" : "burned out her own eye sockets"; break;
 			}
 			break;
 		case MOD_NAILGREN:
 			r = rand() % 4;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "learned how his nail bomb worked" : "learned how her nail bomb worked"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "couldn't avoid his own nail bomb" : "couldn't avoid her own nail bomb"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "didn't take notice of his rotating disc of death" : "didn't take notice of her rotating disc of death"; break;
-		case 3: message = ci->gender == GENDER_MALE ? "was hypnotized by his spinning nail bomb" : "was hypnotized by her spinning nail bomb"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "learned how his nail bomb worked" : "learned how her nail bomb worked"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "couldn't avoid his own nail bomb" : "couldn't avoid her own nail bomb"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "didn't take notice of his rotating disc of death" : "didn't take notice of her rotating disc of death"; break;
+		case 3: message = targetInfo->gender == GENDER_MALE ? "was hypnotized by his spinning nail bomb" : "was hypnotized by her spinning nail bomb"; break;
 			}
 			break;
 		case MOD_CLUSTERGREN:
-			message = ci->gender == GENDER_MALE ? "spammed himself with his cluster bomb" : "spammed herself with her cluster bomb";
+			message = targetInfo->gender == GENDER_MALE ? "spammed himself with his cluster bomb" : "spammed herself with her cluster bomb";
 			break;
 		case MOD_NAPALMGREN:
 			r = rand() % 3;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "toasted himself with his napalm grenade" : "toasted herself with her napalm grenade"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "walked into his own napalm spray" : "walked into her own napalm spray"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "started his day with a large serving of napalm" : "started her day with a large serving of napalm"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "toasted himself with his napalm grenade" : "toasted herself with her napalm grenade"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "walked into his own napalm spray" : "walked into her own napalm spray"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "started his day with a large serving of napalm" : "started her day with a large serving of napalm"; break;
 			}
 			break;
 		case MOD_GASGREN:
 			r = rand() % 2;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "succumbed to his own gas grenade" : "succumbed to her own gas grenade"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "discombobulated his senses with a lethal intake of his own gas" : "discombobulated her senses with a lethal intake of her own gas"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "succumbed to his own gas grenade" : "succumbed to her own gas grenade"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "discombobulated his senses with a lethal intake of his own gas" : "discombobulated her senses with a lethal intake of her own gas"; break;
 			}
 			break;
 		case MOD_PULSEGREN:
 			r = rand() % 4;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "was shocked by his pulse grenade" : "was shocked by her pulse grenade"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "rattles his bones" : "rattles her bones"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "fulgurated himself with his own pulse grenade" : "fulgurated herself with her own pulse grenade"; break;
-		case 3: message = ci->gender == GENDER_MALE ? "exploded his own ammunition" : "exploded her own ammunition"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "was shocked by his pulse grenade" : "was shocked by her pulse grenade"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "rattles his bones" : "rattles her bones"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "fulgurated himself with his own pulse grenade" : "fulgurated herself with her own pulse grenade"; break;
+		case 3: message = targetInfo->gender == GENDER_MALE ? "exploded his own ammunition" : "exploded her own ammunition"; break;
 			}
 			break;
 		case MOD_CHARGE:
 			r = rand() % 4;
 			switch(r) {
 		case 0:	message = "underestimated the power of the HE charge"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "disintegrated himself with his own HE charge" : "disintegrated herself with her own HE charge"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "wanted to see what happened when his HE charge went off, and learned a valuable lesson" : "wanted to see what happened when her HE charge went off, and learned a valuable lesson"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "disintegrated himself with his own HE charge" : "disintegrated herself with her own HE charge"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "wanted to see what happened when his HE charge went off, and learned a valuable lesson" : "wanted to see what happened when her HE charge went off, and learned a valuable lesson"; break;
 		case 3: message = "paints the town red"; break;
 			}
 			break;
 		case MOD_AUTOSENTRY_BULLET:
 			r = rand() % 3;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "picked a bad time to polish the barrel of his autosentry" : "picked a bad time to polish the barrel of her autosentry"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "looked down the barrel of his own autosentry" : "looked down the barrel of her own autosentry"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "stood on the wrong side of his autosentry" : "stood on the wrong side of her autosentry"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "picked a bad time to polish the barrel of his autosentry" : "picked a bad time to polish the barrel of her autosentry"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "looked down the barrel of his own autosentry" : "looked down the barrel of her own autosentry"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "stood on the wrong side of his autosentry" : "stood on the wrong side of her autosentry"; break;
 			}
 			break;
 		case MOD_AUTOSENTRY_ROCKET:
 			r = rand() % 3;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "tried to argue with his autosentry's rocket" : "tried to argue with her autosentry's rocket"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "was blown up by his own sentry gun" : "was blown up by her own sentry gun"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "got in the way of his autosentry's rocket" : "got in the way of her autosentry's rocket"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "tried to argue with his autosentry's rocket" : "tried to argue with her autosentry's rocket"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "was blown up by his own sentry gun" : "was blown up by her own sentry gun"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "got in the way of his autosentry's rocket" : "got in the way of her autosentry's rocket"; break;
 			}
 			break;
 		case MOD_AUTOSENTRY_EXPLODE:
 			r = rand() % 3;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "exploded along with his autosentry" : "exploded along with her autosentry"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "couldn't repair his autosentry in time" : "couldn't repair her autosentry in time"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "forgot to wear his safety mask" : "forgot to wear her safety mask"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "exploded along with his autosentry" : "exploded along with her autosentry"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "couldn't repair his autosentry in time" : "couldn't repair her autosentry in time"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "forgot to wear his safety mask" : "forgot to wear her safety mask"; break;
 			}
 			break;
 		case MOD_SUPPLYSTATION_EXPLODE:
 			r = rand() % 2;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "fell out with his supply station" : "fell out with her supply station"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "used his supply station as a suicide machine" : "used her supply station as a suicide machine"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "fell out with his supply station" : "fell out with her supply station"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "used his supply station as a suicide machine" : "used her supply station as a suicide machine"; break;
 			}
 			break;
 		case MOD_GASEXPLOSION:
-			message = ci->gender == GENDER_MALE ? "got trapped in his own inferno" : "got trapped in her own inferno";
+			message = targetInfo->gender == GENDER_MALE ? "got trapped in his own inferno" : "got trapped in her own inferno";
 			break;
 		case MOD_CRUSHEDBYSENTRY:
-			message = ci->gender == GENDER_MALE ? "learned just how heavy his autosentry really is" : "learned just how heavy her autosentry really is";
+			message = targetInfo->gender == GENDER_MALE ? "learned just how heavy his autosentry really is" : "learned just how heavy her autosentry really is";
 			break;
 		case MOD_CRUSHEDBYSUPPLYSTATION:
-			message = ci->gender == GENDER_MALE ? "learned just how heavy his supply station really is" : "learned just how heavy her supply station really is";
+			message = targetInfo->gender == GENDER_MALE ? "learned just how heavy his supply station really is" : "learned just how heavy her supply station really is";
 			break;
 		case MOD_PIPE:
 			r = rand() % 4;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "tripped over his own pipe trap" : "tripped over her own pipe trap"; break;
-		case 1: message = ci->gender == GENDER_MALE ? "caught himself with his own pipe trap" : "caught herself with her own pipe trap"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "detonated himself" : "detonated herself"; break;
-		case 3: message = ci->gender == GENDER_MALE ? "mistook himself for an enemy" : "mistook herself for an enemy"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "tripped over his own pipe trap" : "tripped over her own pipe trap"; break;
+		case 1: message = targetInfo->gender == GENDER_MALE ? "caught himself with his own pipe trap" : "caught herself with her own pipe trap"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "detonated himself" : "detonated herself"; break;
+		case 3: message = targetInfo->gender == GENDER_MALE ? "mistook himself for an enemy" : "mistook herself for an enemy"; break;
 			}
 			break;
 		default:
-			message = ci->gender == GENDER_MALE ? "killed himself" : "killed herself";
+			message = targetInfo->gender == GENDER_MALE ? "killed himself" : "killed herself";
 			break;
 		}
 	}
 
 	if (message) {
-		if(!cg_altObits.integer && !cg_filterObituaries.integer)
-			CG_Printf( BOX_PRINT_MODE_CHAT, "%s %s.\n", targetName, message);
-		if(cg_altObits.integer == 1 && !cg_filterObituaries.integer)
-			CG_Printf( BOX_PRINT_MODE_CONSOLE, "%s %s.\n", targetName, message);
+		if(!cg_filterObituaries.integer)
+			CG_Printf( cg_killFeed.integer != 0 ? BOX_PRINT_MODE_CONSOLE : BOX_PRINT_MODE_CHAT, "%s %s.\n", targetName, message);
 		if ( cg.matchLogFileHandle > 0 && cg.matchState <= MATCH_STATE_PLAYING) {
-			CG_MatchLogAddLine(va("suicide %s %s\n", obit, Info_ValueForKey( targetInfo, "n" )));
+			CG_MatchLogAddLine(va("suicide %s %s\n", obit, targetInfo->name));
 		}
 		return;
 	}
@@ -665,7 +443,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		case MOD_NAILGUN:
 			r = rand() % 5;
 			switch(r) {
-		case 0:	message = "didn't think"; message2 = ci->gender == GENDER_MALE ? "'s nails would ever do enough damage to kill him" : "'s nails would ever do enough damage to kill her"; break;
+		case 0:	message = "didn't think"; message2 = targetInfo->gender == GENDER_MALE ? "'s nails would ever do enough damage to kill him" : "'s nails would ever do enough damage to kill her"; break;
 		case 1:	message = "was nailed by"; break;
 		case 2:	message = "was transfixed by"; message2 = "'s nails"; break;
 		case 3:	message = "was finished off by"; message2 = "'s nailgun"; break;
@@ -675,9 +453,9 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		case MOD_SUPERNAILGUN:
 			r = rand() % 5;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "had his body penetrated by" : "had her body penetrated by"; message2 = "'s super nailgun"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "had his body penetrated by" : "had her body penetrated by"; message2 = "'s super nailgun"; break;
 		case 1:	message = "became saturated with nails from"; message2 = "'s super nailgun"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "had a hole punched through his heart by" : "had a hole punched through her heart by"; message2 = "'s super nailgun"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "had a hole punched through his heart by" : "had a hole punched through her heart by"; message2 = "'s super nailgun"; break;
 		case 3:	message = "got nailed hard by"; break;
 		case 4:	message = "was impaled on"; message2 = "'s nails"; break;
 			}
@@ -769,25 +547,25 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		case 1:	message = "was shot in the liver by"; break;
 		case 2:	message = "is sniped by"; break;
 		case 3:	message = "was picked off by"; break;
-		case 4:	message = ci->gender == GENDER_MALE ? "had his organs shot out by" : "had her organs shot out by"; break;
+		case 4:	message = targetInfo->gender == GENDER_MALE ? "had his organs shot out by" : "had her organs shot out by"; break;
 			}
 			break;
 		case MOD_SNIPER_RIFLE_HEAD:
 			r = rand() % 5;
 			switch(r) {
-		case 0:	message = "didn't see"; message2 = ci->gender == GENDER_MALE ? "'s large laser spot on his forehead" : "'s large laser spot on her forehead"; break;
-		case 1:	message = ci->gender == GENDER_MALE ? "had his block knocked off by" : "had her block knocked off by"; message2 = "'s sniper rifle"; break;
+		case 0:	message = "didn't see"; message2 = targetInfo->gender == GENDER_MALE ? "'s large laser spot on his forehead" : "'s large laser spot on her forehead"; break;
+		case 1:	message = targetInfo->gender == GENDER_MALE ? "had his block knocked off by" : "had her block knocked off by"; message2 = "'s sniper rifle"; break;
 		case 2:	message = "gets a bullet between the eyes from"; break;
-		case 3:	message = ci->gender == GENDER_MALE ? "lost his head in" : "lost her head in"; message2 = "'s crosshair"; break;
-		case 4:	message = ci->gender == GENDER_MALE ? "had his head taken off by" : "had her head taken off by"; break;
+		case 3:	message = targetInfo->gender == GENDER_MALE ? "lost his head in" : "lost her head in"; message2 = "'s crosshair"; break;
+		case 4:	message = targetInfo->gender == GENDER_MALE ? "had his head taken off by" : "had her head taken off by"; break;
 			}
 			break;
 		case MOD_SNIPER_RIFLE_FEET:
 			r = rand() % 3;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "had his legs amputated by" : "had her legs amputated by"; message2 = "'s sniper round"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "had his legs amputated by" : "had her legs amputated by"; message2 = "'s sniper round"; break;
 		case 1:	message = "was kneecapped by"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "gets his legs blown off by" : "gets her legs blown off by"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "gets his legs blown off by" : "gets her legs blown off by"; break;
 			}
 			break;
 		case MOD_RIFLE_ASSAULT:
@@ -801,7 +579,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		case MOD_DARTGUN:
 			r = rand() % 3;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "had his insomnia cured by" : "had her insomnia cured by"; message2 = "'s tranquilizer dart"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "had his insomnia cured by" : "had her insomnia cured by"; message2 = "'s tranquilizer dart"; break;
 		case 1:	message = "was knocked out by"; break;
 		case 2:	message = "is put to sleep by"; break;
 			}
@@ -814,7 +592,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		case 2:	message = "was mugged by"; break;
 		case 3:	message = "was carved open by"; message2 = "'s knife"; break;
 		case 4:	message = "was skewered by"; message2 = "'s knife"; break;
-		case 5:	message = ci->gender == GENDER_MALE ? "had his organs fall out from" : "had her organs fall out from"; message2 = "'s knife incision"; break;
+		case 5:	message = targetInfo->gender == GENDER_MALE ? "had his organs fall out from" : "had her organs fall out from"; message2 = "'s knife incision"; break;
 		case 6:	message = "was stabbed to death by"; break;
 			}
 			break;
@@ -845,7 +623,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 			r = rand() % 2;
 			switch(r) {
 		case 0:	message = "got a wrench-shaped dent from"; break;
-		case 1:	message = ci->gender == GENDER_MALE ? "had his nuts tightened by" : "had her nipples twisted off by"; message2 = "'s wrench"; break;
+		case 1:	message = targetInfo->gender == GENDER_MALE ? "had his nuts tightened by" : "had her nipples twisted off by"; message2 = "'s wrench"; break;
 			}
 			break;
 		case MOD_HANDGREN:
@@ -860,8 +638,8 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 			r = rand() % 3;
 			switch(r) {
 		case 0:	message = "was scorched by"; message2 = "'s flash grenade"; break;
-		case 1:	message = ci->gender == GENDER_MALE ? "forgot to close his eyes when" : "forgot to close her eyes when"; message2 = "'s flash grenade exploded"; break;
-		case 2:	message = ci->gender == GENDER_MALE ? "had his eyeballs melted by" : "had her eyeballs melted by"; message2 = "'s flashbang grenade"; break;
+		case 1:	message = targetInfo->gender == GENDER_MALE ? "forgot to close his eyes when" : "forgot to close her eyes when"; message2 = "'s flash grenade exploded"; break;
+		case 2:	message = targetInfo->gender == GENDER_MALE ? "had his eyeballs melted by" : "had her eyeballs melted by"; message2 = "'s flashbang grenade"; break;
 			}
 			break;
 		case MOD_NAILGREN:
@@ -874,7 +652,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		case MOD_CLUSTERGREN:
 			r = rand() % 4;
 			switch(r) {
-		case 0:	message = ci->gender == GENDER_MALE ? "found himself on the wrong end of" : "found herself on the wrong end of"; message2 = "'s cluster bomb spam"; break;
+		case 0:	message = targetInfo->gender == GENDER_MALE ? "found himself on the wrong end of" : "found herself on the wrong end of"; message2 = "'s cluster bomb spam"; break;
 		case 1:	message = "couldn't hide from"; message2 = "'s cluster bomb"; break;
 		case 2:	message = "was spammed by"; message2 = "'s cluster bomb"; break;
 		case 3:	message = "ate"; message2 = "'s cluster bomb shrapnel"; break;
@@ -919,7 +697,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 			r = rand() % 2;
 			switch(r) {
 		case 0:	message = "felt the wrath of"; message2 = "'s autosentry"; break;
-		case 1:	message = ci->gender == GENDER_MALE ? "was caught with his pants down by" : "was caught with her skirt up by"; message2 = "'s autosentry"; break;
+		case 1:	message = targetInfo->gender == GENDER_MALE ? "was caught with his pants down by" : "was caught with her skirt up by"; message2 = "'s autosentry"; break;
 			}
 			break;
 		case MOD_AUTOSENTRY_ROCKET:
@@ -952,7 +730,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		case 0:	message = "was gunned down by"; break;
 		case 1:	message = "was able to avoid everything except"; message2 = "'s single-barreled shotgun"; break;
 		case 2:	message = "was dishonored by"; message2 = "'s single-barreled shotgun"; break;
-		case 3:	message = "is picking"; message2 = ci->gender == GENDER_MALE ? "'s buckshot out of his body" : "'s buckshot out of her body"; break;
+		case 3:	message = "is picking"; message2 = targetInfo->gender == GENDER_MALE ? "'s buckshot out of his body" : "'s buckshot out of her body"; break;
 			}
 			break;
 		case MOD_MINIGUN:
@@ -963,7 +741,7 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 		case 2:	message = "was grated by"; message2 = "'s minigun"; break;
 		case 3:	message = "was reduced to chunks by"; message2 = "'s minigun"; break;
 		case 4:	message = "was transformed into a bloody pulp by"; message2 = "'s minigun"; break;
-		case 5:	message = ci->gender == GENDER_MALE ? "was cut down in his prime with" : "was cut down in her prime with"; message2 = "'s minigun"; break;
+		case 5:	message = targetInfo->gender == GENDER_MALE ? "was cut down in his prime with" : "was cut down in her prime with"; message2 = "'s minigun"; break;
 			}
 			break;
 		case MOD_MIRROR:
@@ -990,14 +768,8 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 			break;
 		}
 		if (message) {
-			if(!cg_altObits.integer && !cg_filterObituaries.integer) {
-				CG_Printf( BOX_PRINT_MODE_CHAT, "%s %s %s%s%s.\n", 
-					targetName, message,
-					(isally ? "^sally^7 " : ""),
-					attackerName, message2);
-			}
-			if(cg_altObits.integer == 1 && !cg_filterObituaries.integer) {
-				CG_Printf( BOX_PRINT_MODE_CONSOLE, "%s %s %s%s%s.\n", 
+			if(!cg_filterObituaries.integer) {
+				CG_Printf( cg_killFeed.integer != 0 ? BOX_PRINT_MODE_CONSOLE : BOX_PRINT_MODE_CHAT, "%s %s %s%s%s.\n", 
 					targetName, message,
 					(isally ? "^sally^7 " : ""),
 					attackerName, message2);
@@ -1006,9 +778,9 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 				CG_MatchLogAddLine(va("%s %s \"%s\" %s\"%s\"\n", 
 					"kill",
 					obit, 
-					Info_ValueForKey( targetInfo, "n" ),
+					targetInfo->name,
 					isally ? "^sally^7 " : "",
-					attackerInfo ? Info_ValueForKey( attackerInfo, "n" ) : "World"
+					attackerInfo && attackerInfo->infoValid ? attackerInfo->name : "World"
 				));
 			}
 			return;
@@ -1016,8 +788,8 @@ static void CG_Obituary( entityState_t *ent, qboolean isally ) {
 	}
 
 	// we don't know what it was
-	if(!cg_altObits.integer && !cg_filterObituaries.integer) {
-		CG_Printf( BOX_PRINT_MODE_CHAT, "%s died.\n", targetName);
+	if(!cg_filterObituaries.integer) {
+		CG_Printf( cg_killFeed.integer != 0 ? BOX_PRINT_MODE_CONSOLE : BOX_PRINT_MODE_CHAT, "%s died.\n", targetName );
 	}
 }
 

@@ -238,9 +238,9 @@ CG_CVAR( cl_demorecording,			"cl_demorecording",			"0",		CVAR_ROM )
 CG_CVAR( cl_demofilename,			"cl_demofilename",			"",			CVAR_ROM )
 CG_CVAR( cl_demooffset,				"cl_demooffset",			"0",		CVAR_ROM )
 
-CG_CVAR( cg_altObits,				"cg_alternateObituaries",	"0",		CVAR_ARCHIVE )			// Slothy
-CG_CVAR( ui_altObitsX,				"ui_altObitsX",				"570",		CVAR_ARCHIVE )			// Slothy
-CG_CVAR( ui_altObitsY,				"ui_altObitsY",				"100",		CVAR_ARCHIVE )			// Slothy
+CG_CVAR( cg_killFeed,				"cg_killFeed",				"0",		CVAR_ARCHIVE )			// Slothy
+CG_CVAR( cg_killFeedX,				"cg_killFeedX",				"640",		CVAR_ARCHIVE )			// Slothy
+CG_CVAR( cg_killFeedY,				"cg_killFeedY",				"125",		CVAR_ARCHIVE )			// Slothy
 
 
 CG_CVAR( cl_waverecording,			"cl_waverecording",			"0",		CVAR_ROM )
@@ -280,6 +280,9 @@ CG_CVAR( cl_anonymous,				"cl_anonymous",				"0",		CVAR_CHEAT )
 CG_EXTCVAR( cg_cl_yawspeed,			"cl_yawspeed",				"140",		0, EXT_CVAR_ARCHIVE_ND )
 CG_EXTCVAR( cg_cl_pitchspeed,		"cl_pitchspeed",			"140",		0, EXT_CVAR_ARCHIVE_ND )
 CG_EXTCVAR( cg_cl_freelook,			"cl_freelook",				"1",		0, EXT_CVAR_ARCHIVE_ND )
+
+CG_CVAR( cg_hitBeep,				"cg_hitBeep",				"1",		CVAR_ARCHIVE )
+CG_CVAR( cg_killBeep,				"cg_killBeep",				"0",		CVAR_ARCHIVE )
 
 #undef CG_NULLCVAR
 #undef CG_NULLEXTCVAR

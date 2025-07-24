@@ -189,6 +189,7 @@ static initSound_t initSounds[] = {
 	{ &cgs.media.countFightSound,			"sound/feedback/fight.wav"					},
 	{ &cgs.media.countPrepareSound,			"sound/feedback/prepare.wav"				},
 	{ &cgs.media.hitTeamSound,				"sound/feedback/hit_teammate.wav"			},
+	{ &cgs.media.killBeepSound,				"sound/world/bell_01_from_ql.wav"			},
 	{ &cgs.media.tracerSound,				"sound/weapons/machinegun/buletby1.wav"		},
 	{ &cgs.media.selectSound,				"sound/weapons/foley/change.wav"			},
 	{ &cgs.media.wearOffSound,				"sound/items/wearoff.wav"					},
@@ -363,9 +364,6 @@ static initGraphic_t initGraphics[] = {
 	{	&cgs.media.bloodExplosionShader,	"bloodExplosion",						INITRT_SHADER		},
 	{	&cgs.media.bulletFlashModel,		"models/weaphits/bullet.md3",			INITRT_MODEL		},
 	{	&cgs.media.sphereFlashModel,		"models/weaphits/sphere.md3",			INITRT_MODEL		},
-	{	&cgs.media.napalmFlameShader,		"gfx/napalmFlame",						INITRT_SHADER		},
-	{	&cgs.media.flameEffectShader,		"models/objects/flame",					INITRT_SHADER		},
-	{	&cgs.media.flameModel,				"models/objects/flame.md3",				INITRT_MODEL		},
 //	{	&cgs.media.flameShader,				"models/weaphits/fthrow/fthrow_flame",	INITRT_SHADER		},
 	{	&cgs.media.bulletExplosionShaders[0],"bulletExplosion2",					INITRT_SHADER		},
 	{	&cgs.media.bulletExplosionShaders[1],"bulletExplosion1",					INITRT_SHADER		},
@@ -1116,6 +1114,7 @@ static void CG_Q3F_InitPhaseSnapshot(void)
 		cg.loading = qfalse;	// future players will be deferred
 		CG_InitLocalEntities();
 		CG_InitMarkPolys();
+		cg.numObits = 0;
 		InitParticles();
 		cg.infoScreenText[0] = 0;	// remove the last loading update
 		CG_SetConfigValues();		// Make sure we have update values (scores)
@@ -1211,9 +1210,6 @@ void CG_Q3F_Init( int serverMessageNum, int serverCommandSequence, int clientNum
 	cgs.media.charsetShader			= trap_R_RegisterShader( "gfx/2d/bigchars" );
 	cgs.media.whiteShader			= trap_R_RegisterShader( "white" );
 	cgs.media.whiteAdditiveShader	= trap_R_RegisterShader( "additivewhite" );
-	cgs.media.charsetProp			= trap_R_RegisterShaderNoMip( "menu/art/font1_prop.tga" );
-	cgs.media.charsetPropGlow		= trap_R_RegisterShaderNoMip( "menu/art/font1_prop_glo.tga" );
-	cgs.media.charsetPropB			= trap_R_RegisterShaderNoMip( "menu/art/font2_prop.tga" );
 	//cgs.media.logodisc				= trap_R_RegisterModel( "ui/models/logodisc.md3" );
 
 	//keeg 

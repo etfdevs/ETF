@@ -1506,48 +1506,264 @@ static void CG_Q3F_DrawScope( void ) {
 
 //==================================================================================
 
-void CG_DrawObits(void)
-{
-	int x, y, i;
-	int todelete = 0;
 
-	if(cg.numObits == 0)
-		return;
 
-	y = ui_altObitsY.integer + (12 * cg.numObits);
-	i = cg.numObits - 1;
+static float Font_MaxHeight(float scale, fontStruct_t *parentfont) {
+	int i;
+	float max;
+	glyphInfo_t *glyph;
+	float useScale;
+	fontInfo_t *font;
 
-	trap_R_SetColor( colorWhite );
-
-	while(i >= 0) {
-		x = ui_altObitsX.integer - cg.obits[i].modlen;
-
-		CG_Text_Paint (x, y, 0.2f, colorWhite, cg.obits[i].mod, 0, 0, 0, NULL, ITEM_ALIGN_LEFT);
-
-		if(cg.obits[i].attacklen) {
-			int ax = x - cg.obits[i].attacklen - 4;
-			CG_Text_Paint (ax, y, 0.2f, colorWhite, cg.obits[i].attacker, 0, 0, 0, NULL, ITEM_ALIGN_LEFT);
+	if( !(parentfont) || !(parentfont->fontRegistered) ) {
+		if (scale <= cg_smallFont.value) {
+			font = &cgDC.Assets.font.smallFont;
+		} else if (scale > cg_bigFont.value) {
+			font = &cgDC.Assets.font.bigFont;
+		} else {
+			font = &cgDC.Assets.font.textFont;
 		}
-
-		x += (2 * cg.obits[i].modlen);
-		x += 4;
-
-		CG_Text_Paint (x, y, 0.2f, colorWhite, cg.obits[i].victim, 0, 0, 0, NULL, ITEM_ALIGN_LEFT);
-
-		if(cg.obits[i].endtime < cg.time) {
-			++todelete;
+	} else {
+		if (scale <= cg_smallFont.value) {
+			font = &parentfont->smallFont;
+		} else if (scale > cg_bigFont.value) {
+			font = &parentfont->bigFont;
+		} else {
+			font = &parentfont->textFont;
 		}
-		--i;
-		y -= 12;
 	}
 
-	trap_R_SetColor( NULL );
+	useScale = scale * font->glyphScale;
 
-	if(todelete > 0) {
-		cg.numObits -= todelete;
-		if(cg.numObits > 0)
-			memmove(&cg.obits[0], &cg.obits[todelete], sizeof(altObit_t) * cg.numObits);
-		memset(&cg.obits[cg.numObits], 0, sizeof(altObit_t) * todelete);
+	max = 0;
+
+	for (i = 0; i < GLYPHS_PER_FONT; i++) {
+		glyph = &font->glyphs[i];
+		if (max < glyph->height) {
+			max = glyph->height;
+		}
+	}
+
+	return max * useScale;
+}
+
+static void CG_PurgeObituary(void) {
+	static altObit_t obits[MAX_OBITS];
+	int i, numObits = 0;
+	memcpy( obits, cg.obits, sizeof(obits) );
+	for (i = 0; i < cg.numObits; i++) {
+		if ( cg.time - obits[i].time > SHOW_OBIT ) {
+			continue;
+		}
+		memcpy( &cg.obits[numObits], &obits[i], sizeof(altObit_t) );
+        numObits++;
+	}
+	cg.numObits = numObits;
+}
+
+void CG_AddObituary( int attacker, int victim, meansOfDeath_t mod, qboolean isally, qboolean islocal ) {
+	int i = 0;
+	if (cg.numObits == MAX_OBITS) {
+        for (i = 0; i < MAX_OBITS - 1; i++) {
+            memcpy(&cg.obits[i], &cg.obits[i + 1], sizeof(altObit_t));
+        }
+		cg.numObits--;
+    }
+	cg.obits[cg.numObits].attacker = attacker;
+	cg.obits[cg.numObits].victim = victim;
+	cg.obits[cg.numObits].mod = mod;
+	if (attacker == victim)
+		isally = qfalse;
+	cg.obits[cg.numObits].ally = isally;
+	cg.obits[cg.numObits].local = islocal;
+	cg.obits[cg.numObits].time = cg.time;
+	cg.numObits++;
+}
+
+static const char *CG_GetObitString( meansOfDeath_t mod ) {
+	switch (mod)
+	{
+	default:
+	case MOD_UNKNOWN:
+	case MOD_CUSTOM:
+		return "world";
+	case MOD_SWITCHTEAM:
+		return "switchteam";
+	case MOD_SUICIDE:
+		return "suicide";
+	case MOD_HANDGREN:
+		return "handgren";
+	case MOD_FLASHGREN:
+		return "flash";
+	case MOD_CLUSTERGREN:
+		return "cluster";
+	case MOD_GASGREN:
+		return "gas";
+	case MOD_PULSEGREN:
+		return "pulse";
+	case MOD_CHARGE:
+		return "charge";
+	case MOD_GRENADE:
+	case MOD_GRENADE_SPLASH:
+		return "grenade";
+	case MOD_PIPE:
+		return "pipe";
+	case MOD_ROCKET:
+	case MOD_ROCKET_SPLASH:
+		return "rocket";
+	case MOD_RAILGUN:
+		return "rail";
+	case MOD_NAILGREN:
+		return "nailbomb";
+	case MOD_SUPERNAILGUN:
+		return "sng";
+	case MOD_NAILGUN:
+		return "ng";
+	case MOD_SHOTGUN:
+		return "ssg";
+	case MOD_SINGLESHOTGUN:
+		return "sbsg";
+	case MOD_MINIGUN:
+		return "minigun";
+	case MOD_AXE:
+		return "axe";
+	case MOD_KNIFE:
+		return "knife";
+	//case MOD_KNIFE_BACKSTAB:
+	//	return "backstab";
+	case MOD_DISEASE:
+		return "disease";
+	case MOD_NEEDLE_PRICK:
+	case MOD_FAILED_OPERATION:
+		return "syringe";
+	case MOD_WRENCH:
+		return "wrench";
+	case MOD_FLAME:
+	case MOD_FLAME_SPLASH:
+		return "flame";
+	case MOD_NAPALMGREN:
+		return "napalm";
+	case MOD_GASEXPLOSION:
+		return "gasexplode";
+	case MOD_SNIPER_RIFLE:
+		return "sniper";
+	case MOD_SNIPER_RIFLE_HEAD:
+		return "headshot";
+	case MOD_SNIPER_RIFLE_FEET:
+		return "legshot";
+	case MOD_RIFLE_ASSAULT:
+		return "autorifle";
+	case MOD_WATER:
+		return "drown";
+	case MOD_SLIME:
+		return "slime";
+	case MOD_LAVA:
+		return "lava";
+	case MOD_TELEFRAG:
+		return "telefrag";
+	case MOD_CRUSH:
+		return "crush";
+	case MOD_FALLING:
+		return "fall";
+	case MOD_TARGET_LASER:
+		return "laser";
+	case MOD_BEAM:
+		return "beam";
+	case MOD_MIRROR:
+		return "mirror";
+	case MOD_DARTGUN:
+		return "dart";
+	case MOD_AUTOSENTRY_ROCKET:
+	case MOD_AUTOSENTRY_BULLET:
+	case MOD_AUTOSENTRY_EXPLODE:
+	case MOD_CRUSHEDBYSENTRY:
+		return "sentry";
+	case MOD_MAPSENTRY:
+	case MOD_MAPSENTRY_BULLET:
+	case MOD_MAPSENTRY_ROCKET:
+		return "mapsentry";
+	case MOD_SUPPLYSTATION_EXPLODE:
+	case MOD_CRUSHEDBYSUPPLYSTATION:
+		return "supply";
+	//case MOD_NAPALMCANNON:
+	//case MOD_NAPALMCANNON_SPLASH:
+	//	return "napalm";
+	}
+}
+
+static void CG_DrawObits(void)
+{
+	qboolean suicide = qfalse;
+	float x, y;
+	vec4_t modColor = { 0 }, attackerColor = { 0 }, victimColor = { 0 };
+	float attackerTextWidth, victimTextWidth, modTextWidth, totalWidth;
+	static float textHeight, spaceWidth;
+	const float textScale = 0.15f;
+	altObit_t *p;
+	int i = 0;
+
+	if (!cg.snap)
+		return;
+
+	CG_PurgeObituary();
+
+	textHeight = Font_MaxHeight( textScale, NULL );
+	spaceWidth = CG_Text_Width( " ", textScale, 0, NULL ) * 2;
+
+
+	y = cg_killFeedY.value;
+
+	for (i = 0, p = cg.obits; p < cg.obits + cg.numObits; i++, p++) {
+		const char *modstr = CG_GetObitString(p->mod);
+
+		if (p->victim >= MAX_CLIENTS)
+			continue;
+
+		if( p->local )
+			VectorCopy( colorYellow, modColor );
+		else if ( p->ally )
+			VectorCopy( colorRed, modColor );
+		else
+			VectorCopy( colorWhite, modColor );
+		if ( p->attacker != ENTITYNUM_WORLD ) {
+			VectorCopy( CG_TeamColor( cgs.clientinfo[p->attacker].team ), attackerColor );
+		}
+		VectorCopy( CG_TeamColor( cgs.clientinfo[p->victim].team ), victimColor );
+
+		// Fade the obituaries
+        if ( cg.time - p->time > FADE_OBIT ) {
+			modColor[3] = attackerColor[3] = victimColor[3] = 1.0f - ((float)cg.time - (float)p->time - FADE_OBIT) / (SHOW_OBIT - FADE_OBIT);
+        } else {
+			modColor[3] = attackerColor[3] = victimColor[3] = 1.0f;
+        }
+
+		modTextWidth = CG_Text_Width(modstr, textScale, 0, NULL);
+
+		if ( (p->attacker == p->victim ) || ( p->attacker == ENTITYNUM_WORLD ) ) {
+			suicide = qtrue;
+			victimTextWidth = CG_Text_Width(cgs.clientinfo[p->victim].cleanname, textScale, 0, NULL);
+		}
+		else {
+			victimTextWidth = CG_Text_Width(cgs.clientinfo[p->victim].cleanname, textScale, 0, NULL);
+			attackerTextWidth = CG_Text_Width(cgs.clientinfo[p->attacker].cleanname, textScale, 0, NULL);
+		}
+        if ( !suicide ) {
+            totalWidth = attackerTextWidth + spaceWidth + modTextWidth + spaceWidth + victimTextWidth + spaceWidth;
+        } else {
+            totalWidth = modTextWidth + spaceWidth + victimTextWidth + spaceWidth;
+        }
+		x = cg_killFeedX.value - totalWidth;
+
+		//Draw the killfeed
+        if ( !suicide ) {
+			CG_Text_Paint( x, y, textScale, attackerColor, cgs.clientinfo[p->attacker].cleanname, 0, 0, 0, NULL, ITEM_ALIGN_LEFT );
+            x += attackerTextWidth + spaceWidth;
+        }
+		CG_Text_Paint( x, y, textScale, modColor, modstr, 0, 0, 0, NULL, ITEM_ALIGN_LEFT );
+		x += modTextWidth + spaceWidth;
+        CG_Text_Paint( x, y, textScale, victimColor, cgs.clientinfo[p->victim].cleanname, 0, 0, 0, NULL, ITEM_ALIGN_LEFT );
+
+		y += textHeight + 2;
 	}
 }
 
@@ -1656,6 +1872,10 @@ static void CG_Draw2D( void ) {
 		return;
 	}
 
+	if(cg_killFeed.integer) {
+		CG_DrawObits();
+	}
+
 	// draw everything + cursor
 	if( cgs.eventHandling == CGAME_EVENT_EDITHUD ) {
 		Menu_PaintAll();
@@ -1695,10 +1915,6 @@ static void CG_Draw2D( void ) {
 		}
 	} else {
 		CG_DrawWarmup();
-	}
-
-	if(cg_altObits.integer) {
-		CG_DrawObits();
 	}
 
 	CG_demoAviFPSDraw();

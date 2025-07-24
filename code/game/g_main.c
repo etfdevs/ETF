@@ -1398,7 +1398,7 @@ void ExitLevel (void) {
 	// RR2DO2
 
 	trap_SendConsoleCommand( EXEC_APPEND, "vstr nextmap\n" );
-	level.changemap = NULL;
+	//level.changemap = NULL;
 	level.intermissiontime = 0;
 	level.nextMapTime = level.time + 500;		// Golliwog: Allow half a second to switch the map
 

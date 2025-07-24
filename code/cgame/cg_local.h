@@ -426,6 +426,7 @@ typedef struct {
 	qboolean		infoValid;
 
 	char			name[MAX_QPATH];
+	char			cleanname[MAX_QPATH];
 	int				team;			//RR2DO2
 	int				cls;			// Golliwog: Player's current (real) class
 
@@ -514,17 +515,17 @@ typedef struct bufferedSound_s
 	int maxtime;
 } bufferedSound_t;
 
-#define	MAX_OBITS			4
+#define	MAX_OBITS			6
+#define FADE_OBIT			4500
 #define SHOW_OBIT			5000		// 5 seconds
 
 typedef struct altObit_s
 {
-	int attacklen, viclen;
-	char attacker[34];
-	char victim[34];
-	char mod[20];
-	int modlen;
-	int endtime;
+	int attacker, victim;
+	int mod;
+	qboolean local;
+	qboolean ally;
+	int time;
 } altObit_t;
 
 //======================================================================
@@ -949,33 +950,8 @@ typedef struct {
 // stored in the clientInfo_t, itemInfo_t, weaponInfo_t, and powerupInfo_t
 typedef struct {
 	qhandle_t	charsetShader;
-	qhandle_t	charsetProp;
-	qhandle_t	charsetPropGlow;
-	qhandle_t	charsetPropB;
 	qhandle_t	whiteShader;
 	qhandle_t	whiteAdditiveShader;	// RR2DO2: this should work better with blinding for lensflares
-
-	qhandle_t	redCubeModel;
-	qhandle_t	blueCubeModel;
-	qhandle_t	redCubeIcon;
-	qhandle_t	blueCubeIcon;
-	qhandle_t	redFlagModel;
-	qhandle_t	blueFlagModel;
-	qhandle_t	neutralFlagModel;
-	qhandle_t	redFlagShader[3];
-	qhandle_t	blueFlagShader[3];
-	qhandle_t	flagShader[4];
-
-	qhandle_t	flagPoleModel;
-	qhandle_t	flagFlapModel;
-
-	qhandle_t	redFlagFlapSkin;
-	qhandle_t	blueFlagFlapSkin;
-	qhandle_t	neutralFlagFlapSkin;
-
-	qhandle_t	redFlagBaseModel;
-	qhandle_t	blueFlagBaseModel;
-	qhandle_t	neutralFlagBaseModel;
 
 	// FALCON : START : Modified to suit Q3F
 /*	qhandle_t	armorGreenModel;
@@ -1019,7 +995,6 @@ typedef struct {
 	qhandle_t	balloonShader;
 	qhandle_t	connectionShader;
 
-	qhandle_t	selectShader;
 	//qhandle_t	viewBloodShader;
 	qhandle_t	tracerShader;
 	qhandle_t	tracer2Shader;
@@ -1098,19 +1073,13 @@ typedef struct {
 	qhandle_t	sphereFlashModel;
 	
 	// weapon effect shaders
-	qhandle_t	railExplosionShader;
-	qhandle_t	plasmaExplosionShader;
 	qhandle_t	bulletExplosionShaders[3];
 	qhandle_t	rocketExplosionShader;
 	qhandle_t	rocket3DExplosionShader;
 	//qhandle_t	smokeExplosionShader;
 	qhandle_t	grenadeExplosionShader;
 	qhandle_t	grenade3DExplosionShader;
-	qhandle_t	bfgExplosionShader;
 	qhandle_t	bloodExplosionShader;
-	qhandle_t	napalmFlameShader;
-	qhandle_t	flameEffectShader;
-	qhandle_t	flameModel;
 	qhandle_t	pulseExplosionShader;
 	qhandle_t	pulse3DExplosionShader;
 	qhandle_t	pulseRingShader;
@@ -1135,15 +1104,6 @@ typedef struct {
 	qhandle_t	whiteredring66;
 	qhandle_t	whitering;
 
-	// special effects models
-	qhandle_t	dustPuffShader;
-
-	// scoreboard headers
-/*	qhandle_t	scoreboardName;
-	qhandle_t	scoreboardPing;
-	qhandle_t	scoreboardScore;
-	qhandle_t	scoreboardTime;*/
-
 	// medals shown during gameplay
 	qhandle_t	medalExcellent;
 	qhandle_t	medalGauntlet;
@@ -1161,10 +1121,8 @@ typedef struct {
 	sfxHandle_t	sfx_metal_ric1;
 	sfxHandle_t	sfx_metal_ric2;
 	sfxHandle_t	sfx_metal_ric3;
-	//sfxHandle_t	sfx_railg;
 	sfxHandle_t sfx_railhit;
 	sfxHandle_t	sfx_rockexp;
-//	sfxHandle_t	sfx_plasmaexp;
 	sfxHandle_t sfx_pulseexp;
 	sfxHandle_t	gasSmokeSound; 
 	sfxHandle_t	gibSound;
@@ -1187,25 +1145,12 @@ typedef struct {
 	sfxHandle_t fiveMinuteSound;
 	sfxHandle_t suddenDeathSound;
 
-/*	sfxHandle_t threeFragSound;
-	sfxHandle_t twoFragSound;
-	sfxHandle_t oneFragSound;*/
-
 	sfxHandle_t hitSound;
-	sfxHandle_t hitSoundHighArmor;
-	sfxHandle_t hitSoundLowArmor;
 	sfxHandle_t hitTeamSound;
-	sfxHandle_t impressiveSound;
+	sfxHandle_t killBeepSound;
 	sfxHandle_t excellentSound;
 	sfxHandle_t deniedSound;
 	sfxHandle_t humiliationSound;
-
-	sfxHandle_t takenLeadSound;
-	sfxHandle_t tiedLeadSound;
-
-	sfxHandle_t voteNow;
-	sfxHandle_t votePassed;
-	sfxHandle_t voteFailed;
 
 	sfxHandle_t watrInSound;
 	sfxHandle_t watrOutSound;
@@ -1215,35 +1160,10 @@ typedef struct {
 	sfxHandle_t medkitSound;
 	sfxHandle_t armorSound;
 
-	sfxHandle_t weaponHoverSound;
-
 	// teamplay sounds
-//	sfxHandle_t captureAwardSound;
-	sfxHandle_t redScoredSound;
-	sfxHandle_t blueScoredSound;
-	sfxHandle_t redLeadsSound;
-	sfxHandle_t blueLeadsSound;
-	sfxHandle_t teamsTiedSound;
-
-	sfxHandle_t	captureYourTeamSound;
-	sfxHandle_t	captureOpponentSound;
-	sfxHandle_t	returnYourTeamSound;
-	sfxHandle_t	returnOpponentSound;
-	sfxHandle_t	takenYourTeamSound;
-	sfxHandle_t	takenOpponentSound;
-
-	sfxHandle_t redFlagReturnedSound;
-	sfxHandle_t blueFlagReturnedSound;
-	sfxHandle_t neutralFlagReturnedSound;
-	sfxHandle_t	enemyTookYourFlagSound;
-	sfxHandle_t	enemyTookTheFlagSound;
-	sfxHandle_t yourTeamTookEnemyFlagSound;
-	sfxHandle_t yourTeamTookTheFlagSound;
-	sfxHandle_t	youHaveFlagSound;
-	sfxHandle_t yourBaseIsUnderAttackSound;
 	sfxHandle_t holyShitSound;
 
-	// tournament sounds
+	// countdown sounds
 	sfxHandle_t	count3Sound;
 	sfxHandle_t	count2Sound;
 	sfxHandle_t	count1Sound;
@@ -1287,8 +1207,6 @@ typedef struct {
 	qhandle_t	armormeShader;
 
 	qhandle_t	agentShader;		// Spy morph shader
-
-//	qhandle_t	flamethrowerShader;	// Used for the flame sections.
 
 	qhandle_t	minigunSmokeTag1;
 	qhandle_t	minigunSmokeTag2;
@@ -1690,6 +1608,8 @@ const char *CG_GameTypeString(void);
 //float CG_DrawOldLagometer( );	// put here to be found
 void CG_Q3F_DrawProgress( int x, int y, int maxwidth, int height, int maxvalue, int absmaxvalue, int value, qhandle_t icon, vec4_t iconcolor );
 // RR2DO2
+
+void CG_AddObituary( int attacker, int victim, meansOfDeath_t mod, qboolean isally, qboolean islocal );
 
 void CG_ExpandingTextBox_AutoWrap( char* instr, float scale, fontStruct_t*font, float w, int size);
 qboolean CG_GetWeaponSwitchBoxExtents(rectDef_t* in, rectDef_t* out, int anchorx, int anchory );

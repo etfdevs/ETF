@@ -551,6 +551,7 @@ static void CG_MapRestart( void ) {
 	CG_InitSmokeSprites();
 	CG_InitLocalEntities();
 	CG_InitMarkPolys();
+	cg.numObits = 0;
 	
 	cg.timelimitWarnings = 0;
 
