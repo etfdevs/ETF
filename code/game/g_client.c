@@ -1081,18 +1081,10 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 		client->pers.gender = GENDER_FEMALE;
 	}
 
-	// set name. Golliwog: 1 second delay on repeated changes, to prevent flooding.
+	// set name.
 	Q_strncpyz ( oldname, client->pers.netname, sizeof( oldname ) );
 	s = Info_ValueForKey (userinfo, "name");
-	ClientCleanName( clientNum, s, client->pers.newnetname, sizeof(client->pers.newnetname) );
-	if( ((client->pers.namechangeTime <= level.time) || (client->pers.connected < CON_CONNECTED && strcmp(reason, "connect") == 0 )) && client->pers.newnetname[0] && strcmp( oldname, client->pers.newnetname ) )
-	{
-		G_LogPrintf("%d changed name. new = %s, ct = %d, t = %d\n", clientNum, client->pers.newnetname, client->pers.namechangeTime, level.time);
-		Q_strncpyz( client->pers.netname, client->pers.newnetname, sizeof(client->pers.netname) );
-		client->pers.newnetname[0] = '\0';
-		client->pers.namechangeTime = level.time + 2000;
-	}
-	// Golliwog.
+	ClientCleanName( clientNum, s, client->pers.netname, sizeof(client->pers.netname) );
 
 	//if ( client->sess.sessionTeam == Q3F_TEAM_SPECTATOR ) {
 	if ( Q3F_IsSpectator(ent->client)) {	// RR2DO2

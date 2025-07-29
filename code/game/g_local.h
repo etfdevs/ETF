@@ -352,8 +352,6 @@ typedef struct {
 	qboolean	predictItemPickup;	// based on cg_predictItems userinfo
 	qboolean	pmoveFixed;			//
 	char		netname[MAX_NETNAME];
-	char		newnetname[MAX_NETNAME];	// Golliwog: desired name.
-	int			namechangeTime;				// Time name was last changed.
 	int			enterTime;			// level.time the client entered the game
 	int			connectTime;
 	playerTeamState_t teamState;	// status in teamplay games

@@ -1509,11 +1509,6 @@ void ClientThink( int clientNum ) {
 		ClientThink_real( ent );
 	}
 
-	// Golliwog: Process any delayed name changes.
-	if( (ent->client->pers.namechangeTime <= level.time) && ent->client->pers.newnetname[0] )
-		ClientUserinfoChanged( ent->s.number, "name change" );
-	// Golliwog.
-
 #ifdef PERFLOG
 	BG_Q3F_PerformanceMonitor_LogFunctionStop();
 #endif
