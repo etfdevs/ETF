@@ -1,5 +1,5 @@
 string(TIMESTAMP TODAY "%Y-%m-%d_%H-%M")
-set(PK3_NAME "${CMAKE_PROJECT_NAME}-${TODAY}")
+set(PK3_NAME "z${CMAKE_PROJECT_NAME}-${TODAY}")
 set(PK3_PATH "${BASE_DIR_PATH}/${PK3_NAME}.pk3")
 
 add_custom_target(mod_pk3
@@ -12,7 +12,7 @@ add_custom_target(mod_pk3
 		COMMENT "Packing ${PK3_NAME}.pk3"
 )
 
-set(RELEASE_NAME "${CMAKE_PROJECT_NAME}-${TODAY}-${ETF_GAME_VERSION}")
+set(RELEASE_NAME "z${CMAKE_PROJECT_NAME}-${TODAY}-${ETF_GAME_VERSION}")
 set(RELEASE_PATH "${CMAKE_BINARY_DIR}/${RELEASE_NAME}.zip")
 
 add_custom_target(mod_release
