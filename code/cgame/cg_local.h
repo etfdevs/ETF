@@ -314,7 +314,6 @@ typedef struct centity_s {
 	// exact interpolated position of entity on this frame
 	vec3_t			lerpOrigin;
 	vec3_t			lerpAngles;
-
 } centity_t;
 
 
@@ -764,6 +763,7 @@ typedef struct {
 	vec3_t		kick_origin;
 
 	// temp working variables for player view
+	vec3_t		view_org, last_pmove_fixed;
 	float		bobfracsin;
 	int			bobcycle;
 	float		xyspeed;
@@ -1451,7 +1451,8 @@ typedef struct {
 	float oldtimescale;									// Timescale value prior to pausing
 
 	qboolean		pmove_fixed;
-	int				pmove_msec;
+	int			pmove_msec;
+	int			pmove_float;
 
 	int				sv_fps;
 
@@ -1459,6 +1460,7 @@ typedef struct {
 
 	qboolean		sv_cheats;
 
+	int active_maxfps;
 } cgs_t;
 
 //==============================================================================
@@ -2302,5 +2304,6 @@ extern int cvar_developer;
 extern int dll_trap_R_AddRefEntityToScene2;
 extern int dll_trap_R_AddLinearLightToScene;
 
+void CG_Update_MaxFPS(void);
 
 #endif	//__CG_LOCAL_H

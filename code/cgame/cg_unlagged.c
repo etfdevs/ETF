@@ -64,6 +64,7 @@ void CG_PredictWeaponEffects( centity_t *cent ) {
 
 	// get the muzzle point
 	VectorCopy( cg.predictedPlayerState.origin, muzzlePoint );
+	SnapVector(muzzlePoint);  // match remote s.pos
 	muzzlePoint[2] += cg.predictedPlayerState.viewheight;
 
 	// get forward, right, and up
@@ -75,18 +76,17 @@ void CG_PredictWeaponEffects( centity_t *cent ) {
 		AngleVectors( cg.predictedPlayerState.viewangles, forward, NULL, NULL );
 	}
 	VectorMA( muzzlePoint, 14, forward, muzzlePoint );
+	SnapVector(muzzlePoint);
 
 	CG_AddPredictedMissile(ent, muzzlePoint, forward);
 
 	if ( ent->weapon == WP_SHOTGUN ) {
 		VectorScale( forward, 4096, endPoint );
 		SnapVector( endPoint );
-		SnapVector( muzzlePoint );
 		CG_SingleShotgunPattern( muzzlePoint, endPoint , ent->clientNum, cg.oldTime % 256 );
 	} else if ( ent->weapon == WP_SUPERSHOTGUN ) {
 		VectorScale( forward, 4096, endPoint );
 		SnapVector( endPoint );
-		SnapVector( muzzlePoint );
 		CG_ShotgunPattern( muzzlePoint, endPoint , ent->clientNum, cg.oldTime % 256 );
 	} else if ( ent->weapon == WP_MINIGUN )  {
 		int heat = cg.minigunHeat - ((cg.time - cg.minigunLast)*15) / 5000;
@@ -94,7 +94,6 @@ void CG_PredictWeaponEffects( centity_t *cent ) {
 			heat = 0;
 		VectorScale( forward, 4096, endPoint );
 		SnapVector( endPoint );
-		SnapVector( muzzlePoint );
 		CG_MinigunPattern(muzzlePoint, endPoint , ent->clientNum, cg.oldTime % 256, heat );
 	} else if ( ent->weapon == WP_ASSAULTRIFLE ) {
 		VectorMA (muzzlePoint, 4096, forward, endPoint );

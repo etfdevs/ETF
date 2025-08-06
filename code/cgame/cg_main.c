@@ -170,7 +170,6 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	{ &cl_maxpackets,		"cl_maxpackets",		40,		30,		-1,		0,	0,	qfalse },
 	{ &r_maxpolys,			"r_maxpolys",			1800,	1800,	-1,		0,	0,	qfalse },
 	{ &r_maxpolyverts,		"r_maxpolyverts",		9000,	9000,	-1,		0,	0,	qfalse },
-	{ &com_maxfps,			"com_maxfps",			85,		30,		130,	0,	0,	qfalse },
 	{ &cg_fov,				"cg_fov",				90,		5,		135,	0,	0,	qfalse },
 	{ &cg_thirdPerson,		"cg_thirdPerson",		0,		0,		0,		0,	0,	qfalse },
 	{ &r_lodCurveError,		"r_lodCurveError",		250,	1,		-1,		0,	0,	qfalse },
@@ -198,8 +197,6 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	//Unlagged cvars
 	{ &cg_cmdTimeNudge,		"cg_cmdTimeNudge",		0,		0,		999,	0,	0,	qtrue },
 	{ &cl_timeNudge,		"cl_timeNudge",			0,		-50,	50,		0,	0,	qtrue },
-	{ &cg_latentSnaps,		"cg_latentSnaps",		0,		0,		10,		0,	0,	qtrue },
-	{ &cg_latentCmds,		"cg_latentCmds",		0,		0,	MAX_LATENT_CMDS - 1 ,	0,	0,	qtrue },
 	{ &cg_plOut,			"cg_plOut",				0,		0,		100 ,	0,	0,	qtrue },
 	// hunkmegs
 	{ &com_hunkmegs,		"com_hunkmegs",			128,		128,		-1,		0,	0,	qfalse },
@@ -209,6 +206,8 @@ static cvarLimitTable_t cvarLimitTable[] = {
 	{ &cg_cl_yawspeed,		"cl_yawspeed",			140,	0,		0,		0,	0,	qfalse },
 	{ &cg_cl_pitchspeed,	"cl_pitchspeed",		140,	0,		0,		0,	0,	qfalse },
 	{ &cg_cl_freelook,		"cl_freelook",			1,		1,		1,		0,	0,	qfalse },
+
+	{ &cg_packetdelay,		"cg_packetdelay",		0,		0,		200,		0,	0,	qfalse },
 };
 
 static const int cvarLimitTableSize = (int)ARRAY_LEN( cvarLimitTable );
@@ -515,6 +514,8 @@ void CG_UpdateCvars( void ) {
 				}
 				else if (cv->vmCvar == &cg_pipeTrail) {
 					CG_UpdateColorFromCvar(cg_pipeTrail.string, colorPipeTrail, &cg.pipeTrailTeam, cg.pipeTrailColor);
+				} else if (cv->vmCvar == &cl_maxfps || cv->vmCvar == &com_maxfps) {
+					CG_Update_MaxFPS();
 				}
 			}
 		}
@@ -538,6 +539,12 @@ void CG_UpdateCvars( void ) {
 
 	// limit cvars
 	CG_LimitCvars();
+
+	// Handle packet delay
+	if (cg_packetdelay.integer != cl_packetdelay.integer) {
+		trap_Cvar_Set("cl_packetdelay", cg_packetdelay.string);
+		trap_Cvar_Update(&cl_packetdelay);
+	}
 }
 
 

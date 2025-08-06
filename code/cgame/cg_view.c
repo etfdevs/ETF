@@ -310,7 +310,6 @@ static void CG_OffsetThirdPersonView( void ) {
 // this causes a compiler bug on mac MrC compiler
 static void CG_StepOffset( void ) {
 	int		timeDelta;
-	
 	// smooth out stair climbing
 	timeDelta = cg.time - cg.stepTime;
 	if ( timeDelta < STEP_TIME ) {
@@ -998,7 +997,7 @@ static int CG_CalcViewValues( void ) {
 	cg.xyspeed = sqrt( ps->velocity[0] * ps->velocity[0] +
 		ps->velocity[1] * ps->velocity[1] );
 
-	VectorCopy( ps->origin, cg.refdef.vieworg );
+	VectorCopy( cg.view_org, cg.refdef.vieworg );
 	VectorCopy( ps->viewangles, cg.refdefViewAngles );
 
 	if (cg_cameraOrbit.integer) {
@@ -1208,8 +1207,6 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	}
 
 	cg.time = serverTime;
-	// adjust the clock to reflect latent snaps
-	cg.time -= cg_latentSnaps.integer * (1000 / cgs.sv_fps);
 
 	cg.demoPlayback = demoPlayback;
 

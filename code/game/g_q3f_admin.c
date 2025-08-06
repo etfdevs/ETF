@@ -411,7 +411,7 @@ static void G_Q3F_AdminStatus( gentity_t *admin )
 		{
 			G_Q3F_AdminPrint(	admin, "%3d %21s %4d %6s %5d %s\n",
 								player->s.number, player->client->pers.ipStr,
-								player->client->pers.realPing,//ps.ping
+								player->client->ps.ping,
 								(player->client->sess.sessionTeam ? g_q3f_teamlist[player->client->sess.sessionTeam].name : "spec"),
 								player->client->ps.persistant[PERS_SCORE],
 								player->client->pers.netname );
