@@ -564,6 +564,7 @@ typedef struct {
 
 	fileHandle_t	logFile;
 	fileHandle_t	memLogFile;
+	fileHandle_t	eventLogFile;
 
 	char		rawmapname[MAX_QPATH];
 
