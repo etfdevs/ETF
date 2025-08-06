@@ -41,6 +41,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_admin.h"
 #include "bg_q3f_util.h"
 #include "g_q3f_mapselect.h"
+#include "g_q3f_eventlog.h"
 
 #include "g_bot_interface.h"
 #ifdef BUILD_LUA
@@ -610,6 +611,7 @@ void Cmd_Kill_f( gentity_t *ent ) {
 			AddScore(ent->client->diseaseEnt, ent->client->diseaseEnt->r.currentOrigin, G_Q3F_IsAllied( ent->client->diseaseEnt, ent ) ? -1 : 1 );
 	}
 	// RR2DO2
+	G_EventLog_Death(ent, ent, ent, MOD_SUICIDE);
 	player_die (ent, ent, ent, 100000, MOD_SUICIDE);
 
 	// no suicide delay in warmup
@@ -774,6 +776,7 @@ qboolean SetTeam( gentity_t *ent, const char *s ) {
 		// Kill him (makes sure he loses flags, etc)
 		ent->flags &= ~FL_GODMODE;
 		ent->client->ps.stats[STAT_HEALTH] = ent->health = 0;
+		G_EventLog_Death(ent, ent, ent, MOD_SWITCHTEAM);
 		player_die (ent, ent, ent, 100000, MOD_SWITCHTEAM);
 
 		/* Ensiform - Adding this because 'keepondeath' items should not still be carried across team changes */

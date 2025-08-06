@@ -361,6 +361,8 @@ typedef struct {
 	qboolean	initializing;		// Golliwog: true if the client is initializing.
 	int			gender;
 	qboolean	isReady;			// RR2DO2: for ready-startup
+	int			class_time;
+	int			goal_time;
 
 //unlagged - these correspond with variables in the userinfo string
 	int			unlagged;

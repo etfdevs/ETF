@@ -59,6 +59,8 @@ add_library(qagame MODULE
 	"g_q3f_controllable.c"
 	"g_q3f_crc.c"
 	"g_q3f_engineer.c"
+	"g_q3f_eventlog.c"
+	"g_q3f_eventlog.h"
 	"g_q3f_flag.c"
 	"g_q3f_flag.h"
 	"g_q3f_grenades.c"

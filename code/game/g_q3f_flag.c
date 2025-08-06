@@ -40,6 +40,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_flag.h"
 #include "g_q3f_mapents.h"
 #include "g_q3f_team.h"
+#include "g_q3f_eventlog.h"
 
 #include "g_bot_interface.h"
 
@@ -391,6 +392,12 @@ void Q3F_func_flag_touch( gentity_t *self, gentity_t *other, trace_t *trace )
 			self->hud_ent->s.constantLight = 0;
 	}
 
+	if ( self->model ) {
+		// TODO FIXME this implies only 1 carryable flag per team on map will break in 4 team situations or other goals that can be carried
+		other->client->pers.goal_time = level.time;
+		G_EventLog_GoalPickup(other);
+	}
+
 //#ifdef DREVIL_BOT_SUPPORT
 //	g_BotUserData.entity = (GameEntity)self;
 //	Bot_Interface_SendGlobalEvent(MESSAGE_FLAG_PICKUP, other->s.number, 0, &g_BotUserData);
@@ -565,6 +572,11 @@ void G_Q3F_DropFlag( gentity_t *ent )
 	ent->think				= Q3F_func_flag_think;
 	ent->mapdata->waittime	= ent->nextthink;
 	ent->timestamp			= level.time;			// Time dropped (to avoid 'retouch' issues)
+
+	if (ent->activator && ent->activator->client && ent->activator->client->pers.goal_time > 0) {
+		int timecarried = level.time - ent->activator->client->pers.goal_time;
+		G_EventLog_GoalFumble(ent->activator, timecarried);
+	}
 
 	if( !(ent->mapdata->flags & Q3F_FLAG_NOSHRINK) )
 	{

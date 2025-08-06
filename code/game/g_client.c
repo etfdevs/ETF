@@ -37,6 +37,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_admin.h"
 #include "g_q3f_team.h"
 #include "g_q3f_flag.h"
+#include "g_q3f_eventlog.h"
 
 #include "g_bot_interface.h"
 #ifdef BUILD_LUA
@@ -1574,6 +1575,7 @@ qboolean ClientSpawn(gentity_t *ent) {
 	int					flags, savedPing, i;
 	g_q3f_playerclass_t	*cls;
 	qboolean			beginclass = qfalse;
+	int					oldclass = Q3F_CLASS_NULL;
 	g_q3f_location_t	*deathloc, *gren1loc, *gren2loc;
 	int					eventSequence;
 	char				userinfo[MAX_INFO_STRING];
@@ -1587,6 +1589,7 @@ qboolean ClientSpawn(gentity_t *ent) {
 	// Golliwog: If class has changed, perform class term/init functions
 	if( client->ps.persistant[PERS_CURRCLASS] != client->sess.sessionClass )
 	{
+		oldclass = client->ps.persistant[PERS_CURRCLASS];
 		// RR2DO2: check for classlimits
 		if( g_q3f_teamlist[ent->client->sess.sessionTeam].classmaximums[client->sess.sessionClass] == -1 ||
 			g_q3f_teamlist[ent->client->sess.sessionTeam].classmaximums[client->sess.sessionClass] > G_Q3F_ClassCount(ent->client->sess.sessionTeam, client->sess.sessionClass) ||
@@ -1782,6 +1785,15 @@ qboolean ClientSpawn(gentity_t *ent) {
 	// And what about no room to spawn cases?
 	G_LuaHook_ClientSpawn(ent - g_entities);
 #endif
+
+	if (!Q3F_IsSpectator(client)) {
+		G_EventLog_PlayerStart(ent);
+		if (beginclass) {
+			int timeplayed = client->pers.class_time > 0 ? level.time - client->pers.class_time : 0;
+			G_EventLog_ChangeClass(ent, oldclass, client->ps.persistant[PERS_CURRCLASS], timeplayed);
+			client->pers.class_time = level.time;
+		}
+	}
 
 	// run a client frame to drop exactly to the floor,
 	// initialize animations and other things

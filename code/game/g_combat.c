@@ -40,6 +40,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_weapon.h"
 #include "g_q3f_team.h"
 #include "g_q3f_admin.h"
+#include "g_q3f_eventlog.h"
 
 #define __STDC_FORMAT_MACROS // older compilers need this
 #include <inttypes.h>
@@ -1034,6 +1035,8 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 
 	// do the damage
 	if (take) {
+		if ( (attacker->s.eType == ET_PLAYER || targ->s.eType == ET_PLAYER) && (take + asave > 0) )
+			G_EventLog_Damage(attacker, targ, inflictor, mod, take > (int)targ->health ? (int)targ->health : Q_ftol(take + asave));
 		targ->health = (int) targ->health - take;
 
 		if ( targ->client ) {
@@ -1041,6 +1044,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		}
 
 		if ( targ->health <= 0 ) {
+			G_EventLog_Death(attacker, targ, inflictor, mod);
 			if ( targ->client )
 				targ->flags |= FL_NO_KNOCKBACK;
 

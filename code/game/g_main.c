@@ -39,6 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_flag.h"
 #include "g_q3f_admin.h"
 #include "g_q3f_mapselect.h"
+#include "g_q3f_eventlog.h"
 
 #include "g_bot_interface.h"
 
@@ -861,6 +862,8 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_DebugLog( "Started map.\n" );
 #endif
 
+	G_EventLog_Init();
+
 #ifdef BUILD_LUA
 	G_LuaHook_InitGame( levelTime, randomSeed, restart );
 #endif // BUILD_LUA
@@ -893,7 +896,10 @@ void G_ShutdownGame( int restart )
 		G_LogPrintf("ShutdownGame:\n" );
 		G_LogPrintf("------------------------------------------------------------\n" );
 		trap_FS_FCloseFile( level.logFile );
+		level.logFile = NULL_FILE;
 	}
+
+	G_EventLog_Shutdown();
 
 	if (!restart) 
 	{

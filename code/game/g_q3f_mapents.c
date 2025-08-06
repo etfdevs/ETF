@@ -48,6 +48,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_weapon.h" /* Ensiform - Included for disease code */
 #include "g_bot_interface.h"
 #include "bg_q3f_util.h"
+#include "g_q3f_eventlog.h"
 
 /*
 **	Static entity parsing functions
@@ -1861,6 +1862,9 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 			}
 			else if( ent ) {
 				level.teamScores[ent->client->sess.sessionTeam] += data->value.d.intdata;
+			}
+			if (ent && data->value.d.intdata > 0) {
+				G_EventLog_Goal(ent);
 			}
 			CalculateRanks();	// Update the score
 		}

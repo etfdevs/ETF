@@ -38,6 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_weapon.h"
 #include "bg_q3f_playerclass.h"
 #include "g_q3f_mapents.h"
+#include "g_q3f_eventlog.h"
 #include "g_bot_interface.h"
 
 //Some useful variables
@@ -376,6 +377,8 @@ void FireWeapon( gentity_t *ent ) {
 			G_AddEvent( ent, EV_POWERUP_QUAD, 0 );
 		wp->Fire(ent);
 	}
+
+	G_EventLog_Attack( ent, ent->s.weapon );
 
 	// Omni-bot - Send a fire event.
 	#ifdef BUILD_BOTS
