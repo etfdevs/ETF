@@ -2936,9 +2936,36 @@ void PmoveSingle (pmove_t *pmove) {
 	PM_WaterEvents();
 
 	// snap some parts of playerstate to save network bandwidth
-	trap_SnapVector( pm->ps->velocity );
+	// But only if pmove_float is not enabled. We always snap on slick
+	// surfaces to prevent acceleration.
+	if (!pm->pmove_float || pml.groundTrace.surfaceFlags & SURF_SLICK)
+		trap_SnapVector( pm->ps->velocity );
 }
 
+/*
+================
+PmoveFixedPartial
+
+For overlapping frames with pmove_fixed we must handle still non-movement state
+such as buttons and viewangle updates.
+================
+*/
+void PmoveFixedPartial (pmove_t *pmove) {
+	pm = pmove;
+	memset(&pml, 0, sizeof(pml));  // Paranoia beyond clearing msec
+
+	PM_UpdateViewAngles( pm->ps, &pm->cmd );
+
+	PM_Animate();
+
+	PM_Weapon();
+	if (pm->ps->weaponstate >= WEAPON_FIRING)
+		pm->ps->eFlags |= EF_FIRING;
+
+	PM_TorsoAnimation();
+
+	pm->retflags |= PMRF_PMOVE_PARTIAL;
+}
 
 /*
 ================
@@ -2947,38 +2974,52 @@ Pmove
 Can be called by either the server or the client
 ================
 */
+static inline int RoundUp(int x, int d) {
+	return ((x/d)*d) + d - 1;
+}
+
 void Pmove (pmove_t *pmove) {
-	int			finalTime;
+	int end, final;
 
-	finalTime = pmove->cmd.serverTime;
+	final = end = pmove->cmd.serverTime;
 
-	if ( finalTime < pmove->ps->commandTime ) {
+	if ( final < pmove->ps->commandTime )
 		return;	// should not happen
-	}
-
-	if ( finalTime > pmove->ps->commandTime + 1000 ) {
-		pmove->ps->commandTime = finalTime - 1000;
-	}
+	else if ( final > pmove->ps->commandTime + 1000 )
+		pmove->ps->commandTime = final - 1000;
 
 	pmove->ps->pmove_framecount = (pmove->ps->pmove_framecount+1) & ((1<<PS_PMOVEFRAMECOUNTBITS)-1);
 
+	// This is slightly subtle.  The original pmove_fixed implementation obscured
+	// frames due to command time overlaps.  This additionally created ambiguity
+	// in resolving which frames had/had not been processed.  We simplify this by
+	// handling the fixed interpolation internally.  We can distinguish whether we
+	// are the first or a blended frame by whether the unadjusted time has crossed
+	// into the next epoch.
+	if (pmove->pmove_fixed) {
+		pmove->ps->commandTime = RoundUp(pmove->ps->commandTime, pmove->pmove_msec);
+		final = RoundUp(final, pmove->pmove_msec);
+
+		if (pmove->ps->commandTime == final)  // Is this a real movement frame?
+			PmoveFixedPartial(pmove);
+	}
+
 	// chop the move up if it is too long, to prevent framerate
 	// dependent behavior
-	while ( pmove->ps->commandTime != finalTime ) {
+	while ( pmove->ps->commandTime != final ) {
 		int		msec;
 
-		msec = finalTime - pmove->ps->commandTime;
+		msec = final - pmove->ps->commandTime;
 
 		if ( pmove->pmove_fixed ) {
-			if ( msec > pmove->pmove_msec ) {
+			if ( msec > pmove->pmove_msec )
 				msec = pmove->pmove_msec;
-			}
 		}
 		else {
-			if ( msec > 66 ) {
+			if ( msec > 66 )
 				msec = 66;
-			}
 		}
+
 		pmove->cmd.serverTime = pmove->ps->commandTime + msec;
 		PmoveSingle( pmove );
 
@@ -2987,5 +3028,7 @@ void Pmove (pmove_t *pmove) {
 		}
 	}
 
+	pmove->ps->commandTime = end;  // Need "true" time
 	//PM_CheckStuck();
 }
+

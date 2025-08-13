@@ -93,6 +93,12 @@ void CopyLongSwap(void *dest, void *src);
 #define LongLongSwap(x) bswap64(x)
 #endif
 
+#elif defined(__MINGW32__)
+
+#define ShortSwap(x) __builtin_bswap16(x)
+#define LongSwap(x) __builtin_bswap32(x)
+#define LongLongSwap(x) __builtin_bswap64(x)
+
 #else
 
 #include <byteswap.h>

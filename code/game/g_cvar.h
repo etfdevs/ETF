@@ -126,6 +126,7 @@ G_CVAR( g_listEntity, "g_listEntity", "0", 0, qfalse )
 
 G_CVAR( pmove_fixed, "pmove_fixed", "0", CVAR_SYSTEMINFO, qfalse )
 G_CVAR( pmove_msec, "pmove_msec", "8", CVAR_SYSTEMINFO, qfalse )
+G_CVAR( pmove_float, "pmove_float", "1", CVAR_SYSTEMINFO, qfalse )
 
 G_CVAR( g_suicideDelay, "g_suicideDelay", "7", 0, qfalse )		// Golliwog: Delay after suiciding
 G_CVAR( g_teamChatSounds, "g_teamChatSounds", "4", 0, qfalse )	// Golliwog: Allow sounds/sounddict in team chat

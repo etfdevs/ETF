@@ -306,26 +306,13 @@ static snapshot_t *CG_ReadNextSnapshot( void ) {
 		// try to read the snapshot from the client system
 		cgs.processedSnapshotNum++;
 		r = trap_GetSnapshot( cgs.processedSnapshotNum, dest );
-		// the client wants latent snaps and the just-read snapshot is valid
-		if ( cg_latentSnaps.integer && r ) {
-			int i = 0, time = dest->serverTime;
 
-			// keep grabbing one snapshot earlier until we get to the right time
-			while ( dest->serverTime > time - cg_latentSnaps.integer * (1000 / cgs.sv_fps) ) {
-				if ( !(r = trap_GetSnapshot( cgs.processedSnapshotNum - i, dest )) ) {
-					// the snapshot is not valid, so stop here
-					break;
-				}
-
-				// go back one more
-				i++;
-			}
-		}
-
+#if 0
 		// FIXME: why would trap_GetSnapshot return a snapshot with the same server time
 		if ( cg.snap && r && dest->serverTime == cg.snap->serverTime ) {
 			//continue;
 		}
+#endif
 
 		// if it succeeded, return
 		if ( r ) {
@@ -348,7 +335,6 @@ static snapshot_t *CG_ReadNextSnapshot( void ) {
 	// nothing left to read
 	return NULL;
 }
-
 
 /*
 ============
@@ -377,13 +363,8 @@ void CG_ProcessSnapshots( void ) {
 	trap_GetCurrentSnapshotNumber( &n, &cg.latestSnapshotTime );
 	if ( n != cg.latestSnapshotNum ) {
 		if ( n < cg.latestSnapshotNum ) {
-			// this may actually happen with lag simulation going on
-			if ( cg_latentSnaps.integer ) {
-				CG_Printf( BOX_PRINT_MODE_CHAT, "WARNING: CG_ProcessSnapshots: n < cg.latestSnapshotNum\n" );
-			} else {
 			// this should never happen
-				CG_Error( "CG_ProcessSnapshots: n < cg.latestSnapshotNum" );
-			}
+			CG_Error( "CG_ProcessSnapshots: n < cg.latestSnapshotNum" );
 		}
 		cg.latestSnapshotNum = n;
 	}
@@ -423,12 +404,7 @@ void CG_ProcessSnapshots( void ) {
 
 			// if time went backwards, we have a level restart
 			if ( cg.nextSnap->serverTime < cg.snap->serverTime ) {
-				// this may actually happen with lag simulation going on
-				if ( cg_latentSnaps.integer ) {
-					CG_Printf( BOX_PRINT_MODE_CHAT, "WARNING: CG_ProcessSnapshots: Server time went backwards\n" );
-				} else {
-					CG_Error( "CG_ProcessSnapshots: Server time went backwards" );
-				}
+				CG_Error( "CG_ProcessSnapshots: Server time went backwards" );
 			}
 		}
 

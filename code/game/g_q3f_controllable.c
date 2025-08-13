@@ -122,7 +122,7 @@ qboolean G_Q3F_Control( gentity_t *ent )
 	pm.pointcontents	= trap_PointContents;
 	pm.debugLevel		= g_debugMove.integer;
 	pm.noFootsteps		= (g_dmflags.integer & DF_NO_FOOTSTEPS) > 0;
-	pm.pmove_fixed		= pmove_fixed.integer | client->pers.pmoveFixed;
+	pm.pmove_fixed		= pmove_fixed.integer;
 	pm.pmove_msec		= pmove_msec.integer;
 	pm.cs				= &controllable->s;
 

@@ -350,7 +350,6 @@ typedef struct {
 	qboolean	localClient;		// true if "ip" info key is "localhost"
 	qboolean	initialSpawn;		// the first spawn should be at a cool location
 	qboolean	predictItemPickup;	// based on cg_predictItems userinfo
-	qboolean	pmoveFixed;			//
 	char		netname[MAX_NETNAME];
 	int			enterTime;			// level.time the client entered the game
 	int			connectTime;
@@ -370,15 +369,7 @@ typedef struct {
 	int			timeNudge;
 	int			cmdTimeNudge;
 //unlagged - client options
-	int			latentSnaps;
-	int			latentCmds;
 	int			plOut;
-	usercmd_t	cmdqueue[MAX_LATENT_CMDS];
-	int			cmdhead;
-//unlagged - true ping
-	int			realPing;
-	int			pingsamples[NUM_PING_SAMPLES];
-	int			samplehead;
 //unlagged - true ping
 
 	// Canabis, stats block
@@ -448,9 +439,9 @@ struct gclient_s {
 
 	int			switchTeamTime;		// time the player switched teams
 
-	// timeResidual is used to handle events that happen every second
+	// periodicNext is used to handle events that happen every second
 	// like health / armor countdowns and regeneration
-	int			timeResidual;
+	int			periodicNext;
 
 	char		*areabits;
 

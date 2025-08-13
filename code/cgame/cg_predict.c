@@ -664,11 +664,11 @@ void CG_PredictPlayerState( void ) {
 		cg.predictedPlayerState = cg.snap->ps;
 	}
 
-	// demo playback just copies the moves
-	if ( cg.demoPlayback ||
-		(cg.snap->ps.pm_flags & PMF_FOLLOW) ||
-		(cg.snap->ps.pm_flags & PMF_CHASE) ) {
+	// demo playback/spectating just copies the moves
+	if ( cg.demoPlayback || (cg.snap->ps.pm_flags & PMF_FOLLOW) ||
+		   (cg.snap->ps.pm_flags & PMF_CHASE) ) {
 		CG_InterpolatePlayerState( qfalse );
+		VectorCopy( cg.predictedPlayerState.origin, cg.view_org );
 		return;
 	}
 
@@ -736,6 +736,7 @@ void CG_PredictPlayerState( void ) {
 
 	cg_pmove.pmove_fixed = (int)cgs.pmove_fixed;
 	cg_pmove.pmove_msec = cgs.pmove_msec;
+	cg_pmove.pmove_float = cgs.pmove_float;
 
 	// Like the comments described above, a player's state is entirely
 	// re-predicted from the last valid snapshot every client frame, which
@@ -755,10 +756,7 @@ void CG_PredictPlayerState( void ) {
 	// except a frame following a new snapshot in which there was a prediction
 	// error.  This yeilds anywhere from a 15% to 40% performance increase,
 	// depending on how much of a bottleneck the CPU is.
-
-	// we check for cg_latentCmds because it'll mess up the optimization
-	// FIXME: make cg_latentCmds work with cg_optimizePrediction?
-	if ( cg_optimizePrediction.integer && !cg_latentCmds.integer ) {
+	if ( cg_optimizePrediction.integer) {
 		if ( cg.nextFrameTeleport || cg.thisFrameTeleport ) {
 			// do a full predict
 			cg.lastPredictedCommand = 0;
@@ -828,10 +826,6 @@ void CG_PredictPlayerState( void ) {
 
 		// get the command
 		trap_GetUserCmd( cmdNum, &cg_pmove.cmd );
-
-		if ( cg_pmove.pmove_fixed ) {
-			PM_UpdateViewAngles( cg_pmove.ps, &cg_pmove.cmd );
-		}
 
 		// don't do anything if the time is before the snapshot player time
 		if ( cg_pmove.cmd.serverTime <= cg.predictedPlayerState.commandTime ) {
@@ -917,24 +911,21 @@ void CG_PredictPlayerState( void ) {
 			VectorSet( cg_pmove.groundVelocity, 0, 0, 0 );
 		}
 
-		if ( cg_pmove.pmove_fixed ) {
-			cg_pmove.cmd.serverTime = ((cg_pmove.cmd.serverTime + cgs.pmove_msec-1) / cgs.pmove_msec) * cgs.pmove_msec;
-		}
-
 		// ydnar: if server respawning, freeze the player
 		if ( cg.serverRespawning ) {
 			cg_pmove.ps->pm_type = PM_FREEZE;
 		}
 
 		cg_pmove.airleft = (cg.waterundertime - cg.time);
+		cg_pmove.retflags = 0;
 
 		if( cg.agentDataEntity && cg.agentDataEntity->currentValid ) {
 			cg_pmove.agentclass = cg.agentDataEntity->currentState.torsoAnim;
 		} else {
 			cg_pmove.agentclass = 0;
 		}
-		// we check for cg_latentCmds because it'll mess up the optimization
-		if ( cg_optimizePrediction.integer && !cg_latentCmds.integer ) {
+
+		if ( cg_optimizePrediction.integer ) {
 			// if we need to predict this command, or we've run out of space in the saved states queue
 			if ( cmdNum >= predictCmd || (stateIndex + 1) % NUM_SAVED_STATES == cg.stateHead ) {
 				// run the Pmove
@@ -985,6 +976,8 @@ void CG_PredictPlayerState( void ) {
 		//CG_CheckChangedPredictableEvents(&cg.predictedPlayerState);
 	}
 
+	VectorCopy( cg.predictedPlayerState.origin, cg.view_org );
+
 	if ( cg_showmiss.integer > 1 ) {
 		CG_Printf( BOX_PRINT_MODE_CHAT, "[%i : %i] ", cg_pmove.cmd.serverTime, cg.time );
 	}
@@ -1014,6 +1007,25 @@ void CG_PredictPlayerState( void ) {
 		if (cg.eventSequence > cg.predictedPlayerState.eventSequence) {
 			CG_Printf(BOX_PRINT_MODE_CHAT, "WARNING: double event\n");
 			cg.eventSequence = cg.predictedPlayerState.eventSequence;
+		}
+	}
+
+	// Need to interp with pmove_fixed to avoid effective 1/pmove_msec fps.
+	if (cgs.pmove_fixed) {
+		if ((cg_pmove.retflags & PMRF_PMOVE_PARTIAL) == 0)  // New full frame
+			VectorCopy(oldPlayerState.origin, cg.last_pmove_fixed);
+
+		// We can be very conservative about when we choose to stitch.
+		if (cg_pmovesmooth.integer &&
+				cg.predictedPlayerState.commandTime - oldPlayerState.commandTime <= cgs.pmove_msec &&
+				DistanceSquared(cg.predictedPlayerState.origin, cg.last_pmove_fixed) < SQR(16) &&
+				!cg.thisFrameTeleport) {
+			vec3_t diff;
+			float dt = 1 + (cg.predictedPlayerState.commandTime % cgs.pmove_msec);
+			dt /= 1.0 * cgs.pmove_msec;
+
+			VectorSubtract(cg.predictedPlayerState.origin, cg.last_pmove_fixed, diff);
+			VectorMA(cg.last_pmove_fixed, dt, diff, cg.view_org);
 		}
 	}
 }

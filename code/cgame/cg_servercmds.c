@@ -217,6 +217,8 @@ void CG_ParseSysteminfo( void ) {
 	} else if ( cgs.pmove_msec > 33 ) {
 		cgs.pmove_msec = 33;
 	}
+	cgs.pmove_float = ( atoi( Info_ValueForKey( info, "pmove_float" ) ) ) ? qtrue : qfalse;
+	CG_Update_MaxFPS();
 
 	cgs.sv_fps = Q_atoi( Info_ValueForKey( info, "sv_fps" ) );
 
@@ -898,4 +900,24 @@ void CG_ExecuteNewServerCommands( int latestSequence ) {
 			CG_ServerCommand();
 		}
 	}
+}
+
+
+/*
+====================
+CG_Update_MaxFPS
+
+Update `com_maxfps` to max allowed value by gamesettings and `cl_maxfps`.
+====================
+*/
+void CG_Update_MaxFPS(void) {
+	// Temp: Higher than 250 wants changes later in stack at higher pings.
+	int fps = cl_maxfps.integer == -1 ? 250 : cl_maxfps.integer;
+	fps = Q_max(Q_min(fps, cgs.pmove_fixed ? 500 : 125), 60);
+
+	if (com_maxfps.integer == fps)
+		return;
+
+	trap_Cvar_Set("com_maxfps", va("%d", fps));
+	trap_Cvar_Update(&com_maxfps);
 }
