@@ -228,6 +228,7 @@ typedef enum {
 
 #define PMRF_SKIP_TAUNT		0x00001		// Done a taunt this pmove
 #define PMRF_DONE_TAUNT		0x00002		// Done a taunt this pmove
+#define PMRF_PMOVE_PARTIAL		0x00004		// PMOVE_FIXED frame that didn't update position
 
 #define	MAXTOUCH	32
 typedef struct {
@@ -259,6 +260,7 @@ typedef struct {
 	// for fixed msec Pmove
 	int			pmove_fixed;
 	int			pmove_msec;
+	int			pmove_float;
 
 	// callbacks to test the world
 	// these will be different functions during game and cgame
@@ -280,7 +282,6 @@ typedef struct {
 // if a full pmove isn't done on the client, you can just update the angles
 void PM_UpdateViewAngles( playerState_t *ps, const usercmd_t *cmd );
 void Pmove (pmove_t *pmove);
-
 //===================================================================================
 
 

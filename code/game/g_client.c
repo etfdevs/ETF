@@ -1062,14 +1062,6 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 		client->pers.debugDelag = qtrue;
 	}
 
-	// see if the player is simulating incoming latency
-	s = Info_ValueForKey( userinfo, "cg_latentSnaps" );
-	client->pers.latentSnaps = Q_atoi( s );
-
-	// see if the player is simulating outgoing latency
-	s = Info_ValueForKey( userinfo, "cg_latentCmds" );
-	client->pers.latentCmds = Q_atoi( s );
-
 	// see if the player is simulating outgoing packet loss
 	s = Info_ValueForKey( userinfo, "cg_plOut" );
 	client->pers.plOut = Q_atoi( s );

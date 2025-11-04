@@ -105,9 +105,7 @@ void G_SendScore( gentity_t *ent ) {
 		} else if( cl->pers.initializing ) {
 			ping = -2;
 		} else {
-//unlagged - true ping
-			ping = cl->pers.realPing < 999 ? cl->pers.realPing : 999;
-//			ping = cl->ps.ping < 999 ? cl->ps.ping : 999;
+			ping = cl->ps.ping < 999 ? cl->ps.ping : 999;
 		}
 		
 		flags = 0;
@@ -3680,7 +3678,7 @@ static void G_Q3F_PlayerStatus( gentity_t *ent )
 		{
 			trap_SendServerCommand( ent-g_entities, va("print \"%3d %4d %6s %5d %s\n\"",
 								player->s.number,
-								player->client->pers.realPing,//ps.ping
+								player->client->ps.ping,
 								(player->client->sess.sessionTeam ? g_q3f_teamlist[player->client->sess.sessionTeam].name : "spec"),
 								player->client->ps.persistant[PERS_SCORE],
 								player->client->pers.netname ) );
