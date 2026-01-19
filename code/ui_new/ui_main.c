@@ -624,7 +624,7 @@ void Text_PaintChar(float x, float y, float w, float h, float scale, float s, fl
 	trap_R_DrawStretchPic( x, y, w, h, s, t, s2, t2, hShader );
 }
 
-void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment) {
+void Text_Paint(float x, float y, float scale, const vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment) {
 	int len, count;
 	vec4_t newColor;
 	glyphInfo_t *glyph;
@@ -706,8 +706,8 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, f
 
 					if (style == ITEM_TEXTSTYLE_SHADOWED || style == ITEM_TEXTSTYLE_SHADOWEDMORE) {
 						int ofs = style == ITEM_TEXTSTYLE_SHADOWED ? 1 : 2;
-						colorBlack[3] = newColor[3];
-						trap_R_SetColor( colorBlack );
+						const vec4_t shadowColor = { 0, 0, 0, newColor[3] };
+						trap_R_SetColor( shadowColor );
 						Text_PaintChar(x + ofs + alignmentoffset, y - yadj + ofs, 
 															glyph->imageWidth,
 															glyph->imageHeight,
@@ -718,7 +718,6 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, f
 															glyph->t2,
 															glyph->glyph );
 						trap_R_SetColor( newColor );
-						colorBlack[3] = 1.0;
 					}
 					Text_PaintChar(x + alignmentoffset, y - yadj, 
 														glyph->imageWidth,
@@ -804,7 +803,7 @@ void Text_Paint_MaxWidth(float x, float y, float scale, vec4_t color, const char
 	Text_Paint(x, y, scale, color, buffer, adjust, limit, style, parentfont, textalignment);
 }
 
-void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const char *text, int cursorPos, char cursor, int limit, int style, fontStruct_t *parentfont, int textalignment) {
+void Text_PaintWithCursor(float x, float y, float scale, const vec4_t color, const char *text, int cursorPos, char cursor, int limit, int style, fontStruct_t *parentfont, int textalignment) {
 	int len, count;
 	vec4_t newColor;
 	glyphInfo_t *glyph, *glyph2;
@@ -860,8 +859,8 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 					yadj = useScale * glyph->top;
 					if (style == ITEM_TEXTSTYLE_SHADOWED || style == ITEM_TEXTSTYLE_SHADOWEDMORE) {
 						int ofs = style == ITEM_TEXTSTYLE_SHADOWED ? 1 : 2;
-						colorBlack[3] = newColor[3];
-						trap_R_SetColor( colorBlack );
+						const vec4_t shadowColor = { 0, 0, 0, newColor[3] };
+						trap_R_SetColor( shadowColor );
 						Text_PaintChar(x + ofs, y - yadj + ofs, 
 															glyph->imageWidth,
 															glyph->imageHeight,
@@ -871,7 +870,6 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 															glyph->s2,
 															glyph->t2,
 															glyph->glyph );
-						colorBlack[3] = 1.0;
 						trap_R_SetColor( newColor );
 					}
 					Text_PaintChar(x, y - yadj, 
@@ -3347,7 +3345,7 @@ static qboolean UI_OwnerDrawHandleKey(int ownerDraw, int flags, float *special, 
 
 
 static float UI_GetValue(int ownerDraw) {
-  return 0;
+	return 0;
 }
 
 /*
@@ -3365,7 +3363,7 @@ static int QDECL UI_ServersQsortCompare( const void *arg1, const void *arg2 ) {
 UI_ServersSort
 =================
 */
-void UI_ServersSort(int column, qboolean force) {
+static void UI_ServersSort(int column, qboolean force) {
 
 	if ( !force ) {
 		if ( uiInfo.serverStatus.sortKey == column ) {
@@ -7216,7 +7214,7 @@ static void UI_PrintTime ( char *buf, int bufsize, int time ) {
 	}
 }
 
-void Text_PaintCenter(float x, float y, float scale, vec4_t color, const char *text, float adjust, fontStruct_t *parentfont) {
+void Text_PaintCenter(float x, float y, float scale, const vec4_t color, const char *text, float adjust, fontStruct_t *parentfont) {
 	//int len = Text_Width(text, scale, 0, parentfont);
 	Text_Paint(x /*- len / 2*/, y, scale, color, text, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE, parentfont, ITEM_ALIGN_CENTER);
 }

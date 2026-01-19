@@ -512,7 +512,7 @@ typedef struct {
 	void (*drawHandlePic) (float x, float y, float w, float h, qhandle_t asset);
 	void (*drawAdjustedPic) (float x, float y, float w, float h, qhandle_t asset);
 	void (*drawStretchPic) (float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader );
-	void (*drawText) (float x, float y, float scale, vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment );
+	void (*drawText) (float x, float y, float scale, const vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment );
 	int (*textWidth) (const char *text, float scale, int limit, fontStruct_t *parentfont);
 	int (*textHeight) (const char *text, float scale, int limit, fontStruct_t *parentfont);
 	qhandle_t (*registerModel) (const char *p);
@@ -534,7 +534,7 @@ typedef struct {
 	void (*getCVarString)(const char *cvar, char *buffer, int bufsize);
 	float (*getCVarValue)(const char *cvar);
 	void (*setCVar)(const char *cvar, const char *value);
-	void (*drawTextWithCursor)(float x, float y, float scale, vec4_t color, const char *text, int cursorPos, char cursor, int limit, int style, fontStruct_t *parentfont, int textalignment);
+	void (*drawTextWithCursor)(float x, float y, float scale, const vec4_t color, const char *text, int cursorPos, char cursor, int limit, int style, fontStruct_t *parentfont, int textalignment);
 	void (*setOverstrikeMode)(qboolean b);
 	qboolean (*getOverstrikeMode)(void);
 	void (*startLocalSound)( sfxHandle_t sfx, int channelNum );
@@ -654,7 +654,7 @@ itemDef_t *Menu_FindItemByName(menuDef_t *menu, const char *p);
 void Menus_ShowByName(const char *p);
 void Menus_CloseByName(const char *p);
 void Display_HandleKey(int key, qboolean down, int x, int y);
-void LerpColor(vec4_t a, vec4_t b, vec4_t c, float t);
+void LerpColor(const vec4_t a, const vec4_t b, vec4_t c, float t);
 void Menus_CloseAll(void);
 void Menu_Paint(menuDef_t *menu, qboolean forcePaint);
 int Menu_GetFeederSelection(menuDef_t *menu, int feeder, const char *name);

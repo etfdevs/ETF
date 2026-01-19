@@ -510,7 +510,7 @@ static void CG_Q3F_AddRing( localEntity_t *le ) {
 		VectorSubtract( v->xyz, le->refEntity.origin, delta );
 		v->st[0] = 0.5 + DotProduct( delta, forward ) * texCoordScale;
 		v->st[1] = 0.5 + DotProduct( delta, right ) * texCoordScale;
-		*(int*)&v->modulate = *(int*)&rgba;
+		RGBACopy(rgba, v->modulate);
 	}
 
 	trap_R_AddPolyToScene( le->refEntity.customShader, 4, verts );

@@ -176,7 +176,7 @@ Draws a bounding box around a player.  Called from CG_Player.
 static qhandle_t bboxShader = 0;
 static qhandle_t bboxShader_nocull = 0;
 
-void CG_DrawBoundingBox( vec3_t origin, vec3_t mins,vec3_t maxs, vec3_t color ) {
+void CG_DrawBoundingBox( vec3_t origin, vec3_t mins,vec3_t maxs, const vec3_t color ) {
 	int i;
 	polyVert_t verts[4];
 	vec3_t corners[8];
@@ -276,7 +276,7 @@ void CG_DrawBoundingBox( vec3_t origin, vec3_t mins,vec3_t maxs, vec3_t color ) 
 }
 
 
-void CG_AddBoundingBox( centity_t *cent, vec3_t color ) {
+void CG_AddBoundingBox( centity_t *cent, const vec3_t color ) {
 	vec3_t mins = {-15, -15, -24};
 	vec3_t maxs = {15, 15, 32};
 

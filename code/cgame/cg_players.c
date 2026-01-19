@@ -35,10 +35,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "../game/bg_q3f_playerclass.h"
 #include "../game/bg_q3f_weapon.h"
 
-// From cg_weapons.c
-
-//void CG_FlameRender(centity_t *cent);
-
 char	*cg_customSoundNames[MAX_CUSTOM_SOUNDS] = {
 	"*death1.wav",
 	"*death2.wav",
@@ -64,7 +60,6 @@ char	*cg_customSoundNames[MAX_CUSTOM_SOUNDS] = {
 	"*burn.wav",
 };
 
-//static int lastflags[MAX_CLIENTS];
 static centity_t *agentdata;
 
 /*
@@ -2047,24 +2042,6 @@ void CG_Player( centity_t *cent ) {
 		return;
 	}
 
-/*	if(cent->currentState.weapon == WP_MINIGUN)
-	{
-
-		int difflags = lastflags[clientNum] ^ cent->currentState.eFlags;
-		if(difflags & EF_Q3F_AIMING)
-		{
-			if(cent->currentState.eFlags & EF_Q3F_AIMING)
-			{
-				if(clientNum == cg.snap->ps.clientNum)
-					cg.shudderStart = cg.time;
-			}
-			else if( !(cent->currentState.eFlags & EF_Q3F_AIMING))
-				if(clientNum == cg.snap->ps.clientNum)
-					cg.shudderStart = 0;
-		}
-		lastflags[clientNum] = cent->currentState.eFlags;
-	}
-*/
 	if ( !corpse ) {
 		if( cent->currentState.eFlags & (EF_Q3F_DISGUISE|EF_Q3F_INVISIBLE) ) {
 			// We don't draw, but we might want a agent effect instead.

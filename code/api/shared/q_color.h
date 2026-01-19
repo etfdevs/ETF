@@ -106,36 +106,40 @@ extern "C" {
 #define S_COLOR_NULL		"^*"
 
 
-extern vec4_t colorBlack;
-extern vec4_t colorRed;
-extern vec4_t colorGreen;
-extern vec4_t colorBlue;
-extern vec4_t colorYellow;
-extern vec4_t colorOrange;
-extern vec4_t colorMagenta;
-extern vec4_t colorCyan;
-extern vec4_t colorWhite;
-extern vec4_t colorLtGrey;
-extern vec4_t colorMdGrey;
-extern vec4_t colorDkGrey;
-extern vec4_t colorMdRed;
-extern vec4_t colorMdGreen;
-extern vec4_t colorDkGreen;
-extern vec4_t colorMdCyan;
-extern vec4_t colorMdYellow;
-extern vec4_t colorMdOrange;
-extern vec4_t colorMdBlue;
-extern vec4_t colorPurple;
-extern vec4_t colorPipeTrail;
-extern vec4_t colorDrawFriend;
+extern const vec4_t colorBlack;
+extern const vec4_t colorRed;
+extern const vec4_t colorGreen;
+extern const vec4_t colorBlue;
+extern const vec4_t colorYellow;
+extern const vec4_t colorOrange;
+extern const vec4_t colorMagenta;
+extern const vec4_t colorCyan;
+extern const vec4_t colorWhite;
+extern const vec4_t colorLtGrey;
+extern const vec4_t colorMdGrey;
+extern const vec4_t colorDkGrey;
+extern const vec4_t colorMdRed;
+extern const vec4_t colorMdGreen;
+extern const vec4_t colorDkGreen;
+extern const vec4_t colorMdCyan;
+extern const vec4_t colorMdYellow;
+extern const vec4_t colorMdOrange;
+extern const vec4_t colorMdBlue;
+extern const vec4_t colorPurple;
+extern const vec4_t colorPipeTrail;
+extern const vec4_t colorDrawFriend;
 
 extern const vec4_t g_color_table[Q_COLOR_BITS+1];
 
-//qboolean GetColourFromHex( const char *string, vec4_t colour );
-//qboolean GetColourFromString( const char *string, vec4_t colour );
 unsigned ColorBytes3 (float r, float g, float b);
 unsigned ColorBytes4 (float r, float g, float b, float a);
 float NormalizeColor( const vec3_t in, vec3_t out );
+
+#define RGBCopyvf(src, dest) VectorCopy(src, dest)
+#define RGBACopyvf(src, dest) VectorCopy4(src, dest)
+
+#define RGBCopy(src, dest) (dest[0]=src[0],dest[1]=src[1],dest[2]=src[2])
+#define RGBACopy(src, dest) (dest[0]=src[0],dest[1]=src[1],dest[2]=src[2],dest[3]=src[3])
 
 #if defined(__cplusplus)
 } // extern "C"

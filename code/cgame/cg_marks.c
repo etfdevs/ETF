@@ -139,7 +139,7 @@ static markPoly_t	*CG_AllocMark( int endtime ) {
 }
 
 void CG_OldMark(qhandle_t markShader, const vec3_t origin, const vec3_t dir, 
-				    float orientation,float radius,vec4_t color, 
+				    float orientation,float radius, const vec4_t color, 
 					int lifetime,leMarkFadeType_t fadetype)
 {
 	int				i,j;
@@ -309,10 +309,7 @@ void CG_AddMarks( void ) {
 }
 
 /* This one shows the decals using the ET trap for it */
-void CG_DecalMark(qhandle_t markShader, const vec3_t origin, vec4_t projection, 
-				    float orientation,float radius,vec4_t color, 
-					int lifetime,int fadetime
-					)
+void CG_DecalMark( qhandle_t markShader, const vec3_t origin, vec4_t projection, float orientation, float radius, const vec4_t color, int lifetime, int fadetime )
 {
 	int			i;
 	vec3_t		axis[ 3 ];
@@ -343,7 +340,7 @@ void CG_DecalMark(qhandle_t markShader, const vec3_t origin, vec4_t projection,
 	trap_R_ProjectDecal( markShader, 4, points, projection, color, lifetime, fadetime );
 }
 
-qboolean CG_ShadowMark(vec3_t origin, float radius, float height, float *shadowPlane )
+qboolean CG_ShadowMark(const vec3_t origin, float radius, float height, float *shadowPlane )
 {
 	vec3_t		end,mins,maxs;
 	vec4_t		color,projection;
@@ -372,13 +369,12 @@ qboolean CG_ShadowMark(vec3_t origin, float radius, float height, float *shadowP
 	// fade the shadow out with height 
 	color[0]=color[1]=color[2]= 1.0 - trace.fraction;
 	color[3]=1.0f;
-	VectorSet( projection, 0, 0, -1 );
-	projection[ 3 ] = radius;
-	trap_R_ProjectDecal(cgs.media.shadowMarkShader, 1, &trace.endpos, projection,color, 1, 0);
+	VectorSet4( projection, 0, 0, -1, radius );
+	trap_R_ProjectDecal(cgs.media.shadowMarkShader, 1, &trace.endpos, projection, color, 1, 0);
 	return qtrue;
 }
 
-void CG_ExplosionMark(vec3_t origin,float radius,vec4_t color) 
+void CG_ExplosionMark(const vec3_t origin, float radius, const vec4_t color) 
 {
 	vec4_t projection;
 
@@ -387,7 +383,7 @@ void CG_ExplosionMark(vec3_t origin,float radius,vec4_t color)
 	trap_R_ProjectDecal(cgs.media.burnMarkShader, 1, (vec3_t*)origin, projection, color, cg_markTime.integer, (cg_markTime.integer >> 3) );
 }
 
-void CG_BulletMark(qhandle_t shader,vec3_t origin,vec3_t dir,float radius,vec4_t color) {
+void CG_BulletMark(qhandle_t shader, const vec3_t origin, const vec3_t dir, float radius, const vec4_t color) {
 	vec4_t projection;
 	vec3_t markOrigin;
 	int totaltime,fadetime;

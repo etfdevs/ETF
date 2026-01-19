@@ -2209,8 +2209,6 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, im
 	trace_t			tr;
 	vec3_t			end;
 
-
-
 	// Golliwog: See if we're really hitting off a forcefield.
 	VectorMA( origin, -10, dir, end );
 	CG_Trace( &tr, origin, NULL, NULL, end, ENTITYNUM_NONE, MASK_SHOT );

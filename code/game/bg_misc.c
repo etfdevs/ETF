@@ -1572,7 +1572,7 @@ int BG_cleanName( const char *pszIn, char *pszOut, unsigned int dwMaxLength, qbo
 
 typedef struct {
 	const char *colorname;
-	vec4_t *color;
+	const vec4_t *color;
 } colorTable_t;
 
 // Colors for crosshairs

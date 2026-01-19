@@ -362,7 +362,7 @@ void G_MemDebug_Close(void) {
 	G_MemLogPrintf("------------------------------------------------------------\n" );
 
 	trap_FS_FCloseFile( level.memLogFile );
-	level.memLogFile = 0;
+	level.memLogFile = NULL_FILE;
 }
 #endif
 

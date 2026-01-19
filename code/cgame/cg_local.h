@@ -1479,8 +1479,8 @@ extern	itemInfo_t		cg_items[MAX_ITEMS];
 //unlagged - client options
 //unlagged - cg_unlagged.c
 void CG_PredictWeaponEffects( centity_t *cent );
-void CG_AddBoundingBox( centity_t *cent, vec3_t color );
-void CG_DrawBoundingBox( vec3_t origin, vec3_t mins,vec3_t maxs, vec3_t color );
+void CG_AddBoundingBox( centity_t *cent, const vec3_t color );
+void CG_DrawBoundingBox( vec3_t origin, vec3_t mins,vec3_t maxs, const vec3_t color );
 
 //
 // cg_main.c
@@ -1594,8 +1594,8 @@ void CG_DrawActive( stereoFrame_t stereoView );
 void CG_ETF_DrawSkyPortal( refdef_t *parentrefdef, vec4_t *parentflareblind, stereoFrame_t stereoView, vec3_t sky_origin );
 void CG_DrawTeamBackground( int x, int y, int w, int h, float alpha, int team );
 void CG_OwnerDraw( itemDef_t *item, float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle, int textalignment );
-void CG_Text_Paint_MaxWidth(float x, float y, float scale, vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment, int maxwidth);
-void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment);
+void CG_Text_Paint_MaxWidth(float x, float y, float scale, const vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment, int maxwidth);
+void CG_Text_Paint(float x, float y, float scale, const vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment);
 int CG_Text_Width(const char *text, float scale, int limit, fontStruct_t *parentfont);
 int CG_Text_Height(const char *text, float scale, int limit, fontStruct_t *parentfont);
 float CG_GetValue(int ownerDraw);
@@ -1742,16 +1742,11 @@ void CG_AddWeaponWithPowerups( refEntity_t *gun, entityState_t *state, int team 
 
 void	CG_InitMarkPolys( void );
 void	CG_AddMarks( void );
-void CG_OldMark(qhandle_t markShader, const vec3_t origin, const vec3_t dir, 
-				    float orientation,float radius,vec4_t color, 
-					int lifetime,leMarkFadeType_t fadetype);
-void CG_DecalMark(qhandle_t markShader, const vec3_t origin, vec4_t projection, 
-				    float orientation,float radius,vec4_t color, 
-					int lifetime,int fadetime
-					);
-void	CG_ExplosionMark(vec3_t origin,float radius,vec4_t color );
-void	CG_BulletMark(qhandle_t shader,vec3_t origin,vec3_t dir,float radius,vec4_t color);
-qboolean CG_ShadowMark(vec3_t origin, float radius, float height, float *shadowPlane );
+void CG_OldMark( qhandle_t markShader, const vec3_t origin, const vec3_t dir, float orientation, float radius, const vec4_t color, int lifetime, leMarkFadeType_t fadetype);
+void CG_DecalMark( qhandle_t markShader, const vec3_t origin, vec4_t projection, float orientation, float radius, const vec4_t color, int lifetime, int fadetime );
+void	CG_ExplosionMark(const vec3_t origin,float radius, const vec4_t color );
+void	CG_BulletMark(qhandle_t shader, const vec3_t origin, const vec3_t dir, float radius, const vec4_t color);
+qboolean CG_ShadowMark(const vec3_t origin, float radius, float height, float *shadowPlane );
 
 //
 // cg_trails.c
@@ -1830,7 +1825,7 @@ localEntity_t *CG_Q3F_MakeBeam( const vec3_t origin,
 								int numSubdivisions,
 								float radius,
 								int leFlags,
-								vec4_t colour,
+								const vec4_t colour,
 								int duration,
 								float speedscale,
 								qhandle_t hShader );
@@ -2102,7 +2097,7 @@ int			trap_CM_MarkFragments( int numPoints, const vec3_t *points,
 			int maxPoints, vec3_t pointBuffer,
 			int maxFragments, markFragment_t *fragmentBuffer );
 // ydnar: projects a decal onto brush model surfaces
-void		trap_R_ProjectDecal( qhandle_t hShader, int numPoints, vec3_t *points, vec4_t projection, vec4_t color, int lifeTime, int fadeTime );
+void		trap_R_ProjectDecal( qhandle_t hShader, int numPoints, vec3_t *points, vec4_t projection, const vec4_t color, int lifeTime, int fadeTime );
 void		trap_R_ClearDecals( void );
 
 // normal sounds will have their volume dynamically changed as their entity

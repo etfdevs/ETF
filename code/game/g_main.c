@@ -616,11 +616,10 @@ char bigTextBuffer[100000];
 void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	int					i;
 	intptr_t 			index;
-//	gitem_t *item;
 	char mappath[MAX_QPATH], buff[MAX_QPATH+4];
-	q3f_array_t* mapList;
-	q3f_data_t* data;
-	char mapbuffer[4096];
+	q3f_array_t *mapList;
+	q3f_data_t *data;
+	char mapbuffer[4096] = { 0 };
 	char value[MAX_CVAR_VALUE_STRING];
 	char cs[MAX_INFO_STRING];
 

@@ -1583,7 +1583,7 @@ static char *clientstatsstringptrs[NUM_CLIENTSTATSSTRINGS];
 static qboolean hasclientstatsstrings;
 
 typedef enum {
-	EVAL_EQ,
+	EVAL_EQ = 0,
 	EVAL_LT,
 	EVAL_GT,
 	EVAL_LTEQ,

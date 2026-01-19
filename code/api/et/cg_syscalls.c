@@ -225,7 +225,7 @@ int		trap_CM_MarkFragments( int numPoints, const vec3_t *points,
 }
 
 // ydnar
-void		trap_R_ProjectDecal( qhandle_t hShader, int numPoints, vec3_t *points, vec4_t projection, vec4_t color, int lifeTime, int fadeTime )
+void		trap_R_ProjectDecal( qhandle_t hShader, int numPoints, vec3_t *points, vec4_t projection, const vec4_t color, int lifeTime, int fadeTime )
 {
 	SystemCall( CG_R_PROJECTDECAL, hShader, numPoints, points, projection, color, lifeTime, fadeTime );
 }

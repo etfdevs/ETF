@@ -457,7 +457,7 @@ static void ms_itoa( int value, char *buffptr )
 	}
 }
 
-void CG_Q3F_MessageString( char *srcptr, clientInfo_t *activator, clientInfo_t *queryent, int colour, char *buff, int buffsize )
+static void CG_Q3F_MessageString( char *srcptr, clientInfo_t *activator, clientInfo_t *queryent, int colour, char *buff, int buffsize )
 {
 	// A cut-down version of the qagame function adapted to run on cgame.
 

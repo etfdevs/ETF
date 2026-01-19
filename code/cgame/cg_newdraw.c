@@ -475,7 +475,7 @@ static void CG_DrawGrenadeValue( int grenNum, rectDef_t *rect, float scale, vec4
 	CG_Text_Paint(rect->x + text_x, rect->y + rect->h + text_y, scale, bc ? backcolor: color, num , 0, 0, textStyle, font, textalignment);
 }
 
-void CG_DrawChargeCountdown(rectDef_t * rect, float scale, vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t * font)
+void CG_DrawChargeCountdown(rectDef_t * rect, float scale, const vec4_t color, int textStyle, int textalignment, float text_x, float text_y, fontStruct_t * font)
 {
 	char            num[16];
 	int				count = 0;
@@ -891,8 +891,8 @@ static void CG_DrawTimer( rectDef_t *rect, float scale, vec4_t color, int textSt
 	if (cg.matchState == MATCH_STATE_WARMUP && cg.warmup > 0 ) {
 		msec = (cg.warmup - cg.time) / 1000;
 		Com_sprintf( num, sizeof(num), "WU: %i", msec + 1 );
-		if ( msec < 10 && msec & 1)
-			color = colorRed;
+		if (msec < 10 && msec & 1)
+			VectorCopy4(colorRed, color);
 	} else {
 		if( cg.matchState > MATCH_STATE_PLAYING || cg_drawTimer.integer > 1 || !cgs.timelimit )
 			msec = cg.time - cgs.levelStartTime;
@@ -1580,7 +1580,7 @@ static void CG_DrawGameType(rectDef_t *rect, float scale, vec4_t color, qhandle_
 	CG_Text_Paint(rect->x + text_x, rect->y + rect->h + text_y, scale, color, CG_GameTypeString(), 0, 0, textStyle, font, textalignment);
 }
 
-static void CG_Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4_t color, const char* text, float adjust, int limit, fontStruct_t *parentfont) {
+static void CG_Text_Paint_Limit(float *maxX, float x, float y, float scale, const vec4_t color, const char* text, float adjust, int limit, fontStruct_t *parentfont) {
 	int len, count;
 	vec4_t newColor;
 	glyphInfo_t *glyph;
@@ -2910,7 +2910,7 @@ const vec3_t q3f_timer_positions[] = {
 
 void CG_CrosshairAdjustFrom640(float* x, float* y, float* w, float* h);
 
-static void CG_DrawAnalogueShader( rectDef_t *rect, vec4_t color, qhandle_t shader, int msec, int msecPerRound, qboolean crosshair ) {
+static void CG_DrawAnalogueShader( rectDef_t *rect, const vec4_t color, qhandle_t shader, int msec, int msecPerRound, qboolean crosshair ) {
 	float			x, y, w, h;
 	refdef_t		refdef;
 	polyVert_t		verts[10];

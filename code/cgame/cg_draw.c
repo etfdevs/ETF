@@ -250,7 +250,7 @@ void CG_Text_PaintChar(float x, float y, float width, float height, float scale,
 	trap_R_DrawStretchPic( x, y, w, h, s, t, s2, t2, hShader );
 }
 
-void CG_Text_Paint_MaxWidth(float x, float y, float scale, vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment, int maxwidth) {
+void CG_Text_Paint_MaxWidth(float x, float y, float scale, const vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment, int maxwidth) {
 	static char buffer[1024];
 
 	if(!maxwidth) {
@@ -263,7 +263,7 @@ void CG_Text_Paint_MaxWidth(float x, float y, float scale, vec4_t color, const c
 	CG_Text_Paint(x, y, scale, color, buffer, adjust, limit, style, parentfont, textalignment);
 }
 
-void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment) {
+void CG_Text_Paint(float x, float y, float scale, const vec4_t color, const char *text, float adjust, int limit, int style, fontStruct_t *parentfont, int textalignment) {
 	int len, count;
 	vec4_t newColor;
 	glyphInfo_t *glyph;
@@ -341,9 +341,8 @@ void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text
 
 					if (style == ITEM_TEXTSTYLE_SHADOWED || style == ITEM_TEXTSTYLE_SHADOWEDMORE) {
 						int ofs = style == ITEM_TEXTSTYLE_SHADOWED ? 1 : 2;
-
-						colorBlack[3] = newColor[3];
-						trap_R_SetColor( colorBlack );
+						const vec4_t shadowColor = { 0, 0, 0, newColor[3] };
+						trap_R_SetColor( shadowColor );
 						CG_Text_PaintChar(x + ofs + alignmentoffset, y - yadj + ofs, 
 															glyph->imageWidth,
 															glyph->imageHeight,
@@ -353,7 +352,6 @@ void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text
 															glyph->s2,
 															glyph->t2,
 															glyph->glyph);
-						colorBlack[3] = 1.0;
 						trap_R_SetColor( newColor );
 					}
 					CG_Text_PaintChar(x + alignmentoffset, y - yadj, 

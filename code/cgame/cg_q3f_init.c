@@ -81,7 +81,7 @@ void CG_Q3F_SetInitPhase( int newPhase )
 
 	cgs.initPhase	= newPhase;
 	cgs.initIndex	= 0;
-	cg.infoScreenText[0] = 0;
+	cg.infoScreenText[0] = '\0';
 
 	if( cgs.initFHandle )
 	{
@@ -1079,7 +1079,7 @@ static void CG_Q3F_InitPhaseShaderRemap(void)
 			from[destIndex - cgs.initIndex] = '\0';
 			for( destIndex = splitIndex + 1; destIndex < index; destIndex++ )
 				to[destIndex - splitIndex - 1] = cgs.shaderRemap[destIndex];
-			to[destIndex - splitIndex - 1] = 0;
+			to[destIndex - splitIndex - 1] = '\0';
 			CG_Q3F_InitLog( "Remapping ", from, "..." );
 			CG_Q3F_RenderLoadingScreen();
 
@@ -1116,7 +1116,7 @@ static void CG_Q3F_InitPhaseSnapshot(void)
 		CG_InitMarkPolys();
 		cg.numObits = 0;
 		InitParticles();
-		cg.infoScreenText[0] = 0;	// remove the last loading update
+		cg.infoScreenText[0] = '\0';	// remove the last loading update
 		CG_SetConfigValues();		// Make sure we have update values (scores)
 		CG_StartMusic();
 //		CG_LoadingString( "" );

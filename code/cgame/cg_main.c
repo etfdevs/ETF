@@ -321,7 +321,7 @@ void CG_Q3F_UpdateCvarLimits(void) {
 }
 
 //teamcolor and color array pointer must not be null
-static void CG_UpdateColorFromCvar(const char *cvarval, float *defcolor, qboolean *teamcolor, float *color) {
+static void CG_UpdateColorFromCvar(const char *cvarval, const float *defcolor, qboolean *teamcolor, float *color) {
 	int h = Com_HexStrToInt(cvarval);
 	*teamcolor = qfalse;
 	VectorCopy(defcolor, color);
@@ -422,7 +422,7 @@ void CG_RegisterCvars( void ) {
 	cgs.grenadePrimeSoundModificationCount = cg_grenadePrimeSound.modificationCount;
 	cgs.drawSkyPortalModificationCount = cg_drawSkyPortal.modificationCount;
 
-   //keeg set crosshair colors, taken from ET code
+	//keeg set crosshair colors, taken from ET code
 	BG_setCrosshair(cg_crosshairColor.string, cg.xhairColor, cg_crosshairAlpha.value, "cg_crosshairColor");
 	BG_setCrosshair(cg_crosshairColorAlt.string, cg.xhairColorAlt, cg_crosshairAlphaAlt.value, "cg_crosshairColorAlt");
 
@@ -1988,7 +1988,7 @@ static float CG_Cvar_Get(const char *cvar) {
 	return Q_atof(buff);
 }
 
-void CG_Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const char *text, int cursorPos, char cursor, int limit, int style, fontStruct_t *parentfont, int textalignment) {
+static void CG_Text_PaintWithCursor(float x, float y, float scale, const vec4_t color, const char *text, int cursorPos, char cursor, int limit, int style, fontStruct_t *parentfont, int textalignment) {
 	CG_Text_Paint(x, y, scale, color, text, 0, limit, style, parentfont, textalignment);
 }
 

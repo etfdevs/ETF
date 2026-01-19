@@ -90,16 +90,16 @@ void Q_StripColor(char *text);
 const char *Q_strchrs( const char *string, const char *search );
 
 // strips whitespaces and bad characters
-qboolean Q_isBadDirChar( char c );
+qboolean Q_isBadDirChar( const char c );
 char *Q_CleanDirName( char *dirname );
 
 //void Q_strstrip( char *string, const char *strip, const char *repl );
 
-#if defined (_MSC_VER)
+#if defined (_MSC_VER) && _MSC_VER < 1900
 	// vsnprintf is ISO/IEC 9899:1999
 	// abstracting this to make it portable
 	int Q_vsnprintf( char *str, size_t size, const char *format, va_list args );
-#else // not using MSVC
+#else // not using MSVC old msvc
 	#define Q_vsnprintf vsnprintf
 #endif
 

@@ -396,7 +396,7 @@ void PC_SourceError(int handle, const char *format, ...) {
 LerpColor
 =================
 */
-void LerpColor(vec4_t a, vec4_t b, vec4_t c, float t)
+void LerpColor(const vec4_t a, const vec4_t b, vec4_t c, float t)
 {
 	int i;
 

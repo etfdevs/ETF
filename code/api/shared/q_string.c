@@ -546,12 +546,15 @@ char *Q_CleanStr( char *string ) {
 }
 
 // strips whitespaces and bad characters
-qboolean Q_isBadDirChar( char c ) {
-	char	badchars[] = { ';', '&', '(', ')', '|', '<', '>', '*', '?', '[', ']', '~', '+', '@', '!', '\\', '/', ' ', '\'', '\"', '\0' };
+qboolean Q_isBadDirChar( const char c ) {
+	const char	badchars[] = { '<', '>', ':', '\"', '/', '\\', '|', '?', '*', ' ', '\0' };
 	int		i;
 
 	for( i = 0; badchars[i] != '\0'; i++ ) {
-		if( c == badchars[i] ) {
+		if ( c > '\0' && c < ' ' ) {
+			return qtrue;
+		}
+		else if( c == badchars[i] ) {
 			return qtrue;
 		}
 	}
@@ -696,7 +699,7 @@ const char *Q_strchrs( const char *string, const char *search )
 	return NULL;
 }
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER < 1900)
 /*
 =============
 Q_vsnprintf
@@ -710,9 +713,10 @@ int Q_vsnprintf(char *str, size_t size, const char *format, va_list ap)
 {
 	int retval;
 
+	str[size - 1] = '\0';
 	retval = _vsnprintf(str, size, format, ap);
 
-	if(retval < 0 || retval == size)
+	if((unsigned int)retval >= size)
 	{
 		// Microsoft doesn't adhere to the C99 standard of vsnprintf,
 		// which states that the return value must be the number of
@@ -722,7 +726,7 @@ int Q_vsnprintf(char *str, size_t size, const char *format, va_list ap)
 		// implementation, so we have no choice but to return size.
 
 		str[size - 1] = '\0';
-		return size;
+		return (int)size;
 	}
 
 	return retval;

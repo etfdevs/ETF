@@ -92,14 +92,14 @@ AddTeamScore
  for gametype GT_TEAM the level.teamScores is updated in AddScore in g_combat.c
 ==============
 */
-void AddTeamScore(vec3_t origin, int team, int score) {
+/*void AddTeamScore(vec3_t origin, int team, int score) {
 	gentity_t	*te;
 
 	te = G_TempEntity(origin, EV_GLOBAL_TEAM_SOUND );
 	te->r.svFlags |= SVF_BROADCAST;
 
 	level.teamScores[ team ] += score;
-}
+}*/
 
 /*
 ==============

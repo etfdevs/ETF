@@ -243,17 +243,17 @@ void G_Q3F_DebugLine( const vec3_t start, const vec3_t end, const vec4_t color) 
 
 void G_Q3F_DebugTrace( const vec3_t start, const trace_t * tr ) {
 	gentity_t *traceEnt;
-	float *color;
+	vec4_t color;
 
 	traceEnt = &g_entities[ tr->entityNum ];
 
 	if ( tr->surfaceFlags & SURF_NOIMPACT || tr->entityNum == ENTITYNUM_WORLD ) {
-		color = colorLtGrey;
+		VectorCopy4(colorLtGrey, color);
 	} else if (tr->entityNum < MAX_CLIENTS ) {
-		color = colorRed;
+		VectorCopy4(colorRed, color);
 	} else if ( traceEnt->s.eType == ET_MOVER ) {
-		color = colorGreen;
-	} else color = colorMdCyan;
+		VectorCopy4(colorGreen, color);
+	} else VectorCopy4(colorMdCyan, color);;
 	G_Q3F_DebugLine( start, tr->endpos, color );
 }
 
