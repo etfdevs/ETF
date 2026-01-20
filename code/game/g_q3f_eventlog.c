@@ -45,6 +45,11 @@ void G_EventLog_Init(void) {
 	qtime_t t;
 	int teams[4] = { 0 };
 	int i, numTeams = 0;
+
+	if (!g_eventLog.integer) {
+		return;
+	}
+
 	trap_RealTime(&t);
 
 	// loop to get count
@@ -117,6 +122,10 @@ static const char *ISOTimemills(void) {
 void G_EventLog_PlayerStart( gentity_t *player ) {
 	cJSON *root;
 
+	if (!level.eventLogFile) {
+		return;
+	}
+
 	G_EventLog_GameStart(); // called here temporarily because on first player join in game so it at least shows 1 player
 
 	root = cJSON_CreateObject();
@@ -136,6 +145,10 @@ void G_EventLog_GameStart( void ) {
 	cJSON *root;
 	int i, numTeams = 0;
 	char hostname[MAX_CVAR_VALUE_STRING*2];
+
+	if (!level.eventLogFile) {
+		return;
+	}
 
 	if (didgamestart)
 		return;
@@ -171,6 +184,10 @@ void G_EventLog_GameStart( void ) {
 void G_EventLog_GameEnd( void ) {
 	cJSON *root;
 
+	if (!level.eventLogFile) {
+		return;
+	}
+
 	root = cJSON_CreateObject();
 	cJSON_AddNumberToObject( root, "time", level.time );
 	cJSON_AddStringToObject( root, "type", "gameEnd" );
@@ -183,6 +200,10 @@ void G_EventLog_GameEnd( void ) {
 void G_EventLog_RoundStart( void ) {
 	cJSON *root;
 
+	if (!level.eventLogFile) {
+		return;
+	}
+
 	root = cJSON_CreateObject();
 	cJSON_AddNumberToObject( root, "time", level.time );
 	cJSON_AddStringToObject( root, "type", "roundStart" );
@@ -194,6 +215,10 @@ void G_EventLog_RoundStart( void ) {
 void G_EventLog_RoundEnd( void ) {
 	cJSON *root;
 
+	if (!level.eventLogFile) {
+		return;
+	}
+
 	root = cJSON_CreateObject();
 	cJSON_AddNumberToObject( root, "time", level.time );
 	cJSON_AddStringToObject( root, "type", "roundEnd" );
@@ -204,6 +229,10 @@ void G_EventLog_RoundEnd( void ) {
 
 void G_EventLog_ChangeClass( gentity_t *player, int prevclass, int nextclass, int timeplayed ) {
 	cJSON *root;
+
+	if (!level.eventLogFile) {
+		return;
+	}
 
 	root = cJSON_CreateObject();
 	cJSON_AddNumberToObject( root, "time", level.time );
@@ -222,6 +251,10 @@ void G_EventLog_Damage( gentity_t *attacker, gentity_t *target, gentity_t *infli
 	cJSON *root;
 	const char *damageKind = "enemy";
 	const char *attackerName, *targetName;
+
+	if (!level.eventLogFile) {
+		return;
+	}
 
 	if ( attacker ) {
 		if ( attacker->client ) {
@@ -266,6 +299,10 @@ void G_EventLog_Death( gentity_t *attacker, gentity_t *target, gentity_t *inflic
 	cJSON *root;
 	const char *killKind = "enemy";
 	const char *attackerName, *targetName;
+
+	if (!level.eventLogFile) {
+		return;
+	}
 
 	if ( attacker ) {
 		if ( attacker->client ) {
@@ -342,6 +379,10 @@ static const char *gunNames[] = {
 void G_EventLog_Attack(gentity_t *player, int weaponid) {
 	cJSON *root;
 
+	if (!level.eventLogFile) {
+		return;
+	}
+
 	if ( !player || !player->inuse || !player->client || player == &g_entities[ENTITYNUM_WORLD])
 		return;
 
@@ -363,6 +404,10 @@ void G_EventLog_Attack(gentity_t *player, int weaponid) {
 void G_EventLog_Goal(gentity_t *player) {
 	cJSON *root;
 
+	if (!level.eventLogFile) {
+		return;
+	}
+
 	if ( !player || !player->inuse || !player->client || player == &g_entities[ENTITYNUM_WORLD])
 		return;
 
@@ -380,6 +425,10 @@ void G_EventLog_Goal(gentity_t *player) {
 void G_EventLog_GoalPickup(gentity_t *player) {
 	cJSON *root;
 
+	if (!level.eventLogFile) {
+		return;
+	}
+
 	//if ( !player || !player->inuse || !player->client || player == &g_entities[ENTITYNUM_WORLD])
 	//	return;
 
@@ -396,6 +445,10 @@ void G_EventLog_GoalPickup(gentity_t *player) {
 
 void G_EventLog_GoalFumble(gentity_t *player, int timecarried) {
 	cJSON *root;
+
+	if (!level.eventLogFile) {
+		return;
+	}
 
 	//if ( !player || !player->inuse || !player->client || player == &g_entities[ENTITYNUM_WORLD])
 	//	return;
@@ -416,6 +469,10 @@ void G_EventLog_TeamScores(void) {
 	cJSON *root;
 	int i, numTeams = 0;
 	int winScore = 0, winTeam = 0;
+
+	if (!level.eventLogFile) {
+		return;
+	}
 
 	for( i = Q3F_TEAM_RED; i < Q3F_TEAM_SPECTATOR; i++ ) {
 		if ((g_q3f_allowedteams & (1 << i)))

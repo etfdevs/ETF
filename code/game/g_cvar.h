@@ -252,6 +252,8 @@ G_CVAR( lua_modules, "lua_modules", "", 0, qfalse )
 G_CVAR( lua_allowedModules, "lua_allowedModules", "", 0, qfalse )
 #endif
 
+G_CVAR( g_eventLog, "g_eventLog", "0", CVAR_LATCH | CVAR_ARCHIVE, qfalse)
+
 G_CVAR( g_spawnFullStats, "g_spawnFullStats", "1", CVAR_ARCHIVE, qfalse )
 G_CVAR( g_balancedDeathAmmo, "g_balancedDeathAmmo", "1", CVAR_ARCHIVE, qfalse )
 G_CVAR( g_newPulseGren, "g_newPulseGren", "0", CVAR_ARCHIVE, qfalse )
