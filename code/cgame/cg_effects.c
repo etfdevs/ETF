@@ -749,8 +749,6 @@ void CG_BurnGasSprites( centity_t * cent) {
 	float fraction,fraction_add;
 	static const vec4_t GasBurnLight ={1.0, 0.2, 0.2, 1};
 
-	if( !cgs.media.sfx_napalmExplode )
-		cgs.media.sfx_napalmExplode = trap_S_RegisterSound( "sound/weapons/q3f_napalm_start.wav", qfalse );
 	trap_S_StartSound( cent->lerpOrigin, cent->currentState.number, CHAN_AUTO, cgs.media.sfx_napalmExplode );
 
 	if (cent->muzzleFlashTime<35) {

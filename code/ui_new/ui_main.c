@@ -377,6 +377,9 @@ Q_EXPORT intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t ar
 		UI_SetActiveMenu( (uiMenuCommand_t)arg0 );
 		return 0;
 
+	  case UI_GET_ACTIVE_MENU:
+		  return UIMENU_NONE;//UI_GetActiveMenu();
+
 	  case UI_CONSOLE_COMMAND:
 		  return UI_ConsoleCommand(arg0);
 
@@ -384,8 +387,11 @@ Q_EXPORT intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t ar
 		  UI_DrawConnectScreen( (qboolean)arg0 );
 		  return 0;
 	  case UI_HASUNIQUECDKEY:				// mod authors need to observe this
-		  return qfalse;
-
+		  return qtrue;
+	  case UI_CHECKEXECKEY:
+		  return qfalse;//UI_CheckExecKey( arg0 );
+	  case UI_WANTSBINDKEYS:
+		  return ( g_waitingForKey ) ? qtrue : qfalse;
 	}
 
 	return -1;
@@ -4014,72 +4020,6 @@ qboolean KeyBinder_HandleKey(int key, qboolean down) {
 
 static void HUD_BuildPlayerList(void);
 
-static const char * keyStr[] = {
-	"COMMAND",
-	"CAPSLOCK",
-	"",
-	"PAUSE",
-
-	"UPARROW",
-	"DOWNARROW",
-	"LEFTARROW",
-	"RIGHTARROW",
-
-	"ALT",
-	"CTRL",
-	"SHIFT",
-	"INS",
-	"DEL",
-	"PGDN",
-	"PGUP",
-	"HOME",
-	"END",
-
-	"F1",
-	"F2",
-	"F3",
-	"F4",
-	"F5",
-	"F6",
-	"F7",
-	"F8",
-	"F9",
-	"F10",
-	"F11",
-	"F12",
-	"F13",
-	"F14",
-	"F15",
-
-	"KP_HOME",
-	"KP_UPARROW",
-	"KP_PGUP",
-	"KP_LEFTARROW",
-	"KP_5",
-	"KP_RIGHTARROW",
-	"KP_END",
-	"KP_DOWNARROW",
-	"KP_PGDN",
-	"KP_ENTER",
-	"KP_INS",
-	"KP_DEL",
-	"KP_SLASH",
-	"KP_MINUS",
-	"KP_PLUS",
-	"KP_NUMLOCK",
-	"KP_STAR",
-	"KP_EQUALS",
-
-	"MOUSE1",
-	"MOUSE2",
-	"MOUSE3",
-	"MOUSE4",
-	"MOUSE5",
-
-	"MWHEELDOWN",
-	"MWHEELUP"
-};
-
 static qboolean UI_CheckVersion( void )
 {
 	static char info[MAX_STRING_CHARS];
@@ -4660,17 +4600,11 @@ static void UI_RunMenuScript(const char **args) {
 				uiInfo.ETF_CurrentBindingTable_Pos < uiInfo.ETF_CurrentBindingTable_Size && uiInfo.ETF_CurrentBindingTable) {
 
 				if(	uiInfo.ETF_CurrentBindingTable[uiInfo.ETF_CurrentBindingTable_Pos].primary != -1) {
-					if(uiInfo.ETF_CurrentBindingTable[uiInfo.ETF_CurrentBindingTable_Pos].primary > K_COMMAND)
-						uiInfo.uiDC.executeText(EXEC_NOW, va("unbind %s\n", keyStr[(int)uiInfo.ETF_CurrentBindingTable[uiInfo.ETF_CurrentBindingTable_Pos].primary - K_COMMAND]));
-					else
-						uiInfo.uiDC.executeText(EXEC_NOW, va("unbind %c\n", (byte)uiInfo.ETF_CurrentBindingTable[uiInfo.ETF_CurrentBindingTable_Pos].primary));
+					uiInfo.uiDC.setBinding(uiInfo.ETF_CurrentBindingTable[uiInfo.ETF_CurrentBindingTable_Pos].primary, "");
 					uiInfo.ETF_CurrentBindingTable[uiInfo.ETF_CurrentBindingTable_Pos].primary = -1;
 				}
 				if(	uiInfo.ETF_CurrentBindingTable[uiInfo.ETF_CurrentBindingTable_Pos].secondary != -1) {
-					if(uiInfo.ETF_CurrentBindingTable[uiInfo.ETF_CurrentBindingTable_Pos].secondary > K_COMMAND)
-						uiInfo.uiDC.executeText(EXEC_NOW, va("unbind %s\n", keyStr[(int)uiInfo.ETF_CurrentBindingTable[uiInfo.ETF_CurrentBindingTable_Pos].secondary - K_COMMAND]));
-					else
-						uiInfo.uiDC.executeText(EXEC_NOW, va("unbind %c\n", (byte)uiInfo.ETF_CurrentBindingTable[uiInfo.ETF_CurrentBindingTable_Pos].secondary));
+					uiInfo.uiDC.setBinding(uiInfo.ETF_CurrentBindingTable[uiInfo.ETF_CurrentBindingTable_Pos].secondary, "");
 					uiInfo.ETF_CurrentBindingTable[uiInfo.ETF_CurrentBindingTable_Pos].secondary = -1;
 				}
 			}
@@ -7047,7 +6981,7 @@ void UI_LoadNonIngame(void) {
 }
 
 void UI_SetActiveMenu( uiMenuCommand_t menu ) {
-	char buf[512];
+	char buf[8192];
 
 	// this should be the ONLY way the menu system is brought up
 	// enusure minumum menu data is cached

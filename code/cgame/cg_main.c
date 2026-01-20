@@ -106,10 +106,14 @@ intptr_t arg5, intptr_t arg6, intptr_t arg7, intptr_t arg8, intptr_t arg9, intpt
 	case CG_EVENT_HANDLING:
 		CG_EventHandling(arg0, qtrue);
 		return 0;
+	case CG_GET_TAG:
+		return 0;
 	case CG_CHECKEXECKEY:
 		return CG_CheckExecKey( arg0 );
 	case CG_WANTSBINDKEYS:
 		return qfalse;
+	case CG_MESSAGERECEIVED:
+		return -1;
 	default:
 		CG_Error( "vmMain: unknown command %i", command );
 		break;
