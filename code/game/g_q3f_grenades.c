@@ -690,7 +690,7 @@ void HallucinogenicExplodeThink( gentity_t *ent )
 	int distance, time;
 	vec3_t distancevec;
 
-	if( (ent->s.time + 20000) < level.time )
+	if( (ent->s.time + 10000) < level.time )
 	{
 		G_FreeEntity( ent );
 		return;
