@@ -205,8 +205,8 @@ static qboolean HallucinogenicRender( centity_t *cent, refEntity_t *ent )
 
 
 	volume = cg.time - cent->currentState.time;
-	if (volume > 8000) 
-		volume = 90 - 60 * (volume - 8000) / 2000;
+	if (volume > 4000) 
+		volume = 90 - 60 * (volume - 4000) / 2000;
 	else volume = 90;
 	trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin,
 				vec3_origin, cgs.media.gasSmokeSound, volume, 0 );
