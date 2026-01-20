@@ -1609,7 +1609,7 @@ static qboolean G_Q3F_EvalStat( const int value, const evaltype_t eval, const in
 
 #define EVALCLIENTSTAT(v,e,c,o) if( G_Q3F_EvalStat( v, e, c ) ) { if( o ) return( qtrue ); else continue; } else { if( o ) continue; else return( qfalse ); }
 
-#define gren2max(x) ( ((x)->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_SOLDIER ? g_maxNailBombs.integer : cls->gren2max) )
+#define gren2max(x) ( ((x)->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_SOLDIER ? g_maxNailBombs.integer : (x)->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_AGENT ? g_maxGasGrens.integer : cls->gren2max) )
 
 qboolean G_Q3F_CheckClientStats( gentity_t *activator, q3f_keypairarray_t *array, qboolean or )
 {

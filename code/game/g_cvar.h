@@ -262,6 +262,8 @@ G_CVAR( g_newStunGren, "g_newStunGren", "1", CVAR_ARCHIVE, qfalse )
 	// Sets init/max nailbombs per player
 G_CVAR( g_maxNailBombs, "g_maxNailBombs", "1", CVAR_SERVERINFO | CVAR_ARCHIVE, qfalse )
 
+G_CVAR( g_maxGasGrens, "g_maxGasGrens", "2", CVAR_SERVERINFO | CVAR_ARCHIVE, qfalse )
+
 #undef G_NULLCVAR
 #undef G_NULLEXTCVAR
 #undef G_EXTCVAR

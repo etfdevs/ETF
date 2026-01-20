@@ -788,6 +788,8 @@ void Q3F_SetupClass(struct gentity_s *ent)
 
 	if ( ent->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_SOLDIER && g_maxNailBombs.integer == 0 )
 		gren2 = 0;
+	else if ( ent->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_AGENT && g_maxGasGrens.integer == 0 )
+		gren2 = 0;
 	else
 		gren2 = cls->gren2init;
 	
