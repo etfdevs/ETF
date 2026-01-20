@@ -335,11 +335,11 @@ static int NailEndTime( struct gnail *nail, float zpos, int parentnum )
 	end[0] = nail->xvel;
 	end[1] = nail->yvel;
 	end[2] = 0;
-	VectorScale( end, 20000 * Q3F_NAILSPEED / 1000 , end );		// 20 seconds travel
+	VectorScale( end, 500 * Q3F_NAILSPEED / 1000 , end );		// 20 seconds travel - Default; Tulkas - adjusted to 1 second travel duration to reduce nail spam
 	VectorAdd( start, end, end );
 
 	CG_Trace( &tr, start, NULL, NULL, end, parentnum, MASK_SHOT );
-	return( nail->starttime + 20000 * tr.fraction );
+	return( nail->starttime + 500 * tr.fraction );
 }
 
 static int InitNailArray( centity_t *cent )
