@@ -915,6 +915,12 @@ static void NailThink( gentity_t *grenade )
 		ptr = array + index;
 		if( !ptr->starttime || ptr->starttime > level.time )
 			continue;
+		if( level.time - ptr->starttime >= 500 )
+		{
+			ptr->starttime = 0; // expire nail
+			*(bitptr + (index>>3)) &= ~(1<<(index&7)); // tell client it's gone
+			continue;
+		}
 		start[0]	= ptr->xpos;
 		start[1]	= ptr->ypos;
 		start[2]	= grenade->r.currentOrigin[2];
