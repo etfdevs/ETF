@@ -1451,6 +1451,11 @@ SpectatorClientEndFrame
 void SpectatorClientEndFrame( gentity_t *ent ) {
 	gclient_t	*cl;
 
+	if ( ent->client->wantsscore ) {
+		G_SendScore(ent);
+		ent->client->wantsscore = qfalse;
+	}
+
 	// if we are doing a chase cam or a remote view, grab the latest info
 	if ( ent->client->sess.spectatorState == SPECTATOR_FOLLOW ||
 		 ent->client->sess.spectatorState == SPECTATOR_CHASE ) {
