@@ -296,6 +296,15 @@ static void G_RegisterCvars( void ) {
 		g_maxNailBombs.integer = 99;
 	}
 
+	if ( g_maxGasGrens.integer < 0 ) {
+		trap_Cvar_Set("g_maxGasGrens", "0");
+		g_maxGasGrens.integer = 0;
+	}
+	else if (g_maxGasGrens.integer > 99 ) {
+		trap_Cvar_Set("g_maxGasGrens", "99");
+		g_maxGasGrens.integer = 99;
+	}
+
 	level.warmupModificationCount = g_warmup.modificationCount;
 
 		// Golliwog: Set ceasefire automatically if we're in match mode.
@@ -365,6 +374,7 @@ void G_SetMatchState(int state) {
 	const char		*s = va("%i",state);
 
 	trap_Cvar_Set( "g_matchState", s );
+	g_matchState.integer = state;
 	trap_Cvar_Update( &g_matchState );
 	trap_SetConfigstring( CS_MATCH_STATE, s );
 
@@ -402,6 +412,19 @@ static void G_UpdateCvars( void ) {
 					else if (g_maxNailBombs.integer > 99) {
 						trap_Cvar_Set("g_maxNailBombs", "99");
 						g_maxNailBombs.integer = 99;
+						trap_Cvar_Update( cv->vmCvar );
+					}
+				}
+
+				if (cv->vmCvar == &g_maxGasGrens) {
+					if (g_maxGasGrens.integer < 0) {
+						trap_Cvar_Set("g_maxGasGrens", "0");
+						g_maxGasGrens.integer = 0;
+						trap_Cvar_Update( cv->vmCvar );
+					}
+					else if (g_maxGasGrens.integer > 99) {
+						trap_Cvar_Set("g_maxGasGrens", "99");
+						g_maxGasGrens.integer = 99;
 						trap_Cvar_Update( cv->vmCvar );
 					}
 				}
