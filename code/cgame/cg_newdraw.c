@@ -3199,7 +3199,7 @@ CG_Q3F_DrawHUDIcons
 */
 
 void CG_Q3F_DrawHUDIcons(rectDef_t *rect, float tscale, vec4_t color, int textStyle, 
-									  int textalignment, float text_x, float text_y, fontStruct_t *font, float scale ) {
+									  int textalignment, float text_x, float text_y, fontStruct_t *font, float scale, qboolean reverse ) {
 	// Fill all required slots with various HUD icons.
 
 	int slot;
@@ -3219,7 +3219,10 @@ void CG_Q3F_DrawHUDIcons(rectDef_t *rect, float tscale, vec4_t color, int textSt
 			}
 		}
 
-		x	= rect->x + ((64 * (slot / 5)) * scale);
+		if ( reverse )
+			x	= rect->x + ((64 * ((Q3F_SLOT_MAX - 1 - slot) / 5)) * scale);
+		else
+			x	= rect->x + ((64 * (slot / 5)) * scale);
 		y	= rect->y + ((64 * (slot % 5)) * scale);
 		w	= 64 * cent->currentState.apos.trBase[0] * scale;	// 64 * scale (0 to 1)
 		h	= 64 * cent->currentState.apos.trBase[0] * scale;
@@ -3235,7 +3238,10 @@ void CG_Q3F_DrawHUDIcons(rectDef_t *rect, float tscale, vec4_t color, int textSt
 			if (cent->currentState.eFlags & EF_TEAMVOTED) {
 				int t;
 				// recalc
-				x = rect->x + ((64 * (slot / 5)) * scale);
+				if ( reverse )
+					x = rect->x + ((64 * ((Q3F_SLOT_MAX - 1 - slot) / 5)) * scale);
+				else
+					x = rect->x + ((64 * (slot / 5)) * scale);
 				y = rect->y + ((64 * (slot % 5)) * scale);
 				w = 64 * cent->currentState.apos.trBase[0] * scale;	// 64 * scale (0 to 1)
 				h = 64 * cent->currentState.apos.trBase[0] * scale;
@@ -3881,7 +3887,7 @@ void CG_OwnerDraw( itemDef_t *item, float x, float y, float w, float h, float te
 			CG_Q3F_DrawScoreboardTeamScores( &rect, scale, color, textStyle, textalignment, text_x, text_y, parentfont );
 			break;
 		case CG_HUDICONS:
-			CG_Q3F_DrawHUDIcons( &rect, scale, color, textStyle, textalignment, text_x, text_y, parentfont, item->special );
+			CG_Q3F_DrawHUDIcons( &rect, scale, color, textStyle, textalignment, text_x, text_y, parentfont, item->special, qfalse );
 			break;
 
 		case CG_LEVELSHOT:
