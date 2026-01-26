@@ -6,7 +6,7 @@ Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
 Enemy Territory Fortress
 Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
-Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+Copyright (C) 2005-2026 Enemy Territory Fortress Development Team
 
 This file is part of Enemy Territory Fortress (ETF).
 
@@ -1509,4 +1509,3 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 //	CG_Q3F_DrawCamPaths();
 
 }
-

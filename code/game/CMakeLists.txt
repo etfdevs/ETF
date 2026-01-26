@@ -17,6 +17,7 @@ add_library(qagame MODULE
 	"../api/shared/q_string.h"
 	"../api/et/q_shared.c"
 	"../api/et/q_shared.h"
+	"../api/et/surfaceflags.h"
 	"bg_events.h"
 	"bg_mod.h"
 	"bg_local.h"

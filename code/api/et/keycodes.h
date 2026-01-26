@@ -6,7 +6,7 @@ Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
 Enemy Territory Fortress
 Copyright (C) 2000-2006 Quake III Fortress (Q3F) Development Team / Splash Damage Ltd.
-Copyright (C) 2005-2018 Enemy Territory Fortress Development Team
+Copyright (C) 2005-2026 Enemy Territory Fortress Development Team
 
 This file is part of Enemy Territory Fortress (ETF).
 
@@ -45,6 +45,47 @@ typedef enum {
 	K_ESCAPE = 27,
 	K_SPACE = 32,
 
+	K_QUOTE = '\'',
+	K_PLUS = '+',
+	K_COMMA = ',',
+	K_MINUS = '-',
+	K_DOT = '.',
+	K_SLASH = '/',
+	K_SEMICOLON = ';',
+	K_EQUAL = '=',
+	K_BACKSLASH = '\\',
+	K_UNDERSCORE = '_',
+	K_BRACKET_OPEN = '[',
+	K_BRACKET_CLOSE = ']',
+
+	K_A = 'a',
+	K_B = 'b',
+	K_C = 'c',
+	K_D = 'd',
+	K_E = 'e',
+	K_F = 'f',
+	K_G = 'g',
+	K_H = 'h',
+	K_I = 'i',
+	K_J = 'j',
+	K_K = 'k',
+	K_L = 'l',
+	K_M = 'm',
+	K_N = 'n',
+	K_O = 'o',
+	K_P = 'p',
+	K_Q = 'q',
+	K_R = 'r',
+	K_S = 's',
+	K_T = 't',
+	K_U = 'u',
+	K_V = 'v',
+	K_W = 'w',
+	K_X = 'x',
+	K_Y = 'y',
+	K_Z = 'z',
+
+	// following definitions must not be changed
 	K_BACKSPACE = 127,
 
 	K_COMMAND = 128,
@@ -160,9 +201,27 @@ typedef enum {
 	K_AUX14,
 	K_AUX15,
 	K_AUX16,
+	// end of compatibility list
 
-	K_LAST_KEY		// this had better be <256!
+	K_SUPER,
+	K_COMPOSE,
+	K_MODE,
+	K_HELP,
+	K_PRINT,
+	K_SYSREQ,
+	K_SCROLLOCK,
+	K_BREAK,
+	K_MENU,
+	K_EURO,
+	K_UNDO,
+
+	MAX_KEYS
 } keyNum_t;
+
+// MAX_KEYS replaces K_LAST_KEY, however some mods may have used K_LAST_KEY
+// in detecting binds, so we leave it defined to the old hardcoded value
+// of maxiumum keys to prevent mods from crashing older versions of the engine
+#define K_LAST_KEY              233
 
 // The menu code needs to get both key and char events, but
 // to avoid duplicating the paths, the char events are just
