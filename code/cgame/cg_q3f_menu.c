@@ -1049,10 +1049,10 @@ void CG_Q3F_DrawMenuBox(void) {
 		vec3_t to_menu;
 		float a;
 		AngleVectors(cg.refdefViewAngles, fwd, NULL, NULL);
-		VectorSubtract(menulocation, cg_entities[cg.snap->ps.clientNum].lerpOrigin, to_menu);
+		VectorSubtract(menulocation, cg.refdef.vieworg, to_menu);
 		VectorNormalize(to_menu);
 		a = DotProduct( fwd, to_menu );
-		if( Distance( menulocation, cg_entities[cg.snap->ps.clientNum].lerpOrigin ) > menurange || a < 0.75f ) {
+		if( Distance( menulocation, cg.refdef.vieworg ) > menurange || a < 0.75f ) {
 			CG_Q3F_MenuCancel( qfalse );
 		}
 	}
