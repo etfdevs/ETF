@@ -1093,9 +1093,6 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 		}
 	}
 
-	// colors
-	//strcpy(c1, Info_ValueForKey( userinfo, "color" ));
-
 	// Golliwog: Check for automatic weapon reload
 	if(ent->r.svFlags & SVF_BOT)
 	{
@@ -1299,9 +1296,9 @@ const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 		return "Banned: q3unban exploit attempt";
 	}
 
-	if ( isLocal && !isBot && G_FilterPacket( ip, &reason ) ) {
+	if ( isLocal && !isBot && G_FilterPacket( cleanip, &reason ) ) {
 		trap_SendServerCommand( -1, va( "print \"Banned player: %s^7, tried to connect.\"", name ) );
-		G_LogPrintf( "ClientConnect: [Connection Refused: IP Banned] %i [%s] \"%s^7\"\n", clientNum, ip, name );
+		G_LogPrintf( "ClientConnect: [Connection Refused: IP Banned] %i [%s] \"%s^7\"\n", clientNum, cleanip, name );
 		return va("Banned: %s", reason);
 	}
 
