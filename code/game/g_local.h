@@ -336,7 +336,8 @@ typedef struct {
 	} data [STATS_NUM];
 	gclient_t * lastdamage;
 	int			caps, assists, defends;
-	int			teamkills;
+	int			teamkills, suicides, enemykills, killassists;
+	int			player_deaths; // only deaths when you were killed by an enemy player not suicide or world kills
 } clientStats_t;
 
 #define MAX_IP_LENGTH 48

@@ -322,7 +322,11 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 
 			if ( attacker == self || G_Q3F_IsAllied( attacker, self ) )
 			{
-				AddScore( attacker, self->r.currentOrigin, -1 );
+				if ( attacker != self || (attacker == self && g_suicideScorePenalty.integer > 0) )
+					AddScore( attacker, self->r.currentOrigin, -1 );
+				if (attacker == self) {
+					self->client->pers.stats.suicides++;
+				}
 
 				// Golliwog: Cheak for teamkills and ban accordingly.
 				if( attacker != self &&
@@ -337,6 +341,8 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 				// Golliwog.
 			}
 			else {
+				self->client->pers.stats.player_deaths++;
+				attacker->client->pers.stats.enemykills++;
 				G_DeathStats( self->client, attacker->client, meansOfDeath );
 				attacker->client->sess.enemyKill++;
 				AddScore( attacker, self->r.currentOrigin, 1 );
@@ -371,7 +377,9 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 
 			}
 		} else {
-			AddScore( self, self->r.currentOrigin, -1 );
+			if ( g_suicideScorePenalty.integer > 0 )
+				AddScore( self, self->r.currentOrigin, -1 );
+			self->client->pers.stats.suicides++;
 		}
 
 		// Add team bonuses

@@ -264,6 +264,8 @@ G_CVAR( g_maxNailBombs, "g_maxNailBombs", "1", CVAR_SERVERINFO | CVAR_ARCHIVE, q
 
 G_CVAR( g_maxGasGrens, "g_maxGasGrens", "2", CVAR_SERVERINFO | CVAR_ARCHIVE, qfalse )
 
+G_CVAR( g_suicideScorePenalty, "g_suicideScorePenalty", "1", CVAR_ARCHIVE, qfalse )
+
 #undef G_NULLCVAR
 #undef G_NULLEXTCVAR
 #undef G_EXTCVAR

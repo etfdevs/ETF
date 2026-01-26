@@ -1864,6 +1864,7 @@ void G_Q3F_MapGive( gentity_t *ent, gentity_t *other )
 				level.teamScores[ent->client->sess.sessionTeam] += data->value.d.intdata;
 			}
 			if (ent && data->value.d.intdata > 0) {
+				ent->client->pers.stats.caps++;
 				G_EventLog_Goal(ent);
 			}
 			CalculateRanks();	// Update the score
