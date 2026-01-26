@@ -45,13 +45,13 @@ If you have questions concerning this license or the applicable additional terms
 ============================================================================
 */
 
-#if defined (__GNUC)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#endif
 #if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-function"
+#endif
+#if defined (__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
 #endif
 
 void CopyShortSwap(void *dest, void *src)
@@ -82,9 +82,9 @@ float FloatSwap(float f)
 	return out.f;
 }
 
-#if defined (__GNUC)
-#pragma GCC diagnostic pop
-#endif
 #if defined(__clang__)
 #pragma clang diagnostic pop
+#endif
+#if defined (__GNUC__)
+#pragma GCC diagnostic pop
 #endif

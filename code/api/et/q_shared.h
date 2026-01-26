@@ -130,7 +130,14 @@ If you have questions concerning this license or the applicable additional terms
 #endif
 
 #if defined(__GNUC__) || defined(__clang__)
+#ifdef __MINGW32__
+// For some reason MinGW wants both gnu_printf and ms_printf
+#define FORMAT_PRINTF(x, y) \
+	__attribute__((format(gnu_printf, x, y))) \
+	__attribute__((format(ms_printf, x, y)))
+#else
 #define FORMAT_PRINTF(x, y) __attribute__((format (printf, x, y)))
+#endif
 #else
 #define FORMAT_PRINTF(x, y) /* nothing */
 #endif
