@@ -681,16 +681,20 @@ void HallucinogenicBurnThink( gentity_t * gasgren )
 	gasgren->nextthink	= level.time + 300;
 }
 
+#define GASGREN_LIFETIME 6000
+#define GREN_GAS_RADIUS_SQ (GREN_GAS_RADIUS*GREN_GAS_RADIUS)
+
 
 void HallucinogenicExplodeThink( gentity_t *ent )
 {
 	//	Let's gas
 
 	gentity_t *player;
-	int distance, time;
+	int time;
+	float distanceSq;
 	vec3_t distancevec;
 
-	if( (ent->s.time + 6000) < level.time )
+	if( (ent->s.time + GASGREN_LIFETIME) < level.time )
 	{
 		G_FreeEntity( ent );
 		return;
@@ -702,8 +706,8 @@ void HallucinogenicExplodeThink( gentity_t *ent )
 		if( !(player->inuse && player->client && player->health > 0 && !Q3F_IsSpectator( player->client ) && !player->client->noclip) )
 			continue;
 		VectorSubtract( player->s.pos.trBase, ent->s.pos.trBase, distancevec );
-		distance = VectorLength( distancevec );
-		if ( distance >= GREN_GAS_RADIUS )
+		distanceSq = VectorLengthSquared( distancevec );
+		if ( distanceSq >= GREN_GAS_RADIUS_SQ )
 			continue;
 
 		if( player == ent->activator || level.friendlyFire == FF_Q3F_FULL || level.friendlyFire == FF_Q3F_HALF || !G_Q3F_IsAllied( ent->activator, player ) )
@@ -723,13 +727,15 @@ void HallucinogenicExplodeThink( gentity_t *ent )
 				// Gas them
 
 			time = player->client->ps.powerups[PW_Q3F_GAS] - level.time;
-			if( player->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_PARAMEDIC )
-				time /= 0.66;
-			time += 5000;
-			if( time < 12000 )
-				time = 12000;
-			if( time > 22000 )
-				time = 22000;
+			if (time < 0)
+				time = 0;
+			//if( player->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_PARAMEDIC )
+			//	time /= 0.66;
+			time += 2500;
+			if( time < 4000 )
+				time = 4000;
+			if( time > 10000 )
+				time = 10000;
 			if( player->client->ps.persistant[PERS_CURRCLASS] == Q3F_CLASS_PARAMEDIC )
 				time *= 0.66;
 			player->client->ps.powerups[PW_Q3F_GAS] = level.time + time;

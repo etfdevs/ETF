@@ -401,7 +401,8 @@ static void CG_Q3F_GasEffect( void )
 			cg.gasTime = cg.gasEndTime;
 			memcpy( cg.gasColour, cg.gasEndColour, sizeof(cg.gasColour) );
 		}
-		cg.gasEndTime = cg.time + 3450 + ETF_random() * 3450;
+		// Speed up the effect cycle for the shorter 10s duration
+        cg.gasEndTime = cg.time + 1500 + ETF_random() * 1500;
 		if( (cg.time + 3450) >= gastime || cg.gasEndTime >= gastime )
 		{
 			// Effect is ending
@@ -420,7 +421,7 @@ static void CG_Q3F_GasEffect( void )
 			cg.gasEndColour[0] = ETF_random();
 			cg.gasEndColour[1] = ETF_random();
 			cg.gasEndColour[2] = ETF_random();
-			cg.gasEndColour[3] = 0.34 + ETF_random() * 0.3 * (((float)(gastime - cg.time)) / 20000);
+			cg.gasEndColour[3] = 0.34 + ETF_random() * 0.3 * (((float)(gastime - cg.time)) / 10000);
 			if( cg.gasEndColour[3] > 0.7f )
 				cg.gasEndColour[3] = 0.7f;
 
@@ -449,15 +450,15 @@ static void CG_Q3F_GasEffect( void )
 				}
 			}
 		}
-		cg.gasFlashTime = cg.time + 100;		// Long enough to assure a 'solid' flash
+		//cg.gasFlashTime = cg.time + 100;		// Long enough to assure a 'solid' flash
 	}
 
 		// Calculate a smooth transition from start to end
 	curr = 0.5 - 0.5 * sin( M_PI * (((float)(cg.gasEndTime - cg.time)) / ((float)(cg.gasEndTime - cg.gasTime)) - 0.5) );
 	for( index = 0; index < 4; index++ )		// Screen colour (used later in frame render)
 		cg.gasCurrColour[index] = cg.gasColour[index] + curr * (cg.gasEndColour[index] - cg.gasColour[index]);
-	if( cg.gasFlashTime > cg.time )
-		cg.gasCurrColour[3] = 1;		// "Flash" the screen to opaque this frame
+	//if( cg.gasFlashTime > cg.time )
+	//	cg.gasCurrColour[3] = 1;		// "Flash" the screen to opaque this frame
 }
 
 // Golliwog: A pretty effect to handle 'vibration'.
