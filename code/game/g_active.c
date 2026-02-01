@@ -572,7 +572,9 @@ void ClientTimerActions( gentity_t *ent ) {
 		client->ps.extFlags &= ~EXTF_ANI_OPERATING;
 	}
 
-	if ( client->noclip ) {
+	if (level.intermissiontime) {
+		client->ps.pm_type = PM_INTERMISSION;
+	} else if (client->noclip) {
 		client->ps.pm_type = PM_NOCLIP;
 	} else if ( client->ps.stats[STAT_HEALTH] <= 0 ) {
 		client->ps.pm_type = PM_DEAD;
