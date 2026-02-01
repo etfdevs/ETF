@@ -969,15 +969,16 @@ void CG_MatchPredictedEnt(centity_t* cent) {
 	localEntity_t* match = NULL;
 	float best = SQR(32);
 	vec3_t diff;
+	int i;
 
 	// Can only match entities we own.
 	if (!CG_PredictedMissilesEnabled() ||
 			cent->currentState.clientNum != cg.snap->ps.clientNum)
 		return;
 
-	for (int i = 0; i < num_predicted_ents; i++) {
+	for (i = 0; i < num_predicted_ents; i++) {
 		localEntity_t* le = predicted_ents[i];
-		float len;
+		float len = SQR(64);
 
 		if (cent->currentState.eType == ET_MISSILE) {
 			VectorSubtract(cent->lerpOrigin, le->lerp.trBase, diff);
@@ -1007,8 +1008,9 @@ void CG_MatchPredictedEnt(centity_t* cent) {
 
 void CG_UpdateLocalPredictedEnts(void) {
 	float now = cg.time + 1000 / cgs.sv_fps;
+	int i;
 
-	for (int i = 0; i < num_predicted_ents; i++) {
+	for (i = 0; i < num_predicted_ents; i++) {
 		localEntity_t* le = predicted_ents[i];
 		vec3_t next;
 		trace_t trace;
@@ -1235,5 +1237,3 @@ void CG_AddLocalEntities( void ) {
 	//	CG_PositionSunflares();
 	//}
 }
-
-

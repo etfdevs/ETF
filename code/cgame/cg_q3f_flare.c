@@ -522,7 +522,7 @@ void CG_RenderSunflares( void ) {
 					*gFlareFadeTime = cg.time;
 					
 				// fade it in a bit
-				if( *gFlareFadeValue < 1 ) {
+				if( gFlareFadeValue && *gFlareFadeValue < 1 ) {
 					fadeValue = cg.time - *gFlareFadeTime;
 					fadeValue *= (float)FLARE_FADE_SPEED;
 					*gFlareFadeValue += fadeValue;
@@ -535,7 +535,7 @@ void CG_RenderSunflares( void ) {
 					*gFlareFadeTime = -1 * cg.time;
 				
 				// fade it out a bit
-				if( *gFlareFadeValue > 0 ) {
+				if( gFlareFadeValue && *gFlareFadeValue > 0 ) {
 					fadeValue = cg.time + *gFlareFadeTime;	// add because time is negative
 					fadeValue *= (float)FLARE_FADE_SPEED;
 					*gFlareFadeValue -= fadeValue; 

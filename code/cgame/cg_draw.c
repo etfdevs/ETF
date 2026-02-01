@@ -1698,7 +1698,6 @@ static void CG_DrawObits(void)
 	static float textHeight, spaceWidth;
 	const float textScale = 0.15f;
 	altObit_t *p;
-	int i = 0;
 
 	if (!cg.snap)
 		return;
@@ -1711,7 +1710,7 @@ static void CG_DrawObits(void)
 
 	y = cg_killFeedY.value;
 
-	for (i = 0, p = cg.obits; p < cg.obits + cg.numObits; i++, p++) {
+	for (p = cg.obits; p < cg.obits + cg.numObits; p++) {
 		const char *modstr = CG_GetObitString(p->mod);
 
 		if (p->victim >= MAX_CLIENTS)

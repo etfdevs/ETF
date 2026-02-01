@@ -111,13 +111,13 @@ static void Q_FSWriteJSON( cJSON *object, fileHandle_t f ) {
 
 // TODO implement the milliseconds from qwtf-live
 // 
-static const char *ISOTimemills(void) {
+/*static const char *ISOTimemills(void) {
 	static char timeuse[64] = { 0 };
 	qtime_t now;
 	trap_RealTime( &now );
 	Com_sprintf(timeuse, sizeof(timeuse), "%d-%02d-%02dT%02d:%02d:%02d.%dZ", now.tm_year + 1900, now.tm_mon + 1, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec, 100);
 	return timeuse;
-}
+}*/
 
 void G_EventLog_PlayerStart( gentity_t *player ) {
 	cJSON *root;

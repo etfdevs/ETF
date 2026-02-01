@@ -549,6 +549,7 @@ void ClientTimerActions( gentity_t *ent ) {
 	const char *dataptr;
 	gentity_t *other;
 	int data;
+	int i;
 
 	client = ent->client;
 
@@ -770,7 +771,7 @@ void ClientTimerActions( gentity_t *ent ) {
 	G_Q3F_Check_Maladies(ent);
 
 	// turn off any expired powerups
-	for (int i = 0 ; i < MAX_POWERUPS ; i++ ) {
+	for (i = 0 ; i < MAX_POWERUPS ; i++ ) {
 		if ( ent->client->ps.powerups[ i ] && ent->client->ps.powerups[ i ] < level.time ) {
 			switch( i )
 			{
@@ -1107,7 +1108,7 @@ void ClientThink_real( gentity_t *ent ) {
 	if ( ucmd->serverTime < level.time - 1000 ) {
 		ucmd->serverTime = level.time - 1000;
 //		G_Printf("serverTime >>>>>\n" );
-	} 
+	}
 
 	// frameOffset should be about the number of milliseconds into a frame 
 	// this command packet was received, depending on how fast the server

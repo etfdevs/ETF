@@ -3252,6 +3252,7 @@ void CG_Q3F_DrawHUDIcons(rectDef_t *rect, float tscale, vec4_t color, int textSt
 					Com_sprintf(buf, sizeof(buf), "%d", (int)t/1000);
 					y += (h - CG_Text_Height(buf, tscale, 0, font)) / 2;
 
+					// TODO put the reverse'd text on left hand side of the icon as well
 					CG_Text_Paint(x + text_x + (w/2) + 7, y + text_y + 2, tscale, colorWhite, buf, 0, 0, textStyle, font, textalignment);
 				}
 			}
