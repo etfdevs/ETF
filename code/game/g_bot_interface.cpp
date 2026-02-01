@@ -2825,7 +2825,7 @@ class           ETFInterface:public IEngineInterface
 					trap_GetUserinfo(pEnt->s.clientNum, userinfo, MAX_INFO_STRING);
 					Info_SetValueForKey(userinfo, "name", pMsg->m_NewName);
 					trap_SetUserinfo(pEnt->s.clientNum, userinfo);
-					ClientUserinfoChanged(pEnt->s.clientNum, "name change");
+					ClientUserinfoChanged(pEnt->s.clientNum, "name change", qtrue);
 				}
 				break;
 			}

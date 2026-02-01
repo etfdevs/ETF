@@ -1306,7 +1306,7 @@ void MoveClientToIntermission( gentity_t *ent ) {
 	// move to the spot
 	VectorCopy( level.intermission_origin, ent->s.origin );
 	VectorCopy( level.intermission_origin, ent->client->ps.origin );
-	VectorCopy (level.intermission_angle, ent->client->ps.viewangles);
+	SetClientViewAngle( ent, level.intermission_angle );
 	ent->client->ps.pm_type = PM_INTERMISSION;
 
 	// clean up powerup info

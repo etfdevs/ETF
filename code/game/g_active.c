@@ -403,7 +403,10 @@ void SpectatorThink( gentity_t *ent, usercmd_t *ucmd ) {
 		else
 			client->ps.pm_type = PM_LIMITEDSPECTATOR;
 		// RR2DO2
-		client->ps.speed = 440;  //keeg recon speed
+		client->ps.speed = 800;  //keeg recon speed -- ensi: faster yet
+
+		if (client->noclip && client->ps.pm_type != PM_LIMITEDSPECTATOR)
+			client->ps.pm_type = PM_NOCLIP;
 
 		// set up for pmove
 		memset (&pm, 0, sizeof(pm));
@@ -411,7 +414,6 @@ void SpectatorThink( gentity_t *ent, usercmd_t *ucmd ) {
 		pm.cmd = *ucmd;
 		pm.tracemask = MASK_PLAYERSOLID & ~CONTENTS_BODY;	// spectators can fly through bodies
 		pm.trace = trap_TraceNoEnts;
-//		pm.trace = trap_Trace;
 		pm.pointcontents = trap_PointContents;
 
 		// Golliwog: Prevent firing during ceasefire
@@ -1162,16 +1164,24 @@ void ClientThink_real( gentity_t *ent ) {
 	pm.cmd = *ucmd;
 
 	pm.trace = G_Q3F_ForceFieldTrace;
-	if ( pm.ps->pm_type == PM_DEAD ) {
+	switch ( pm.ps->pm_type ) {
+	case PM_DEAD:
 		pm.tracemask = MASK_PLAYERSOLID & ~CONTENTS_BODY;
 		// DHM-Nerve added:: EF_DEAD is checked for in Pmove functions, but wasn't being set
 		//              until after Pmove
 		pm.ps->eFlags |= EF_DEAD;
 		// dhm-Nerve end
-	} else if ( pm.ps->pm_type == PM_SPECTATOR || pm.ps->pm_type == PM_ADMINSPECTATOR ) {
+		break;
+	case PM_SPECTATOR:
+	case PM_ADMINSPECTATOR:
 		pm.trace = trap_TraceNoEnts;
-	} else {
+		break;
+	case PM_NOCLIP:
+		pm.tracemask = MASK_PLAYERSOLID & ~CONTENTS_BODY;
+		break;
+	default:
 		pm.tracemask = MASK_PLAYERSOLID;
+		break;
 	}
 
 	pm.pointcontents = trap_PointContents;
