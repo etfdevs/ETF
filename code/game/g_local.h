@@ -958,7 +958,7 @@ void MoveClientToIntermission(gentity_t* client);
 // g_client.c
 //
 const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot );
-qboolean ClientUserinfoChanged( int clientNum, const char *reason );
+qboolean ClientUserinfoChanged( int clientNum, const char *reason, qboolean dupecheck );
 void ClientDisconnect( int clientNum );
 void ClientBegin( int clientNum );
 void ClientCommand( int clientNum );

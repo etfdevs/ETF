@@ -138,7 +138,7 @@ Q_EXPORT intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t ar
 		ClientThink( arg0 );
 		return 0;
 	case GAME_CLIENT_USERINFO_CHANGED:
-		ClientUserinfoChanged( arg0, "game" );
+		ClientUserinfoChanged( arg0, "game", qtrue );
 		return 0;
 	case GAME_CLIENT_DISCONNECT:
 		ClientDisconnect( arg0 );

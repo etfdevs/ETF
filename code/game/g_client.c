@@ -856,7 +856,7 @@ Forces a client's skin (for teamplay)
 ClientCheckName
 ============
 */
-static void ClientCleanName( int clientNum, const char *in, char *out, int outSize ) {
+static void ClientCleanName( int clientNum, const char *in, char *out, int outSize, qboolean dupecheck ) {
 	int		len, colorlessLen;
 	char	ch;
 	char	*p;
@@ -870,7 +870,7 @@ static void ClientCleanName( int clientNum, const char *in, char *out, int outSi
 	len = 0;
 	colorlessLen = 0;
 	p = out;
-	*p = 0;
+	*p = '\0';
 	spaces = 0;
 
 	while( 1 ) {
@@ -880,7 +880,7 @@ static void ClientCleanName( int clientNum, const char *in, char *out, int outSi
 		}
 
 		// don't allow leading spaces
-		if( !*p && ch == ' ' ) {
+		if( *p == '\0' && ch == ' ') {
 			continue;
 		}
 
@@ -927,49 +927,51 @@ static void ClientCleanName( int clientNum, const char *in, char *out, int outSi
 		colorlessLen++;
 		len++;
 	}
-	*out = 0;
+	*out = '\0';
 
 	// don't allow empty names
 	if( *p == 0 || colorlessLen == 0 ) {
 		Q_strncpyz( p, "ETF_Player", outSize );
 	}
 
-	// djbob: stop colliding nicks
-	// Perhaps add a list of nicks which will be forcefully changed
-	Q_strncpyz( buffer, p, outSize );
-	Q_CleanStr( buffer );
+	if ( dupecheck ) {
+		// djbob: stop colliding nicks
+		// Perhaps add a list of nicks which will be forcefully changed
+		Q_strncpyz( buffer, p, outSize );
+		Q_CleanStr( buffer );
 
-	a = 0 ;
-	for( i = 0; i < MAX_CLIENTS; i++ ) {
-		char buf[128], buf_2[128];
+		a = 0 ;
+		for( i = 0; i < MAX_CLIENTS; i++ ) {
+			char buf[128], buf_2[128];
 
-		if(!g_entities[i].inuse || g_entities[i].s.number == clientNum || (g_entities[i].client->pers.connected < CON_CONNECTING)) {
-			continue;
+			if(!g_entities[i].inuse || g_entities[i].s.number == clientNum || (g_entities[i].client->pers.connected < CON_CONNECTING)) {
+				continue;
+			}
+
+			if(a) {
+				Com_sprintf(buf, outSize, "%d_%s", a, buffer);
+			} else {
+				Q_strncpyz( buf, buffer, outSize );
+			}
+
+			Q_strncpyz( buf_2, g_entities[i].client->pers.netname, outSize );
+			Q_CleanStr( buf_2 );
+
+
+			if(!Q_stricmp(buf_2, buf)) {
+				a++;
+				i = -1;
+			}
 		}
 
 		if(a) {
-			Com_sprintf(buf, outSize, "%d_%s", a, buffer);
-		} else {
-			Q_strncpyz( buf, buffer, outSize );
+		  //Keeger -- seems somehow Com_sprintf borks when using the destination as an argument 
+		  //cause the original way produced "1_1_1_1_" garbage.
+		  Q_strncpyz( buffer, p, outSize );  //re-make buffer to colorized string
+		  Com_sprintf(p, outSize, "%d_%s", a, buffer);  //replace the p arg with buffer and bug goes away...
 		}
-
-		Q_strncpyz( buf_2, g_entities[i].client->pers.netname, outSize );
-		Q_CleanStr( buf_2 );
-
-
-		if(!Q_stricmp(buf_2, buf)) {
-			a++;
-			i = -1;
-		}
+		// djbob
 	}
-
-	if(a) {
-      //Keeger -- seems somehow Com_sprintf borks when using the destination as an argument 
-      //cause the original way produced "1_1_1_1_" garbage.
-      Q_strncpyz( buffer, p, outSize );  //re-make buffer to colorized string
-	  Com_sprintf(p, outSize, "%d_%s", a, buffer);  //replace the p arg with buffer and bug goes away...
-	}
-	// djbob
 }
 
 
@@ -984,7 +986,7 @@ The game can override any of the settings and call trap_SetUserinfo
 if desired.
 ============
 */
-qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
+qboolean ClientUserinfoChanged( int clientNum, const char *reason, qboolean dupecheck ) {
 	gentity_t *ent;
 	const char	*s;
 	char	oldname[MAX_NETNAME];
@@ -1077,7 +1079,7 @@ qboolean ClientUserinfoChanged( int clientNum, const char *reason ) {
 	// set name.
 	Q_strncpyz ( oldname, client->pers.netname, sizeof( oldname ) );
 	s = Info_ValueForKey (userinfo, "name");
-	ClientCleanName( clientNum, s, client->pers.netname, sizeof(client->pers.netname) );
+	ClientCleanName( clientNum, s, client->pers.netname, sizeof(client->pers.netname), dupecheck );
 
 	//if ( client->sess.sessionTeam == Q3F_TEAM_SPECTATOR ) {
 	if ( Q3F_IsSpectator(ent->client)) {	// RR2DO2
@@ -1337,7 +1339,7 @@ const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 
 	client->ps.clientNum = clientNum;
 
-	if ( !ClientUserinfoChanged( clientNum, "connect" ) ) {
+	if ( !ClientUserinfoChanged( clientNum, "connect", qfalse ) ) {
 		return ban_reason;
 	}
 
@@ -1382,7 +1384,7 @@ const char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot )
 	client->pers.connected = CON_CONNECTING;
 	client->pers.connectTime = level.time;
 
-	ClientUserinfoChanged( clientNum, "connect" );
+	ClientUserinfoChanged( clientNum, "connect", qtrue );
 
 	// don't do the "xxx connected" messages if they were caried over from previous level
 	if ( firstTime ) {
@@ -1587,7 +1589,7 @@ qboolean ClientSpawn(gentity_t *ent) {
 			if( client->sess.sessionClass == Q3F_CLASS_MAX )
 				client->ps.persistant[PERS_CURRCLASS] = G_Q3F_SelectRandomClass( client->sess.sessionTeam, ent );
 			else client->ps.persistant[PERS_CURRCLASS] = client->sess.sessionClass;
-			ClientUserinfoChanged( client - level.clients, "spawn with new class" );
+			ClientUserinfoChanged( client - level.clients, "spawn with new class", qtrue );
 		}
 	}
 	else beginclass = qfalse;

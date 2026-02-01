@@ -839,7 +839,7 @@ qboolean SetTeam( gentity_t *ent, const char *s ) {
 	// Golliwog.
 
 	// get and distribute relevent paramters
-	ClientUserinfoChanged( clientNum, "setteam" );
+	ClientUserinfoChanged( clientNum, "setteam", qtrue );
 
 	ClientBegin( clientNum );
 

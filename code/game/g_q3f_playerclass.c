@@ -962,7 +962,7 @@ static void G_Q3F_AgentThink( gentity_t *ent )
 		BG_PlayerStateToEntityState( &client->ps, &ent->activator->s, qtrue );
 	}
 	if( infochange )
-		ClientUserinfoChanged( ent->activator->s.number, "agentthink" );
+		ClientUserinfoChanged( ent->activator->s.number, "agentthink", qtrue );
 
 	if(	(!disguiseendtime || (level.time >= disguiseendtime && disguiseendtime != -1)) &&
 		(!invisendtime || (level.time >= invisendtime && invisendtime != -1)) )
