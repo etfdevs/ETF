@@ -354,6 +354,8 @@ typedef struct itemDef_s {
 	int classLimit;								// slothy - show items only for specific classes
 	int weaponLimit;							// slothy - show item only for specific weapon
 
+	qboolean flipped;					// Ensiform - flipped state for CG_HUDICONS if true the columns are swapped and the text is shown on left side of icon
+
 } itemDef_t;
 
 typedef struct fontStruct_s {

@@ -5514,6 +5514,11 @@ qboolean ItemParse_feeder( itemDef_t *item, int handle ) {
 	return qtrue;
 }
 
+qboolean ItemParse_flipped( itemDef_t *item, int handle ) {
+	item->flipped = qtrue;
+	return qtrue;
+}
+
 // elementtype, used to specify what type of elements a listbox contains
 // uses textstyle for storage
 qboolean ItemParse_elementtype( itemDef_t *item, int handle ) {
@@ -6266,6 +6271,7 @@ static keywordHash_t itemParseKeywords[] = {
 	{ "scale",				ItemParse_scale,			NULL }, 
 	{ "class",				ItemParse_class,			NULL },
 	{ "weapon",				ItemParse_weapon,			NULL },
+	{ "flipped",			ItemParse_flipped,			NULL },
 // djbob
 	{NULL, NULL, NULL}
 };

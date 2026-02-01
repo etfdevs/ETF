@@ -3252,8 +3252,14 @@ void CG_Q3F_DrawHUDIcons(rectDef_t *rect, float tscale, vec4_t color, int textSt
 					Com_sprintf(buf, sizeof(buf), "%d", (int)t/1000);
 					y += (h - CG_Text_Height(buf, tscale, 0, font)) / 2;
 
-					// TODO put the reverse'd text on left hand side of the icon as well
-					CG_Text_Paint(x + text_x + (w/2) + 7, y + text_y + 2, tscale, colorWhite, buf, 0, 0, textStyle, font, textalignment);
+					if (reverse) {;
+						float textWidth = CG_Text_Width(buf, tscale, 0, font);
+						CG_Text_Paint(x - textWidth - 7, y + text_y + 2, tscale, colorWhite, buf, 0, 0, textStyle, font, textalignment);
+					}
+					else {
+
+						CG_Text_Paint(x + text_x + (w / 2) + 7, y + text_y + 2, tscale, colorWhite, buf, 0, 0, textStyle, font, textalignment);
+					}
 				}
 			}
 		} else if( cent->currentState.eFlags & EF_VOTED ) {
@@ -3888,7 +3894,7 @@ void CG_OwnerDraw( itemDef_t *item, float x, float y, float w, float h, float te
 			CG_Q3F_DrawScoreboardTeamScores( &rect, scale, color, textStyle, textalignment, text_x, text_y, parentfont );
 			break;
 		case CG_HUDICONS:
-			CG_Q3F_DrawHUDIcons( &rect, scale, color, textStyle, textalignment, text_x, text_y, parentfont, item->special, qfalse );
+			CG_Q3F_DrawHUDIcons( &rect, scale, color, textStyle, textalignment, text_x, text_y, parentfont, item->special, item->flipped );
 			break;
 
 		case CG_LEVELSHOT:
