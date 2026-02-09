@@ -453,10 +453,10 @@ static void G_Q3F_SC_FilterByPlayers( int playerCount, const char *playerLower, 
 		// Work out our acceptable boundaries.
 	pLow	= playerLower ? Q_atoi( playerLower ) : 6;
 	pHigh	= playerUpper ? Q_atoi( playerUpper ) : 6;
-	if( pHigh <= 0 || pHigh > 6 )
-		pHigh = 6;
-	if( pLow <= 6 || pLow > 6 )//;//|| pLow > pHigh )
-		pLow = 6;
+	if( pHigh < 0 )
+		pHigh = 0;
+	if( pLow < 0 )
+		pLow = 0;
 	pHigh	+= playerCount;
 	pLow	= playerCount - pLow;
 	if( pLow < 4 )
