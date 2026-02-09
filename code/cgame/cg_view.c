@@ -987,7 +987,8 @@ static int CG_CalcViewValues( void ) {
 
 	// intermission view
 	if ( ps->pm_type == PM_INTERMISSION ) {
-		VectorCopy( ps->origin, cg.refdef.vieworg );
+		VectorCopy( cg.view_org, cg.refdef.vieworg );
+		//VectorCopy( ps->origin, cg.refdef.vieworg );
 		VectorCopy( ps->viewangles, cg.refdefViewAngles );
 		AnglesToAxis( cg.refdefViewAngles, cg.refdef.viewaxis );
 		return CG_CalcFov();
