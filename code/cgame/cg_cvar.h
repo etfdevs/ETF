@@ -285,6 +285,8 @@ CG_EXTCVAR( cg_cl_freelook,			"cl_freelook",				"1",		0, EXT_CVAR_ARCHIVE_ND )
 CG_CVAR( cg_hitBeep,				"cg_hitBeep",				"1",		CVAR_ARCHIVE )
 CG_CVAR( cg_killBeep,				"cg_killBeep",				"0",		CVAR_ARCHIVE )
 
+CG_CVAR( cg_altNapalmModel,			"cg_altNapalmModel",		"0",		CVAR_ARCHIVE )
+
 #undef CG_NULLCVAR
 #undef CG_NULLEXTCVAR
 #undef CG_EXTCVAR

@@ -1001,7 +1001,9 @@ static void CG_Q3F_InitPhaseClasses(void)
 		case Q3F_CLASS_GRENADIER:
 		case Q3F_CLASS_PARAMEDIC:
 		case Q3F_CLASS_MINIGUNNER:
+			break;
 		case Q3F_CLASS_FLAMETROOPER:
+			CG_RegisterWeapon(WP_ROCKET_LAUNCHER); // force rocket registration in case we have alt napalm model enabled durinng play
 			break;
 		case Q3F_CLASS_AGENT:
 			cgs.media.agentShader = trap_R_RegisterShader( "gfx/agenteffect" );

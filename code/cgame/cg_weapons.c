@@ -1175,7 +1175,11 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	gun.shadowPlane = parent->shadowPlane;
 	gun.renderfx = parent->renderfx;
 
-	gun.hModel = weapon->weaponModel;				
+	if ( weaponNum == WP_NAPALMCANNON && cg_weapons[WP_ROCKET_LAUNCHER].registered && cg_altNapalmModel.integer )
+		gun.hModel = cg_weapons[WP_ROCKET_LAUNCHER].weaponModel;
+	else
+		gun.hModel = weapon->weaponModel;
+
 	// JT - Custom override for other classes 'axes'.
 	if( weaponNum == WP_AXE )
 		switch( agentclass ? agentclass : (gasEffect ? cg.gasPlayerClass[cent->currentState.number] : cent->currentState.otherEntityNum2 ) )
