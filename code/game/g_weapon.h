@@ -30,8 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#ifndef G_WEAPON_H
-#define G_WEAPON_H
+#ifndef __G_WEAPON_H__
+#define __G_WEAPON_H__
 
 // JT - Prototypes from g_weapon.c
 

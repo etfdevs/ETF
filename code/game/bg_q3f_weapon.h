@@ -37,8 +37,8 @@ If you have questions concerning this license or the applicable additional terms
 **
 */
 
-#ifndef __BG_Q3F_WEAPON_H
-#define __BG_Q3F_WEAPON_H
+#ifndef __BG_Q3F_WEAPON_H__
+#define __BG_Q3F_WEAPON_H__
 
 #include "../api/et/q_shared.h"
 

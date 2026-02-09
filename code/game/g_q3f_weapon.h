@@ -38,8 +38,8 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 
-#ifndef __G_Q3F_WEAPON_H
-#define __G_Q3F_WEAPON_H
+#ifndef __G_Q3F_WEAPON_H__
+#define __G_Q3F_WEAPON_H__
 
 
 #include "bg_q3f_weapon.h"

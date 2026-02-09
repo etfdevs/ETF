@@ -36,8 +36,8 @@ If you have questions concerning this license or the applicable additional terms
 **	Server side functions for grenade handling.
 */
 
-#ifndef	__G_GRENADES_H
-#define	__G_GRENADES_H
+#ifndef	__G_GRENADES_H__
+#define	__G_GRENADES_H__
 
 #include "bg_q3f_grenades.h"
 

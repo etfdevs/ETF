@@ -37,8 +37,8 @@ If you have questions concerning this license or the applicable additional terms
 **
 */
 
-#ifndef	__G_Q3F_MAPENTS_H
-#define	__G_Q3F_MAPENTS_H
+#ifndef	__G_Q3F_MAPENTS_H__
+#define	__G_Q3F_MAPENTS_H__
 
 #include "g_local.h"
 #include "../api/et/q_shared.h"

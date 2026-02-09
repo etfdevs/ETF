@@ -32,8 +32,8 @@ If you have questions concerning this license or the applicable additional terms
 
 // bg_local.h -- local definitions for the bg (both games) files
 
-#ifndef _BG_LOCAL_H
-#define _BG_LOCAL_H
+#ifndef __BG_LOCAL_H__
+#define __BG_LOCAL_H__
 
 #define	MIN_WALK_NORMAL	0.7f		// can't walk on very steep slopes
 

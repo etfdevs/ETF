@@ -36,8 +36,8 @@ If you have questions concerning this license or the applicable additional terms
 **	Recon Scanner client-side functions
 */
 
-#ifndef __CG_Q3F_SCANNER_H
-#define __CG_Q3F_SCANNER_H
+#ifndef __CG_Q3F_SCANNER_H__
+#define __CG_Q3F_SCANNER_H__
 
 #include "cg_local.h"
 

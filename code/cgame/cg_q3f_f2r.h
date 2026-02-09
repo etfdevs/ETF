@@ -30,8 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#ifndef __CG_Q3F_F2R_H
-#define __CG_Q3F_F2R_H
+#ifndef __CG_Q3F_F2R_H__
+#define __CG_Q3F_F2R_H__
 
 #define MAX_F2R 196
 

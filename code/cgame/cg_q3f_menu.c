@@ -48,7 +48,7 @@ static int menustate, menutime, menuchoice, menuchoicetime/*, menuslidetime*/;
 static qboolean isinvismenu;	// hack for supplystation menu
 
 typedef enum { 
-	MOS_INACTIVE,
+	MOS_INACTIVE=0,
 	MOS_ACTIVE,
 	MOS_DISABLED,
 } menuoption_state_t;

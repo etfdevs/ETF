@@ -35,7 +35,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#pragma once
+#ifndef __Q_STRING_H__
+#define __Q_STRING_H__
 
 #include "q_primitives.h"
 #include <stddef.h> // Q_vsnprintf or Q_strnlen needs size_t
@@ -108,4 +109,6 @@ int Q_atoi(const char *str);
 
 #if defined(__cplusplus)
 } // extern "C"
+#endif
+
 #endif

@@ -36,8 +36,8 @@ If you have questions concerning this license or the applicable additional terms
 **	Common functions for grenade handling.
 */
 
-#ifndef	__BG_GRENADES_H
-#define	__BG_GRENADES_H
+#ifndef	__BG_GRENADES_H__
+#define	__BG_GRENADES_H__
 
 #include "../api/et/q_shared.h"
 

@@ -38,8 +38,8 @@ If you have questions concerning this license or the applicable additional terms
 **	what bg_q3f_team.c/h is for. (Those are not usefull anymore, deleted)
 */
 
-#ifndef	__G_Q3F_TEAM_H
-#define	__G_Q3F_TEAM_H
+#ifndef	__G_Q3F_TEAM_H__
+#define	__G_Q3F_TEAM_H__
 
 #include "g_local.h"
 #include "bg_q3f_playerclass.h"

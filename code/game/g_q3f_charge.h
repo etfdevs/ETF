@@ -30,8 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#ifndef	__G_CHARGE_H
-#define	__G_CHARGE_H
+#ifndef	__G_CHARGE_H__
+#define	__G_CHARGE_H__
 
 #include "bg_q3f_grenades.h"
 

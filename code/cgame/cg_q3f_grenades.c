@@ -49,8 +49,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #define PULSEDURATION 800
 
-extern cg_q3f_grenade_t *cg_q3f_grenades[Q3F_NUM_GRENADES];
-
 static qboolean FlareRender( centity_t *cent, refEntity_t *ent )
 {
 	// Render the grenade - basically, just the usual grenade plus a light entity.

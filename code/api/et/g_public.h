@@ -32,6 +32,9 @@ If you have questions concerning this license or the applicable additional terms
 
 // g_public.h -- game module information visible to server
 
+#ifndef	__G_PUBLIC_H__
+#define	__G_PUBLIC_H__
+
 #define	GAME_API_VERSION	8
 
 // entity->svFlags
@@ -466,7 +469,7 @@ typedef enum {
 // functions exported by the game subsystem
 //
 typedef enum {
-	GAME_INIT,	// ( int levelTime, int randomSeed, int restart );
+	GAME_INIT = 0,	// ( int levelTime, int randomSeed, int restart );
 	// init and shutdown will be called every single level
 	// The game should call G_GET_ENTITY_TOKEN to parse through all the
 	// entity configuration text and spawn gentities.
@@ -512,3 +515,4 @@ typedef enum {
 
 } gameExport_t;
 
+#endif

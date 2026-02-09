@@ -30,8 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#ifndef	__G_Q3F_EVENTLOG_H
-#define	__G_Q3F_EVENTLOG_H
+#ifndef	__G_Q3F_EVENTLOG_H__
+#define	__G_Q3F_EVENTLOG_H__
 
 #include "g_local.h"
 

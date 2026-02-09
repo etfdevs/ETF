@@ -36,8 +36,8 @@ If you have questions concerning this license or the applicable additional terms
 **	Headers for the client side functions for selecting a map after the end of the game proper
 */
 
-#ifndef	__CG_Q3F_MAPSELECT_H
-#define	__CG_Q3F_MAPSELECT_H
+#ifndef	__CG_Q3F_MAPSELECT_H__
+#define	__CG_Q3F_MAPSELECT_H__
 
 #include "cg_local.h"
 

@@ -36,8 +36,8 @@ If you have questions concerning this license or the applicable additional terms
 **	Plays 'sentences' from client-side-parsed strings.
 */
 
-#ifndef	__CG_Q3F_SOUNDDICT_H
-#define	__CG_Q3F_SOUNDDICT_H
+#ifndef	__CG_Q3F_SOUNDDICT_H__
+#define	__CG_Q3F_SOUNDDICT_H__
 
 #include "cg_local.h"
 

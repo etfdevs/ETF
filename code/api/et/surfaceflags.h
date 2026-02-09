@@ -37,6 +37,9 @@ If you have questions concerning this license or the applicable additional terms
 
 // these definitions also need to be in q_shared.h!
 
+#ifndef __SURFACEFLAGS_H__
+#define __SURFACEFLAGS_H__
+
 #define	CONTENTS_SOLID				0x00000001
 #define	CONTENTS_LIGHTGRID			0x00000004
 #define	CONTENTS_LAVA				0x00000008
@@ -105,3 +108,5 @@ If you have questions concerning this license or the applicable additional terms
 #define SURF_MONSLICK_S			0x40000000
 
 #define SURF_LANDMINE			0x80000000	// ydnar: ok to place landmines on this surface
+
+#endif

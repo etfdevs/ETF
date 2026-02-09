@@ -35,7 +35,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#pragma once
+#ifndef __Q_PLATFORM_H__
+#define __Q_PLATFORM_H__
 
 // for windows fastcall option
 #define QDECL
@@ -283,4 +284,6 @@ If you have questions concerning this license or the applicable additional terms
 	#define PLATFORM_STRING OS_STRING "-" ARCH_STRING
 #else
 	#define PLATFORM_STRING OS_STRING "-" ARCH_STRING "-debug"
+#endif
+
 #endif

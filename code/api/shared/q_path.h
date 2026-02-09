@@ -35,7 +35,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#pragma once
+#ifndef __Q_PATH_H__
+#define __Q_PATH_H__
 
 #include "q_primitives.h"
 #include "q_string.h"
@@ -69,4 +70,6 @@ void Com_ExtractFilePath (const char *path, char *dest);
 
 #if defined(__cplusplus)
 } // extern "C"
+#endif
+
 #endif

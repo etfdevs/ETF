@@ -36,8 +36,8 @@ If you have questions concerning this license or the applicable additional terms
 **	Headers for the Q3F map query/vote/select functions
 */
 
-#ifndef	__G_Q3F_MAPSELECT_H
-#define	__G_Q3F_MAPSELECT_H
+#ifndef	__G_Q3F_MAPSELECT_H__
+#define	__G_Q3F_MAPSELECT_H__
 
 #include "g_local.h"
 

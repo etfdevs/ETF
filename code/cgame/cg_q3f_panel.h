@@ -36,8 +36,8 @@ If you have questions concerning this license or the applicable additional terms
 **	Headers for panel rendering.
 */
 
-#ifndef	_CG_Q3F_PANEL_H
-#define	_CG_Q3F_PANEL_H
+#ifndef	__CG_Q3F_PANEL_H__
+#define	__CG_Q3F_PANEL_H__
 
 #include "cg_local.h"
 //#include "..\game\bg_public.h"

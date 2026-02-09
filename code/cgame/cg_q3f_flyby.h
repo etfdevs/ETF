@@ -36,8 +36,8 @@ If you have questions concerning this license or the applicable additional terms
 **	Flyby camera system
 */
 
-#ifndef __CG_Q3F_FLYBY_H
-#define __CG_Q3F_FLYBY_H
+#ifndef __CG_Q3F_FLYBY_H__
+#define __CG_Q3F_FLYBY_H__
 
 #include "../game/bg_q3f_splines.h"
 

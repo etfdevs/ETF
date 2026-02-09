@@ -35,7 +35,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#pragma once
+#ifndef __Q_COLOR_H__
+#define __Q_COLOR_H__
 
 #include <string.h>
 #include <ctype.h>
@@ -143,4 +144,6 @@ float NormalizeColor( const vec3_t in, vec3_t out );
 
 #if defined(__cplusplus)
 } // extern "C"
+#endif
+
 #endif

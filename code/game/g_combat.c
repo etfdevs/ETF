@@ -42,9 +42,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_admin.h"
 #include "g_q3f_eventlog.h"
 
-#define __STDC_FORMAT_MACROS // older compilers need this
-#include <inttypes.h>
-
 #include "g_bot_interface.h"
 #ifdef BUILD_LUA
 #include "g_lua.h"

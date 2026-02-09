@@ -30,7 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#pragma once
+#ifndef __Q_BIT_H__
+#define __Q_BIT_H__
 
 #include "q_primitives.h"
 
@@ -52,4 +53,6 @@ void COM_BitClear( int array[], unsigned int bitNum );
 
 #if defined(__cplusplus)
 } // extern "C"
+#endif
+
 #endif

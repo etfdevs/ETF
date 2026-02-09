@@ -30,8 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#ifndef	__CG_LOCAL_H
-#define	__CG_LOCAL_H
+#ifndef	__CG_LOCAL_H__
+#define	__CG_LOCAL_H__
 
 #include "../api/et/q_shared.h"
 #include "../api/et/tr_types.h"

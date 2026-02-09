@@ -30,8 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#ifndef __CG_Q3F_SCRIPTLIB_H
-#define __CG_Q3F_SCRIPTLIB_H
+#ifndef __CG_Q3F_SCRIPTLIB_H__
+#define __CG_Q3F_SCRIPTLIB_H__
 
 #include "cg_local.h"
 

@@ -37,8 +37,8 @@ Clip Handling Functions			-- JT
 */
 
 
-#ifndef _BG_Q3F_UTIL_H
-#define _BG_Q3F_UTIL_H
+#ifndef __BG_Q3F_UTIL_H__
+#define __BG_Q3F_UTIL_H__
 
 void Q3F_SetClipValue(int weapon, int value, playerState_t *playstate);
 int Q3F_GetClipValue(int weapon, const playerState_t *playstate);

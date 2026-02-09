@@ -36,6 +36,7 @@ add_library(cgame MODULE
 	"../game/bg_q3f_playerclass.c"
 	"../game/bg_q3f_playerclass.h"
 	"../game/bg_q3f_splines.c"
+	"../game/bg_q3f_splines.h"
 	"../game/bg_q3f_util.c"
 	"../game/bg_q3f_util.h"
 	"../game/bg_q3f_weapon.c"

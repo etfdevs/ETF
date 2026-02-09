@@ -30,8 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#ifndef __UI_SHARED_H
-#define __UI_SHARED_H
+#ifndef __UI_SHARED_H__
+#define __UI_SHARED_H__
 
 #include "../api/et/q_shared.h"
 #include "../api/et/tr_types.h"

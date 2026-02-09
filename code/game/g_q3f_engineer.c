@@ -58,9 +58,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_q3f_mapents.h"
 #include "bg_q3f_util.h"
 
-#define __STDC_FORMAT_MACROS // older compilers need this
-#include <inttypes.h>
-
 #include "g_bot_interface.h"
 #ifdef DREVIL_BOT_SUPPORT
 static void BotSendSentryStatus(gentity_t *sentry);

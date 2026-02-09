@@ -32,8 +32,8 @@ If you have questions concerning this license or the applicable additional terms
 
 // g_local.h -- local definitions for game module
 
-#ifndef	__G_LOCAL_H
-#define	__G_LOCAL_H
+#ifndef	__G_LOCAL_H__
+#define	__G_LOCAL_H__
 
 #include "../api/et/q_shared.h"
 #include "bg_public.h"

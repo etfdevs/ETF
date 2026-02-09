@@ -30,8 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#ifndef __CG_PUBLIC_H
-#define	__CG_PUBLIC_H
+#ifndef __CG_PUBLIC_H__
+#define	__CG_PUBLIC_H__
 
 #define	CMD_BACKUP			64	
 #define	CMD_MASK			(CMD_BACKUP - 1)

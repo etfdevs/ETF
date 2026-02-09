@@ -35,8 +35,8 @@ If you have questions concerning this license or the applicable additional terms
 // because games can change separately from the main system version, we need a
 // second version that must match between game and cgame
 
-#ifndef _BG_PUBLIC_H			// JT: Can't believe this wasn't in!
-#define _BG_PUBLIC_H
+#ifndef __BG_PUBLIC_H__			// JT: Can't believe this wasn't in!
+#define __BG_PUBLIC_H__
 
 #include "bg_q3f_controllable.h"
 

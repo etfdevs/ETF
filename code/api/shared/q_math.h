@@ -35,7 +35,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#pragma once
+#ifndef __Q_MATH_H__
+#define __Q_MATH_H__
 
 #include "q_primitives.h"
 #include "q_platform.h" // for ID_INLINE
@@ -317,4 +318,6 @@ void TransposeMatrix(matrix3_t matrix, matrix3_t transpose);
 
 #if defined(__cplusplus)
 } // extern "C"
+#endif
+
 #endif

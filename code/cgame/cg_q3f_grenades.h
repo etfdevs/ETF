@@ -36,8 +36,8 @@ If you have questions concerning this license or the applicable additional terms
 **	Client side functions for grenade handling.
 */
 
-#ifndef	__CG_GRENADES_H
-#define	__CG_GRENADES_H
+#ifndef	__CG_GRENADES_H__
+#define	__CG_GRENADES_H__
 
 #include "../game/bg_q3f_grenades.h"
 

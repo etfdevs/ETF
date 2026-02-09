@@ -35,7 +35,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#pragma once
+#ifndef __Q_PRIMITIVES_H__
+#define __Q_PRIMITIVES_H__
 
 #if defined(__cplusplus)
 extern "C" {
@@ -61,6 +62,13 @@ extern "C" {
 	#include <stdint.h>
 #endif
 
+#if !defined (_MSC_VER) || _MSC_VER >= 1800
+	#if !defined(__STDC_FORMAT_MACROS)
+		#define __STDC_FORMAT_MACROS // older compilers need this
+	#endif
+	#include <inttypes.h>
+#endif
+
 typedef unsigned char byte;
 
 typedef enum { qfalse = 0, qtrue } qboolean;
@@ -77,4 +85,6 @@ typedef union byteAlias_u {
 
 #if defined(__cplusplus)
 } // extern "C"
+#endif
+
 #endif

@@ -35,7 +35,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#pragma once
+#ifndef __Q_RAND_H__
+#define __Q_RAND_H__
 
 #include <stdlib.h>
 
@@ -54,4 +55,6 @@ float	Q_crandom( int *seed );
 
 #if defined(__cplusplus)
 } // extern "C"
+#endif
+
 #endif

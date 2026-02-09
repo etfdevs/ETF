@@ -30,8 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#ifndef __CG_Q3F_SPIRIT_H
-#define __CG_Q3F_SPIRIT_H
+#ifndef __CG_Q3F_SPIRIT_H__
+#define __CG_Q3F_SPIRIT_H__
 
 #include "../api/et/tr_types.h"
 

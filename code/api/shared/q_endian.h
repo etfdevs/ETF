@@ -30,7 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#pragma once
+#ifndef __Q_ENDIAN_H__
+#define __Q_ENDIAN_H__
 
 #include "q_primitives.h"
 
@@ -107,4 +108,6 @@ float FloatSwap(float f);
 
 #if defined(__cplusplus)
 } // extern "C"
+#endif
+
 #endif

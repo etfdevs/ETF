@@ -36,8 +36,8 @@ If you have questions concerning this license or the applicable additional terms
 **	Common functions for bezier spline math
 */
 
-#ifndef	__BG_Q3F_SPLINES_H
-#define	__BG_Q3F_SPLINES_H
+#ifndef	__BG_Q3F_SPLINES_H__
+#define	__BG_Q3F_SPLINES_H__
 
 #include "../api/et/q_shared.h"
 

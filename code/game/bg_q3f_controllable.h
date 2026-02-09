@@ -37,8 +37,8 @@ If you have questions concerning this license or the applicable additional terms
 **	or gun turrets.
 */
 
-#ifndef	_BG_Q3F_CONTROLLABLE_H
-#define	_BG_Q3F_CONTROLLABLE_H
+#ifndef	__BG_Q3F_CONTROLLABLE_H__
+#define	__BG_Q3F_CONTROLLABLE_H__
 
 typedef enum {
 	CONTROLLABLE_CAR,
