@@ -1049,6 +1049,12 @@ void CG_AddPredictedMissile(entityState_t* ent, vec3_t origin, vec3_t forward) {
 			vel = PROJ_SPEED_NAPALM;
 			tmod = MISSILE_PRESTEP_TIME;
 			break;
+		case WP_RAILGUN:
+			vel = PROJ_SPEED_RAIL;
+			break;
+		case WP_DARTGUN:
+			vel = PROJ_SPEED_DART;
+			break;
 		default:
 			return;
 	}

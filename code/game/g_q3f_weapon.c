@@ -400,7 +400,7 @@ void Q3F_No_Fire(struct gentity_s *ent)
 	return;
 }
 
-void Q3F_Railgun_Fire(struct gentity_s *ent){
+void Q3F_Railgun_Fire(struct gentity_s *ent) {
 	gentity_t	*bolt;
 	vec3_t		muzzle, forward;
 
@@ -415,6 +415,8 @@ void Q3F_Railgun_Fire(struct gentity_s *ent){
 	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	bolt->s.weapon = WP_RAILGUN;
 	bolt->r.ownerNum = ent->s.number;
+	//Unlagged client check
+	bolt->s.otherEntityNum = ent->s.number;
 	bolt->parent = ent;
 	bolt->damage = 15;			// Golliwog: Reduced from 25.
 	bolt->splashDamage = 0;
@@ -435,10 +437,13 @@ void Q3F_Railgun_Fire(struct gentity_s *ent){
 
 	VectorCopy( muzzle, bolt->s.pos.trBase );
 //	VectorScale( forward, 2000, bolt->s.pos.trDelta );
-	VectorScale( forward, 2500, bolt->s.pos.trDelta ); // djbob: New for 2.2
+	VectorScale( forward, PROJ_SPEED_RAIL, bolt->s.pos.trDelta ); // djbob: New for 2.2
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 
 	VectorCopy (muzzle, bolt->r.currentOrigin);
+
+	if (/*ent->client && */ent->client->pers.unlagged)
+		bolt->antilag_time = ent->client->attackTimeProj;
 
 	ent->client->pers.stats.data[STATS_WP + WP_RAILGUN].shots++;
 }
@@ -542,8 +547,8 @@ void Weapon_Napalm_Fire(struct gentity_s *ent) {
 		bolt->s.powerups = (1 << PW_QUAD);
 	}
 
-	if (ent->client && ent->client->pers.unlagged)
-		bolt->antilag_time = ent->client->attackTime;
+	if (/*ent->client &&*/ ent->client->pers.unlagged)
+		bolt->antilag_time = ent->client->attackTimeProj;
 
 	ent->client->pers.stats.data[STATS_WP + WP_NAPALMCANNON].shots++;
 }
@@ -1234,6 +1239,8 @@ void Q3F_Weapon_DartGun_Fire(struct gentity_s *ent)
 	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	bolt->s.weapon = WP_DARTGUN;
 	bolt->r.ownerNum = ent->s.number;
+	//Unlagged client check
+	bolt->s.otherEntityNum = ent->s.number;
 	bolt->parent = ent;
 	bolt->damage = 20;
 	bolt->splashDamage = 0;
@@ -1250,11 +1257,14 @@ void Q3F_Weapon_DartGun_Fire(struct gentity_s *ent)
 	bolt->s.pos.trTime = level.time;// - MISSILE_PRESTEP_TIME;		// move a bit on the very first frame
 
 	VectorCopy( muzzle, bolt->s.pos.trBase );
-	VectorScale( forward, 1500, bolt->s.pos.trDelta );
+	VectorScale( forward, PROJ_SPEED_DART, bolt->s.pos.trDelta );
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 	VectorCopy (muzzle, bolt->r.currentOrigin);
 
 	bolt->s.powerups = ent->s.powerups & (1 << PW_QUAD);
+
+	if (/*ent->client && */ent->client->pers.unlagged)
+		bolt->antilag_time = ent->client->attackTimeProj;
 
 	ent->client->pers.stats.data[STATS_WP + WP_DARTGUN].shots++;
 }
