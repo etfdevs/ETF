@@ -1016,10 +1016,11 @@ void CG_PredictPlayerState( void ) {
 			VectorCopy(oldPlayerState.origin, cg.last_pmove_fixed);
 
 		// We can be very conservative about when we choose to stitch.
+		// Note with thirdperson check cannot use cg.renderingThirdPerson call here as its set after this function is called in CG_DrawActiveFrame
 		if (cg_pmovesmooth.integer &&
 				cg.predictedPlayerState.commandTime - oldPlayerState.commandTime <= cgs.pmove_msec &&
 				DistanceSquared(cg.predictedPlayerState.origin, cg.last_pmove_fixed) < SQR(16) &&
-				!cg.thisFrameTeleport) {
+				!cg.thisFrameTeleport && !cg_thirdPerson.integer && !(cg.predictedPlayerState.pm_flags & PMF_CHASE)) {
 			vec3_t diff;
 			float dt = 1 + (cg.predictedPlayerState.commandTime % cgs.pmove_msec);
 			dt /= 1.0 * cgs.pmove_msec;
