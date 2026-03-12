@@ -340,7 +340,7 @@ void CG_DecalMark( qhandle_t markShader, const vec3_t origin, vec4_t projection,
 	trap_R_ProjectDecal( markShader, 4, points, projection, color, lifetime, fadetime );
 }
 
-qboolean CG_ShadowMark(const vec3_t origin, float radius, float height, float *shadowPlane )
+qboolean CG_ShadowMark( const vec3_t origin, float radius, float height, float *shadowPlane )
 {
 	vec3_t		end,mins,maxs;
 	vec4_t		color,projection;
@@ -374,6 +374,10 @@ qboolean CG_ShadowMark(const vec3_t origin, float radius, float height, float *s
 	return qtrue;
 }
 
+#if defined(__clang__) || defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif
 void CG_ExplosionMark(const vec3_t origin, float radius, const vec4_t color) 
 {
 	vec4_t projection;
@@ -382,6 +386,9 @@ void CG_ExplosionMark(const vec3_t origin, float radius, const vec4_t color)
 	VectorSet4( projection, 0, 0, -1, radius);
 	trap_R_ProjectDecal(cgs.media.burnMarkShader, 1, (vec3_t*)origin, projection, color, cg_markTime.integer, (cg_markTime.integer >> 3) );
 }
+#if defined(__clang__) || defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 void CG_BulletMark(qhandle_t shader, const vec3_t origin, const vec3_t dir, float radius, const vec4_t color) {
 	vec4_t projection;
@@ -398,4 +405,3 @@ void CG_BulletMark(qhandle_t shader, const vec3_t origin, const vec3_t dir, floa
 	CG_DecalMark( shader, origin, projection, 
 		ETF_random()*360, radius,color,totaltime,fadetime);
 }
-

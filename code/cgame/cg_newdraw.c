@@ -3252,7 +3252,7 @@ void CG_Q3F_DrawHUDIcons(rectDef_t *rect, float tscale, vec4_t color, int textSt
 					Com_sprintf(buf, sizeof(buf), "%d", (int)t/1000);
 					y += (h - CG_Text_Height(buf, tscale, 0, font)) / 2;
 
-					if (reverse) {;
+					if (reverse) {
 						float textWidth = CG_Text_Width(buf, tscale, 0, font);
 						CG_Text_Paint(x - textWidth - 7, y + text_y + 2, tscale, colorWhite, buf, 0, 0, textStyle, font, textalignment);
 					}
