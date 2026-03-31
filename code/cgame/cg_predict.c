@@ -994,6 +994,9 @@ void CG_PredictPlayerState( void ) {
 		cg.predictedPlayerState.groundEntityNum, 
 		cg.physicsTime, cg.time, cg.predictedPlayerState.origin );
 
+	// adjust view origin cache for the movement of the groundentity
+	VectorCopy( cg.predictedPlayerState.origin, cg.view_org );
+
 	if ( cg_showmiss.integer ) {
 		if (cg.predictedPlayerState.eventSequence > oldPlayerState.eventSequence + MAX_EVENTS) {
 			CG_Printf(BOX_PRINT_MODE_CHAT, "WARNING: dropped event\n");
