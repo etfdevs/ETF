@@ -42,7 +42,7 @@ jobs:
           - arch: x64
             platform: x64
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
@@ -53,10 +53,12 @@ jobs:
       run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.config }} --parallel
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: etf-artifacts-win-${{ matrix.arch }}
         path: ${{ github.workspace }}/build/etf
+        if-no-files-found: error
+        retention-days: 5
 
   Linux:
     name: Linux ${{ matrix.arch }}
@@ -74,7 +76,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install gcc-multilib g++-multilib
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
@@ -90,10 +92,12 @@ jobs:
       run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.config }} --parallel
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: etf-artifacts-linux-${{ matrix.arch }}
         path: ${{ github.workspace }}/build/etf
+        if-no-files-found: error
+        retention-days: 5
 
   macOS:
     name: macOS ${{ matrix.arch }}
@@ -107,7 +111,7 @@ jobs:
           - osx-target: "10.13"
   
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
   
@@ -118,17 +122,19 @@ jobs:
       run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.config }} --parallel
   
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: etf-artifacts-macos-${{ matrix.arch }}
         path: ${{ github.workspace }}/build/etf
+        if-no-files-found: error
+        retention-days: 5
 
   macOS-universal:
     name: macOS Universal Binaries
     runs-on: macos-14
     needs: [macOS]
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: etf-artifacts-macos-*
           path: artifacts
@@ -148,7 +154,7 @@ jobs:
                 -output build-universal/qagame_mac
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: etf-artifacts-macos-universal
           path: ${{ github.workspace }}/build-universal
@@ -166,12 +172,12 @@ jobs:
     needs: [Windows-MSVC, Linux, macOS-universal]
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with: 
           pattern: etf-artifacts-*
           merge-multiple: true
@@ -184,7 +190,7 @@ jobs:
           make mod_release
 
       - name: Upload release 
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: etf-snapshot-release
           path: ${{ github.workspace }}/build/*.zip
