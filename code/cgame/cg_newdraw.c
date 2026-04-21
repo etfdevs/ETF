@@ -3246,10 +3246,12 @@ void CG_Q3F_DrawHUDIcons(rectDef_t *rect, float tscale, vec4_t color, int textSt
 				w = 64 * cent->currentState.apos.trBase[0] * scale;	// 64 * scale (0 to 1)
 				h = 64 * cent->currentState.apos.trBase[0] * scale;
 
-				t = cent->currentState.constantLight - cg.time;
-				if (t > 0) {
+				t = (cent->currentState.constantLight - cg.time)/1000;
+				if (t < 0)
+					t = 0;
+				if (t >= 0) {
 					char buf[16];
-					Com_sprintf(buf, sizeof(buf), "%d", (int)t/1000);
+					Com_sprintf(buf, sizeof(buf), "%d", t+1);
 					y += (h - CG_Text_Height(buf, tscale, 0, font)) / 2;
 
 					if (reverse) {
