@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Layer_1"
+   width="400"
+   height="135.31"
+   version="1.2"
+   viewBox="0 0 400.00002 135.31"
+   sodipodi:docname="etflogo.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="4.742439"
+     inkscape:cx="183.55534"
+     inkscape:cy="54.929542"
+     inkscape:window-width="3840"
+     inkscape:window-height="2054"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Layer_1" />
+  <!-- Generator: Adobe Illustrator 30.6.0, SVG Export Plug-In . SVG Version: 2.1.4 Build 109)  -->
+  <defs
+     id="defs2">
+    <linearGradient
+       id="linearGradient5"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#7f1518;stop-opacity:1;"
+         offset="0"
+         id="stop5" />
+      <stop
+         style="stop-color:#ec2426;stop-opacity:1;"
+         offset="1"
+         id="stop6" />
+    </linearGradient>
+    <linearGradient
+       id="linear-gradient"
+       x1="76.150002"
+       y1="128.08"
+       x2="76.150002"
+       y2="3"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#7f1518"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#ec2426"
+         id="stop2" />
+    </linearGradient>
+    <linearGradient
+       id="linear-gradient1"
+       x1="113.12"
+       y1="116.96"
+       x2="113.12"
+       y2="26.610001"
+       xlink:href="#linear-gradient" />
+    <linearGradient
+       id="linear-gradient2"
+       x1="37.5"
+       y1="116.96"
+       x2="37.5"
+       y2="26.610001"
+       xlink:href="#linear-gradient" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linear-gradient"
+       id="linearGradient4"
+       gradientUnits="userSpaceOnUse"
+       x1="76.150002"
+       y1="128.08"
+       x2="76.150002"
+       y2="3" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5"
+       id="linearGradient6"
+       x1="274.76422"
+       y1="189.86194"
+       x2="274.76422"
+       y2="-54.551933"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     id="g2">
+    <polygon
+       points="146.17,3 6.12,3 17.29,17.41 72.08,17.41 72.15,128.08 78.49,121.75 78.52,17.41 133.24,17.41 "
+       fill="url(#linear-gradient)"
+       id="polygon2"
+       style="fill:url(#linearGradient4)" />
+    <path
+       d="M 146.17,3 133.24,17.41 H 78.52 c 0,0 -0.03,104.34 -0.03,104.34 L 72.16,128.08 72.09,17.41 H 17.29 C 17.29,17.41 6.12,3 6.12,3 H 146.17 M 152.9,0 H 0 l 3.75,4.84 11.17,14.41 0.9,1.16 h 1.47 c 0,0 51.8,0 51.8,0 l 0.07,107.67 v 7.23 c 0,0 5.12,-5.11 5.12,-5.11 l 6.33,-6.33 0.88,-0.88 v -1.24 c 0,0 0.03,-101.34 0.03,-101.34 h 51.72 c 0,0 1.34,0 1.34,0 l 0.89,-1 L 148.4,5 152.89,0 v 0 z"
+       fill="#231f20"
+       id="path2" />
+  </g>
+  <g
+     id="g3">
+    <polygon
+       points="87.28,26.61 87.28,116.96 98.39,105.85 98.39,58.19 120.18,58.26 130.51,46.96 98.39,46.95 98.4,37.97 128.65,37.88 138.95,26.61 "
+       fill="url(#linear-gradient1)"
+       id="polygon3"
+       style="fill:url(#linear-gradient1)" />
+    <path
+       d="m 138.95,26.61 -10.3,11.27 -30.26,0.09 v 8.98 c 0,0 32.11,0 32.11,0 L 120.17,58.26 98.38,58.18 v 47.67 c 0,0 -11.11,11.1 -11.11,11.1 V 26.61 h 51.67 m 6.82,-3.01 h -6.81 c 0,0 -51.67,0 -51.67,0 h -3 v 100.59 l 5.12,-5.12 11.11,-11.1 0.88,-0.88 v -1.24 c 0,0 0,-44.66 0,-44.66 l 18.78,0.07 h 1.33 c 0,0 0.9,-0.98 0.9,-0.98 l 10.33,-11.31 4.59,-5.02 h -6.8 c 0,0 -29.11,0 -29.11,0 v -2.99 c 0,0 27.27,-0.08 27.27,-0.08 H 130 c 0,0 0.89,-0.98 0.89,-0.98 l 10.3,-11.27 4.59,-5.02 v 0 z"
+       fill="#231f20"
+       id="path3" />
+  </g>
+  <g
+     id="g4">
+    <polygon
+       points="52.23,46.95 20.11,46.96 30.44,58.26 52.23,58.18 52.23,67.8 39.62,67.81 49.95,79.12 52.23,79.05 52.23,105.85 63.34,116.96 63.34,26.61 11.67,26.61 21.97,37.88 52.22,37.97 "
+       fill="url(#linear-gradient2)"
+       id="polygon4"
+       style="fill:url(#linear-gradient2)" />
+    <path
+       d="m 11.67,26.61 h 51.67 v 90.35 l -11.11,-11.1 v -26.8 c 0,0 -2.28,0.07 -2.28,0.07 L 39.62,67.82 h 12.61 c 0,0 0,-9.63 0,-9.63 L 30.44,58.27 20.11,46.96 h 32.11 c 0,0 0,-8.99 0,-8.99 L 21.96,37.88 11.66,26.61 m -6.8,-3.01 4.59,5.02 10.3,11.27 0.89,0.97 h 1.32 c 0,0 27.27,0.08 27.27,0.08 v 2.99 c 0,0 -29.11,0 -29.11,0 h -6.8 c 0,0 4.59,5.02 4.59,5.02 l 10.33,11.31 0.9,0.98 h 1.33 c 0,0 18.78,-0.07 18.78,-0.07 v 3.61 c 0,0 -9.62,0 -9.62,0 h -6.8 c 0,0 4.59,5.02 4.59,5.02 l 10.33,11.31 0.93,1.02 0.57,-0.02 v 23.71 c 0,0 0,1.24 0,1.24 l 0.88,0.88 11.11,11.1 5.12,5.12 V 23.61 h -3 c 0,0 -51.67,0 -51.67,0 H 4.88 Z"
+       fill="#231f20"
+       id="path4" />
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-weight:bold;font-size:37.3333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Bold';letter-spacing:0px;writing-mode:lr-tb;direction:ltr;fill:url(#linearGradient6);stroke:#231f20;stroke-width:1.5;stroke-dasharray:none;stroke-linejoin:bevel;stroke-opacity:1"
+     x="150.48698"
+     y="56.489643"
+     id="text4"><tspan
+       sodipodi:role="line"
+       id="tspan4"
+       x="150.48698"
+       y="56.489643"
+       style="font-size:37.3333px;stroke-width:1.5;stroke-dasharray:none;stroke-linejoin:bevel;fill:url(#linearGradient6);stroke:#231f20;stroke-opacity:1">Enemy Territory</tspan><tspan
+       sodipodi:role="line"
+       x="150.48698"
+       y="103.15627"
+       id="tspan5"
+       style="font-size:37.3333px;stroke-width:1.5;stroke-dasharray:none;stroke-linejoin:bevel;fill:url(#linearGradient6);stroke:#231f20;stroke-opacity:1">Fortress</tspan></text>
+</svg>
