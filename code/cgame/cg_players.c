@@ -1642,10 +1642,17 @@ void CG_Q3F_CalcAgentVisibility( qboolean *drawmodel, float *shaderalpha, qboole
 			else invisalpha = 1.0 - ((float)((starttime + (Q3F_AGENT_INVISIBLE_TIME/2)) - cg.time)) / (Q3F_AGENT_INVISIBLE_TIME/2);
 		}
 		if( invisalpha <= 0 ) {
-			/* Fully invisble stop it */
-			*shaderalpha = 0;
-			*drawmodel = qfalse;
-			return;
+			if( agentstate->modelindex2 & Q3F_AGENT_INVISEND ) {
+				// The transition to visible is complete.
+				// Clamp alpha to 0 and let the rest of the function run
+				// so it properly flags the model to be drawn solid.
+				invisalpha = 0; 
+			} else {
+				/* Fully invisble stop it */
+				*shaderalpha = 0;
+				*drawmodel = qfalse;
+				return;
+			}
 		}
 		if( invisalpha > 1 )
 			invisalpha = 1;
