@@ -50,121 +50,104 @@ static char *q3f_nonteamflaginfokeys[Q3F_NUM_STATES];
 
 void G_Q3F_FlagInfo( gentity_t *queryent )
 {
-	// Player wants to know about status of assorted flags. So, we tell him.
-	// This is actually scanning all ents with mapdata, which is possibly rather inefficient.
-
+	// Player or spectator wants to know about status of assorted flags.
 	gentity_t *ent;
 	q3f_keypair_t *kp;
-	char **keyptr;
 	char fihud[MAX_STRING_CHARS];
 	char *tempbuf;
-
-	//const size_t lengthOfCenter = 6;// strlen( "cp \"\"\n" );
-	//const size_t lengthOfPrint = 9;// strlen( "print \"\"\n" );
+	int effectiveTeam = Q3F_TEAM_FREE;
+	int stateIndex;
 
 	fihud[0] = '\0';
 
-	/* Ensiform - This loop is the source of flaginfo bug me thinks */
-	/* valid pointer was not checked per-se and <= is wrong!!! */
-	/* Changed to add 'ent' check and <= now is < */
-	/* APPARENTLY NOT FIXED! FIXME! */
-	for( ent = level.gentities; ent < &level.gentities[MAX_GENTITIES]; ent++ )
+	if ( queryent->client->sess.sessionTeam == Q3F_TEAM_SPECTATOR ) {
+		if ( queryent->client->sess.spectatorState == SPECTATOR_FOLLOW || 
+			 queryent->client->sess.spectatorState == SPECTATOR_CHASE ) {
+			
+			int followedClientNum = queryent->client->sess.spectatorClient;
+			if ( followedClientNum >= 0 && followedClientNum < MAX_CLIENTS ) {
+				const gentity_t *followedPlayer = &g_entities[followedClientNum];
+				if ( followedPlayer->inuse && followedPlayer->client ) {
+					effectiveTeam = followedPlayer->client->sess.sessionTeam;
+				}
+			}
+		}
+	} else {
+		effectiveTeam = queryent->client->sess.sessionTeam;
+	}
+
+	for ( stateIndex = 0; stateIndex < Q3F_NUM_STATES; stateIndex++ ) {
+		// Pre-cache global fallback keys (Everyone utilizes these)
+		if ( !q3f_flaginfokeys[stateIndex][0] ) {
+			q3f_flaginfokeys[stateIndex][0] = G_Q3F_GetString( va( "%s_flaginfo", q3f_statestrings[stateIndex] ) );
+		}
+
+		if ( effectiveTeam > 0 && effectiveTeam < Q3F_TEAM_SPECTATOR ) {
+			if ( !q3f_flaginfokeys[stateIndex][effectiveTeam] ) {
+				q3f_flaginfokeys[stateIndex][effectiveTeam] = G_Q3F_GetString( va( "%s_%s_flaginfo", q3f_statestrings[stateIndex], g_q3f_teamlist[effectiveTeam].name ) );
+			}
+			if ( !q3f_teamflaginfokeys[stateIndex] ) {
+				q3f_teamflaginfokeys[stateIndex] = G_Q3F_GetString( va( "%s_team_flaginfo", q3f_statestrings[stateIndex] ) );
+			}
+			if ( !q3f_nonteamflaginfokeys[stateIndex] ) {
+				q3f_nonteamflaginfokeys[stateIndex] = G_Q3F_GetString( va( "%s_nonteam_flaginfo", q3f_statestrings[stateIndex] ) );
+			}
+		}
+	}
+
+	for( ent = &g_entities[MAX_CLIENTS + BODY_QUEUE_SIZE]; ent < &level.gentities[level.num_entities]; ent++ )
 	{
 		if( ent && ent->inuse && ent->mapdata && (ent->mapdata->flags & Q3F_FLAG_FLAGINFO) )
 		{
-//#ifdef _DEBUG
+			int entState = ent->mapdata->state;
+
 			if( g_mapentDebug.integer )
 				G_Printf(	"Flaginfo for %d: %s (%d %d %d).\n",
-							ent->s.number, q3f_statestrings[ent->mapdata->state],
+							ent->s.number, q3f_statestrings[entState],
 							(int) ent->r.currentOrigin[0], (int) ent->r.currentOrigin[1], (int) ent->r.currentOrigin[2] );
-//#endif
 
-				// Look for team-specific key
-			if( queryent->client->sess.sessionTeam )
+			// Team-specific flaginfo keys
+			if( effectiveTeam > Q3F_TEAM_FREE && effectiveTeam < Q3F_TEAM_SPECTATOR )
 			{
-				keyptr = &q3f_flaginfokeys[ent->mapdata->state][queryent->client->sess.sessionTeam];
-				if( *keyptr != (char *) -1 )
+				kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, q3f_flaginfokeys[entState][effectiveTeam] );
+				if( kp )
 				{
-					if( !*keyptr )		// Need to 'get' the key first
-						*keyptr = G_Q3F_GetString( va( "%s_%s_flaginfo", q3f_statestrings[ent->mapdata->state], g_q3f_teamlist[queryent->client->sess.sessionTeam].name ) );
-					if( keyptr )
-					{
-						kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, *keyptr );
-						if( kp )
-						{
-							tempbuf = G_Q3F_MessageString( kp->value.d.strdata, ent->activator, ent, 7 );
-							trap_SendServerCommand(	queryent->s.number, va( "%s \"%s\n\"",
-													(kp->value.flags & Q3F_VFLAG_FORCE) ? "cp" : "print",
-													tempbuf) );
-							Q_strcat(fihud, MAX_STRING_CHARS, va("%s\n", tempbuf));
-							continue;
-						}
-					}
-					else *keyptr = (char *) -1;
+					tempbuf = G_Q3F_MessageString( kp->value.d.strdata, ent->activator, ent, 7 );
+					trap_SendServerCommand(	queryent->s.number, va( "%s \"%s\n\"",
+											(kp->value.flags & Q3F_VFLAG_FORCE) ? "cp" : "print",
+											tempbuf) );
+					Q_strcat(fihud, MAX_STRING_CHARS, va("%s\n", tempbuf));
+					continue; 
 				}
 			}
 
-			if( ent->activator && ent->activator->inuse && ent->activator->client )
+			// Activator team / non-team contextual keys
+			if( ent->activator && ent->activator->inuse && ent->activator->client && effectiveTeam > Q3F_TEAM_FREE && effectiveTeam < Q3F_TEAM_SPECTATOR )
 			{
-				// Look for team and nonteam keys
-
-				if( ent->activator->client->sess.sessionTeam == queryent->client->sess.sessionTeam )
+				char *cachedKey = ( ent->activator->client->sess.sessionTeam == effectiveTeam ) ? q3f_teamflaginfokeys[entState] : q3f_nonteamflaginfokeys[entState];
+				
+				kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, cachedKey );
+				if( kp )
 				{
-					keyptr = &q3f_teamflaginfokeys[ent->mapdata->state];
-					if( !*keyptr )
-						*keyptr = G_Q3F_GetString( va( "%s_team_flaginfo", q3f_statestrings[ent->mapdata->state] ) );
-				}
-				else {
-					keyptr = &q3f_nonteamflaginfokeys[ent->mapdata->state];
-					if( !*keyptr )
-						*keyptr = G_Q3F_GetString( va( "%s_nonteam_flaginfo", q3f_statestrings[ent->mapdata->state] ) );
-				}
-
-				if( *keyptr != (char *) -1 )
-				{
-					if( keyptr )
-					{
-						kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, *keyptr );
-						if( kp )
-						{
-							tempbuf = G_Q3F_MessageString( kp->value.d.strdata, ent->activator, ent, 7 );
-							trap_SendServerCommand(	queryent->s.number, va( "%s \"%s\n\"",
-													((kp->value.flags & Q3F_VFLAG_FORCE) ? "cp" : "print"),
-													tempbuf) );
-							Q_strcat(fihud, MAX_STRING_CHARS, va("%s\n", tempbuf));
-							continue;
-						}
-					}
-					else *keyptr = (char *) -1;
+					tempbuf = G_Q3F_MessageString( kp->value.d.strdata, ent->activator, ent, 7 );
+					trap_SendServerCommand(	queryent->s.number, va( "%s \"%s\n\"",
+											((kp->value.flags & Q3F_VFLAG_FORCE) ? "cp" : "print"),
+											tempbuf) );
+					Q_strcat(fihud, MAX_STRING_CHARS, va("%s\n", tempbuf));
+					continue;
 				}
 			}
 
-				// Look for general key
-			keyptr = &q3f_flaginfokeys[ent->mapdata->state][0];
-			if( *keyptr != (char *) -1 )
+			// Global ("state_flaginfo")
+			kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, q3f_flaginfokeys[entState][0] );
+			if( kp )
 			{
-				if( !*keyptr )		// Need to 'get' the key first
-					*keyptr = G_Q3F_GetString( va( "%s_flaginfo", q3f_statestrings[ent->mapdata->state] ) );
-
-				if( g_mapentDebug.integer )
-					G_Printf(	"Flaginfo for %d: %s (%d %d %d) (%s).\n",
-								ent->s.number, q3f_statestrings[ent->mapdata->state],
-								(int) ent->r.currentOrigin[0], (int) ent->r.currentOrigin[1], (int) ent->r.currentOrigin[2], (*keyptr) ? *keyptr : "" );
-				if( keyptr )
-				{
-					kp = G_Q3F_KeyPairArrayFind( ent->mapdata->other, *keyptr );
-					if( kp )
-					{
-						tempbuf = G_Q3F_MessageString( kp->value.d.strdata, ent->activator, ent, 7 );
-						trap_SendServerCommand(	queryent->s.number, va( "%s \"%s\n\"",
-												((kp->value.flags & Q3F_VFLAG_FORCE) ? "cp" : "print"),
-												tempbuf) );
-						Q_strcat(fihud, MAX_STRING_CHARS, va("%s\n", tempbuf));
-
-						continue;
-					}
-				}
-				else *keyptr = (char *) -1;
+				tempbuf = G_Q3F_MessageString( kp->value.d.strdata, ent->activator, ent, 7 );
+				trap_SendServerCommand(	queryent->s.number, va( "%s \"%s\n\"",
+										((kp->value.flags & Q3F_VFLAG_FORCE) ? "cp" : "print"),
+										tempbuf) );
+				Q_strcat(fihud, MAX_STRING_CHARS, va("%s\n", tempbuf));
+				continue;
 			}
 		}
 	}
